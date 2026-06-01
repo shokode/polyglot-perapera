@@ -93,6 +93,9 @@ export type UILabels = {
   expressionStatusReview: string;
   expressionStatusLearned: string;
   expressionStatusAction: string;
+  expressionTextForm: string;
+  reviewPageTitle: string;
+  noReviewItems: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -128,6 +131,9 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusReview: 'Repeter',
     expressionStatusLearned: 'Lært',
     expressionStatusAction: 'Klikk for å endre status',
+    expressionTextForm: 'Form i teksten',
+    reviewPageTitle: 'Repeter',
+    noReviewItems: 'Ingen uttrykk å repetere ennå',
   },
   en: {
     title: 'Read & Type',
@@ -161,6 +167,9 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusReview: 'Review',
     expressionStatusLearned: 'Learned',
     expressionStatusAction: 'Click to change status',
+    expressionTextForm: 'Text form',
+    reviewPageTitle: 'Review',
+    noReviewItems: 'No review items yet',
   },
   ja: {
     title: '読むと打つ',
@@ -194,5 +203,8 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusReview: '復習',
     expressionStatusLearned: '覚えた',
     expressionStatusAction: 'クリックしてステータスを変更',
+    expressionTextForm: '本文の形',
+    reviewPageTitle: '復習',
+    noReviewItems: '復習する表現はまだありません',
   },
 };

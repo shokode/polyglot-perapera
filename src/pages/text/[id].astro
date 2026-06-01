@@ -31,13 +31,17 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function renderHighlightedText(value: string, expressionsArray: Array<{ phrase: string }>) {
-  const sorted = [...expressionsArray].sort((a, b) => b.phrase.length - a.phrase.length);
+function getTextForm(expression: { phrase: string; formInText?: string }) {
+  return expression.formInText || expression.phrase;
+}
+
+function renderHighlightedText(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>) {
+  const sorted = [...expressionsArray].sort((a, b) => getTextForm(b).length - getTextForm(a).length);
   return value.split('\n\n').map((paragraph) => {
     let escaped = escapeHtml(paragraph);
-    sorted.forEach(({ phrase }) => {
-      const safePhrase = escapeHtml(phrase);
-      escaped = escaped.replace(new RegExp(escapeRegExp(safePhrase), 'g'), `<span class="target-highlight">${safePhrase}</span>`);
+    sorted.forEach((expression) => {
+      const safeTextForm = escapeHtml(getTextForm(expression));
+      escaped = escaped.replace(new RegExp(escapeRegExp(safeTextForm), 'g'), `<span class="target-highlight">${safeTextForm}</span>`);
     });
     return `<p>${escaped}</p>`;
   }).join('');
@@ -191,6 +195,9 @@ const clientScript = `
       englishTranslationTitle.textContent = labels.englishTranslation;
       expressionsTitle.textContent = labels.usefulExpressions;
       grammarTitle.textContent = labels.grammarFromText;
+      document.querySelectorAll('[data-expression-form-label]').forEach((el) => {
+        el.textContent = labels.expressionTextForm;
+      });
       languageChip.textContent = languageNames[text.language]?.[lang] || text.language;
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[text.level]?.[lang] || text.level);
@@ -286,13 +293,16 @@ if (!text) {
             <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[text.level as keyof typeof levelLabels][defaultUiLang]}</span>
           </div>
         </div>
-        <div class="language-switcher">
-          <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
-          <select id="ui-language-select">
-            {uiLanguages.map((lang) => (
-              <option value={lang}>{uiLanguageNames[lang]}</option>
-            ))}
-          </select>
+        <div class="top-actions">
+          <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <div class="language-switcher">
+            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <select id="ui-language-select">
+              {uiLanguages.map((lang) => (
+                <option value={lang}>{uiLanguageNames[lang]}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </section>
 
@@ -361,6 +371,9 @@ if (!text) {
                 <strong>{item.phrase}</strong>
                 <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
               </div>
+              {item.formInText && item.formInText !== item.phrase && (
+                <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>
+              )}
               <p>{item.ja}</p>
               <p>{item.en}</p>
             </article>

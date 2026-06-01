@@ -1,0 +1,213 @@
+---
+import '../styles/global.scss';
+import texts from '../data/texts.json' assert { type: 'json' };
+import {
+  uiLanguages,
+  uiLanguageNames,
+  uiText,
+  type UILang,
+} from '../i18n/ui';
+
+const defaultUiLang: UILang = 'en';
+const expressions = Array.from(
+  texts.reduce((map, item) => {
+    item.expressions.forEach((expression) => {
+      if (!map.has(expression.phrase)) {
+        map.set(expression.phrase, expression);
+      }
+    });
+    return map;
+  }, new Map<string, { phrase: string; formInText?: string; ja: string; en: string }>())
+  .values()
+);
+
+const clientScript = `
+  const expressions = ${JSON.stringify(expressions)};
+  const ui = ${JSON.stringify(uiText)};
+  const uiLanguages = ${JSON.stringify(uiLanguages)};
+  const STORAGE_KEY = 'typingSiteUiLanguage';
+  const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
+
+  function safeReadStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function safeWriteStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore
+    }
+  }
+
+  function loadExpressionStatuses() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_STATUS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveExpressionStatuses(data) {
+    safeWriteStorage(EXPRESSION_STATUS_KEY, JSON.stringify(data));
+  }
+
+  function getSavedLanguage() {
+    const stored = safeReadStorage(STORAGE_KEY);
+    return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
+  }
+
+  function getUiText(lang) {
+    return ui[lang] || ui.en;
+  }
+
+  function getExpressionStatus(phrase) {
+    const stored = loadExpressionStatuses()[phrase];
+    return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
+  }
+
+  function getNextExpressionStatus(status) {
+    const currentIndex = EXPRESSION_STATUSES.indexOf(status);
+    return EXPRESSION_STATUSES[(currentIndex + 1) % EXPRESSION_STATUSES.length];
+  }
+
+  function getExpressionStatusLabel(status, labels) {
+    if (status === 'review') {
+      return labels.expressionStatusReview;
+    }
+    if (status === 'learned') {
+      return labels.expressionStatusLearned;
+    }
+    return labels.expressionStatusNew;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const uiLanguageSelect = document.getElementById('ui-language-select');
+    const reviewTitle = document.getElementById('review-title');
+    const reviewGrid = document.getElementById('review-grid');
+    const emptyState = document.getElementById('review-empty-state');
+
+    function renderUiText(lang) {
+      const labels = getUiText(lang);
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        const value = labels[key];
+        if (typeof value === 'string') {
+          el.textContent = value;
+        }
+      });
+
+      uiLanguageSelect.value = lang;
+      reviewTitle.textContent = labels.reviewPageTitle;
+      renderReviewItems();
+    }
+
+    function cycleExpressionStatus(phrase) {
+      const all = loadExpressionStatuses();
+      all[phrase] = getNextExpressionStatus(getExpressionStatus(phrase));
+      saveExpressionStatuses(all);
+      renderReviewItems();
+    }
+
+    function renderReviewItems() {
+      const labels = getUiText(uiLanguageSelect.value);
+      const reviewItems = expressions.filter((expression) => getExpressionStatus(expression.phrase) === 'review');
+
+      reviewGrid.innerHTML = reviewItems.map((expression) => {
+        const status = getExpressionStatus(expression.phrase);
+        const label = getExpressionStatusLabel(status, labels);
+        return ''
+          + '<article class="expression-card review-expression-card" data-expression-card="' + escapeHtml(expression.phrase) + '" data-status="' + status + '" title="' + escapeHtml(labels.expressionStatusAction) + '">'
+          + '<div class="expression-header">'
+          + '<strong>' + escapeHtml(expression.phrase) + '</strong>'
+          + '<button class="status-button" type="button" data-expression-status="' + escapeHtml(expression.phrase) + '" data-status="' + status + '" title="' + escapeHtml(labels.expressionStatusAction) + '" aria-label="' + escapeHtml(expression.phrase + ': ' + label + '. ' + labels.expressionStatusAction) + '">' + escapeHtml(label) + '</button>'
+          + '</div>'
+          + (expression.formInText && expression.formInText !== expression.phrase ? '<p class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</p>' : '')
+          + '<p>' + escapeHtml(expression.ja) + '</p>'
+          + '<p>' + escapeHtml(expression.en) + '</p>'
+          + '</article>';
+      }).join('');
+
+      emptyState.hidden = reviewItems.length > 0;
+
+      reviewGrid.querySelectorAll('[data-expression-card]').forEach((card) => {
+        card.addEventListener('click', () => {
+          const selectedText = window.getSelection()?.toString();
+          if (selectedText) {
+            return;
+          }
+          cycleExpressionStatus(card.dataset.expressionCard);
+        });
+      });
+
+      reviewGrid.querySelectorAll('[data-expression-status]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          cycleExpressionStatus(button.dataset.expressionStatus);
+        });
+      });
+    }
+
+    const saved = getSavedLanguage();
+    renderUiText(saved);
+
+    uiLanguageSelect.addEventListener('change', (event) => {
+      const lang = event.target.value;
+      safeWriteStorage(STORAGE_KEY, lang);
+      renderUiText(lang);
+    });
+  });
+`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{uiText[defaultUiLang].reviewPageTitle} · Read & Type</title>
+  </head>
+  <body>
+    <main class="page-shell text-page">
+      <section class="hero-card page-top">
+        <div>
+          <h1 class="text-title" id="review-title" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</h1>
+          <p data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
+        </div>
+        <div class="top-actions">
+          <a class="nav-link" href="/" data-i18n="title">{uiText[defaultUiLang].title}</a>
+          <div class="language-switcher">
+            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <select id="ui-language-select">
+              {uiLanguages.map((lang) => (
+                <option value={lang}>{uiLanguageNames[lang]}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="expressions-card">
+        <div id="review-grid" class="expressions-grid"></div>
+        <p id="review-empty-state" class="empty-state" data-i18n="noReviewItems">{uiText[defaultUiLang].noReviewItems}</p>
+      </section>
+    </main>
+
+    <script type="module" set:html={clientScript}></script>
+  </body>
+</html>

@@ -153,13 +153,16 @@ const clientScript = `
           <h1 id="page-title" data-i18n="title">{uiText[defaultUiLang].title}</h1>
           <p id="page-subtitle" data-i18n="subtitle">{uiText[defaultUiLang].subtitle}</p>
         </div>
-        <div class="language-switcher">
-          <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
-          <select id="ui-language-select">
-            {uiLanguages.map((lang) => (
-              <option value={lang}>{uiLanguageNames[lang]}</option>
-            ))}
-          </select>
+        <div class="top-actions">
+          <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <div class="language-switcher">
+            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <select id="ui-language-select">
+              {uiLanguages.map((lang) => (
+                <option value={lang}>{uiLanguageNames[lang]}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </section>
 

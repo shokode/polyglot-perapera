@@ -10,13 +10,13 @@
 
     "translationEn": "I used to feel stressed when I had to speak Norwegian, especially when I needed to answer quickly. So I decided to practice a little every day instead of trying to learn everything at once. Over time, I noticed that I understood more and hesitated less when I spoke. Taking it easy and focusing on one thing at a time worked well for me.",
     "expressions": [
-      {"phrase": "pleide å", "ja": "以前はよく〜していた", "en": "used to"},
+      {"phrase": "pleie å", "formInText": "pleide å", "ja": "以前はよく〜していた", "en": "used to"},
       {"phrase": "bli stresset når", "ja": "〜すると緊張する / ストレスを感じる", "en": "get stressed when"},
-      {"phrase": "bestemte jeg meg for å", "ja": "〜することにした", "en": "I decided to"},
+      {"phrase": "bestemme seg for å", "formInText": "bestemte jeg meg for å", "ja": "〜することに決める", "en": "decide to"},
       {"phrase": "i stedet for å", "ja": "〜する代わりに", "en": "instead of doing"},
-      {"phrase": "Etter hvert", "ja": "そのうち / 続けているうちに / だんだん", "en": "over time / after a while"},
-      {"phrase": "la jeg merke til", "ja": "私は〜に気づいた", "en": "I noticed"},
-      {"phrase": "nølte", "ja": "ためらった / 迷った", "en": "hesitated"},
+      {"phrase": "etter hvert", "formInText": "Etter hvert", "ja": "そのうち / 続けているうちに / だんだん", "en": "over time / after a while"},
+      {"phrase": "legge merke til", "formInText": "la jeg merke til", "ja": "〜に気づく", "en": "notice"},
+      {"phrase": "nøle", "formInText": "nølte", "ja": "ためらう / 迷う", "en": "hesitate"},
       {"phrase": "ta det med ro", "ja": "焦らずに進める / 落ち着く", "en": "take it easy"},
       {"phrase": "én ting om gangen", "ja": "一度に一つずつ", "en": "one thing at a time"}
     ],
@@ -50,7 +50,7 @@
     "sourceWords": ["gradvis", "etter hvert", "ta det med ro"],
     "expressions": [
       {"phrase": "gradvis", "ja": "徐々に", "en": "gradually"},
-      {"phrase": "Etter hvert", "ja": "しばらくすると / そのうち", "en": "after a while / over time"},
+      {"phrase": "etter hvert", "formInText": "Etter hvert", "ja": "しばらくすると / そのうち", "en": "after a while / over time"},
       {"phrase": "ta det med ro", "ja": "焦らずに進める", "en": "take it easy"}
     ],
     "grammar": [
@@ -72,7 +72,7 @@
     "translationEn": "I'll probably meet Maren in the park tonight. She said she might take a walk along the river, and that sounds like a nice way to spend some time together. We'll talk about what matters in everyday life and share a few small plans for the coming weekend.",
     "sourceWords": ["sannsynlig"],
     "expressions": [
-      {"phrase": "Det er sannsynlig", "ja": "〜である可能性が高い", "en": "it is likely"},
+      {"phrase": "det er sannsynlig at", "formInText": "Det er sannsynlig at", "ja": "〜である可能性が高い", "en": "it is likely that"},
       {"phrase": "tilbringe tid sammen", "ja": "一緒に時間を過ごす", "en": "spend time together"}
     ],
     "grammar": [
@@ -95,7 +95,7 @@
     "sourceWords": ["dekke av", "lærlingplass", "IT-utvikling"],
     "expressions": [
       {"phrase": "dekke av", "ja": "〜を網羅する / 押さえる", "en": "cover / include"},
-      {"phrase": "lærlingplassene", "ja": "見習いポジション", "en": "the apprenticeship positions"}
+      {"phrase": "lærlingplass", "formInText": "lærlingplassene", "ja": "見習いポジション", "en": "apprenticeship position"}
     ],
     "grammar": [
       {
@@ -116,8 +116,8 @@
     "translationEn": "The road was covered in snow, and the land around the house looked completely white. Gradually, the sun began to warm the air, and after a while I could see the tracks in the snow starting to melt. It feels good to live in Norway when you can experience nature like this.",
     "sourceWords": ["dekke av", "landområde", "gradvis", "etter hvert"],
     "expressions": [
-      {"phrase": "dekket av snø", "ja": "雪に覆われている", "en": "covered in snow"},
-      {"phrase": "Gradvis", "ja": "少しずつ / 徐々に", "en": "gradually"}
+      {"phrase": "være dekket av", "formInText": "dekket av snø", "ja": "〜に覆われている", "en": "be covered with / by"},
+      {"phrase": "gradvis", "formInText": "Gradvis", "ja": "少しずつ / 徐々に", "en": "gradually"}
     ],
     "grammar": [
       {

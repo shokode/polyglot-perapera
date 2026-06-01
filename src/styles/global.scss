@@ -86,6 +86,36 @@ textarea {
   justify-self: end;
 }
 
+.top-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 14px;
+  justify-self: end;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.nav-link:hover {
+  border-color: rgba(130, 199, 255, 0.34);
+  background: rgba(82, 175, 255, 0.1);
+  color: var(--text);
+}
+
 .filters-card {
   gap: 16px;
   margin-top: 28px;
@@ -307,6 +337,10 @@ textarea {
   border-left-color: rgba(245, 158, 11, 0.72);
 }
 
+.review-expression-card[data-status="review"] {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .expression-card[data-status="learned"] {
   border-left-color: rgba(52, 211, 153, 0.54);
   background: rgba(52, 211, 153, 0.055);
@@ -332,6 +366,16 @@ textarea {
   color: var(--text-muted);
   line-height: 1.6;
   font-size: 0.95rem;
+}
+
+.expression-text-form {
+  color: #cbd5e1;
+}
+
+.expression-text-form span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .grammar-card-item strong {
@@ -526,5 +570,9 @@ h3 {
   }
   .language-switcher {
     justify-self: start;
+  }
+  .top-actions {
+    justify-self: start;
+    flex-wrap: wrap;
   }
 }
