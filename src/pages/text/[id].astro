@@ -37,31 +37,77 @@ function getTextForm(expression: { phrase: string; formInText?: string }) {
   return expression.formInText || expression.phrase;
 }
 
-function renderHighlightedText(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>) {
-  const sorted = [...expressionsArray].sort((a, b) => getTextForm(b).length - getTextForm(a).length);
-  return value.split('\n\n').map((paragraph) => {
-    let escaped = escapeHtml(paragraph);
-    sorted.forEach((expression) => {
-      const safeTextForm = escapeHtml(getTextForm(expression));
-      escaped = escaped.replace(new RegExp(escapeRegExp(safeTextForm), 'g'), `<span class="target-highlight">${safeTextForm}</span>`);
-    });
-    return `<p>${escaped}</p>`;
+const learningFocusExpressions = text?.expressions.map((item) => item.phrase) ?? [];
+const learningFocusGrammar = text?.grammar.map((item) => item.title) ?? [];
+const explanationLanguageOrder: UILang[] = ['ja', 'en', 'no'];
+
+function getExpressionRanges(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>) {
+  return expressionsArray.flatMap((expression) => {
+    const textForm = getTextForm(expression);
+    const ranges: Array<{ start: number; end: number }> = [];
+    let start = value.indexOf(textForm);
+    while (start !== -1) {
+      ranges.push({ start, end: start + textForm.length });
+      start = value.indexOf(textForm, start + textForm.length);
+    }
+    return ranges;
+  });
+}
+
+function isExpressionIndex(index: number, ranges: Array<{ start: number; end: number }>) {
+  return ranges.some((range) => index >= range.start && index < range.end);
+}
+
+function renderCharacter(value: string, index: number, ranges: Array<{ start: number; end: number }>) {
+  const classes = ['target-char'];
+  if (isExpressionIndex(index, ranges)) {
+    classes.push('target-highlight');
+  }
+  return `<span class="${classes.join(' ')}" data-char-index="${index}">${escapeHtml(value)}</span>`;
+}
+
+function renderCharacters(value: string, startIndex: number, ranges: Array<{ start: number; end: number }>) {
+  return Array.from(value).map((char, offset) => renderCharacter(char, startIndex + offset, ranges)).join('');
+}
+
+function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string }>, ranges: Array<{ start: number; end: number }>) {
+  let index = 0;
+  return `<p>${rubyText.map((part) => {
+    const rendered = renderCharacters(part.text, index, ranges);
+    index += Array.from(part.text).length;
+    return part.reading
+      ? `<ruby class="target-ruby">${rendered}<rt>${escapeHtml(part.reading)}</rt></ruby>`
+      : rendered;
+  }).join('')}</p>`;
+}
+
+function renderProgressParagraph(paragraph: string, paragraphStartIndex: number, ranges: Array<{ start: number; end: number }>) {
+  let index = paragraphStartIndex;
+  return paragraph.split(/(\s+)/).map((part) => {
+    const startIndex = index;
+    index += part.length;
+    if (!part) {
+      return '';
+    }
+    if (/^\s+$/.test(part)) {
+      return `<span class="target-space">${renderCharacters(part, startIndex, ranges)}</span>`;
+    }
+    return `<span class="target-word">${renderCharacters(part, startIndex, ranges)}</span>`;
   }).join('');
 }
 
-const learningFocusExpressions = text?.expressions.map((item) => item.phrase) ?? [];
-const learningFocusGrammar = text?.grammar.map((item) => item.title) ?? [];
-const learningFocusSummaryExpressions = learningFocusExpressions.join(' / ');
-const learningFocusSummaryGrammar = learningFocusGrammar.join(' / ');
-const explanationLanguageOrder: UILang[] = ['ja', 'en', 'no'];
+function renderProgressText(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>, rubyText?: Array<{ text: string; reading?: string }>) {
+  const ranges = getExpressionRanges(value, expressionsArray);
+  if (rubyText) {
+    return renderRubyProgressText(rubyText, ranges);
+  }
 
-function renderRubyText(rubyText: Array<{ text: string; reading?: string }>) {
-  return `<p>${rubyText.map((part) => {
-    const safeText = escapeHtml(part.text);
-    return part.reading
-      ? `<ruby>${safeText}<rt>${escapeHtml(part.reading)}</rt></ruby>`
-      : safeText;
-  }).join('')}</p>`;
+  let index = 0;
+  return value.split('\n\n').map((paragraph) => {
+    const rendered = renderProgressParagraph(paragraph, index, ranges);
+    index += paragraph.length + 2;
+    return `<p>${rendered}</p>`;
+  }).join('');
 }
 
 function getTranslationValue(item: Record<string, unknown>, lang: UILang) {
@@ -99,9 +145,11 @@ function getOrderedExplanations(item: Record<string, unknown>, uiLang: UILang) {
 // TODO: Future Japanese typing mode can support exact kanji mode and kana reading mode.
 // For now, typing comparison intentionally uses the plain text field only.
 const highlightedTextHtml = text
-  ? text.language === 'ja' && 'rubyText' in text && Array.isArray(text.rubyText)
-    ? renderRubyText(text.rubyText)
-    : renderHighlightedText(text.text, text.expressions)
+  ? renderProgressText(
+    text.text,
+    text.expressions,
+    text.language === 'ja' && 'rubyText' in text && Array.isArray(text.rubyText) ? text.rubyText : undefined
+  )
   : '';
 const translationsToShow = text ? getTranslationsToShow(text) : [];
 
@@ -307,6 +355,7 @@ const clientScript = `
     const wpmTitle = document.getElementById('wpm-title');
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
+    const targetCharacters = document.querySelectorAll('[data-char-index]');
 
     function updateExpressionStatusButtons() {
       const labels = getUiText(uiLanguageSelect.value);
@@ -412,6 +461,21 @@ const clientScript = `
       renderLocalizedExplanations(lang);
     }
 
+    function updateTargetTextProgress(typed) {
+      targetCharacters.forEach((char) => {
+        const index = Number(char.dataset.charIndex);
+        char.classList.remove('correct', 'incorrect', 'current');
+        if (!Number.isFinite(index)) {
+          return;
+        }
+        if (index < typed.length) {
+          char.classList.add(typed[index] === text.text[index] ? 'correct' : 'incorrect');
+        } else if (index === typed.length && typed.length < text.text.length) {
+          char.classList.add('current');
+        }
+      });
+    }
+
     function updateMetrics() {
       const target = text.text;
       const typed = input.value;
@@ -433,6 +497,7 @@ const clientScript = `
       progressValue.textContent = progress + '%';
       accuracyValue.textContent = accuracy + '%';
       wpmValue.textContent = '' + wpm;
+      updateTargetTextProgress(typed);
       if (typed === target) {
         completionPanel.hidden = false;
         expressionsPanel.hidden = false;
@@ -475,6 +540,7 @@ const clientScript = `
     renderUiText(savedUiLanguage);
     updateExpressionStatusButtons();
     updateExpressionPracticeLabels();
+    updateTargetTextProgress(input.value);
 
     uiLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value;
@@ -527,10 +593,6 @@ if (!text) {
 
       <section class="learning-focus-card">
         <h3>Learning Focus</h3>
-        <div class="learning-focus-summary">
-          <p><strong>Expressions:</strong> {learningFocusSummaryExpressions}</p>
-          <p><strong>Grammar:</strong> {learningFocusSummaryGrammar}</p>
-        </div>
         <div class="learning-focus-row">
           <div>
             <strong>Expressions</strong>
