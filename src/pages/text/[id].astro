@@ -2,12 +2,14 @@
 import texts from '../../data/texts.json' assert { type: 'json' };
 import '../../styles/global.scss';
 import {
+  levels as levelKeys,
   uiLanguages,
   uiLanguageNames,
   uiText,
   categoryLabels,
   levelLabels,
   languageNames,
+  normalizeLevelKey,
   type UILang,
 } from '../../i18n/ui';
 
@@ -61,6 +63,14 @@ const clientScript = `
   const categoryLabels = ${JSON.stringify(categoryLabels)};
   const levelLabels = ${JSON.stringify(levelLabels)};
   const languageNames = ${JSON.stringify(languageNames)};
+  const levelKeys = ${JSON.stringify(levelKeys)};
+  const legacyLevelMap = {
+    basic: 'a1',
+    useful: 'a2',
+    daily: 'b1',
+    advanced: 'b2',
+    natural: 'natural',
+  };
   const STORAGE_KEY = 'typingSiteUiLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const TEXT_PROGRESS_KEY = 'typingProgress';
@@ -116,6 +126,13 @@ const clientScript = `
 
   function getUiText(lang) {
     return ui[lang] || ui.en;
+  }
+
+  function normalizeLevelKey(level) {
+    if (legacyLevelMap[level]) {
+      return legacyLevelMap[level];
+    }
+    return levelKeys.includes(level) ? level : 'natural';
   }
 
   function getExpressionStatus(phrase) {
@@ -288,7 +305,7 @@ const clientScript = `
       });
       languageChip.textContent = languageNames[text.language]?.[lang] || text.language;
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
-      levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[text.level]?.[lang] || text.level);
+      levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
       updateExpressionPracticeLabels();
     }
@@ -385,7 +402,7 @@ if (!text) {
           <div class="meta-strip">
             <span class="meta-chip" id="language-chip">{languageNames[text.language as keyof typeof languageNames][defaultUiLang]}</span>
             <span class="meta-chip" id="category-chip">{categoryLabels[text.category as keyof typeof categoryLabels][defaultUiLang]}</span>
-            <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[text.level as keyof typeof levelLabels][defaultUiLang]}</span>
+            <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[normalizeLevelKey(text.level)][defaultUiLang]}</span>
           </div>
         </div>
         <div class="top-actions">

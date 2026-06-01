@@ -30,8 +30,22 @@ export const categories: CategoryKey[] = [
   'norway-life',
 ];
 
-export type LevelKey = 'basic' | 'useful' | 'daily' | 'natural' | 'advanced';
-export const levels: LevelKey[] = ['basic', 'useful', 'daily', 'natural', 'advanced'];
+export type LevelKey = 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'natural';
+export type LegacyLevelKey = 'basic' | 'useful' | 'daily' | 'advanced';
+export const levels: LevelKey[] = ['a1', 'a2', 'b1', 'b2', 'c1', 'natural'];
+
+export function normalizeLevelKey(level: string): LevelKey {
+  const legacyLevels: Record<LegacyLevelKey, LevelKey> = {
+    basic: 'a1',
+    useful: 'a2',
+    daily: 'b1',
+    advanced: 'b2',
+  };
+  if (level in legacyLevels) {
+    return legacyLevels[level as LegacyLevelKey];
+  }
+  return levels.includes(level as LevelKey) ? (level as LevelKey) : 'natural';
+}
 
 export type TextLanguage = UILang;
 
@@ -54,11 +68,12 @@ export const categoryLabels: Record<CategoryKey, Record<UILang, string>> = {
 };
 
 export const levelLabels: Record<LevelKey, Record<UILang, string>> = {
-  basic: { no: 'Basis', en: 'Basic', ja: '基礎' },
-  useful: { no: 'Nyttig', en: 'Useful', ja: '役に立つ' },
-  daily: { no: 'Daglig', en: 'Daily', ja: '日常' },
-  natural: { no: 'Naturlig', en: 'Natural', ja: '自然な' },
-  advanced: { no: 'Avansert', en: 'Advanced', ja: '上級' },
+  a1: { no: 'A1 · Beginner', en: 'A1 · Beginner', ja: 'A1 · Beginner' },
+  a2: { no: 'A2 · Elementary', en: 'A2 · Elementary', ja: 'A2 · Elementary' },
+  b1: { no: 'B1 · Intermediate', en: 'B1 · Intermediate', ja: 'B1 · Intermediate' },
+  b2: { no: 'B2 · Upper Intermediate', en: 'B2 · Upper Intermediate', ja: 'B2 · Upper Intermediate' },
+  c1: { no: 'C1 · Advanced', en: 'C1 · Advanced', ja: 'C1 · Advanced' },
+  natural: { no: 'Natural', en: 'Natural', ja: 'Natural' },
 };
 
 export type UILabels = {
@@ -108,7 +123,10 @@ export type UILabels = {
   sortLeastPracticed: string;
   sortRecentlyPracticed: string;
   sortAlphabetical: string;
+  sortNewestDefault: string;
   filterAll: string;
+  lastPracticedPrefix: string;
+  lastPracticedToday: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -159,7 +177,10 @@ export const uiText: Record<UILang, UILabels> = {
     sortLeastPracticed: 'Minst øvd først',
     sortRecentlyPracticed: 'Sist øvd',
     sortAlphabetical: 'A–Å',
+    sortNewestDefault: 'Nyeste / standard',
     filterAll: 'Alle',
+    lastPracticedPrefix: 'Sist: ',
+    lastPracticedToday: 'i dag',
   },
   en: {
     title: 'Read & Type',
@@ -208,7 +229,10 @@ export const uiText: Record<UILang, UILabels> = {
     sortLeastPracticed: 'Least practiced first',
     sortRecentlyPracticed: 'Recently practiced',
     sortAlphabetical: 'A–Z',
+    sortNewestDefault: 'Newest / default',
     filterAll: 'All',
+    lastPracticedPrefix: 'Last: ',
+    lastPracticedToday: 'today',
   },
   ja: {
     title: '読むと打つ',
@@ -257,6 +281,9 @@ export const uiText: Record<UILang, UILabels> = {
     sortLeastPracticed: '練習回数が少ない順',
     sortRecentlyPracticed: '最近練習した順',
     sortAlphabetical: 'A–Z',
+    sortNewestDefault: '新しい順 / 標準',
     filterAll: 'すべて',
+    lastPracticedPrefix: '最後: ',
+    lastPracticedToday: '今日',
   },
 };
