@@ -102,6 +102,13 @@ export type UILabels = {
   expressionPracticeSuffix: string;
   expressionNotPracticed: string;
   highRepetition: string;
+  sortLabel: string;
+  filterLabel: string;
+  sortMostPracticed: string;
+  sortLeastPracticed: string;
+  sortRecentlyPracticed: string;
+  sortAlphabetical: string;
+  filterAll: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -146,6 +153,13 @@ export const uiText: Record<UILang, UILabels> = {
     expressionPracticeSuffix: ' ganger',
     expressionNotPracticed: 'Ikke øvd',
     highRepetition: 'Mye repetisjon',
+    sortLabel: 'Sorter',
+    filterLabel: 'Status',
+    sortMostPracticed: 'Mest øvd først',
+    sortLeastPracticed: 'Minst øvd først',
+    sortRecentlyPracticed: 'Sist øvd',
+    sortAlphabetical: 'A–Å',
+    filterAll: 'Alle',
   },
   en: {
     title: 'Read & Type',
@@ -188,6 +202,13 @@ export const uiText: Record<UILang, UILabels> = {
     expressionPracticeSuffix: ' times',
     expressionNotPracticed: 'Not practiced',
     highRepetition: 'High repetition',
+    sortLabel: 'Sort',
+    filterLabel: 'Status',
+    sortMostPracticed: 'Most practiced first',
+    sortLeastPracticed: 'Least practiced first',
+    sortRecentlyPracticed: 'Recently practiced',
+    sortAlphabetical: 'A–Z',
+    filterAll: 'All',
   },
   ja: {
     title: '読むと打つ',
@@ -230,5 +251,12 @@ export const uiText: Record<UILang, UILabels> = {
     expressionPracticeSuffix: '回練習',
     expressionNotPracticed: '未練習',
     highRepetition: '何度も復習中',
+    sortLabel: '並び替え',
+    filterLabel: 'ステータス',
+    sortMostPracticed: '練習回数が多い順',
+    sortLeastPracticed: '練習回数が少ない順',
+    sortRecentlyPracticed: '最近練習した順',
+    sortAlphabetical: 'A–Z',
+    filterAll: 'すべて',
   },
 };

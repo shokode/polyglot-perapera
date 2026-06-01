@@ -95,7 +95,10 @@ const clientScript = `
   function getExpressionPractice(phrase) {
     const entry = loadExpressionProgress()[phrase] || {};
     const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
-    return practiceCount;
+    return {
+      practiceCount,
+      lastPracticedAt: typeof entry.lastPracticedAt === 'string' ? entry.lastPracticedAt : '',
+    };
   }
 
   function getPracticeLevel(count) {
@@ -132,6 +135,8 @@ const clientScript = `
     const reviewTitle = document.getElementById('review-title');
     const reviewGrid = document.getElementById('review-grid');
     const emptyState = document.getElementById('review-empty-state');
+    const sortSelect = document.getElementById('review-sort');
+    const filterSelect = document.getElementById('review-filter');
 
     function renderUiText(lang) {
       const labels = getUiText(lang);
@@ -157,12 +162,29 @@ const clientScript = `
 
     function renderReviewItems() {
       const labels = getUiText(uiLanguageSelect.value);
-      const reviewItems = expressions.filter((expression) => getExpressionStatus(expression.phrase) === 'review');
+      const selectedFilter = filterSelect.value;
+      const selectedSort = sortSelect.value;
+      const reviewItems = expressions
+        .filter((expression) => selectedFilter === 'all' || getExpressionStatus(expression.phrase) === selectedFilter)
+        .sort((a, b) => {
+          const aPractice = getExpressionPractice(a.phrase);
+          const bPractice = getExpressionPractice(b.phrase);
+          if (selectedSort === 'least-practiced') {
+            return aPractice.practiceCount - bPractice.practiceCount || a.phrase.localeCompare(b.phrase);
+          }
+          if (selectedSort === 'recently-practiced') {
+            return Date.parse(bPractice.lastPracticedAt || '1970-01-01') - Date.parse(aPractice.lastPracticedAt || '1970-01-01') || a.phrase.localeCompare(b.phrase);
+          }
+          if (selectedSort === 'az') {
+            return a.phrase.localeCompare(b.phrase);
+          }
+          return bPractice.practiceCount - aPractice.practiceCount || a.phrase.localeCompare(b.phrase);
+        });
 
       reviewGrid.innerHTML = reviewItems.map((expression) => {
         const status = getExpressionStatus(expression.phrase);
         const label = getExpressionStatusLabel(status, labels);
-        const practiceCount = getExpressionPractice(expression.phrase);
+        const { practiceCount } = getExpressionPractice(expression.phrase);
         const isHighRepetition = status === 'review' && practiceCount >= 10;
         return ''
           + '<article class="expression-card review-expression-card" data-expression-card="' + escapeHtml(expression.phrase) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
@@ -205,6 +227,9 @@ const clientScript = `
     const saved = getSavedLanguage();
     renderUiText(saved);
 
+    sortSelect.addEventListener('change', renderReviewItems);
+    filterSelect.addEventListener('change', renderReviewItems);
+
     uiLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value;
       safeWriteStorage(STORAGE_KEY, lang);
@@ -242,6 +267,26 @@ const clientScript = `
       </section>
 
       <section class="expressions-card">
+        <div class="review-controls">
+          <div class="filter-group">
+            <label for="review-filter" data-i18n="filterLabel">{uiText[defaultUiLang].filterLabel}</label>
+            <select id="review-filter">
+              <option value="review" data-i18n="expressionStatusReview">{uiText[defaultUiLang].expressionStatusReview}</option>
+              <option value="learned" data-i18n="expressionStatusLearned">{uiText[defaultUiLang].expressionStatusLearned}</option>
+              <option value="new" data-i18n="expressionStatusNew">{uiText[defaultUiLang].expressionStatusNew}</option>
+              <option value="all" data-i18n="filterAll">{uiText[defaultUiLang].filterAll}</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="review-sort" data-i18n="sortLabel">{uiText[defaultUiLang].sortLabel}</label>
+            <select id="review-sort">
+              <option value="most-practiced" data-i18n="sortMostPracticed">{uiText[defaultUiLang].sortMostPracticed}</option>
+              <option value="least-practiced" data-i18n="sortLeastPracticed">{uiText[defaultUiLang].sortLeastPracticed}</option>
+              <option value="recently-practiced" data-i18n="sortRecentlyPracticed">{uiText[defaultUiLang].sortRecentlyPracticed}</option>
+              <option value="az" data-i18n="sortAlphabetical">{uiText[defaultUiLang].sortAlphabetical}</option>
+            </select>
+          </div>
+        </div>
         <div id="review-grid" class="expressions-grid"></div>
         <p id="review-empty-state" class="empty-state" data-i18n="noReviewItems">{uiText[defaultUiLang].noReviewItems}</p>
       </section>
