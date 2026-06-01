@@ -63,6 +63,8 @@ const clientScript = `
   const languageNames = ${JSON.stringify(languageNames)};
   const STORAGE_KEY = 'typingSiteUiLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const TEXT_PROGRESS_KEY = 'typingProgress';
+  const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
 
   function safeReadStorage(key) {
@@ -94,6 +96,19 @@ const clientScript = `
     safeWriteStorage(EXPRESSION_STATUS_KEY, JSON.stringify(data));
   }
 
+  function loadProgress(key) {
+    try {
+      const parsed = JSON.parse(safeReadStorage(key) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveProgress(key, data) {
+    safeWriteStorage(key, JSON.stringify(data));
+  }
+
   function getSavedLanguage() {
     const stored = safeReadStorage(STORAGE_KEY);
     return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
@@ -121,6 +136,35 @@ const clientScript = `
       return labels.expressionStatusLearned;
     }
     return labels.expressionStatusNew;
+  }
+
+  function getExpressionPractice(phrase) {
+    const entry = loadProgress(EXPRESSION_PROGRESS_KEY)[phrase] || {};
+    const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
+    return {
+      practiceCount,
+      lastPracticedAt: typeof entry.lastPracticedAt === 'string' ? entry.lastPracticedAt : null,
+    };
+  }
+
+  function getPracticeLevel(count) {
+    if (count >= 5) {
+      return '3';
+    }
+    if (count >= 3) {
+      return '2';
+    }
+    if (count >= 1) {
+      return '1';
+    }
+    return '0';
+  }
+
+  function getPracticeLabel(count, labels) {
+    if (count <= 0) {
+      return labels.expressionNotPracticed;
+    }
+    return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -166,6 +210,50 @@ const clientScript = `
       });
     }
 
+    function updateExpressionPracticeLabels() {
+      const labels = getUiText(uiLanguageSelect.value);
+      expressionCards.forEach((card) => {
+        const phrase = card.dataset.expressionCard;
+        const status = getExpressionStatus(phrase);
+        const { practiceCount } = getExpressionPractice(phrase);
+        const practiceLabel = card.querySelector('[data-expression-practice]');
+        const highRepetitionLabel = card.querySelector('[data-high-repetition-label]');
+        card.dataset.practiceLevel = getPracticeLevel(practiceCount);
+        card.dataset.highRepetition = status === 'review' && practiceCount >= 10 ? 'true' : 'false';
+        if (practiceLabel) {
+          practiceLabel.textContent = getPracticeLabel(practiceCount, labels);
+        }
+        if (highRepetitionLabel) {
+          highRepetitionLabel.textContent = labels.highRepetition;
+        }
+      });
+    }
+
+    function recordCompletion(accuracy, wpm) {
+      const now = new Date().toISOString();
+      const textProgress = loadProgress(TEXT_PROGRESS_KEY);
+      const existingTextProgress = textProgress[text.id] || {};
+      textProgress[text.id] = {
+        completedCount: (existingTextProgress.completedCount || 0) + 1,
+        bestAccuracy: Math.max(existingTextProgress.bestAccuracy || 0, accuracy),
+        bestWpm: Math.max(existingTextProgress.bestWpm || 0, wpm),
+        lastPracticedAt: now,
+      };
+      saveProgress(TEXT_PROGRESS_KEY, textProgress);
+
+      const expressionProgress = loadProgress(EXPRESSION_PROGRESS_KEY);
+      const phrases = Array.from(new Set(text.expressions.map((expression) => expression.phrase)));
+      phrases.forEach((phrase) => {
+        const existingExpressionProgress = expressionProgress[phrase] || {};
+        expressionProgress[phrase] = {
+          practiceCount: (existingExpressionProgress.practiceCount || 0) + 1,
+          lastPracticedAt: now,
+        };
+      });
+      saveProgress(EXPRESSION_PROGRESS_KEY, expressionProgress);
+      updateExpressionPracticeLabels();
+    }
+
     function cycleExpressionStatus(phrase) {
       const all = loadExpressionStatuses();
       all[phrase] = getNextExpressionStatus(getExpressionStatus(phrase));
@@ -202,6 +290,7 @@ const clientScript = `
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[text.level]?.[lang] || text.level);
       updateExpressionStatusButtons();
+      updateExpressionPracticeLabels();
     }
 
     function updateMetrics() {
@@ -229,10 +318,15 @@ const clientScript = `
         completionPanel.hidden = false;
         expressionsPanel.hidden = false;
         grammarPanel.hidden = false;
+        if (!hasRecordedCompletion) {
+          hasRecordedCompletion = true;
+          recordCompletion(accuracy, wpm);
+        }
       }
     }
 
     let startTime = null;
+    let hasRecordedCompletion = false;
 
     input.addEventListener('input', (event) => {
       if (!startTime) {
@@ -261,6 +355,7 @@ const clientScript = `
     const saved = getSavedLanguage();
     renderUiText(saved);
     updateExpressionStatusButtons();
+    updateExpressionPracticeLabels();
 
     uiLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value;
@@ -374,6 +469,7 @@ if (!text) {
               {item.formInText && item.formInText !== item.phrase && (
                 <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>
               )}
+              <p class="expression-practice"><span data-expression-practice>{uiText[defaultUiLang].expressionNotPracticed}</span><span class="high-repetition-label" data-high-repetition-label>{uiText[defaultUiLang].highRepetition}</span></p>
               <p>{item.ja}</p>
               <p>{item.en}</p>
             </article>

@@ -13,11 +13,11 @@ const expressions = Array.from(
   texts.reduce((map, item) => {
     item.expressions.forEach((expression) => {
       if (!map.has(expression.phrase)) {
-        map.set(expression.phrase, expression);
+        map.set(expression.phrase, { ...expression, textId: item.id });
       }
     });
     return map;
-  }, new Map<string, { phrase: string; formInText?: string; ja: string; en: string }>())
+  }, new Map<string, { phrase: string; formInText?: string; ja: string; en: string; textId: string }>())
   .values()
 );
 
@@ -27,6 +27,7 @@ const clientScript = `
   const uiLanguages = ${JSON.stringify(uiLanguages)};
   const STORAGE_KEY = 'typingSiteUiLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
 
   function safeReadStorage(key) {
@@ -58,6 +59,15 @@ const clientScript = `
     safeWriteStorage(EXPRESSION_STATUS_KEY, JSON.stringify(data));
   }
 
+  function loadExpressionProgress() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_PROGRESS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
   function getSavedLanguage() {
     const stored = safeReadStorage(STORAGE_KEY);
     return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
@@ -72,11 +82,6 @@ const clientScript = `
     return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
   }
 
-  function getNextExpressionStatus(status) {
-    const currentIndex = EXPRESSION_STATUSES.indexOf(status);
-    return EXPRESSION_STATUSES[(currentIndex + 1) % EXPRESSION_STATUSES.length];
-  }
-
   function getExpressionStatusLabel(status, labels) {
     if (status === 'review') {
       return labels.expressionStatusReview;
@@ -85,6 +90,32 @@ const clientScript = `
       return labels.expressionStatusLearned;
     }
     return labels.expressionStatusNew;
+  }
+
+  function getExpressionPractice(phrase) {
+    const entry = loadExpressionProgress()[phrase] || {};
+    const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
+    return practiceCount;
+  }
+
+  function getPracticeLevel(count) {
+    if (count >= 5) {
+      return '3';
+    }
+    if (count >= 3) {
+      return '2';
+    }
+    if (count >= 1) {
+      return '1';
+    }
+    return '0';
+  }
+
+  function getPracticeLabel(count, labels) {
+    if (count <= 0) {
+      return labels.expressionNotPracticed;
+    }
+    return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
   }
 
   function escapeHtml(value) {
@@ -117,9 +148,9 @@ const clientScript = `
       renderReviewItems();
     }
 
-    function cycleExpressionStatus(phrase) {
+    function setExpressionStatus(phrase, status) {
       const all = loadExpressionStatuses();
-      all[phrase] = getNextExpressionStatus(getExpressionStatus(phrase));
+      all[phrase] = status;
       saveExpressionStatuses(all);
       renderReviewItems();
     }
@@ -131,15 +162,22 @@ const clientScript = `
       reviewGrid.innerHTML = reviewItems.map((expression) => {
         const status = getExpressionStatus(expression.phrase);
         const label = getExpressionStatusLabel(status, labels);
+        const practiceCount = getExpressionPractice(expression.phrase);
+        const isHighRepetition = status === 'review' && practiceCount >= 10;
         return ''
-          + '<article class="expression-card review-expression-card" data-expression-card="' + escapeHtml(expression.phrase) + '" data-status="' + status + '" title="' + escapeHtml(labels.expressionStatusAction) + '">'
+          + '<article class="expression-card review-expression-card" data-expression-card="' + escapeHtml(expression.phrase) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
           + '<div class="expression-header">'
           + '<strong>' + escapeHtml(expression.phrase) + '</strong>'
-          + '<button class="status-button" type="button" data-expression-status="' + escapeHtml(expression.phrase) + '" data-status="' + status + '" title="' + escapeHtml(labels.expressionStatusAction) + '" aria-label="' + escapeHtml(expression.phrase + ': ' + label + '. ' + labels.expressionStatusAction) + '">' + escapeHtml(label) + '</button>'
+          + '<span class="status-button status-pill" data-status="' + status + '">' + escapeHtml(label) + '</span>'
           + '</div>'
           + (expression.formInText && expression.formInText !== expression.phrase ? '<p class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</p>' : '')
+          + '<p class="expression-practice"><span>' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span><span class="high-repetition-label">' + escapeHtml(labels.highRepetition) + '</span></p>'
           + '<p>' + escapeHtml(expression.ja) + '</p>'
           + '<p>' + escapeHtml(expression.en) + '</p>'
+          + '<div class="review-card-actions">'
+          + '<button class="secondary-button" type="button" data-review-action="keep" data-expression-phrase="' + escapeHtml(expression.phrase) + '">' + escapeHtml(labels.keepReviewing) + '</button>'
+          + '<button class="learned-button" type="button" data-review-action="learned" data-expression-phrase="' + escapeHtml(expression.phrase) + '">' + escapeHtml(labels.markAsLearned) + '</button>'
+          + '</div>'
           + '</article>';
       }).join('');
 
@@ -147,18 +185,15 @@ const clientScript = `
 
       reviewGrid.querySelectorAll('[data-expression-card]').forEach((card) => {
         card.addEventListener('click', () => {
-          const selectedText = window.getSelection()?.toString();
-          if (selectedText) {
-            return;
-          }
-          cycleExpressionStatus(card.dataset.expressionCard);
+          window.location.href = '/text/' + card.dataset.textId;
         });
       });
 
-      reviewGrid.querySelectorAll('[data-expression-status]').forEach((button) => {
+      reviewGrid.querySelectorAll('[data-review-action]').forEach((button) => {
         button.addEventListener('click', (event) => {
           event.stopPropagation();
-          cycleExpressionStatus(button.dataset.expressionStatus);
+          const nextStatus = button.dataset.reviewAction === 'learned' ? 'learned' : 'review';
+          setExpressionStatus(button.dataset.expressionPhrase, nextStatus);
         });
       });
     }

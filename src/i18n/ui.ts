@@ -96,6 +96,12 @@ export type UILabels = {
   expressionTextForm: string;
   reviewPageTitle: string;
   noReviewItems: string;
+  keepReviewing: string;
+  markAsLearned: string;
+  expressionPracticePrefix: string;
+  expressionPracticeSuffix: string;
+  expressionNotPracticed: string;
+  highRepetition: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -134,6 +140,12 @@ export const uiText: Record<UILang, UILabels> = {
     expressionTextForm: 'Form i teksten',
     reviewPageTitle: 'Repeter',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
+    keepReviewing: 'Fortsett å repetere',
+    markAsLearned: 'Marker som lært',
+    expressionPracticePrefix: 'Øvd ',
+    expressionPracticeSuffix: ' ganger',
+    expressionNotPracticed: 'Ikke øvd',
+    highRepetition: 'Mye repetisjon',
   },
   en: {
     title: 'Read & Type',
@@ -170,6 +182,12 @@ export const uiText: Record<UILang, UILabels> = {
     expressionTextForm: 'Text form',
     reviewPageTitle: 'Review',
     noReviewItems: 'No review items yet',
+    keepReviewing: 'Keep reviewing',
+    markAsLearned: 'Mark as learned',
+    expressionPracticePrefix: 'Practiced ',
+    expressionPracticeSuffix: ' times',
+    expressionNotPracticed: 'Not practiced',
+    highRepetition: 'High repetition',
   },
   ja: {
     title: '読むと打つ',
@@ -206,5 +224,11 @@ export const uiText: Record<UILang, UILabels> = {
     expressionTextForm: '本文の形',
     reviewPageTitle: '復習',
     noReviewItems: '復習する表現はまだありません',
+    keepReviewing: '復習を続ける',
+    markAsLearned: '覚えた',
+    expressionPracticePrefix: '',
+    expressionPracticeSuffix: '回練習',
+    expressionNotPracticed: '未練習',
+    highRepetition: 'たくさん復習',
   },
 };
