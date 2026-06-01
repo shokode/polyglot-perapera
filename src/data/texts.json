@@ -12,7 +12,7 @@
       {
         "phrase": "pleie å",
         "formInText": "pleide å",
-        "ja": "以前はよく〜していた",
+        "ja": "よく〜する / 〜する習慣がある",
         "en": "used to"
       },
       {
@@ -83,38 +83,61 @@
     "language": "no",
     "category": "daily-life",
     "level": "b1",
-    "title": "Gradvis forbedring",
-    "text": "Jeg begynte å øve på norsk hver dag, og gradvis ble det lettere. Etter hvert kunne jeg snakke mer flytende uten å nøle. Jeg bestemte meg for å ta det med ro og ikke stresse med å lære alt på en gang. Å øve litt hver dag føltes mer naturlig enn å prøve å gjøre alt på en gang.",
-    "translationJa": "毎日ノルウェー語を練習し始めると、少しずつ楽になっていきました。しばらくすると、ためらわずに前よりなめらかに話せるようになりました。一度に全部覚えようとして焦るのではなく、落ち着いて進めることにしました。毎日少しずつ練習する方が、まとめて全部やろうとするより自然に感じました。",
-    "translationEn": "I started practicing Norwegian every day, and it gradually became easier. After a while, I could speak more fluently without hesitating. I decided to take it easy and not rush to learn everything at once. Practicing a little each day felt more natural than trying to do it all at once.",
+    "title": "Podkast på vei til jobb",
+    "text": "På vei til jobb hører jeg ofte på korte podkaster på norsk. Jeg får ikke med meg alt, men jeg prøver å legge merke til ord jeg hører flere ganger. Når jeg kommer hjem, skriver jeg ned noen setninger og sjekker betydningen. På den måten blir lyttingen en rolig del av hverdagen.",
+    "translationJa": "仕事へ向かう途中で、短いノルウェー語のポッドキャストをよく聞いています。全部を聞き取れるわけではありませんが、何度も出てくる単語に気づくようにしています。家に帰ったら、いくつかの文を書き留めて意味を確認します。そうすることで、リスニングが日常の中の落ち着いた習慣になっています。",
+    "translationEn": "On my way to work, I often listen to short podcasts in Norwegian. I do not catch everything, but I try to notice words I hear several times. When I get home, I write down a few sentences and check their meaning. In this way, listening becomes a calm part of everyday life.",
     "sourceWords": [
-      "gradvis",
-      "etter hvert",
-      "ta det med ro"
+      "få med seg",
+      "legge merke til",
+      "skrive ned"
     ],
     "expressions": [
       {
-        "phrase": "gradvis",
-        "ja": "徐々に",
-        "en": "gradually"
+        "phrase": "på vei til",
+        "formInText": "På vei til",
+        "ja": "〜へ向かう途中で",
+        "en": "on the way to"
       },
       {
-        "phrase": "etter hvert",
-        "formInText": "Etter hvert",
-        "ja": "しばらくすると / そのうち",
-        "en": "after a while / over time"
+        "phrase": "få med seg",
+        "formInText": "får ikke med meg",
+        "ja": "聞き取る / 理解する",
+        "en": "catch / take in"
       },
       {
-        "phrase": "ta det med ro",
-        "ja": "焦らずに進める",
-        "en": "take it easy"
+        "phrase": "legge merke til",
+        "ja": "〜に気づく",
+        "en": "notice"
+      },
+      {
+        "phrase": "skrive ned",
+        "formInText": "skriver jeg ned",
+        "ja": "書き留める",
+        "en": "write down"
+      },
+      {
+        "phrase": "på den måten",
+        "formInText": "På den måten",
+        "ja": "そうすることで / そのようにして",
+        "en": "in this way"
+      },
+      {
+        "phrase": "en del av hverdagen",
+        "ja": "日常の一部",
+        "en": "a part of everyday life"
       }
     ],
     "grammar": [
       {
-        "title": "Etter hvert",
-        "descriptionJa": "「etter hvert」は「そのうち」「時間が経つにつれて」「続けているうちに」という意味で、少しずつ変化することを表すときによく使います。",
-        "descriptionEn": "\"Etter hvert\" means \"over time\" or \"after a while\" and is used when something changes gradually."
+        "title": "Når + leddsetning",
+        "descriptionJa": "「når」は「〜するとき」を表し、あとに文を続けて状況を説明できます。",
+        "descriptionEn": "\"Når\" means \"when\" and introduces a clause that describes the situation."
+      },
+      {
+        "title": "På den måten",
+        "descriptionJa": "「på den måten」は「そうすることで」「そのようにして」という意味で、前の内容を受けて結果を説明します。",
+        "descriptionEn": "\"På den måten\" means \"in this way\" and connects an action to its result."
       }
     ]
   },
@@ -122,7 +145,7 @@
     "id": "no_003",
     "language": "no",
     "category": "friends",
-    "level": "a2",
+    "level": "b1",
     "title": "Sannsynlig besøk",
     "text": "Det er sannsynlig at jeg kommer til å møte Maren i parken i kveld. Hun sa at hun kanskje ville gå en tur langs elven, og jeg kjenner henne godt nok til å vite at dette er en hyggelig måte å tilbringe tid sammen. Vi snakker om hva som er viktig i hverdagen og deler noen små planer for den kommende helgen.",
     "translationJa": "今夜は公園でマレンに会うことになりそうです。彼女は川沿いを散歩するかもしれないと言っていて、ゆっくり話すにはちょうどよさそうです。日々の暮らしで大切にしていることや、今度の週末のちょっとした予定について話すつもりです。",
@@ -155,21 +178,22 @@
     "id": "no_004",
     "language": "no",
     "category": "jobb",
-    "level": "natural",
+    "level": "b2",
     "title": "Prosjektmøte på jobben",
-    "text": "På kontoret hadde vi et møte om det nye prosjektet. Sjefen forklarte at rapporten må være klar til fredag, og at vi må dekke av alle detaljer. Jeg spurte om vi kunne inkludere mer informasjon om lærlingplassene og hvordan noen av våre kolleger arbeider i IT-utviklingsteamet.",
-    "translationJa": "オフィスで新しいプロジェクトについての会議がありました。上司は、レポートを金曜日までに仕上げる必要があり、細かい点もすべて押さえなければならないと説明しました。私は、見習いポジションについての情報や、IT開発チームで働く同僚たちの仕事内容をもう少し入れられるか尋ねました。",
-    "translationEn": "We had a meeting at the office about the new project. The manager explained that the report had to be ready by Friday and that we needed to cover all the details. I asked whether we could include more information about the apprenticeship positions and how some of our colleagues work in the IT development team.",
+    "text": "På kontoret hadde vi et møte om det nye prosjektet. Sjefen forklarte at rapporten må være klar til fredag, og at vi må gå gjennom alle detaljene. Jeg spurte om vi kunne inkludere mer informasjon om lærlingplassene og hvordan noen av våre kolleger arbeider i IT-utviklingsteamet.",
+    "translationJa": "オフィスで新しいプロジェクトについての会議がありました。上司は、レポートを金曜日までに仕上げる必要があり、細かい点もすべて確認しなければならないと説明しました。私は、見習いポジションについての情報や、IT開発チームで働く同僚たちの仕事内容をもう少し入れられるか尋ねました。",
+    "translationEn": "We had a meeting at the office about the new project. The manager explained that the report had to be ready by Friday and that we needed to go through all the details. I asked whether we could include more information about the apprenticeship positions and how some of our colleagues work in the IT development team.",
     "sourceWords": [
-      "dekke av",
+      "gå gjennom",
       "lærlingplass",
       "IT-utvikling"
     ],
     "expressions": [
       {
-        "phrase": "dekke av",
-        "ja": "〜を網羅する / 押さえる",
-        "en": "cover / include"
+        "phrase": "gå gjennom",
+        "formInText": "gå gjennom alle detaljene",
+        "ja": "〜を確認する / ひと通り見る",
+        "en": "go through / review"
       },
       {
         "phrase": "lærlingplass",
@@ -230,12 +254,12 @@
     "level": "b1",
     "title": "Ta vare på helsen",
     "text": "Jeg prøver å spise sunt og trene jevnlig, men noen ganger er det vanskelig. Hvis jeg kjenner meg sliten, pleier jeg å ta det med ro og hvile. Etter hvert får jeg mer energi, og da blir det lettere å holde en god rutine.",
-    "translationJa": "健康的に食べて、定期的に運動するようにしていますが、うまくいかない日もあります。疲れを感じるときは、無理をせず休むことが多いです。そうしているうちに少しずつ元気が戻り、良い習慣を続けられそうだと感じます。",
-    "translationEn": "I try to eat well and exercise regularly, but sometimes it is difficult. When I feel tired, I usually take it easy and rest. Over time, I feel more energetic, and it seems more likely that I can keep a good routine.",
+    "translationJa": "健康的に食べて、定期的に運動するようにしていますが、うまくいかない日もあります。疲れていると感じるときは、無理をせず休むことが多いです。続けているうちに少しずつ元気が出てきて、良い習慣を保ちやすくなります。",
+    "translationEn": "I try to eat well and exercise regularly, but sometimes it is difficult. When I feel tired, I usually take it easy and rest. Over time, I get more energy, and then it becomes easier to keep a good routine.",
     "sourceWords": [
       "ta det med ro",
       "etter hvert",
-      "sannsynlig"
+      "holde en god rutine"
     ],
     "expressions": [
       {
@@ -265,7 +289,7 @@
     "title": "Building a steady routine",
     "text": "I used to start new habits with a lot of energy, but I often gave up after a few days. This year, I decided to set aside ten minutes each morning for reading and quiet planning. Little by little, I got used to the routine, and it became easier to stick with it. Keeping track of small progress helped me feel more patient and less worried about doing everything perfectly.",
     "translationJa": "以前は、新しい習慣を始めるときに勢いはあるものの、数日でやめてしまうことがよくありました。今年は、毎朝10分だけ読書と静かな予定確認の時間を取ることにしました。少しずつその習慣に慣れていき、続けるのが前より楽になりました。小さな進歩を記録することで、焦らずにいられるようになり、何でも完璧にやらなければという不安も減りました。",
-    "translationEn": "I used to start new habits with a lot of energy, but I often gave up after a few days. This year, I decided to set aside ten minutes each morning for reading and quiet planning. Little by little, I got used to the routine, and it became easier to stick with it. Keeping track of small progress helped me feel more patient and less worried about doing everything perfectly.",
+    "translationNo": "Jeg pleide å starte nye vaner med mye energi, men ofte ga jeg opp etter noen dager. I år bestemte jeg meg for å sette av ti minutter hver morgen til lesing og rolig planlegging. Litt etter litt ble jeg vant til rutinen, og det ble lettere å holde fast ved den. Å følge med på små fremskritt hjalp meg med å bli mer tålmodig og mindre bekymret for å gjøre alt perfekt.",
     "expressions": [
       {
         "phrase": "used to",
@@ -328,7 +352,6 @@
     "level": "a2",
     "title": "小さな時間を大切にする",
     "text": "今日は仕事のあとで、近くのカフェに行きました。少し疲れていましたが、温かいコーヒーを飲んだら、気分が少し落ち着きました。家に帰る前に、明日の予定を確認して、買い物リストも作りました。毎日忙しいですが、こういう小さな時間を大切にしたいです。",
-    "translationJa": "今日は仕事のあとで、近くのカフェに行きました。少し疲れていましたが、温かいコーヒーを飲んだら、気分が少し落ち着きました。家に帰る前に、明日の予定を確認して、買い物リストも作りました。毎日忙しいですが、こういう小さな時間を大切にしたいです。",
     "translationEn": "After work today, I went to a nearby café. I was a little tired, but after drinking a warm coffee, I felt a bit calmer. Before going home, I checked my plans for tomorrow and made a shopping list. Every day is busy, but I want to value these small moments.",
     "translationNo": "I dag dro jeg på en kafé i nærheten etter jobb. Jeg var litt sliten, men etter å ha drukket en varm kaffe følte jeg meg litt roligere. Før jeg dro hjem, sjekket jeg planene for i morgen og lagde en handleliste. Hver dag er travel, men jeg vil sette pris på slike små øyeblikk.",
     "rubyText": [

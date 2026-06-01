@@ -270,8 +270,7 @@ const clientScript = `
       .filter((entry) => typeof entry.value === 'string' && entry.value.trim());
   }
 
-  function renderLocalizedExplanations() {
-    const lang = uiLanguageSelect.value;
+  function renderLocalizedExplanations(lang) {
     document.querySelectorAll('[data-explanation-map]').forEach((container) => {
       let data = {};
       try {
@@ -410,7 +409,7 @@ const clientScript = `
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
       updateExpressionPracticeLabels();
-      renderLocalizedExplanations();
+      renderLocalizedExplanations(lang);
     }
 
     function updateMetrics() {
