@@ -110,6 +110,7 @@ export type UILabels = {
   expressionStatusLearned: string;
   expressionStatusAction: string;
   expressionTextForm: string;
+  expressionDetails: string;
   reviewPageTitle: string;
   noReviewItems: string;
   keepReviewing: string;
@@ -165,6 +166,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusLearned: 'Lært',
     expressionStatusAction: 'Klikk for å endre status',
     expressionTextForm: 'Form i teksten',
+    expressionDetails: 'Se mer',
     reviewPageTitle: 'Repeter',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
     keepReviewing: 'Fortsett å repetere',
@@ -218,6 +220,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusLearned: 'Learned',
     expressionStatusAction: 'Click to change status',
     expressionTextForm: 'Text form',
+    expressionDetails: 'Details',
     reviewPageTitle: 'Review',
     noReviewItems: 'No review items yet',
     keepReviewing: 'Keep reviewing',
@@ -271,6 +274,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusLearned: '覚えた',
     expressionStatusAction: 'クリックしてステータスを変更',
     expressionTextForm: '本文の形',
+    expressionDetails: '詳しく見る',
     reviewPageTitle: '復習',
     noReviewItems: '復習する表現はまだありません',
     keepReviewing: '復習を続ける',

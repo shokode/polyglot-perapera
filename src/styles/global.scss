@@ -412,6 +412,11 @@ textarea {
   border-left-color: rgba(148, 163, 184, 0.28);
 }
 
+.expression-card.expression-card-focus {
+  border-color: rgba(167, 139, 250, 0.42);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.16), inset 10px 0 20px -18px rgba(167, 139, 250, 0.5);
+}
+
 .expression-card[data-practice-level="1"] {
   border-left-width: 3px;
   border-left-color: rgba(148, 163, 184, 0.24);
@@ -720,8 +725,10 @@ textarea {
 }
 
 .text-content {
+  position: relative;
   white-space: normal;
-  line-height: 1.85;
+  font-size: clamp(1.12rem, 1.02rem + 0.45vw, 1.25rem);
+  line-height: 1.9;
   word-break: normal;
   overflow-wrap: break-word;
   hyphens: none;
@@ -764,9 +771,9 @@ textarea {
 }
 
 .target-highlight {
-  background: rgba(82, 175, 255, 0.08);
+  background: transparent;
   color: var(--text);
-  padding: 0 0.04em;
+  padding: 0;
   border-radius: 0;
 }
 
@@ -789,12 +796,92 @@ textarea {
   text-decoration-color: rgba(96, 165, 250, 0.75);
 }
 
-.target-highlight.correct {
-  background: rgba(74, 222, 128, 0.14);
+.target-char.learning-highlight.expression {
+  cursor: pointer;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgba(196, 181, 253, 0.72);
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.24em;
 }
 
-.target-highlight.incorrect {
+.target-char.learning-highlight.grammar {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgba(251, 191, 36, 0.72);
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.24em;
+}
+
+.target-char.correct.learning-highlight.expression {
+  background: rgba(74, 222, 128, 0.14);
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgba(196, 181, 253, 0.76);
+}
+
+.target-char.incorrect.learning-highlight.expression {
   background: rgba(248, 113, 113, 0.08);
+  color: #fb7185;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-color: rgba(248, 113, 113, 0.62);
+}
+
+.target-char.current.learning-highlight.expression {
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-color: rgba(96, 165, 250, 0.75);
+}
+
+.expression-mini-card {
+  position: absolute;
+  z-index: 5;
+  width: min(280px, calc(100% - 24px));
+  padding: 14px 16px;
+  border: 1px solid rgba(167, 139, 250, 0.24);
+  border-radius: 14px;
+  background: rgba(15, 18, 27, 0.96);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.expression-mini-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #f4f0ff;
+  font-size: 0.98rem;
+}
+
+.expression-mini-card p {
+  margin: 0;
+}
+
+.expression-mini-card .mini-card-fallback {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.mini-card-details {
+  margin-top: 10px;
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(167, 139, 250, 0.1);
+  color: #ddd6fe;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.mini-card-details:hover {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(167, 139, 250, 0.16);
+  color: #f5f3ff;
 }
 
 .type-area {

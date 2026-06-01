@@ -44,33 +44,35 @@ const explanationLanguageOrder: UILang[] = ['ja', 'en', 'no'];
 function getExpressionRanges(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>) {
   return expressionsArray.flatMap((expression) => {
     const textForm = getTextForm(expression);
-    const ranges: Array<{ start: number; end: number }> = [];
+    const ranges: Array<{ start: number; end: number; phrase: string }> = [];
     let start = value.indexOf(textForm);
     while (start !== -1) {
-      ranges.push({ start, end: start + textForm.length });
+      ranges.push({ start, end: start + textForm.length, phrase: expression.phrase });
       start = value.indexOf(textForm, start + textForm.length);
     }
     return ranges;
   });
 }
 
-function isExpressionIndex(index: number, ranges: Array<{ start: number; end: number }>) {
-  return ranges.some((range) => index >= range.start && index < range.end);
+function getExpressionRangeAtIndex(index: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
+  return ranges.find((range) => index >= range.start && index < range.end);
 }
 
-function renderCharacter(value: string, index: number, ranges: Array<{ start: number; end: number }>) {
+function renderCharacter(value: string, index: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
   const classes = ['target-char'];
-  if (isExpressionIndex(index, ranges)) {
-    classes.push('target-highlight');
+  const expressionRange = getExpressionRangeAtIndex(index, ranges);
+  const expressionAttribute = expressionRange ? ` data-expression-phrase="${escapeHtml(expressionRange.phrase)}"` : '';
+  if (expressionRange) {
+    classes.push('target-highlight', 'learning-highlight', 'expression');
   }
-  return `<span class="${classes.join(' ')}" data-char-index="${index}">${escapeHtml(value)}</span>`;
+  return `<span class="${classes.join(' ')}" data-char-index="${index}"${expressionAttribute}>${escapeHtml(value)}</span>`;
 }
 
-function renderCharacters(value: string, startIndex: number, ranges: Array<{ start: number; end: number }>) {
+function renderCharacters(value: string, startIndex: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
   return Array.from(value).map((char, offset) => renderCharacter(char, startIndex + offset, ranges)).join('');
 }
 
-function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string }>, ranges: Array<{ start: number; end: number }>) {
+function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string }>, ranges: Array<{ start: number; end: number; phrase: string }>) {
   let index = 0;
   return `<p>${rubyText.map((part) => {
     const rendered = renderCharacters(part.text, index, ranges);
@@ -81,7 +83,7 @@ function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string
   }).join('')}</p>`;
 }
 
-function renderProgressParagraph(paragraph: string, paragraphStartIndex: number, ranges: Array<{ start: number; end: number }>) {
+function renderProgressParagraph(paragraph: string, paragraphStartIndex: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
   let index = paragraphStartIndex;
   return paragraph.split(/(\s+)/).map((part) => {
     const startIndex = index;
@@ -356,6 +358,14 @@ const clientScript = `
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
     const targetCharacters = document.querySelectorAll('[data-char-index]');
+    const textContent = document.querySelector('.text-content');
+    const expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
+    const expressionMiniCard = document.getElementById('expression-mini-card');
+    const miniCardPhrase = document.getElementById('mini-card-phrase');
+    const miniCardMeaning = document.getElementById('mini-card-meaning');
+    const miniCardFallback = document.getElementById('mini-card-fallback');
+    const miniCardDetails = document.getElementById('mini-card-details');
+    let activeMiniCardPhrase = null;
 
     function updateExpressionStatusButtons() {
       const labels = getUiText(uiLanguageSelect.value);
@@ -427,6 +437,80 @@ const clientScript = `
       updateExpressionStatusButtons();
     }
 
+    function getExpressionByPhrase(phrase) {
+      return text.expressions.find((expression) => expression.phrase === phrase) || null;
+    }
+
+    function getExpressionExplanationMap(expression) {
+      return {
+        ja: typeof expression.ja === 'string' ? expression.ja : typeof expression.descriptionJa === 'string' ? expression.descriptionJa : '',
+        en: typeof expression.en === 'string' ? expression.en : typeof expression.descriptionEn === 'string' ? expression.descriptionEn : '',
+        no: typeof expression.no === 'string' ? expression.no : typeof expression.descriptionNo === 'string' ? expression.descriptionNo : '',
+      };
+    }
+
+    function closeExpressionMiniCard() {
+      activeMiniCardPhrase = null;
+      if (expressionMiniCard) {
+        expressionMiniCard.hidden = true;
+      }
+    }
+
+    function updateExpressionMiniCardText() {
+      if (!activeMiniCardPhrase || !expressionMiniCard || expressionMiniCard.hidden) {
+        return;
+      }
+      const labels = getUiText(uiLanguageSelect.value);
+      const expression = getExpressionByPhrase(activeMiniCardPhrase);
+      if (!expression) {
+        closeExpressionMiniCard();
+        return;
+      }
+      const explanations = getLocalizedExplanations(getExpressionExplanationMap(expression), uiLanguageSelect.value);
+      const primary = explanations[0];
+      const fallback = explanations.find((entry) => entry.language !== primary?.language);
+      miniCardPhrase.textContent = expression.phrase;
+      miniCardMeaning.textContent = primary?.value || '';
+      miniCardFallback.textContent = fallback ? fallback.value : '';
+      miniCardFallback.hidden = !fallback;
+      miniCardDetails.textContent = labels.expressionDetails;
+    }
+
+    function positionExpressionMiniCard(event) {
+      if (!expressionMiniCard || !textContent) {
+        return;
+      }
+      const containerRect = textContent.getBoundingClientRect();
+      const cardRect = expressionMiniCard.getBoundingClientRect();
+      const left = Math.max(12, Math.min(event.clientX - containerRect.left, containerRect.width - cardRect.width - 12));
+      const top = Math.max(12, event.clientY - containerRect.top + 22);
+      expressionMiniCard.style.left = left + 'px';
+      expressionMiniCard.style.top = top + 'px';
+    }
+
+    function showExpressionMiniCard(phrase, event) {
+      if (!expressionMiniCard) {
+        return;
+      }
+      activeMiniCardPhrase = phrase;
+      expressionMiniCard.hidden = false;
+      updateExpressionMiniCardText();
+      requestAnimationFrame(() => positionExpressionMiniCard(event));
+    }
+
+    function focusFullExpressionCard(phrase) {
+      const card = Array.from(expressionCards).find((item) => item.dataset.expressionCard === phrase);
+      if (!card) {
+        return;
+      }
+      expressionsPanel.hidden = false;
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.add('expression-card-focus');
+      window.setTimeout(() => {
+        card.classList.remove('expression-card-focus');
+      }, 1400);
+    }
+
     function renderUiText(lang) {
       const labels = getUiText(lang);
       document.querySelectorAll('[data-i18n]').forEach((el) => {
@@ -453,12 +537,16 @@ const clientScript = `
       document.querySelectorAll('[data-expression-form-label]').forEach((el) => {
         el.textContent = labels.expressionTextForm;
       });
+      if (miniCardDetails) {
+        miniCardDetails.textContent = labels.expressionDetails;
+      }
       languageChip.textContent = languageNames[text.language]?.[lang] || text.language;
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
       updateExpressionPracticeLabels();
       renderLocalizedExplanations(lang);
+      updateExpressionMiniCardText();
     }
 
     function updateTargetTextProgress(typed) {
@@ -534,6 +622,36 @@ const clientScript = `
         }
         cycleExpressionStatus(card.dataset.expressionCard);
       });
+    });
+
+    expressionHighlights.forEach((highlight) => {
+      highlight.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const phrase = highlight.dataset.expressionPhrase;
+        if (phrase) {
+          showExpressionMiniCard(phrase, event);
+        }
+      });
+    });
+
+    if (miniCardDetails) {
+      miniCardDetails.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (activeMiniCardPhrase) {
+          focusFullExpressionCard(activeMiniCardPhrase);
+          closeExpressionMiniCard();
+        }
+      });
+    }
+
+    if (expressionMiniCard) {
+      expressionMiniCard.addEventListener('click', (event) => {
+        event.stopPropagation();
+      });
+    }
+
+    document.addEventListener('click', () => {
+      closeExpressionMiniCard();
     });
 
     const savedUiLanguage = getSavedUiLanguage();
@@ -615,6 +733,12 @@ if (!text) {
 
       <section class="text-content">
         <div id="target-text" set:html={highlightedTextHtml}></div>
+        <aside class="expression-mini-card" id="expression-mini-card" hidden>
+          <strong id="mini-card-phrase"></strong>
+          <p id="mini-card-meaning"></p>
+          <p class="mini-card-fallback" id="mini-card-fallback"></p>
+          <button class="mini-card-details" id="mini-card-details" type="button">{uiText[defaultUiLang].expressionDetails}</button>
+        </aside>
       </section>
 
       <section class="note-card">
