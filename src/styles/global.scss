@@ -147,7 +147,7 @@ textarea {
 .review-controls {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: 20px;
 }
 
@@ -187,13 +187,41 @@ textarea {
 }
 
 .text-list-card {
+  border-left-width: 3px;
   cursor: pointer;
   transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.text-list-card[data-target-language="no"],
+.review-expression-card[data-target-language="no"] {
+  border-left-color: rgba(90, 200, 255, 0.62);
+}
+
+.text-list-card[data-target-language="en"],
+.review-expression-card[data-target-language="en"] {
+  border-left-color: rgba(168, 133, 255, 0.56);
+}
+
+.text-list-card[data-target-language="ja"],
+.review-expression-card[data-target-language="ja"] {
+  border-left-color: rgba(251, 113, 133, 0.56);
 }
 
 .text-list-card:hover {
   border-color: rgba(130, 199, 255, 0.26);
   background: rgba(255, 255, 255, 0.055);
+}
+
+.text-list-card[data-target-language="no"]:hover {
+  border-left-color: rgba(90, 200, 255, 0.72);
+}
+
+.text-list-card[data-target-language="en"]:hover {
+  border-left-color: rgba(168, 133, 255, 0.66);
+}
+
+.text-list-card[data-target-language="ja"]:hover {
+  border-left-color: rgba(251, 113, 133, 0.66);
 }
 
 .card-link {
@@ -209,9 +237,42 @@ textarea {
 }
 
 .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 8px;
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+.language-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #d8e1ef;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.language-badge[data-target-language="no"] {
+  border-color: rgba(90, 200, 255, 0.34);
+  background: rgba(90, 200, 255, 0.1);
+}
+
+.language-badge[data-target-language="en"] {
+  border-color: rgba(168, 133, 255, 0.32);
+  background: rgba(168, 133, 255, 0.1);
+}
+
+.language-badge[data-target-language="ja"] {
+  border-color: rgba(251, 113, 133, 0.32);
+  background: rgba(251, 113, 133, 0.1);
 }
 
 .card h2 {
@@ -385,6 +446,18 @@ textarea {
   background: rgba(245, 158, 11, 0.07);
 }
 
+.review-expression-card[data-status="review"][data-target-language="no"] {
+  border-left-color: rgba(90, 200, 255, 0.7);
+}
+
+.review-expression-card[data-status="review"][data-target-language="en"] {
+  border-left-color: rgba(168, 133, 255, 0.66);
+}
+
+.review-expression-card[data-status="review"][data-target-language="ja"] {
+  border-left-color: rgba(251, 113, 133, 0.66);
+}
+
 .expression-card[data-status="learned"] {
   border-left-color: rgba(52, 211, 153, 0.54);
   background: rgba(52, 211, 153, 0.055);
@@ -394,6 +467,24 @@ textarea {
 .expression-card[data-status="learned"]:hover {
   background: rgba(52, 211, 153, 0.075);
   border-left-color: rgba(52, 211, 153, 0.68);
+}
+
+.review-expression-card[data-target-language="no"],
+.review-expression-card[data-status="learned"][data-target-language="no"],
+.review-expression-card[data-status="learned"][data-target-language="no"]:hover {
+  border-left-color: rgba(90, 200, 255, 0.7);
+}
+
+.review-expression-card[data-target-language="en"],
+.review-expression-card[data-status="learned"][data-target-language="en"],
+.review-expression-card[data-status="learned"][data-target-language="en"]:hover {
+  border-left-color: rgba(168, 133, 255, 0.66);
+}
+
+.review-expression-card[data-target-language="ja"],
+.review-expression-card[data-status="learned"][data-target-language="ja"],
+.review-expression-card[data-status="learned"][data-target-language="ja"]:hover {
+  border-left-color: rgba(251, 113, 133, 0.66);
 }
 
 .expression-card strong,
@@ -511,6 +602,12 @@ textarea {
 
 .expression-header strong {
   margin-bottom: 0;
+}
+
+.expression-title-stack {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
 }
 
 .status-button {

@@ -5,6 +5,7 @@ import {
   uiLanguages,
   uiLanguageNames,
   uiText,
+  languageNames,
   type UILang,
 } from '../i18n/ui';
 
@@ -12,12 +13,13 @@ const defaultUiLang: UILang = 'en';
 const expressions = Array.from(
   texts.reduce((map, item) => {
     item.expressions.forEach((expression) => {
-      if (!map.has(expression.phrase)) {
-        map.set(expression.phrase, { ...expression, textId: item.id });
+      const expressionKey = `${item.language}::${expression.phrase}`;
+      if (!map.has(expressionKey)) {
+        map.set(expressionKey, { ...expression, language: item.language, textId: item.id });
       }
     });
     return map;
-  }, new Map<string, { phrase: string; formInText?: string; ja: string; en: string; textId: string }>())
+  }, new Map<string, { phrase: string; formInText?: string; ja: string; en: string; language: string; textId: string }>())
   .values()
 );
 
@@ -25,7 +27,14 @@ const clientScript = `
   const expressions = ${JSON.stringify(expressions)};
   const ui = ${JSON.stringify(uiText)};
   const uiLanguages = ${JSON.stringify(uiLanguages)};
-  const STORAGE_KEY = 'typingSiteUiLanguage';
+  const languageNames = ${JSON.stringify(languageNames)};
+  const targetLanguageBadges = {
+    no: '🇳🇴 Norsk',
+    en: '🇬🇧 English',
+    ja: '🇯🇵 日本語',
+  };
+  const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
+  const TARGET_LANGUAGE_STORAGE_KEY = 'typingSiteTargetLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
@@ -68,17 +77,27 @@ const clientScript = `
     }
   }
 
-  function getSavedLanguage() {
-    const stored = safeReadStorage(STORAGE_KEY);
+  function getSavedUiLanguage() {
+    const stored = safeReadStorage(UI_LANGUAGE_STORAGE_KEY);
     return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
+  }
+
+  function getSavedTargetLanguage() {
+    const stored = safeReadStorage(TARGET_LANGUAGE_STORAGE_KEY);
+    return stored === 'all' || uiLanguages.includes(stored) ? stored : 'no';
   }
 
   function getUiText(lang) {
     return ui[lang] || ui.en;
   }
 
-  function getExpressionStatus(phrase) {
-    const stored = loadExpressionStatuses()[phrase];
+  function getExpressionStorageKey(expression) {
+    return expression.language + '::' + expression.phrase;
+  }
+
+  function getExpressionStatus(expression) {
+    const all = loadExpressionStatuses();
+    const stored = all[getExpressionStorageKey(expression)] || all[expression.phrase];
     return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
   }
 
@@ -92,8 +111,9 @@ const clientScript = `
     return labels.expressionStatusNew;
   }
 
-  function getExpressionPractice(phrase) {
-    const entry = loadExpressionProgress()[phrase] || {};
+  function getExpressionPractice(expression) {
+    const progress = loadExpressionProgress();
+    const entry = progress[getExpressionStorageKey(expression)] || progress[expression.phrase] || {};
     const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
     return {
       practiceCount,
@@ -137,6 +157,7 @@ const clientScript = `
     const emptyState = document.getElementById('review-empty-state');
     const sortSelect = document.getElementById('review-sort');
     const filterSelect = document.getElementById('review-filter');
+    const targetLanguageSelect = document.getElementById('review-target-language');
 
     function renderUiText(lang) {
       const labels = getUiText(lang);
@@ -147,15 +168,19 @@ const clientScript = `
           el.textContent = value;
         }
       });
+      document.querySelectorAll('[data-i18n-target-language]').forEach((option) => {
+        const value = option.dataset.i18nTargetLanguage;
+        option.textContent = value === 'all' ? labels.allLanguages : languageNames[value]?.[lang] || value;
+      });
 
       uiLanguageSelect.value = lang;
       reviewTitle.textContent = labels.reviewPageTitle;
       renderReviewItems();
     }
 
-    function setExpressionStatus(phrase, status) {
+    function setExpressionStatus(expression, status) {
       const all = loadExpressionStatuses();
-      all[phrase] = status;
+      all[getExpressionStorageKey(expression)] = status;
       saveExpressionStatuses(all);
       renderReviewItems();
     }
@@ -164,11 +189,13 @@ const clientScript = `
       const labels = getUiText(uiLanguageSelect.value);
       const selectedFilter = filterSelect.value;
       const selectedSort = sortSelect.value;
+      const selectedTargetLanguage = targetLanguageSelect.value;
       const reviewItems = expressions
-        .filter((expression) => selectedFilter === 'all' || getExpressionStatus(expression.phrase) === selectedFilter)
+        .filter((expression) => selectedTargetLanguage === 'all' || expression.language === selectedTargetLanguage)
+        .filter((expression) => selectedFilter === 'all' || getExpressionStatus(expression) === selectedFilter)
         .sort((a, b) => {
-          const aPractice = getExpressionPractice(a.phrase);
-          const bPractice = getExpressionPractice(b.phrase);
+          const aPractice = getExpressionPractice(a);
+          const bPractice = getExpressionPractice(b);
           if (selectedSort === 'least-practiced') {
             return aPractice.practiceCount - bPractice.practiceCount || a.phrase.localeCompare(b.phrase);
           }
@@ -182,14 +209,15 @@ const clientScript = `
         });
 
       reviewGrid.innerHTML = reviewItems.map((expression) => {
-        const status = getExpressionStatus(expression.phrase);
+        const status = getExpressionStatus(expression);
         const label = getExpressionStatusLabel(status, labels);
-        const { practiceCount } = getExpressionPractice(expression.phrase);
+        const { practiceCount } = getExpressionPractice(expression);
         const isHighRepetition = status === 'review' && practiceCount >= 10;
+        const expressionKey = getExpressionStorageKey(expression);
         return ''
-          + '<article class="expression-card review-expression-card" data-expression-card="' + escapeHtml(expression.phrase) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
+          + '<article class="expression-card review-expression-card" data-review-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
           + '<div class="expression-header">'
-          + '<strong>' + escapeHtml(expression.phrase) + '</strong>'
+          + '<div class="expression-title-stack"><strong>' + escapeHtml(expression.phrase) + '</strong><span class="language-badge" data-target-language="' + escapeHtml(expression.language) + '">' + escapeHtml(targetLanguageBadges[expression.language]) + '</span></div>'
           + '<span class="status-button status-pill" data-status="' + status + '">' + escapeHtml(label) + '</span>'
           + '</div>'
           + '<p class="expression-practice review-card-practice"><span>' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span><span class="high-repetition-label">' + escapeHtml(labels.highRepetition) + '</span></p>'
@@ -201,15 +229,15 @@ const clientScript = `
           + '<p>' + escapeHtml(expression.en) + '</p>'
           + '</div>'
           + '<div class="review-card-actions">'
-          + '<button class="secondary-button" type="button" data-review-action="keep" data-expression-phrase="' + escapeHtml(expression.phrase) + '">' + escapeHtml(labels.keepReviewing) + '</button>'
-          + '<button class="learned-button" type="button" data-review-action="learned" data-expression-phrase="' + escapeHtml(expression.phrase) + '">' + escapeHtml(labels.markAsLearned) + '</button>'
+          + '<button class="secondary-button" type="button" data-review-action="keep" data-expression-key="' + escapeHtml(expressionKey) + '">' + escapeHtml(labels.keepReviewing) + '</button>'
+          + '<button class="learned-button" type="button" data-review-action="learned" data-expression-key="' + escapeHtml(expressionKey) + '">' + escapeHtml(labels.markAsLearned) + '</button>'
           + '</div>'
           + '</article>';
       }).join('');
 
       emptyState.hidden = reviewItems.length > 0;
 
-      reviewGrid.querySelectorAll('[data-expression-card]').forEach((card) => {
+      reviewGrid.querySelectorAll('[data-review-card]').forEach((card) => {
         card.addEventListener('click', () => {
           window.location.href = '/text/' + card.dataset.textId;
         });
@@ -219,20 +247,31 @@ const clientScript = `
         button.addEventListener('click', (event) => {
           event.stopPropagation();
           const nextStatus = button.dataset.reviewAction === 'learned' ? 'learned' : 'review';
-          setExpressionStatus(button.dataset.expressionPhrase, nextStatus);
+          const expression = expressions.find((item) => getExpressionStorageKey(item) === button.dataset.expressionKey);
+          if (expression) {
+            setExpressionStatus(expression, nextStatus);
+          }
         });
       });
     }
 
-    const saved = getSavedLanguage();
-    renderUiText(saved);
+    const savedUiLanguage = getSavedUiLanguage();
+    const savedTargetLanguage = getSavedTargetLanguage();
+    targetLanguageSelect.value = savedTargetLanguage;
+    renderUiText(savedUiLanguage);
 
     sortSelect.addEventListener('change', renderReviewItems);
     filterSelect.addEventListener('change', renderReviewItems);
+    targetLanguageSelect.addEventListener('change', (event) => {
+      const lang = event.target.value === 'all' || uiLanguages.includes(event.target.value) ? event.target.value : 'no';
+      safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
+      targetLanguageSelect.value = lang;
+      renderReviewItems();
+    });
 
     uiLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value;
-      safeWriteStorage(STORAGE_KEY, lang);
+      safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
       renderUiText(lang);
     });
   });
@@ -268,6 +307,15 @@ const clientScript = `
 
       <section class="expressions-card">
         <div class="review-controls">
+          <div class="filter-group">
+            <label for="review-target-language" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <select id="review-target-language">
+              <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
+              {uiLanguages.map((lang) => (
+                <option value={lang} data-i18n-target-language={lang}>{languageNames[lang][defaultUiLang]}</option>
+              ))}
+            </select>
+          </div>
           <div class="filter-group">
             <label for="review-filter" data-i18n="filterLabel">{uiText[defaultUiLang].filterLabel}</label>
             <select id="review-filter">

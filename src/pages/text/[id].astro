@@ -71,7 +71,7 @@ const clientScript = `
     advanced: 'b2',
     natural: 'natural',
   };
-  const STORAGE_KEY = 'typingSiteUiLanguage';
+  const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const TEXT_PROGRESS_KEY = 'typingProgress';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
@@ -119,8 +119,8 @@ const clientScript = `
     safeWriteStorage(key, JSON.stringify(data));
   }
 
-  function getSavedLanguage() {
-    const stored = safeReadStorage(STORAGE_KEY);
+  function getSavedUiLanguage() {
+    const stored = safeReadStorage(UI_LANGUAGE_STORAGE_KEY);
     return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
   }
 
@@ -135,8 +135,13 @@ const clientScript = `
     return levelKeys.includes(level) ? level : 'natural';
   }
 
+  function getExpressionStorageKey(phrase) {
+    return text.language + '::' + phrase;
+  }
+
   function getExpressionStatus(phrase) {
-    const stored = loadExpressionStatuses()[phrase];
+    const all = loadExpressionStatuses();
+    const stored = all[getExpressionStorageKey(phrase)] || all[phrase];
     return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
   }
 
@@ -156,7 +161,8 @@ const clientScript = `
   }
 
   function getExpressionPractice(phrase) {
-    const entry = loadProgress(EXPRESSION_PROGRESS_KEY)[phrase] || {};
+    const progress = loadProgress(EXPRESSION_PROGRESS_KEY);
+    const entry = progress[getExpressionStorageKey(phrase)] || progress[phrase] || {};
     const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
     return {
       practiceCount,
@@ -261,8 +267,9 @@ const clientScript = `
       const expressionProgress = loadProgress(EXPRESSION_PROGRESS_KEY);
       const phrases = Array.from(new Set(text.expressions.map((expression) => expression.phrase)));
       phrases.forEach((phrase) => {
-        const existingExpressionProgress = expressionProgress[phrase] || {};
-        expressionProgress[phrase] = {
+        const expressionKey = getExpressionStorageKey(phrase);
+        const existingExpressionProgress = expressionProgress[expressionKey] || expressionProgress[phrase] || {};
+        expressionProgress[expressionKey] = {
           practiceCount: (existingExpressionProgress.practiceCount || 0) + 1,
           lastPracticedAt: now,
         };
@@ -273,7 +280,7 @@ const clientScript = `
 
     function cycleExpressionStatus(phrase) {
       const all = loadExpressionStatuses();
-      all[phrase] = getNextExpressionStatus(getExpressionStatus(phrase));
+      all[getExpressionStorageKey(phrase)] = getNextExpressionStatus(getExpressionStatus(phrase));
       saveExpressionStatuses(all);
       updateExpressionStatusButtons();
     }
@@ -369,14 +376,14 @@ const clientScript = `
       });
     });
 
-    const saved = getSavedLanguage();
-    renderUiText(saved);
+    const savedUiLanguage = getSavedUiLanguage();
+    renderUiText(savedUiLanguage);
     updateExpressionStatusButtons();
     updateExpressionPracticeLabels();
 
     uiLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value;
-      safeWriteStorage(STORAGE_KEY, lang);
+      safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
       renderUiText(lang);
     });
   });

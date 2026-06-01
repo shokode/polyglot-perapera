@@ -47,9 +47,9 @@ export function normalizeLevelKey(level: string): LevelKey {
   return levels.includes(level as LevelKey) ? (level as LevelKey) : 'natural';
 }
 
-export type TextLanguage = UILang;
+export type TargetTextLanguage = UILang;
 
-export const languageNames: Record<TextLanguage, Record<UILang, string>> = {
+export const languageNames: Record<TargetTextLanguage, Record<UILang, string>> = {
   no: { no: 'Norsk', en: 'Norwegian', ja: 'ノルウェー語' },
   en: { no: 'Engelsk', en: 'English', ja: '英語' },
   ja: { no: 'Japansk', en: 'Japanese', ja: '日本語' },
