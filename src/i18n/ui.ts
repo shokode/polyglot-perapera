@@ -89,6 +89,10 @@ export type UILabels = {
   usefulExpressions: string;
   grammarFromText: string;
   levelLabel: string;
+  expressionStatusNew: string;
+  expressionStatusReview: string;
+  expressionStatusLearned: string;
+  expressionStatusAction: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -120,6 +124,10 @@ export const uiText: Record<UILang, UILabels> = {
     usefulExpressions: 'Nyttige uttrykk',
     grammarFromText: 'Grammatikk fra denne teksten',
     levelLabel: 'Nivå',
+    expressionStatusNew: 'Ny',
+    expressionStatusReview: 'Repeter',
+    expressionStatusLearned: 'Lært',
+    expressionStatusAction: 'Klikk for å endre status',
   },
   en: {
     title: 'Read & Type',
@@ -149,6 +157,10 @@ export const uiText: Record<UILang, UILabels> = {
     usefulExpressions: 'Useful expressions',
     grammarFromText: 'Grammar from this text',
     levelLabel: 'Level',
+    expressionStatusNew: 'New',
+    expressionStatusReview: 'Review',
+    expressionStatusLearned: 'Learned',
+    expressionStatusAction: 'Click to change status',
   },
   ja: {
     title: '読むと打つ',
@@ -178,5 +190,9 @@ export const uiText: Record<UILang, UILabels> = {
     usefulExpressions: '便利な表現',
     grammarFromText: 'この文章の文法',
     levelLabel: 'レベル',
+    expressionStatusNew: '新規',
+    expressionStatusReview: '復習',
+    expressionStatusLearned: '覚えた',
+    expressionStatusAction: 'クリックしてステータスを変更',
   },
 };

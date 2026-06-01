@@ -281,6 +281,39 @@ textarea {
   border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
+.expression-card {
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.expression-card:hover {
+  background: rgba(255, 255, 255, 0.065);
+  border-color: rgba(148, 163, 184, 0.16);
+  border-left-color: rgba(148, 163, 184, 0.28);
+}
+
+.expression-card[data-status="review"] {
+  border-left-color: rgba(245, 158, 11, 0.58);
+  box-shadow: inset 10px 0 20px -18px rgba(245, 158, 11, 0.55);
+}
+
+.expression-card[data-status="review"]:hover {
+  background: rgba(245, 158, 11, 0.07);
+  border-left-color: rgba(245, 158, 11, 0.72);
+}
+
+.expression-card[data-status="learned"] {
+  border-left-color: rgba(52, 211, 153, 0.54);
+  background: rgba(52, 211, 153, 0.055);
+  box-shadow: inset 10px 0 20px -18px rgba(52, 211, 153, 0.5);
+}
+
+.expression-card[data-status="learned"]:hover {
+  background: rgba(52, 211, 153, 0.075);
+  border-left-color: rgba(52, 211, 153, 0.68);
+}
+
 .expression-card strong,
 .grammar-card-item strong {
   display: block;
@@ -295,6 +328,68 @@ textarea {
   color: var(--text-muted);
   line-height: 1.6;
   font-size: 0.95rem;
+}
+
+.expression-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 0.85rem;
+}
+
+.expression-header strong {
+  margin-bottom: 0;
+}
+
+.status-button {
+  flex: 0 0 auto;
+  min-width: 64px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+  user-select: none;
+}
+
+.status-button:hover {
+  border-color: rgba(148, 163, 184, 0.44);
+  background: rgba(255, 255, 255, 0.095);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.status-button:focus-visible {
+  outline: 2px solid rgba(130, 199, 255, 0.62);
+  outline-offset: 2px;
+}
+
+.status-button[data-status="review"] {
+  border-color: rgba(245, 158, 11, 0.36);
+  background: rgba(245, 158, 11, 0.12);
+  color: #f8d991;
+}
+
+.status-button[data-status="review"]:hover {
+  border-color: rgba(245, 158, 11, 0.58);
+  background: rgba(245, 158, 11, 0.18);
+}
+
+.status-button[data-status="learned"] {
+  border-color: rgba(52, 211, 153, 0.34);
+  background: rgba(52, 211, 153, 0.12);
+  color: #a8f0d3;
+}
+
+.status-button[data-status="learned"]:hover {
+  border-color: rgba(52, 211, 153, 0.54);
+  background: rgba(52, 211, 153, 0.18);
 }
 
 .text-content {

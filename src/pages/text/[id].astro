@@ -58,7 +58,8 @@ const clientScript = `
   const levelLabels = ${JSON.stringify(levelLabels)};
   const languageNames = ${JSON.stringify(languageNames)};
   const STORAGE_KEY = 'typingSiteUiLanguage';
-  const STATUS_KEY = 'typingSiteTextStatus';
+  const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
 
   function safeReadStorage(key) {
     try {
@@ -76,16 +77,17 @@ const clientScript = `
     }
   }
 
-  function loadStatus() {
+  function loadExpressionStatuses() {
     try {
-      return JSON.parse(safeReadStorage(STATUS_KEY) || '{}');
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_STATUS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
     } catch {
       return {};
     }
   }
 
-  function saveStatus(data) {
-    safeWriteStorage(STATUS_KEY, JSON.stringify(data));
+  function saveExpressionStatuses(data) {
+    safeWriteStorage(EXPRESSION_STATUS_KEY, JSON.stringify(data));
   }
 
   function getSavedLanguage() {
@@ -97,21 +99,29 @@ const clientScript = `
     return ui[lang] || ui.en;
   }
 
-  function getStatusLabel(key, active, labels) {
-    if (key === 'favorite') {
-      return active ? labels.favorited : labels.favorite;
+  function getExpressionStatus(phrase) {
+    const stored = loadExpressionStatuses()[phrase];
+    return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
+  }
+
+  function getNextExpressionStatus(status) {
+    const currentIndex = EXPRESSION_STATUSES.indexOf(status);
+    return EXPRESSION_STATUSES[(currentIndex + 1) % EXPRESSION_STATUSES.length];
+  }
+
+  function getExpressionStatusLabel(status, labels) {
+    if (status === 'review') {
+      return labels.expressionStatusReview;
     }
-    if (key === 'review') {
-      return labels.reviewLater;
+    if (status === 'learned') {
+      return labels.expressionStatusLearned;
     }
-    if (key === 'learned') {
-      return labels.learned;
-    }
-    return '';
+    return labels.expressionStatusNew;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const statusButtons = document.querySelectorAll('[data-key]');
+    const statusButtons = document.querySelectorAll('[data-expression-status]');
+    const expressionCards = document.querySelectorAll('[data-expression-card]');
     const input = document.getElementById('typing-input');
     const progressValue = document.getElementById('progress-value');
     const accuracyValue = document.getElementById('accuracy-value');
@@ -134,15 +144,29 @@ const clientScript = `
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
 
-    function updateStatusButtons() {
+    function updateExpressionStatusButtons() {
       const labels = getUiText(uiLanguageSelect.value);
-      const status = loadStatus()[text.id] || {};
       statusButtons.forEach((button) => {
-        const key = button.dataset.key;
-        const active = Boolean(status[key]);
-        button.classList.toggle('active', active);
-        button.textContent = getStatusLabel(key, active, labels);
+        const phrase = button.dataset.expressionStatus;
+        const status = getExpressionStatus(phrase);
+        const label = getExpressionStatusLabel(status, labels);
+        const card = button.closest('[data-expression-card]');
+        button.dataset.status = status;
+        button.textContent = label;
+        button.title = labels.expressionStatusAction;
+        button.setAttribute('aria-label', phrase + ': ' + label + '. ' + labels.expressionStatusAction);
+        if (card) {
+          card.dataset.status = status;
+          card.title = labels.expressionStatusAction;
+        }
       });
+    }
+
+    function cycleExpressionStatus(phrase) {
+      const all = loadExpressionStatuses();
+      all[phrase] = getNextExpressionStatus(getExpressionStatus(phrase));
+      saveExpressionStatuses(all);
+      updateExpressionStatusButtons();
     }
 
     function renderUiText(lang) {
@@ -170,7 +194,7 @@ const clientScript = `
       languageChip.textContent = languageNames[text.language]?.[lang] || text.language;
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[text.level]?.[lang] || text.level);
-      updateStatusButtons();
+      updateExpressionStatusButtons();
     }
 
     function updateMetrics() {
@@ -211,20 +235,25 @@ const clientScript = `
     });
 
     statusButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const key = button.dataset.key;
-        const all = loadStatus();
-        const entry = all[text.id] || {};
-        entry[key] = !entry[key];
-        all[text.id] = entry;
-        saveStatus(all);
-        updateStatusButtons();
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        cycleExpressionStatus(button.dataset.expressionStatus);
+      });
+    });
+
+    expressionCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const selectedText = window.getSelection()?.toString();
+        if (selectedText) {
+          return;
+        }
+        cycleExpressionStatus(card.dataset.expressionCard);
       });
     });
 
     const saved = getSavedLanguage();
     renderUiText(saved);
-    updateStatusButtons();
+    updateExpressionStatusButtons();
 
     uiLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value;
@@ -327,8 +356,11 @@ if (!text) {
         <h3 id="expressions-title" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</h3>
         <div class="expressions-grid">
           {text.expressions.map((item) => (
-            <article class="expression-card">
-              <strong>{item.phrase}</strong>
+            <article class="expression-card" data-expression-card={item.phrase}>
+              <div class="expression-header">
+                <strong>{item.phrase}</strong>
+                <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
+              </div>
               <p>{item.ja}</p>
               <p>{item.en}</p>
             </article>
