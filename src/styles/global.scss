@@ -215,20 +215,110 @@ textarea {
 .note-card,
 .translation-card,
 .expressions-card,
-.grammar-card {
+.grammar-card,
+.learning-focus-card {
   padding: 24px;
   border-radius: 28px;
   background: var(--surface-strong);
   border: 1px solid var(--border);
 }
 
+.learning-focus-row {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.learning-focus-card strong {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.learning-focus-summary {
+  margin-top: 14px;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.learning-focus-summary p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.96rem;
+}
+
+.learning-focus-summary strong {
+  color: var(--text);
+}
+
+.learning-focus-card ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  list-style: disc;
+}
+
+.learning-focus-card li {
+  margin-bottom: 0.65rem;
+  line-height: 1.7;
+}
+
+.expressions-grid,
+.grammar-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 18px;
+}
+
+.expression-card,
+.grammar-card-item {
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.expression-card strong,
+.grammar-card-item strong {
+  display: block;
+  margin-bottom: 0.85rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.expression-card p,
+.grammar-card-item p {
+  margin: 0.35rem 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
 .text-content {
-  white-space: pre-wrap;
-  padding: 20px;
+  white-space: normal;
+  line-height: 1.85;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+  padding: 24px;
   border-radius: 24px;
   background: #11151f;
   border: 1px solid rgba(148, 163, 184, 0.08);
   color: var(--text);
+}
+
+.text-content p {
+  margin: 0 0 1.2rem;
+}
+
+.target-highlight {
+  background: rgba(82, 175, 255, 0.16);
+  color: var(--text);
+  padding: 0.08em 0.2em;
+  border-radius: 8px;
 }
 
 .type-area {

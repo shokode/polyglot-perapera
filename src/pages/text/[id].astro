@@ -17,6 +17,38 @@ export function getStaticPaths() {
 
 const text = texts.find((item) => item.id === Astro.params.id);
 const defaultUiLang: UILang = 'en';
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function renderHighlightedText(value: string, expressionsArray: Array<{ phrase: string }>) {
+  const sorted = [...expressionsArray].sort((a, b) => b.phrase.length - a.phrase.length);
+  return value.split('\n\n').map((paragraph) => {
+    let escaped = escapeHtml(paragraph);
+    sorted.forEach(({ phrase }) => {
+      const safePhrase = escapeHtml(phrase);
+      escaped = escaped.replace(new RegExp(escapeRegExp(safePhrase), 'g'), `<span class="target-highlight">${safePhrase}</span>`);
+    });
+    return `<p>${escaped}</p>`;
+  }).join('');
+}
+
+const learningFocusExpressions = text?.expressions.map((item) => item.phrase) ?? [];
+const learningFocusGrammar = text?.grammar.map((item) => item.title) ?? [];
+const learningFocusSummaryExpressions = learningFocusExpressions.join(' / ');
+const learningFocusSummaryGrammar = learningFocusGrammar.join(' / ');
+const highlightedTextHtml = text ? renderHighlightedText(text.text, text.expressions) : '';
+
 const clientScript = `
   const text = ${JSON.stringify(text)};
   const ui = ${JSON.stringify(uiText)};
@@ -152,9 +184,13 @@ const clientScript = `
       }
       const progress = Math.min(100, Math.round((correct / target.length) * 100));
       const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
-      const elapsed = Math.max((performance.now() - startTime) / 60000, 0.016);
+      const elapsedMinutes = startTime ? Math.max((performance.now() - startTime) / 60000, 0.001) : 0;
       const words = typed.trim().split(/\\s+/).filter(Boolean).length;
-      const wpm = Math.round(words / elapsed);
+      let wpm = 0;
+      if (startTime && elapsedMinutes > 0) {
+        const rawWpm = Math.round(words / elapsedMinutes);
+        wpm = Math.min(rawWpm, 200);
+      }
       progressValue.textContent = progress + '%';
       accuracyValue.textContent = accuracy + '%';
       wpmValue.textContent = '' + wpm;
@@ -165,14 +201,14 @@ const clientScript = `
       }
     }
 
-    let startTime = performance.now();
-    input.addEventListener('focus', () => {
-      if (input.value.length === 0) {
+    let startTime = null;
+
+    input.addEventListener('input', (event) => {
+      if (!startTime) {
         startTime = performance.now();
       }
+      updateMetrics();
     });
-
-    input.addEventListener('input', updateMetrics);
 
     statusButtons.forEach((button) => {
       button.addEventListener('click', () => {
@@ -236,8 +272,34 @@ if (!text) {
         <p id="read-description" data-i18n="focusNaturalMeaning">{uiText[defaultUiLang].focusNaturalMeaning}</p>
       </section>
 
+      <section class="learning-focus-card">
+        <h3>Learning Focus</h3>
+        <div class="learning-focus-summary">
+          <p><strong>Expressions:</strong> {learningFocusSummaryExpressions}</p>
+          <p><strong>Grammar:</strong> {learningFocusSummaryGrammar}</p>
+        </div>
+        <div class="learning-focus-row">
+          <div>
+            <strong>Expressions</strong>
+            <ul>
+              {learningFocusExpressions.map((phrase) => (
+                <li>{phrase}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <strong>Grammar</strong>
+            <ul>
+              {learningFocusGrammar.map((title) => (
+                <li>{title}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section class="text-content">
-        {text.text}
+        <div id="target-text" set:html={highlightedTextHtml}></div>
       </section>
 
       <section class="note-card">
@@ -263,24 +325,28 @@ if (!text) {
 
       <section class="expressions-card" id="expressions-panel" hidden>
         <h3 id="expressions-title" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</h3>
-        {text.expressions.map((item) => (
-          <div class="expression-item">
-            <strong>{item.phrase}</strong>
-            <p>日本語: {item.ja}</p>
-            <p>English: {item.en}</p>
-          </div>
-        ))}
+        <div class="expressions-grid">
+          {text.expressions.map((item) => (
+            <article class="expression-card">
+              <strong>{item.phrase}</strong>
+              <p>{item.ja}</p>
+              <p>{item.en}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section class="grammar-card" id="grammar-panel" hidden>
         <h3 id="grammar-title" data-i18n="grammarFromText">{uiText[defaultUiLang].grammarFromText}</h3>
-        {text.grammar.map((item) => (
-          <div class="grammar-item">
-            <strong>{item.title}</strong>
-            <p>日本語: {item.descriptionJa}</p>
-            <p>English: {item.descriptionEn}</p>
-          </div>
-        ))}
+        <div class="grammar-grid">
+          {text.grammar.map((item) => (
+            <article class="grammar-card-item">
+              <strong>{item.title}</strong>
+              <p>{item.descriptionJa}</p>
+              <p>{item.descriptionEn}</p>
+            </article>
+          ))}
+        </div>
       </section>
     </main>
 
