@@ -7,18 +7,58 @@
     "title": "Lære norsk gradvis",
     "text": "Jeg pleide å bli stresset når jeg skulle snakke norsk, spesielt hvis jeg måtte svare raskt. Derfor bestemte jeg meg for å øve litt hver dag i stedet for å prøve å lære alt på en gang. Etter hvert la jeg merke til at jeg forstod mer, og at jeg ikke nølte like mye når jeg snakket. Det hjalp meg å ta det med ro og fokusere på én ting om gangen.",
     "translationJa": "以前はノルウェー語を話すとき、特にすぐに返事をしなければならない場面でよく緊張していました。そこで、一度に全部覚えようとするのではなく、毎日少しずつ練習することにしました。続けているうちに、前より理解できることが増え、話すときもあまり迷わなくなりました。焦らず、一つずつ取り組むのが自分には合っていました。",
-
     "translationEn": "I used to feel stressed when I had to speak Norwegian, especially when I needed to answer quickly. So I decided to practice a little every day instead of trying to learn everything at once. Over time, I noticed that I understood more and hesitated less when I spoke. Taking it easy and focusing on one thing at a time worked well for me.",
     "expressions": [
-      {"phrase": "pleie å", "formInText": "pleide å", "ja": "以前はよく〜していた", "en": "used to"},
-      {"phrase": "bli stresset når", "ja": "〜すると緊張する / ストレスを感じる", "en": "get stressed when"},
-      {"phrase": "bestemme seg for å", "formInText": "bestemte jeg meg for å", "ja": "〜することに決める", "en": "decide to"},
-      {"phrase": "i stedet for å", "ja": "〜する代わりに", "en": "instead of doing"},
-      {"phrase": "etter hvert", "formInText": "Etter hvert", "ja": "そのうち / 続けているうちに / だんだん", "en": "over time / after a while"},
-      {"phrase": "legge merke til", "formInText": "la jeg merke til", "ja": "〜に気づく", "en": "notice"},
-      {"phrase": "nøle", "formInText": "nølte", "ja": "ためらう / 迷う", "en": "hesitate"},
-      {"phrase": "ta det med ro", "ja": "焦らずに進める / 落ち着く", "en": "take it easy"},
-      {"phrase": "én ting om gangen", "ja": "一度に一つずつ", "en": "one thing at a time"}
+      {
+        "phrase": "pleie å",
+        "formInText": "pleide å",
+        "ja": "以前はよく〜していた",
+        "en": "used to"
+      },
+      {
+        "phrase": "bli stresset når",
+        "ja": "〜すると緊張する / ストレスを感じる",
+        "en": "get stressed when"
+      },
+      {
+        "phrase": "bestemme seg for å",
+        "formInText": "bestemte jeg meg for å",
+        "ja": "〜することに決める",
+        "en": "decide to"
+      },
+      {
+        "phrase": "i stedet for å",
+        "ja": "〜する代わりに",
+        "en": "instead of doing"
+      },
+      {
+        "phrase": "etter hvert",
+        "formInText": "Etter hvert",
+        "ja": "そのうち / 続けているうちに / だんだん",
+        "en": "over time / after a while"
+      },
+      {
+        "phrase": "legge merke til",
+        "formInText": "la jeg merke til",
+        "ja": "〜に気づく",
+        "en": "notice"
+      },
+      {
+        "phrase": "nøle",
+        "formInText": "nølte",
+        "ja": "ためらう / 迷う",
+        "en": "hesitate"
+      },
+      {
+        "phrase": "ta det med ro",
+        "ja": "焦らずに進める / 落ち着く",
+        "en": "take it easy"
+      },
+      {
+        "phrase": "én ting om gangen",
+        "ja": "一度に一つずつ",
+        "en": "one thing at a time"
+      }
     ],
     "grammar": [
       {
@@ -47,11 +87,28 @@
     "text": "Jeg begynte å øve på norsk hver dag, og gradvis ble det lettere. Etter hvert kunne jeg snakke mer flytende uten å nøle. Jeg bestemte meg for å ta det med ro og ikke stresse med å lære alt på en gang. Å øve litt hver dag føltes mer naturlig enn å prøve å gjøre alt på en gang.",
     "translationJa": "毎日ノルウェー語を練習し始めると、少しずつ楽になっていきました。しばらくすると、ためらわずに前よりなめらかに話せるようになりました。一度に全部覚えようとして焦るのではなく、落ち着いて進めることにしました。毎日少しずつ練習する方が、まとめて全部やろうとするより自然に感じました。",
     "translationEn": "I started practicing Norwegian every day, and it gradually became easier. After a while, I could speak more fluently without hesitating. I decided to take it easy and not rush to learn everything at once. Practicing a little each day felt more natural than trying to do it all at once.",
-    "sourceWords": ["gradvis", "etter hvert", "ta det med ro"],
+    "sourceWords": [
+      "gradvis",
+      "etter hvert",
+      "ta det med ro"
+    ],
     "expressions": [
-      {"phrase": "gradvis", "ja": "徐々に", "en": "gradually"},
-      {"phrase": "etter hvert", "formInText": "Etter hvert", "ja": "しばらくすると / そのうち", "en": "after a while / over time"},
-      {"phrase": "ta det med ro", "ja": "焦らずに進める", "en": "take it easy"}
+      {
+        "phrase": "gradvis",
+        "ja": "徐々に",
+        "en": "gradually"
+      },
+      {
+        "phrase": "etter hvert",
+        "formInText": "Etter hvert",
+        "ja": "しばらくすると / そのうち",
+        "en": "after a while / over time"
+      },
+      {
+        "phrase": "ta det med ro",
+        "ja": "焦らずに進める",
+        "en": "take it easy"
+      }
     ],
     "grammar": [
       {
@@ -70,10 +127,21 @@
     "text": "Det er sannsynlig at jeg kommer til å møte Maren i parken i kveld. Hun sa at hun kanskje ville gå en tur langs elven, og jeg kjenner henne godt nok til å vite at dette er en hyggelig måte å tilbringe tid sammen. Vi snakker om hva som er viktig i hverdagen og deler noen små planer for den kommende helgen.",
     "translationJa": "今夜は公園でマレンに会うことになりそうです。彼女は川沿いを散歩するかもしれないと言っていて、ゆっくり話すにはちょうどよさそうです。日々の暮らしで大切にしていることや、今度の週末のちょっとした予定について話すつもりです。",
     "translationEn": "I'll probably meet Maren in the park tonight. She said she might take a walk along the river, and that sounds like a nice way to spend some time together. We'll talk about what matters in everyday life and share a few small plans for the coming weekend.",
-    "sourceWords": ["sannsynlig"],
+    "sourceWords": [
+      "sannsynlig"
+    ],
     "expressions": [
-      {"phrase": "det er sannsynlig at", "formInText": "Det er sannsynlig at", "ja": "〜である可能性が高い", "en": "it is likely that"},
-      {"phrase": "tilbringe tid sammen", "ja": "一緒に時間を過ごす", "en": "spend time together"}
+      {
+        "phrase": "det er sannsynlig at",
+        "formInText": "Det er sannsynlig at",
+        "ja": "〜である可能性が高い",
+        "en": "it is likely that"
+      },
+      {
+        "phrase": "tilbringe tid sammen",
+        "ja": "一緒に時間を過ごす",
+        "en": "spend time together"
+      }
     ],
     "grammar": [
       {
@@ -92,10 +160,23 @@
     "text": "På kontoret hadde vi et møte om det nye prosjektet. Sjefen forklarte at rapporten må være klar til fredag, og at vi må dekke av alle detaljer. Jeg spurte om vi kunne inkludere mer informasjon om lærlingplassene og hvordan noen av våre kolleger arbeider i IT-utviklingsteamet.",
     "translationJa": "オフィスで新しいプロジェクトについての会議がありました。上司は、レポートを金曜日までに仕上げる必要があり、細かい点もすべて押さえなければならないと説明しました。私は、見習いポジションについての情報や、IT開発チームで働く同僚たちの仕事内容をもう少し入れられるか尋ねました。",
     "translationEn": "We had a meeting at the office about the new project. The manager explained that the report had to be ready by Friday and that we needed to cover all the details. I asked whether we could include more information about the apprenticeship positions and how some of our colleagues work in the IT development team.",
-    "sourceWords": ["dekke av", "lærlingplass", "IT-utvikling"],
+    "sourceWords": [
+      "dekke av",
+      "lærlingplass",
+      "IT-utvikling"
+    ],
     "expressions": [
-      {"phrase": "dekke av", "ja": "〜を網羅する / 押さえる", "en": "cover / include"},
-      {"phrase": "lærlingplass", "formInText": "lærlingplassene", "ja": "見習いポジション", "en": "apprenticeship position"}
+      {
+        "phrase": "dekke av",
+        "ja": "〜を網羅する / 押さえる",
+        "en": "cover / include"
+      },
+      {
+        "phrase": "lærlingplass",
+        "formInText": "lærlingplassene",
+        "ja": "見習いポジション",
+        "en": "apprenticeship position"
+      }
     ],
     "grammar": [
       {
@@ -114,10 +195,25 @@
     "text": "Veien var dekket av snø, og landområdet rundt huset så helt hvitt ut. Gradvis begynte sola å varme opp luften, og etter hvert kunne jeg se at sporene i snøen smeltet litt. Det er fint å bo i Norge når du kan oppleve naturen på denne måten.",
     "translationJa": "道は雪に覆われ、家の周りの土地は一面真っ白でした。少しずつ太陽が空気を暖め始め、しばらくすると雪の上の足跡が少し溶けていくのが見えました。こんなふうに自然を感じられると、ノルウェーに住んでいてよかったと思います。",
     "translationEn": "The road was covered in snow, and the land around the house looked completely white. Gradually, the sun began to warm the air, and after a while I could see the tracks in the snow starting to melt. It feels good to live in Norway when you can experience nature like this.",
-    "sourceWords": ["dekke av", "landområde", "gradvis", "etter hvert"],
+    "sourceWords": [
+      "dekke av",
+      "landområde",
+      "gradvis",
+      "etter hvert"
+    ],
     "expressions": [
-      {"phrase": "være dekket av", "formInText": "dekket av snø", "ja": "〜に覆われている", "en": "be covered with / by"},
-      {"phrase": "gradvis", "formInText": "Gradvis", "ja": "少しずつ / 徐々に", "en": "gradually"}
+      {
+        "phrase": "være dekket av",
+        "formInText": "dekket av snø",
+        "ja": "〜に覆われている",
+        "en": "be covered with / by"
+      },
+      {
+        "phrase": "gradvis",
+        "formInText": "Gradvis",
+        "ja": "少しずつ / 徐々に",
+        "en": "gradually"
+      }
     ],
     "grammar": [
       {
@@ -131,15 +227,27 @@
     "id": "no_006",
     "language": "no",
     "category": "health",
-    "level": "a2",
+    "level": "b1",
     "title": "Ta vare på helsen",
-    "text": "Jeg prøver å spise sunt og trene jevnlig, men noen ganger er det vanskelig. Hvis jeg kjenner meg sliten, pleier jeg å ta det med ro og hvile. Etter hvert blir jeg mer energisk, og det føles mer sannsynlig at jeg kan holde en god rutine.",
+    "text": "Jeg prøver å spise sunt og trene jevnlig, men noen ganger er det vanskelig. Hvis jeg kjenner meg sliten, pleier jeg å ta det med ro og hvile. Etter hvert får jeg mer energi, og da blir det lettere å holde en god rutine.",
     "translationJa": "健康的に食べて、定期的に運動するようにしていますが、うまくいかない日もあります。疲れを感じるときは、無理をせず休むことが多いです。そうしているうちに少しずつ元気が戻り、良い習慣を続けられそうだと感じます。",
     "translationEn": "I try to eat well and exercise regularly, but sometimes it is difficult. When I feel tired, I usually take it easy and rest. Over time, I feel more energetic, and it seems more likely that I can keep a good routine.",
-    "sourceWords": ["ta det med ro", "etter hvert", "sannsynlig"],
+    "sourceWords": [
+      "ta det med ro",
+      "etter hvert",
+      "sannsynlig"
+    ],
     "expressions": [
-      {"phrase": "ta det med ro", "ja": "ゆっくり休む", "en": "take it easy"},
-      {"phrase": "holde en god rutine", "ja": "良い習慣を続ける", "en": "keep a good routine"}
+      {
+        "phrase": "ta det med ro",
+        "ja": "ゆっくり休む",
+        "en": "take it easy"
+      },
+      {
+        "phrase": "holde en god rutine",
+        "ja": "良い習慣を続ける",
+        "en": "keep a good routine"
+      }
     ],
     "grammar": [
       {
@@ -159,13 +267,46 @@
     "translationJa": "以前は、新しい習慣を始めるときに勢いはあるものの、数日でやめてしまうことがよくありました。今年は、毎朝10分だけ読書と静かな予定確認の時間を取ることにしました。少しずつその習慣に慣れていき、続けるのが前より楽になりました。小さな進歩を記録することで、焦らずにいられるようになり、何でも完璧にやらなければという不安も減りました。",
     "translationEn": "I used to start new habits with a lot of energy, but I often gave up after a few days. This year, I decided to set aside ten minutes each morning for reading and quiet planning. Little by little, I got used to the routine, and it became easier to stick with it. Keeping track of small progress helped me feel more patient and less worried about doing everything perfectly.",
     "expressions": [
-      {"phrase": "used to", "ja": "以前はよく〜していた", "en": "describes a past habit"},
-      {"phrase": "give up", "formInText": "gave up", "ja": "あきらめる / やめる", "en": "stop trying"},
-      {"phrase": "set aside time", "formInText": "set aside ten minutes", "ja": "時間を取っておく", "en": "reserve time for something"},
-      {"phrase": "little by little", "formInText": "Little by little", "ja": "少しずつ", "en": "gradually"},
-      {"phrase": "get used to", "formInText": "got used to", "ja": "〜に慣れる", "en": "become familiar with"},
-      {"phrase": "stick with", "ja": "続ける", "en": "continue doing something"},
-      {"phrase": "keep track of", "formInText": "Keeping track of", "ja": "記録する / 把握しておく", "en": "record or follow progress"}
+      {
+        "phrase": "used to",
+        "ja": "以前はよく〜していた",
+        "en": "describes a past habit"
+      },
+      {
+        "phrase": "give up",
+        "formInText": "gave up",
+        "ja": "あきらめる / やめる",
+        "en": "stop trying"
+      },
+      {
+        "phrase": "set aside time",
+        "formInText": "set aside ten minutes",
+        "ja": "時間を取っておく",
+        "en": "reserve time for something"
+      },
+      {
+        "phrase": "little by little",
+        "formInText": "Little by little",
+        "ja": "少しずつ",
+        "en": "gradually"
+      },
+      {
+        "phrase": "get used to",
+        "formInText": "got used to",
+        "ja": "〜に慣れる",
+        "en": "become familiar with"
+      },
+      {
+        "phrase": "stick with",
+        "ja": "続ける",
+        "en": "continue doing something"
+      },
+      {
+        "phrase": "keep track of",
+        "formInText": "Keeping track of",
+        "ja": "記録する / 把握しておく",
+        "en": "record or follow progress"
+      }
     ],
     "grammar": [
       {
@@ -191,50 +332,177 @@
     "translationEn": "After work today, I went to a nearby café. I was a little tired, but after drinking a warm coffee, I felt a bit calmer. Before going home, I checked my plans for tomorrow and made a shopping list. Every day is busy, but I want to value these small moments.",
     "translationNo": "I dag dro jeg på en kafé i nærheten etter jobb. Jeg var litt sliten, men etter å ha drukket en varm kaffe følte jeg meg litt roligere. Før jeg dro hjem, sjekket jeg planene for i morgen og lagde en handleliste. Hver dag er travel, men jeg vil sette pris på slike små øyeblikk.",
     "rubyText": [
-      {"text": "今日", "reading": "きょう"},
-      {"text": "は"},
-      {"text": "仕事", "reading": "しごと"},
-      {"text": "のあとで、"},
-      {"text": "近く", "reading": "ちかく"},
-      {"text": "のカフェに"},
-      {"text": "行きました", "reading": "いきました"},
-      {"text": "。"},
-      {"text": "少し", "reading": "すこし"},
-      {"text": "疲れて", "reading": "つかれて"},
-      {"text": "いましたが、"},
-      {"text": "温かい", "reading": "あたたかい"},
-      {"text": "コーヒーを"},
-      {"text": "飲んだら", "reading": "のんだら"},
-      {"text": "、"},
-      {"text": "気分", "reading": "きぶん"},
-      {"text": "が"},
-      {"text": "少し", "reading": "すこし"},
-      {"text": "落ち着きました", "reading": "おちつきました"},
-      {"text": "。"},
-      {"text": "家", "reading": "いえ"},
-      {"text": "に"},
-      {"text": "帰る", "reading": "かえる"},
-      {"text": "前", "reading": "まえ"},
-      {"text": "に、"},
-      {"text": "明日", "reading": "あした"},
-      {"text": "の"},
-      {"text": "予定", "reading": "よてい"},
-      {"text": "を"},
-      {"text": "確認", "reading": "かくにん"},
-      {"text": "して、"},
-      {"text": "買い物", "reading": "かいもの"},
-      {"text": "リストも作りました。毎日忙しいですが、こういう小さな時間を"},
-      {"text": "大切", "reading": "たいせつ"},
-      {"text": "にしたいです。"}
+      {
+        "text": "今日",
+        "reading": "きょう"
+      },
+      {
+        "text": "は"
+      },
+      {
+        "text": "仕事",
+        "reading": "しごと"
+      },
+      {
+        "text": "のあとで、"
+      },
+      {
+        "text": "近く",
+        "reading": "ちかく"
+      },
+      {
+        "text": "のカフェに"
+      },
+      {
+        "text": "行きました",
+        "reading": "いきました"
+      },
+      {
+        "text": "。"
+      },
+      {
+        "text": "少し",
+        "reading": "すこし"
+      },
+      {
+        "text": "疲れて",
+        "reading": "つかれて"
+      },
+      {
+        "text": "いましたが、"
+      },
+      {
+        "text": "温かい",
+        "reading": "あたたかい"
+      },
+      {
+        "text": "コーヒーを"
+      },
+      {
+        "text": "飲んだら",
+        "reading": "のんだら"
+      },
+      {
+        "text": "、"
+      },
+      {
+        "text": "気分",
+        "reading": "きぶん"
+      },
+      {
+        "text": "が"
+      },
+      {
+        "text": "少し",
+        "reading": "すこし"
+      },
+      {
+        "text": "落ち着きました",
+        "reading": "おちつきました"
+      },
+      {
+        "text": "。"
+      },
+      {
+        "text": "家",
+        "reading": "いえ"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "帰る",
+        "reading": "かえる"
+      },
+      {
+        "text": "前",
+        "reading": "まえ"
+      },
+      {
+        "text": "に、"
+      },
+      {
+        "text": "明日",
+        "reading": "あした"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "予定",
+        "reading": "よてい"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "確認",
+        "reading": "かくにん"
+      },
+      {
+        "text": "して、"
+      },
+      {
+        "text": "買い物",
+        "reading": "かいもの"
+      },
+      {
+        "text": "リストも作りました。毎日忙しいですが、こういう小さな時間を"
+      },
+      {
+        "text": "大切",
+        "reading": "たいせつ"
+      },
+      {
+        "text": "にしたいです。"
+      }
     ],
     "expressions": [
-      {"phrase": "仕事のあとで", "ja": "仕事が終わったあとで", "en": "after work", "no": "etter jobb"},
-      {"phrase": "近くの", "ja": "近い場所にある", "en": "nearby", "no": "i nærheten"},
-      {"phrase": "少し疲れていました", "ja": "少し疲れた状態でした", "en": "was a little tired", "no": "var litt sliten"},
-      {"phrase": "気分が落ち着く", "formInText": "気分が少し落ち着きました", "ja": "気持ちが少し楽になる", "en": "feel calmer", "no": "føle seg roligere"},
-      {"phrase": "家に帰る前に", "ja": "家へ帰るより前に", "en": "before going home", "no": "før man drar hjem"},
-      {"phrase": "予定を確認する", "formInText": "予定を確認して", "ja": "予定をチェックする", "en": "check plans", "no": "sjekke planer"},
-      {"phrase": "大切にする", "formInText": "大切にしたいです", "ja": "価値があるものとして扱う", "en": "value / cherish", "no": "sette pris på"}
+      {
+        "phrase": "仕事のあとで",
+        "ja": "仕事が終わったあとで",
+        "en": "after work",
+        "no": "etter jobb"
+      },
+      {
+        "phrase": "近くの",
+        "ja": "近い場所にある",
+        "en": "nearby",
+        "no": "i nærheten"
+      },
+      {
+        "phrase": "少し疲れていました",
+        "ja": "少し疲れた状態でした",
+        "en": "was a little tired",
+        "no": "var litt sliten"
+      },
+      {
+        "phrase": "気分が落ち着く",
+        "formInText": "気分が少し落ち着きました",
+        "ja": "気持ちが少し楽になる",
+        "en": "feel calmer",
+        "no": "føle seg roligere"
+      },
+      {
+        "phrase": "家に帰る前に",
+        "ja": "家へ帰るより前に",
+        "en": "before going home",
+        "no": "før man drar hjem"
+      },
+      {
+        "phrase": "予定を確認する",
+        "formInText": "予定を確認して",
+        "ja": "予定をチェックする",
+        "en": "check plans",
+        "no": "sjekke planer"
+      },
+      {
+        "phrase": "大切にする",
+        "formInText": "大切にしたいです",
+        "ja": "価値があるものとして扱う",
+        "en": "value / cherish",
+        "no": "sette pris på"
+      }
     ],
     "grammar": [
       {
