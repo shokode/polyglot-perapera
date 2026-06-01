@@ -53,7 +53,57 @@ const learningFocusExpressions = text?.expressions.map((item) => item.phrase) ??
 const learningFocusGrammar = text?.grammar.map((item) => item.title) ?? [];
 const learningFocusSummaryExpressions = learningFocusExpressions.join(' / ');
 const learningFocusSummaryGrammar = learningFocusGrammar.join(' / ');
-const highlightedTextHtml = text ? renderHighlightedText(text.text, text.expressions) : '';
+const explanationLanguageOrder: UILang[] = ['ja', 'en', 'no'];
+
+function renderRubyText(rubyText: Array<{ text: string; reading?: string }>) {
+  return `<p>${rubyText.map((part) => {
+    const safeText = escapeHtml(part.text);
+    return part.reading
+      ? `<ruby>${safeText}<rt>${escapeHtml(part.reading)}</rt></ruby>`
+      : safeText;
+  }).join('')}</p>`;
+}
+
+function getTranslationValue(item: Record<string, unknown>, lang: UILang) {
+  const fieldByLanguage: Record<UILang, string> = {
+    ja: 'translationJa',
+    en: 'translationEn',
+    no: 'translationNo',
+  };
+  const value = item[fieldByLanguage[lang]];
+  return typeof value === 'string' && value.trim() ? value : null;
+}
+
+function getTranslationsToShow(item: Record<string, unknown>) {
+  return explanationLanguageOrder
+    .filter((lang) => lang !== item.language)
+    .map((lang) => ({ lang, value: getTranslationValue(item, lang) }))
+    .filter((translation): translation is { lang: UILang; value: string } => Boolean(translation.value));
+}
+
+function getExplanationMap(item: Record<string, unknown>) {
+  return {
+    ja: typeof item.ja === 'string' ? item.ja : typeof item.descriptionJa === 'string' ? item.descriptionJa : '',
+    en: typeof item.en === 'string' ? item.en : typeof item.descriptionEn === 'string' ? item.descriptionEn : '',
+    no: typeof item.no === 'string' ? item.no : typeof item.descriptionNo === 'string' ? item.descriptionNo : '',
+  };
+}
+
+function getOrderedExplanations(item: Record<string, unknown>, uiLang: UILang) {
+  const explanations = getExplanationMap(item);
+  return [uiLang, ...explanationLanguageOrder.filter((lang) => lang !== uiLang)]
+    .map((lang) => ({ lang, value: explanations[lang] }))
+    .filter((entry) => entry.value);
+}
+
+// TODO: Future Japanese typing mode can support exact kanji mode and kana reading mode.
+// For now, typing comparison intentionally uses the plain text field only.
+const highlightedTextHtml = text
+  ? text.language === 'ja' && 'rubyText' in text && Array.isArray(text.rubyText)
+    ? renderRubyText(text.rubyText)
+    : renderHighlightedText(text.text, text.expressions)
+  : '';
+const translationsToShow = text ? getTranslationsToShow(text) : [];
 
 const clientScript = `
   const text = ${JSON.stringify(text)};
@@ -190,6 +240,52 @@ const clientScript = `
     return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
   }
 
+  function getTranslationTitle(lang, labels) {
+    if (lang === 'ja') {
+      return labels.japaneseTranslation;
+    }
+    if (lang === 'no') {
+      return labels.norwegianTranslation;
+    }
+    return labels.englishTranslation;
+  }
+
+  function getExplanationLanguageOrder(lang) {
+    return [lang, ...uiLanguages.filter((item) => item !== lang)];
+  }
+
+  function escapeHtmlClient(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function getLocalizedExplanations(data, lang) {
+    const order = getExplanationLanguageOrder(lang);
+    return order
+      .map((language) => ({ language, value: data[language] }))
+      .filter((entry) => typeof entry.value === 'string' && entry.value.trim());
+  }
+
+  function renderLocalizedExplanations() {
+    const lang = uiLanguageSelect.value;
+    document.querySelectorAll('[data-explanation-map]').forEach((container) => {
+      let data = {};
+      try {
+        data = JSON.parse(container.dataset.explanationMap || '{}');
+      } catch {
+        data = {};
+      }
+      container.innerHTML = getLocalizedExplanations(data, lang).map((entry) => {
+        const label = languageNames[entry.language]?.[lang] || entry.language;
+        return '<div class="localized-explanation"><span class="grammar-language-label">' + escapeHtmlClient(label) + ':</span><p>' + escapeHtmlClient(entry.value) + '</p></div>';
+      }).join('');
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const statusButtons = document.querySelectorAll('[data-expression-status]');
     const expressionCards = document.querySelectorAll('[data-expression-card]');
@@ -210,8 +306,6 @@ const clientScript = `
     const progressTitle = document.getElementById('progress-title');
     const accuracyTitle = document.getElementById('accuracy-title');
     const wpmTitle = document.getElementById('wpm-title');
-    const japaneseTranslationTitle = document.getElementById('japanese-translation-title');
-    const englishTranslationTitle = document.getElementById('english-translation-title');
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
 
@@ -303,8 +397,9 @@ const clientScript = `
       progressTitle.textContent = labels.progress;
       accuracyTitle.textContent = labels.accuracy;
       wpmTitle.textContent = labels.wpm;
-      japaneseTranslationTitle.textContent = labels.japaneseTranslation;
-      englishTranslationTitle.textContent = labels.englishTranslation;
+      document.querySelectorAll('[data-translation-title]').forEach((el) => {
+        el.textContent = getTranslationTitle(el.dataset.translationTitle, labels);
+      });
       expressionsTitle.textContent = labels.usefulExpressions;
       grammarTitle.textContent = labels.grammarFromText;
       document.querySelectorAll('[data-expression-form-label]').forEach((el) => {
@@ -315,6 +410,7 @@ const clientScript = `
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
       updateExpressionPracticeLabels();
+      renderLocalizedExplanations();
     }
 
     function updateMetrics() {
@@ -471,14 +567,18 @@ if (!text) {
       </section>
 
       <section class="translation-card" id="completion-panel" hidden>
-        <div>
-          <h3 id="japanese-translation-title" data-i18n="japaneseTranslation">{uiText[defaultUiLang].japaneseTranslation}</h3>
-          <p>{text.translationJa}</p>
-        </div>
-        <div>
-          <h3 id="english-translation-title" data-i18n="englishTranslation">{uiText[defaultUiLang].englishTranslation}</h3>
-          <p>{text.translationEn}</p>
-        </div>
+        {translationsToShow.map((translation) => (
+          <div>
+            <h3 data-translation-title={translation.lang}>
+              {translation.lang === 'ja'
+                ? uiText[defaultUiLang].japaneseTranslation
+                : translation.lang === 'no'
+                  ? uiText[defaultUiLang].norwegianTranslation
+                  : uiText[defaultUiLang].englishTranslation}
+            </h3>
+            <p>{translation.value}</p>
+          </div>
+        ))}
       </section>
 
       <section class="expressions-card" id="expressions-panel" hidden>
@@ -494,8 +594,14 @@ if (!text) {
                 <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>
               )}
               <p class="expression-practice"><span data-expression-practice>{uiText[defaultUiLang].expressionNotPracticed}</span><span class="high-repetition-label" data-high-repetition-label>{uiText[defaultUiLang].highRepetition}</span></p>
-              <p>{item.ja}</p>
-              <p>{item.en}</p>
+              <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
+                {getOrderedExplanations(item, defaultUiLang).map((entry) => (
+                  <div class="localized-explanation">
+                    <span class="grammar-language-label">{languageNames[entry.lang][defaultUiLang]}:</span>
+                    <p>{entry.value}</p>
+                  </div>
+                ))}
+              </div>
             </article>
           ))}
         </div>
@@ -507,13 +613,13 @@ if (!text) {
           {text.grammar.map((item) => (
             <article class="grammar-card-item">
               <strong>{item.title}</strong>
-              <div class="grammar-explanation">
-                <span class="grammar-language-label">Japanese:</span>
-                <p>{item.descriptionJa}</p>
-              </div>
-              <div class="grammar-explanation">
-                <span class="grammar-language-label">English:</span>
-                <p>{item.descriptionEn}</p>
+              <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
+                {getOrderedExplanations(item, defaultUiLang).map((entry) => (
+                  <div class="localized-explanation">
+                    <span class="grammar-language-label">{languageNames[entry.lang][defaultUiLang]}:</span>
+                    <p>{entry.value}</p>
+                  </div>
+                ))}
               </div>
             </article>
           ))}

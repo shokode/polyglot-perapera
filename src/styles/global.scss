@@ -575,10 +575,16 @@ textarea {
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.grammar-explanation {
+.grammar-explanation,
+.explanation-list {
   display: grid;
   gap: 0.25rem;
   margin-top: 0.8rem;
+}
+
+.localized-explanation {
+  display: grid;
+  gap: 0.25rem;
 }
 
 .grammar-language-label {
@@ -588,7 +594,8 @@ textarea {
   letter-spacing: 0.02em;
 }
 
-.grammar-explanation p {
+.grammar-explanation p,
+.localized-explanation p {
   margin: 0;
 }
 
@@ -727,6 +734,16 @@ textarea {
 
 .text-content p {
   margin: 0 0 1.2rem;
+}
+
+.text-content ruby {
+  ruby-position: over;
+}
+
+.text-content rt {
+  color: var(--text-muted);
+  font-size: 0.55em;
+  font-weight: 600;
 }
 
 .target-highlight {

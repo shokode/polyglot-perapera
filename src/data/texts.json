@@ -148,5 +148,113 @@
         "descriptionEn": "\"Pleier å\" describes habits and means \"usually do\" or \"tend to do\"."
       }
     ]
+  },
+  {
+    "id": "en_001",
+    "language": "en",
+    "category": "daily-life",
+    "level": "b1",
+    "title": "Building a steady routine",
+    "text": "I used to start new habits with a lot of energy, but I often gave up after a few days. This year, I decided to set aside ten minutes each morning for reading and quiet planning. Little by little, I got used to the routine, and it became easier to stick with it. Keeping track of small progress helped me feel more patient and less worried about doing everything perfectly.",
+    "translationJa": "以前は、新しい習慣を始めるときに勢いはあるものの、数日でやめてしまうことがよくありました。今年は、毎朝10分だけ読書と静かな予定確認の時間を取ることにしました。少しずつその習慣に慣れていき、続けるのが前より楽になりました。小さな進歩を記録することで、焦らずにいられるようになり、何でも完璧にやらなければという不安も減りました。",
+    "translationEn": "I used to start new habits with a lot of energy, but I often gave up after a few days. This year, I decided to set aside ten minutes each morning for reading and quiet planning. Little by little, I got used to the routine, and it became easier to stick with it. Keeping track of small progress helped me feel more patient and less worried about doing everything perfectly.",
+    "expressions": [
+      {"phrase": "used to", "ja": "以前はよく〜していた", "en": "describes a past habit"},
+      {"phrase": "give up", "formInText": "gave up", "ja": "あきらめる / やめる", "en": "stop trying"},
+      {"phrase": "set aside time", "formInText": "set aside ten minutes", "ja": "時間を取っておく", "en": "reserve time for something"},
+      {"phrase": "little by little", "formInText": "Little by little", "ja": "少しずつ", "en": "gradually"},
+      {"phrase": "get used to", "formInText": "got used to", "ja": "〜に慣れる", "en": "become familiar with"},
+      {"phrase": "stick with", "ja": "続ける", "en": "continue doing something"},
+      {"phrase": "keep track of", "formInText": "Keeping track of", "ja": "記録する / 把握しておく", "en": "record or follow progress"}
+    ],
+    "grammar": [
+      {
+        "title": "Used to + base verb",
+        "descriptionJa": "「used to + 動詞の原形」は、過去にはよくしていたけれど今は違う習慣を表します。",
+        "descriptionEn": "\"Used to + base verb\" describes a past habit or situation that is no longer true."
+      },
+      {
+        "title": "Gerund as subject",
+        "descriptionJa": "動名詞を主語にすると、「〜することは」という意味で文を始められます。",
+        "descriptionEn": "A gerund can act as the subject of a sentence, as in \"Keeping track of small progress helped me.\""
+      }
+    ]
+  },
+  {
+    "id": "ja_001",
+    "language": "ja",
+    "category": "daily-life",
+    "level": "a2",
+    "title": "小さな時間を大切にする",
+    "text": "今日は仕事のあとで、近くのカフェに行きました。少し疲れていましたが、温かいコーヒーを飲んだら、気分が少し落ち着きました。家に帰る前に、明日の予定を確認して、買い物リストも作りました。毎日忙しいですが、こういう小さな時間を大切にしたいです。",
+    "translationJa": "今日は仕事のあとで、近くのカフェに行きました。少し疲れていましたが、温かいコーヒーを飲んだら、気分が少し落ち着きました。家に帰る前に、明日の予定を確認して、買い物リストも作りました。毎日忙しいですが、こういう小さな時間を大切にしたいです。",
+    "translationEn": "After work today, I went to a nearby café. I was a little tired, but after drinking a warm coffee, I felt a bit calmer. Before going home, I checked my plans for tomorrow and made a shopping list. Every day is busy, but I want to value these small moments.",
+    "translationNo": "I dag dro jeg på en kafé i nærheten etter jobb. Jeg var litt sliten, men etter å ha drukket en varm kaffe følte jeg meg litt roligere. Før jeg dro hjem, sjekket jeg planene for i morgen og lagde en handleliste. Hver dag er travel, men jeg vil sette pris på slike små øyeblikk.",
+    "rubyText": [
+      {"text": "今日", "reading": "きょう"},
+      {"text": "は"},
+      {"text": "仕事", "reading": "しごと"},
+      {"text": "のあとで、"},
+      {"text": "近く", "reading": "ちかく"},
+      {"text": "のカフェに"},
+      {"text": "行きました", "reading": "いきました"},
+      {"text": "。"},
+      {"text": "少し", "reading": "すこし"},
+      {"text": "疲れて", "reading": "つかれて"},
+      {"text": "いましたが、"},
+      {"text": "温かい", "reading": "あたたかい"},
+      {"text": "コーヒーを"},
+      {"text": "飲んだら", "reading": "のんだら"},
+      {"text": "、"},
+      {"text": "気分", "reading": "きぶん"},
+      {"text": "が"},
+      {"text": "少し", "reading": "すこし"},
+      {"text": "落ち着きました", "reading": "おちつきました"},
+      {"text": "。"},
+      {"text": "家", "reading": "いえ"},
+      {"text": "に"},
+      {"text": "帰る", "reading": "かえる"},
+      {"text": "前", "reading": "まえ"},
+      {"text": "に、"},
+      {"text": "明日", "reading": "あした"},
+      {"text": "の"},
+      {"text": "予定", "reading": "よてい"},
+      {"text": "を"},
+      {"text": "確認", "reading": "かくにん"},
+      {"text": "して、"},
+      {"text": "買い物", "reading": "かいもの"},
+      {"text": "リストも作りました。毎日忙しいですが、こういう小さな時間を"},
+      {"text": "大切", "reading": "たいせつ"},
+      {"text": "にしたいです。"}
+    ],
+    "expressions": [
+      {"phrase": "仕事のあとで", "ja": "仕事が終わったあとで", "en": "after work", "no": "etter jobb"},
+      {"phrase": "近くの", "ja": "近い場所にある", "en": "nearby", "no": "i nærheten"},
+      {"phrase": "少し疲れていました", "ja": "少し疲れた状態でした", "en": "was a little tired", "no": "var litt sliten"},
+      {"phrase": "気分が落ち着く", "formInText": "気分が少し落ち着きました", "ja": "気持ちが少し楽になる", "en": "feel calmer", "no": "føle seg roligere"},
+      {"phrase": "家に帰る前に", "ja": "家へ帰るより前に", "en": "before going home", "no": "før man drar hjem"},
+      {"phrase": "予定を確認する", "formInText": "予定を確認して", "ja": "予定をチェックする", "en": "check plans", "no": "sjekke planer"},
+      {"phrase": "大切にする", "formInText": "大切にしたいです", "ja": "価値があるものとして扱う", "en": "value / cherish", "no": "sette pris på"}
+    ],
+    "grammar": [
+      {
+        "title": "〜たら",
+        "descriptionJa": "「〜たら」は、あることが起きたあとで次の変化や結果があることを表します。",
+        "descriptionEn": "\"〜たら\" can show that something happens after another action or condition.",
+        "descriptionNo": "「〜たら」 brukes når noe skjer etter en handling eller betingelse."
+      },
+      {
+        "title": "〜前に",
+        "descriptionJa": "「〜前に」は、「〜するより先に」という意味で、後ろには動詞の辞書形がよく来ます。",
+        "descriptionEn": "\"〜前に\" means \"before doing something\" and is often used after the dictionary form of a verb.",
+        "descriptionNo": "「〜前に」 betyr «før man gjør noe» og brukes ofte etter ordbokformen av verbet."
+      },
+      {
+        "title": "〜たい",
+        "descriptionJa": "「〜たい」は、自分がしたいことや望んでいることを表します。",
+        "descriptionEn": "\"〜たい\" expresses what the speaker wants to do.",
+        "descriptionNo": "「〜たい」 uttrykker hva taleren selv vil eller ønsker å gjøre."
+      }
+    ]
   }
 ]

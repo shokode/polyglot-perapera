@@ -141,6 +141,16 @@ const clientScript = `
     return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
   }
 
+  function getExplanationLanguageOrder(lang) {
+    return [lang, ...uiLanguages.filter((item) => item !== lang)];
+  }
+
+  function getLocalizedExpressionMeanings(expression, lang) {
+    return getExplanationLanguageOrder(lang)
+      .map((language) => ({ language, value: expression[language] }))
+      .filter((entry) => typeof entry.value === 'string' && entry.value.trim());
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, '&amp;')
@@ -214,6 +224,7 @@ const clientScript = `
         const { practiceCount } = getExpressionPractice(expression);
         const isHighRepetition = status === 'review' && practiceCount >= 10;
         const expressionKey = getExpressionStorageKey(expression);
+        const meanings = getLocalizedExpressionMeanings(expression, uiLanguageSelect.value);
         return ''
           + '<article class="expression-card review-expression-card" data-review-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
           + '<div class="expression-header">'
@@ -225,8 +236,7 @@ const clientScript = `
           + (expression.formInText && expression.formInText !== expression.phrase ? '<span class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</span>' : '')
           + '</div>'
           + '<div class="review-card-meaning">'
-          + '<p>' + escapeHtml(expression.ja) + '</p>'
-          + '<p>' + escapeHtml(expression.en) + '</p>'
+          + meanings.map((entry) => '<p><span class="grammar-language-label">' + escapeHtml(languageNames[entry.language]?.[uiLanguageSelect.value] || entry.language) + ':</span> ' + escapeHtml(entry.value) + '</p>').join('')
           + '</div>'
           + '<div class="review-card-actions">'
           + '<button class="secondary-button" type="button" data-review-action="keep" data-expression-key="' + escapeHtml(expressionKey) + '">' + escapeHtml(labels.keepReviewing) + '</button>'

@@ -101,6 +101,7 @@ export type UILabels = {
   wpm: string;
   japaneseTranslation: string;
   englishTranslation: string;
+  norwegianTranslation: string;
   usefulExpressions: string;
   grammarFromText: string;
   levelLabel: string;
@@ -155,6 +156,7 @@ export const uiText: Record<UILang, UILabels> = {
     wpm: 'WPM',
     japaneseTranslation: 'Japansk oversettelse',
     englishTranslation: 'Engelsk oversettelse',
+    norwegianTranslation: 'Norsk oversettelse',
     usefulExpressions: 'Nyttige uttrykk',
     grammarFromText: 'Grammatikk fra denne teksten',
     levelLabel: 'Nivå',
@@ -207,6 +209,7 @@ export const uiText: Record<UILang, UILabels> = {
     wpm: 'WPM',
     japaneseTranslation: 'Japanese Translation',
     englishTranslation: 'English Translation',
+    norwegianTranslation: 'Norwegian Translation',
     usefulExpressions: 'Useful expressions',
     grammarFromText: 'Grammar from this text',
     levelLabel: 'Level',
@@ -259,6 +262,7 @@ export const uiText: Record<UILang, UILabels> = {
     wpm: 'WPM',
     japaneseTranslation: '日本語訳',
     englishTranslation: '英語訳',
+    norwegianTranslation: 'ノルウェー語訳',
     usefulExpressions: '便利な表現',
     grammarFromText: 'この文章の文法',
     levelLabel: 'レベル',
