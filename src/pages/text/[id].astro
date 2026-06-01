@@ -374,8 +374,14 @@ if (!text) {
           {text.grammar.map((item) => (
             <article class="grammar-card-item">
               <strong>{item.title}</strong>
-              <p>{item.descriptionJa}</p>
-              <p>{item.descriptionEn}</p>
+              <div class="grammar-explanation">
+                <span class="grammar-language-label">Japanese:</span>
+                <p>{item.descriptionJa}</p>
+              </div>
+              <div class="grammar-explanation">
+                <span class="grammar-language-label">English:</span>
+                <p>{item.descriptionEn}</p>
+              </div>
             </article>
           ))}
         </div>

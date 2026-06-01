@@ -281,6 +281,10 @@ textarea {
   border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
+.grammar-card-item {
+  border-left: 3px solid rgba(130, 199, 255, 0.22);
+}
+
 .expression-card {
   border-left: 3px solid transparent;
   cursor: pointer;
@@ -328,6 +332,28 @@ textarea {
   color: var(--text-muted);
   line-height: 1.6;
   font-size: 0.95rem;
+}
+
+.grammar-card-item strong {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.grammar-explanation {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.8rem;
+}
+
+.grammar-language-label {
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.grammar-explanation p {
+  margin: 0;
 }
 
 .expression-header {
