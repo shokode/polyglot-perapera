@@ -1,0 +1,135 @@
+[
+  {
+    "id": "no_001",
+    "language": "no",
+    "category": "daily-life",
+    "level": "daily",
+    "title": "Kafé med venner",
+    "text": "Det er en vanlig lørdag i byen, og jeg går mot den lille kafeen i enden av gaten. Jeg har planlagt å møte noen venner til en lang prat, og luften er frisk etter en kort regnskur. Vi bestiller kaffe og te, og snakker om alt fra film til hva vi skal gjøre i sommer.\n\nJeg sa at jeg gledet meg til sommerferien, og at jeg ville ta det med ro i noen uker. En venn retter på setningen min og sier at jeg kan bruke derfor når jeg forklarer hvorfor jeg trenger en pause. Derfor begynner jeg setningen med et sterkt ønske om å lade batteriene.\n\nDet er lett å bruke uttrykk som 'ha planer om å' og 'ta det med ro' når du snakker om hverdag og framtid. Vi deler noen historier, og jeg prøver å legge merke til hvordan nordmenn bruker språket naturlig i samtale.",
+    "translationJa": "街の端にある小さなカフェに向かって、普通の土曜日の朝です。友達と長話をする予定で、短いにわか雨の後の空気はさわやかです。私たちはコーヒーと紅茶を注文し、映画から夏に何をするかまでの話をします。\n\n私は夏休みを楽しみにしていて、数週間ゆっくり過ごしたいと言いました。友達は私の文を直して、『derfor』を使ってなぜ休みが必要なのか説明できると言いました。だから、私はバッテリーを充電したいという強い願いで文を始めます。\n\n『ha planer om å』や『ta det med ro』のような表現は、日常や未来について話すときに使いやすいです。私たちはいくつかの話を共有し、ノルウェー人が会話で言葉を自然に使う方法に気を付けようとします。",
+    "translationEn": "It is a normal Saturday in town, and I am walking toward the small café at the end of the street. I have plans to meet some friends for a long chat, and the air is fresh after a short rain shower. We order coffee and tea, and talk about everything from movies to what we will do in the summer.\n\nI said that I was looking forward to the summer holiday and that I wanted to take it easy for a few weeks. A friend corrected my sentence and said that I can use derfor when I explain why I need a break. Therefore, I begin the sentence with a strong wish to recharge my batteries.\n\nIt is easy to use expressions like 'ha planer om å' and 'ta det med ro' when you talk about everyday life and the future. We share some stories, and I try to notice how Norwegians use language naturally in conversation.",
+    "expressions": [
+      {"phrase": "ha planer om å", "ja": "〜する予定がある", "en": "to plan to"},
+      {"phrase": "ta det med ro", "ja": "ゆっくり過ごす", "en": "take it easy"},
+      {"phrase": "glede seg til", "ja": "〜を楽しみにしている", "en": "look forward to"}
+    ],
+    "grammar": [
+      {
+        "title": "Derfor + verb + subjekt",
+        "descriptionJa": "Når derfor starter en setning, kommer verbet før subjektet.",
+        "descriptionEn": "When derfor starts a sentence, the verb comes before the subject."
+      }
+    ]
+  },
+  {
+    "id": "no_002",
+    "language": "no",
+    "category": "daily-life",
+    "level": "daily",
+    "title": "Gradvis forbedring",
+    "text": "Jeg begynte å øve på norsk hver dag, og gradvis ble det lettere. Etter hvert kunne jeg snakke mer flytende uten å nøle. Jeg bestemte meg for å ta det med ro og ikke stresse med å lære alt på en gang. Å øve litt hver dag føltes mer naturlig enn å prøve å gjøre alt på en gang.",
+    "translationJa": "私は毎日ノルウェー語を練習し始め、徐々に楽になってきました。やがて、私はためらうことなくもっと流暢に話せるようになりました。私は一度にすべてを学ぼうとせず、落ち着いて進めることにしました。毎日少しずつ練習する方が、一度に全部やろうとするより自然に感じました。",
+    "translationEn": "I started practicing Norwegian every day, and gradually it became easier. After a while I could speak more fluently without hesitating. I decided to take it easy and not rush to learn everything at once. Practicing a little each day felt more natural than trying to do it all at once.",
+    "sourceWords": ["gradvis", "etter hvert", "ta det med ro"],
+    "expressions": [
+      {"phrase": "gradvis", "ja": "徐々に", "en": "gradually"},
+      {"phrase": "etter hvert", "ja": "やがて", "en": "after a while"},
+      {"phrase": "ta det med ro", "ja": "落ち着いて進める", "en": "take it easy"}
+    ],
+    "grammar": [
+      {
+        "title": "Etter hvert",
+        "descriptionJa": "Etter hvert betyr 'etter litt tid' og brukes når noe skjer gradvis.",
+        "descriptionEn": "Etter hvert means 'after a while' and is used when something happens gradually."
+      }
+    ]
+  },
+  {
+    "id": "no_003",
+    "language": "no",
+    "category": "friends",
+    "level": "useful",
+    "title": "Sannsynlig besøk",
+    "text": "Det er sannsynlig at jeg kommer til å møte Maren i parken i kveld. Hun sa at hun kanskje ville gå en tur langs elven, og jeg kjenner henne godt nok til å vite at dette er en hyggelig måte å tilbringe tid sammen. Vi snakker om hva som er viktig i hverdagen og deler noen små planer for den kommende helgen.",
+    "translationJa": "私は今夜、公園でマレンに会う可能性が高いです。彼女は川沿いを散歩するかもしれないと言っていて、私は彼女が一緒に時間を過ごすのにこれが楽しい方法だとよく知っています。私たちは日常で大切なことについて話し、次の週末の小さな予定を共有します。",
+    "translationEn": "It is likely that I will meet Maren in the park tonight. She said she might take a walk along the river, and I know her well enough to know that this is a pleasant way to spend time together. We talk about what is important in everyday life and share some small plans for the coming weekend.",
+    "sourceWords": ["sannsynlig"],
+    "expressions": [
+      {"phrase": "det er sannsynlig", "ja": "〜の可能性が高い", "en": "it is likely"},
+      {"phrase": "tilbringe tid sammen", "ja": "一緒に時間を過ごす", "en": "spend time together"}
+    ],
+    "grammar": [
+      {
+        "title": "Det er sannsynlig at...",
+        "descriptionJa": "Denne setningen brukes for å uttrykke noe som mest sannsynlig skjer.",
+        "descriptionEn": "This sentence is used to express something that is most likely to happen."
+      }
+    ]
+  },
+  {
+    "id": "no_004",
+    "language": "no",
+    "category": "jobb",
+    "level": "natural",
+    "title": "Prosjektmøte på jobben",
+    "text": "På kontoret hadde vi et møte om det nye prosjektet. Sjefen forklarte at rapporten må være klar til fredag, og at vi må dekke av alle detaljer. Jeg spurte om vi kunne inkludere mer informasjon om lærlingplassene og hvordan noen av våre kolleger arbeider i IT-utviklingsteamet.",
+    "translationJa": "オフィスで私たちは新しいプロジェクトについての会議を開きました。上司はレポートを金曜日までに用意する必要があり、すべての詳細をカバーしなければならないと説明しました。私は、研修生のポジションや私たちの同僚の何人かがIT開発チームでどのように働いているかについてもっと情報を含めることができるか尋ねました。",
+    "translationEn": "At the office we had a meeting about the new project. The manager explained that the report must be ready by Friday and that we need to cover all details. I asked whether we could include more information about apprenticeship positions and how some of our colleagues work in the IT development team.",
+    "sourceWords": ["dekke av", "lærlingplass", "IT-utvikling"],
+    "expressions": [
+      {"phrase": "dekke av", "ja": "〜を覆う、〜を含める", "en": "cover, include"},
+      {"phrase": "lærlingplass", "ja": "見習いの立場", "en": "apprenticeship position"}
+    ],
+    "grammar": [
+      {
+        "title": "Må + infinitiv",
+        "descriptionJa": "Må brukes for å uttrykke nødvendighet, som i 'må være klar'.",
+        "descriptionEn": "Må is used to express necessity, as in 'must be ready'."
+      }
+    ]
+  },
+  {
+    "id": "no_005",
+    "language": "no",
+    "category": "norway-life",
+    "level": "natural",
+    "title": "Snødekt landskap",
+    "text": "Veien var dekket av snø, og landområdet rundt huset så helt hvitt ut. Gradvis begynte sola å varme opp luften, og etter hvert kunne jeg se at sporene i snøen smeltet litt. Det er fint å bo i Norge når du kan oppleve naturen på denne måten.",
+    "translationJa": "道は雪に覆われていて、家の周りの土地は真っ白でした。徐々に太陽が空気を温め始め、やがて雪の足跡が少し溶けているのが見えました。このように自然を体験できるとき、ノルウェーに住むのは素晴らしいです。",
+    "translationEn": "The road was covered in snow, and the countryside around the house looked completely white. Gradually the sun began to warm the air, and after a while I could see the tracks in the snow melting a little. It is nice to live in Norway when you can experience nature this way.",
+    "sourceWords": ["dekke av", "landområde", "gradvis", "etter hvert"],
+    "expressions": [
+      {"phrase": "dekket av snø", "ja": "雪で覆われている", "en": "covered in snow"},
+      {"phrase": "gradvis", "ja": "徐々に", "en": "gradually"}
+    ],
+    "grammar": [
+      {
+        "title": "Det er fint å...",
+        "descriptionJa": "Denne strukturen uttrykker at noe er hyggelig eller bra å gjøre.",
+        "descriptionEn": "This structure expresses that something is nice or good to do."
+      }
+    ]
+  },
+  {
+    "id": "no_006",
+    "language": "no",
+    "category": "health",
+    "level": "useful",
+    "title": "Ta vare på helsen",
+    "text": "Jeg prøver å spise sunt og trene jevnlig, men noen ganger er det vanskelig. Hvis jeg kjenner meg sliten, pleier jeg å ta det med ro og hvile. Etter hvert blir jeg mer energisk, og det føles mer sannsynlig at jeg kan holde en god rutine.",
+    "translationJa": "私は健康的な食事を心がけ、定期的に運動しようとしていますが、時々それは難しいです。疲れていると感じたら、落ち着いて休むようにしています。やがて私はより元気になり、良いルーティンを続けられる可能性が高いと感じます。",
+    "translationEn": "I try to eat healthy and exercise regularly, but sometimes it is hard. If I feel tired, I tend to take it easy and rest. After a while I become more energetic, and it feels more likely that I can keep a good routine.",
+    "sourceWords": ["ta det med ro", "etter hvert", "sannsynlig"],
+    "expressions": [
+      {"phrase": "ta det med ro", "ja": "ゆっくり休む", "en": "take it easy"},
+      {"phrase": "holde en god rutine", "ja": "良い習慣を続ける", "en": "keep a good routine"}
+    ],
+    "grammar": [
+      {
+        "title": "Pleier å + infinitiv",
+        "descriptionJa": "Pleier å brukes for vaner, som i 'pleier å ta det med ro'.",
+        "descriptionEn": "Pleier å is used for habits, as in 'tend to take it easy'."
+      }
+    ]
+  }
+]

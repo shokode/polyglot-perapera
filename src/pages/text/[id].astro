@@ -1,0 +1,289 @@
+---
+import texts from '../../data/texts.json' assert { type: 'json' };
+import '../../styles/global.scss';
+import {
+  uiLanguages,
+  uiLanguageNames,
+  uiText,
+  categoryLabels,
+  levelLabels,
+  languageNames,
+  type UILang,
+} from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return texts.map((item) => ({ params: { id: item.id } }));
+}
+
+const text = texts.find((item) => item.id === Astro.params.id);
+const defaultUiLang: UILang = 'en';
+const clientScript = `
+  const text = ${JSON.stringify(text)};
+  const ui = ${JSON.stringify(uiText)};
+  const uiLanguages = ${JSON.stringify(uiLanguages)};
+  const uiLanguageNames = ${JSON.stringify(uiLanguageNames)};
+  const categoryLabels = ${JSON.stringify(categoryLabels)};
+  const levelLabels = ${JSON.stringify(levelLabels)};
+  const languageNames = ${JSON.stringify(languageNames)};
+  const STORAGE_KEY = 'typingSiteUiLanguage';
+  const STATUS_KEY = 'typingSiteTextStatus';
+
+  function safeReadStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function safeWriteStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore
+    }
+  }
+
+  function loadStatus() {
+    try {
+      return JSON.parse(safeReadStorage(STATUS_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  function saveStatus(data) {
+    safeWriteStorage(STATUS_KEY, JSON.stringify(data));
+  }
+
+  function getSavedLanguage() {
+    const stored = safeReadStorage(STORAGE_KEY);
+    return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
+  }
+
+  function getUiText(lang) {
+    return ui[lang] || ui.en;
+  }
+
+  function getStatusLabel(key, active, labels) {
+    if (key === 'favorite') {
+      return active ? labels.favorited : labels.favorite;
+    }
+    if (key === 'review') {
+      return labels.reviewLater;
+    }
+    if (key === 'learned') {
+      return labels.learned;
+    }
+    return '';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const statusButtons = document.querySelectorAll('[data-key]');
+    const input = document.getElementById('typing-input');
+    const progressValue = document.getElementById('progress-value');
+    const accuracyValue = document.getElementById('accuracy-value');
+    const wpmValue = document.getElementById('wpm-value');
+    const completionPanel = document.getElementById('completion-panel');
+    const expressionsPanel = document.getElementById('expressions-panel');
+    const grammarPanel = document.getElementById('grammar-panel');
+    const uiLanguageSelect = document.getElementById('ui-language-select');
+    const languageChip = document.getElementById('language-chip');
+    const categoryChip = document.getElementById('category-chip');
+    const levelChip = document.getElementById('level-chip');
+    const readHeading = document.getElementById('read-heading');
+    const readDescription = document.getElementById('read-description');
+    const typingHeading = document.getElementById('typing-heading');
+    const progressTitle = document.getElementById('progress-title');
+    const accuracyTitle = document.getElementById('accuracy-title');
+    const wpmTitle = document.getElementById('wpm-title');
+    const japaneseTranslationTitle = document.getElementById('japanese-translation-title');
+    const englishTranslationTitle = document.getElementById('english-translation-title');
+    const expressionsTitle = document.getElementById('expressions-title');
+    const grammarTitle = document.getElementById('grammar-title');
+
+    function updateStatusButtons() {
+      const labels = getUiText(uiLanguageSelect.value);
+      const status = loadStatus()[text.id] || {};
+      statusButtons.forEach((button) => {
+        const key = button.dataset.key;
+        const active = Boolean(status[key]);
+        button.classList.toggle('active', active);
+        button.textContent = getStatusLabel(key, active, labels);
+      });
+    }
+
+    function renderUiText(lang) {
+      const labels = getUiText(lang);
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        const value = labels[key];
+        if (typeof value === 'string') {
+          el.textContent = value;
+        }
+      });
+
+      uiLanguageSelect.value = lang;
+      readHeading.textContent = labels.readTypeUnderstand;
+      readDescription.textContent = labels.focusNaturalMeaning;
+      typingHeading.textContent = labels.typingPractice;
+      input.placeholder = labels.typingPlaceholder;
+      progressTitle.textContent = labels.progress;
+      accuracyTitle.textContent = labels.accuracy;
+      wpmTitle.textContent = labels.wpm;
+      japaneseTranslationTitle.textContent = labels.japaneseTranslation;
+      englishTranslationTitle.textContent = labels.englishTranslation;
+      expressionsTitle.textContent = labels.usefulExpressions;
+      grammarTitle.textContent = labels.grammarFromText;
+      languageChip.textContent = languageNames[text.language]?.[lang] || text.language;
+      categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
+      levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[text.level]?.[lang] || text.level);
+      updateStatusButtons();
+    }
+
+    function updateMetrics() {
+      const target = text.text;
+      const typed = input.value;
+      let correct = 0;
+      for (let i = 0; i < typed.length; i += 1) {
+        if (typed[i] === target[i]) {
+          correct += 1;
+        }
+      }
+      const progress = Math.min(100, Math.round((correct / target.length) * 100));
+      const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
+      const elapsed = Math.max((performance.now() - startTime) / 60000, 0.016);
+      const words = typed.trim().split(/\\s+/).filter(Boolean).length;
+      const wpm = Math.round(words / elapsed);
+      progressValue.textContent = progress + '%';
+      accuracyValue.textContent = accuracy + '%';
+      wpmValue.textContent = '' + wpm;
+      if (typed === target) {
+        completionPanel.hidden = false;
+        expressionsPanel.hidden = false;
+        grammarPanel.hidden = false;
+      }
+    }
+
+    let startTime = performance.now();
+    input.addEventListener('focus', () => {
+      if (input.value.length === 0) {
+        startTime = performance.now();
+      }
+    });
+
+    input.addEventListener('input', updateMetrics);
+
+    statusButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const key = button.dataset.key;
+        const all = loadStatus();
+        const entry = all[text.id] || {};
+        entry[key] = !entry[key];
+        all[text.id] = entry;
+        saveStatus(all);
+        updateStatusButtons();
+      });
+    });
+
+    const saved = getSavedLanguage();
+    renderUiText(saved);
+    updateStatusButtons();
+
+    uiLanguageSelect.addEventListener('change', (event) => {
+      const lang = event.target.value;
+      safeWriteStorage(STORAGE_KEY, lang);
+      renderUiText(lang);
+    });
+  });
+`;
+
+if (!text) {
+  throw new Error('Text not found');
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{text.title} · Read & Type</title>
+  </head>
+  <body>
+    <main class="page-shell text-page">
+      <section class="hero-card page-top">
+        <div>
+          <h1 class="text-title">{text.title}</h1>
+          <div class="meta-strip">
+            <span class="meta-chip" id="language-chip">{languageNames[text.language as keyof typeof languageNames][defaultUiLang]}</span>
+            <span class="meta-chip" id="category-chip">{categoryLabels[text.category as keyof typeof categoryLabels][defaultUiLang]}</span>
+            <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[text.level as keyof typeof levelLabels][defaultUiLang]}</span>
+          </div>
+        </div>
+        <div class="language-switcher">
+          <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
+          <select id="ui-language-select">
+            {uiLanguages.map((lang) => (
+              <option value={lang}>{uiLanguageNames[lang]}</option>
+            ))}
+          </select>
+        </div>
+      </section>
+
+      <section class="note-card">
+        <h3 id="read-heading" data-i18n="readTypeUnderstand">{uiText[defaultUiLang].readTypeUnderstand}</h3>
+        <p id="read-description" data-i18n="focusNaturalMeaning">{uiText[defaultUiLang].focusNaturalMeaning}</p>
+      </section>
+
+      <section class="text-content">
+        {text.text}
+      </section>
+
+      <section class="note-card">
+        <h3 id="typing-heading" data-i18n="typingPractice">{uiText[defaultUiLang].typingPractice}</h3>
+        <textarea id="typing-input" class="type-area" placeholder={uiText[defaultUiLang].typingPlaceholder} spellcheck="false"></textarea>
+        <div class="stat-grid">
+          <div class="stat-card"><strong id="progress-title" data-i18n="progress">{uiText[defaultUiLang].progress}</strong><p id="progress-value">0%</p></div>
+          <div class="stat-card"><strong id="accuracy-title" data-i18n="accuracy">{uiText[defaultUiLang].accuracy}</strong><p id="accuracy-value">100%</p></div>
+          <div class="stat-card"><strong id="wpm-title" data-i18n="wpm">{uiText[defaultUiLang].wpm}</strong><p id="wpm-value">0</p></div>
+        </div>
+      </section>
+
+      <section class="translation-card" id="completion-panel" hidden>
+        <div>
+          <h3 id="japanese-translation-title" data-i18n="japaneseTranslation">{uiText[defaultUiLang].japaneseTranslation}</h3>
+          <p>{text.translationJa}</p>
+        </div>
+        <div>
+          <h3 id="english-translation-title" data-i18n="englishTranslation">{uiText[defaultUiLang].englishTranslation}</h3>
+          <p>{text.translationEn}</p>
+        </div>
+      </section>
+
+      <section class="expressions-card" id="expressions-panel" hidden>
+        <h3 id="expressions-title" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</h3>
+        {text.expressions.map((item) => (
+          <div class="expression-item">
+            <strong>{item.phrase}</strong>
+            <p>日本語: {item.ja}</p>
+            <p>English: {item.en}</p>
+          </div>
+        ))}
+      </section>
+
+      <section class="grammar-card" id="grammar-panel" hidden>
+        <h3 id="grammar-title" data-i18n="grammarFromText">{uiText[defaultUiLang].grammarFromText}</h3>
+        {text.grammar.map((item) => (
+          <div class="grammar-item">
+            <strong>{item.title}</strong>
+            <p>日本語: {item.descriptionJa}</p>
+            <p>English: {item.descriptionEn}</p>
+          </div>
+        ))}
+      </section>
+    </main>
+
+    <script type="module" set:html={clientScript}></script>
+  </body>
+</html>

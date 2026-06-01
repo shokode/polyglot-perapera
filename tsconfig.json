@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "astro",
+    "types": ["astro/client"],
+    "resolveJsonModule": true,
+    "allowArbitraryExtensions": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
