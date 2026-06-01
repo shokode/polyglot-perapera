@@ -229,6 +229,6 @@ export const uiText: Record<UILang, UILabels> = {
     expressionPracticePrefix: '',
     expressionPracticeSuffix: '回練習',
     expressionNotPracticed: '未練習',
-    highRepetition: 'たくさん復習',
+    highRepetition: '何度も復習中',
   },
 };

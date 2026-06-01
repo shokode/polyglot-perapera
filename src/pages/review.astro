@@ -170,10 +170,14 @@ const clientScript = `
           + '<strong>' + escapeHtml(expression.phrase) + '</strong>'
           + '<span class="status-button status-pill" data-status="' + status + '">' + escapeHtml(label) + '</span>'
           + '</div>'
-          + (expression.formInText && expression.formInText !== expression.phrase ? '<p class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</p>' : '')
-          + '<p class="expression-practice"><span>' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span><span class="high-repetition-label">' + escapeHtml(labels.highRepetition) + '</span></p>'
+          + '<p class="expression-practice review-card-practice"><span>' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span><span class="high-repetition-label">' + escapeHtml(labels.highRepetition) + '</span></p>'
+          + '<div class="review-card-meta">'
+          + (expression.formInText && expression.formInText !== expression.phrase ? '<span class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</span>' : '')
+          + '</div>'
+          + '<div class="review-card-meaning">'
           + '<p>' + escapeHtml(expression.ja) + '</p>'
           + '<p>' + escapeHtml(expression.en) + '</p>'
+          + '</div>'
           + '<div class="review-card-actions">'
           + '<button class="secondary-button" type="button" data-review-action="keep" data-expression-phrase="' + escapeHtml(expression.phrase) + '">' + escapeHtml(labels.keepReviewing) + '</button>'
           + '<button class="learned-button" type="button" data-review-action="learned" data-expression-phrase="' + escapeHtml(expression.phrase) + '">' + escapeHtml(labels.markAsLearned) + '</button>'

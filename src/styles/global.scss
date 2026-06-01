@@ -392,6 +392,34 @@ textarea {
   color: #cbd5e1;
 }
 
+.review-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0.45rem 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.review-card-meta .expression-text-form {
+  margin: 0;
+}
+
+.review-card-practice {
+  margin: 0.55rem 0 0;
+}
+
+.review-card-meaning {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.review-card-meaning p {
+  margin: 0;
+}
+
 .expression-practice {
   display: flex;
   flex-wrap: wrap;
