@@ -15,7 +15,7 @@ const expressions = Array.from(
     item.expressions.forEach((expression) => {
       const expressionKey = `${item.language}::${expression.phrase}`;
       if (!map.has(expressionKey)) {
-        map.set(expressionKey, { ...expression, language: item.language, textId: item.id });
+        map.set(expressionKey, { ...expression, language: item.language, textId: item.id, level: item.level });
       }
     });
     return map;
@@ -38,6 +38,21 @@ const clientScript = `
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
+  const levelSortRank = {
+    a1: 0,
+    a2: 1,
+    b1: 2,
+    b2: 3,
+    c1: 4,
+    natural: 5,
+  };
+  const legacyLevelMap = {
+    basic: 'a1',
+    useful: 'a2',
+    daily: 'b1',
+    advanced: 'b2',
+    natural: 'natural',
+  };
 
   function safeReadStorage(key) {
     try {
@@ -89,6 +104,13 @@ const clientScript = `
 
   function getUiText(lang) {
     return ui[lang] || ui.en;
+  }
+
+  function normalizeLevelKey(level) {
+    if (legacyLevelMap[level]) {
+      return legacyLevelMap[level];
+    }
+    return levelSortRank[level] !== undefined ? level : 'natural';
   }
 
   function getExpressionStorageKey(expression) {
@@ -212,6 +234,12 @@ const clientScript = `
           if (selectedSort === 'recently-practiced') {
             return Date.parse(bPractice.lastPracticedAt || '1970-01-01') - Date.parse(aPractice.lastPracticedAt || '1970-01-01') || a.phrase.localeCompare(b.phrase);
           }
+          if (selectedSort === 'easiest') {
+            return levelSortRank[normalizeLevelKey(a.level)] - levelSortRank[normalizeLevelKey(b.level)] || a.phrase.localeCompare(b.phrase);
+          }
+          if (selectedSort === 'hardest') {
+            return levelSortRank[normalizeLevelKey(b.level)] - levelSortRank[normalizeLevelKey(a.level)] || a.phrase.localeCompare(b.phrase);
+          }
           if (selectedSort === 'az') {
             return a.phrase.localeCompare(b.phrase);
           }
@@ -318,7 +346,7 @@ const clientScript = `
       <section class="expressions-card">
         <div class="review-controls">
           <div class="filter-group">
-            <label for="review-target-language" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <label for="review-target-language" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
             <select id="review-target-language">
               <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
               {uiLanguages.map((lang) => (
@@ -341,6 +369,8 @@ const clientScript = `
               <option value="most-practiced" data-i18n="sortMostPracticed">{uiText[defaultUiLang].sortMostPracticed}</option>
               <option value="least-practiced" data-i18n="sortLeastPracticed">{uiText[defaultUiLang].sortLeastPracticed}</option>
               <option value="recently-practiced" data-i18n="sortRecentlyPracticed">{uiText[defaultUiLang].sortRecentlyPracticed}</option>
+              <option value="easiest" data-i18n="sortEasiestFirst">{uiText[defaultUiLang].sortEasiestFirst}</option>
+              <option value="hardest" data-i18n="sortHardestFirst">{uiText[defaultUiLang].sortHardestFirst}</option>
               <option value="az" data-i18n="sortAlphabetical">{uiText[defaultUiLang].sortAlphabetical}</option>
             </select>
           </div>

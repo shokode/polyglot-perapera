@@ -80,6 +80,7 @@ export type UILabels = {
   title: string;
   subtitle: string;
   language: string;
+  practiceLanguage: string;
   category: string;
   level: string;
   start: string;
@@ -111,6 +112,7 @@ export type UILabels = {
   expressionStatusAction: string;
   expressionTextForm: string;
   expressionDetails: string;
+  expressionExample: string;
   reviewPageTitle: string;
   noReviewItems: string;
   keepReviewing: string;
@@ -126,6 +128,8 @@ export type UILabels = {
   sortRecentlyPracticed: string;
   sortAlphabetical: string;
   sortNewestDefault: string;
+  sortEasiestFirst: string;
+  sortHardestFirst: string;
   filterAll: string;
   lastPracticedPrefix: string;
   lastPracticedToday: string;
@@ -136,6 +140,7 @@ export const uiText: Record<UILang, UILabels> = {
     title: 'Les, skriv, lær',
     subtitle: 'Multispråklig lesing og skriving med naturlige tekster.',
     language: 'Språk',
+    practiceLanguage: 'Øvingsspråk',
     category: 'Kategori',
     level: 'Nivå',
     start: 'Start',
@@ -167,6 +172,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusAction: 'Klikk for å endre status',
     expressionTextForm: 'Form i teksten',
     expressionDetails: 'Se mer',
+    expressionExample: 'Eksempel',
     reviewPageTitle: 'Repeter',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
     keepReviewing: 'Fortsett å repetere',
@@ -182,6 +188,8 @@ export const uiText: Record<UILang, UILabels> = {
     sortRecentlyPracticed: 'Sist øvd',
     sortAlphabetical: 'A–Å',
     sortNewestDefault: 'Nyeste / standard',
+    sortEasiestFirst: 'Lettest først',
+    sortHardestFirst: 'Vanskeligst først',
     filterAll: 'Alle',
     lastPracticedPrefix: 'Sist: ',
     lastPracticedToday: 'i dag',
@@ -190,6 +198,7 @@ export const uiText: Record<UILang, UILabels> = {
     title: 'Read & Type',
     subtitle: 'Multilingual reading and typing with natural texts.',
     language: 'Language',
+    practiceLanguage: 'Practice language',
     category: 'Category',
     level: 'Level',
     start: 'Start',
@@ -221,6 +230,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusAction: 'Click to change status',
     expressionTextForm: 'Text form',
     expressionDetails: 'Details',
+    expressionExample: 'Example',
     reviewPageTitle: 'Review',
     noReviewItems: 'No review items yet',
     keepReviewing: 'Keep reviewing',
@@ -236,6 +246,8 @@ export const uiText: Record<UILang, UILabels> = {
     sortRecentlyPracticed: 'Recently practiced',
     sortAlphabetical: 'A–Z',
     sortNewestDefault: 'Newest / default',
+    sortEasiestFirst: 'Easiest first',
+    sortHardestFirst: 'Hardest first',
     filterAll: 'All',
     lastPracticedPrefix: 'Last: ',
     lastPracticedToday: 'today',
@@ -244,6 +256,7 @@ export const uiText: Record<UILang, UILabels> = {
     title: '読むと打つ',
     subtitle: '自然なテキストで学ぶ多言語のリーディングとタイピング。',
     language: '言語',
+    practiceLanguage: '練習する言語',
     category: 'カテゴリー',
     level: 'レベル',
     start: '開始',
@@ -275,6 +288,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusAction: 'クリックしてステータスを変更',
     expressionTextForm: '本文の形',
     expressionDetails: '詳しく見る',
+    expressionExample: '例文',
     reviewPageTitle: '復習',
     noReviewItems: '復習する表現はまだありません',
     keepReviewing: '復習を続ける',
@@ -290,6 +304,8 @@ export const uiText: Record<UILang, UILabels> = {
     sortRecentlyPracticed: '最近練習した順',
     sortAlphabetical: 'A–Z',
     sortNewestDefault: '新しい順 / 標準',
+    sortEasiestFirst: 'レベルが低い順',
+    sortHardestFirst: 'レベルが高い順',
     filterAll: 'すべて',
     lastPracticedPrefix: '最後: ',
     lastPracticedToday: '今日',

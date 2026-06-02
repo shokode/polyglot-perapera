@@ -137,6 +137,30 @@ function getExplanationMap(item: Record<string, unknown>) {
   };
 }
 
+function getExampleMap(item: Record<string, unknown>) {
+  return {
+    default: typeof item.example === 'string' ? item.example : '',
+    ja: typeof item.exampleJa === 'string' ? item.exampleJa : '',
+    en: typeof item.exampleEn === 'string' ? item.exampleEn : '',
+    no: typeof item.exampleNo === 'string' ? item.exampleNo : '',
+  };
+}
+
+function hasExample(item: Record<string, unknown>) {
+  return Object.values(getExampleMap(item)).some((value) => value.trim());
+}
+
+function getOrderedExamples(item: Record<string, unknown>, uiLang: UILang) {
+  const examples = getExampleMap(item);
+  return [
+    { lang: uiLang, value: examples[uiLang] },
+    { lang: 'default', value: examples.default },
+    ...explanationLanguageOrder
+      .filter((lang) => lang !== uiLang)
+      .map((lang) => ({ lang, value: examples[lang] })),
+  ].filter((entry, index, array) => entry.value && array.findIndex((item) => item.value === entry.value) === index);
+}
+
 function getOrderedExplanations(item: Record<string, unknown>, uiLang: UILang) {
   const explanations = getExplanationMap(item);
   return [uiLang, ...explanationLanguageOrder.filter((lang) => lang !== uiLang)]
@@ -441,13 +465,49 @@ const clientScript = `
       return text.expressions.find((expression) => expression.phrase === phrase) || null;
     }
 
-    function getExpressionExplanationMap(expression) {
-      return {
-        ja: typeof expression.ja === 'string' ? expression.ja : typeof expression.descriptionJa === 'string' ? expression.descriptionJa : '',
-        en: typeof expression.en === 'string' ? expression.en : typeof expression.descriptionEn === 'string' ? expression.descriptionEn : '',
-        no: typeof expression.no === 'string' ? expression.no : typeof expression.descriptionNo === 'string' ? expression.descriptionNo : '',
-      };
-    }
+  function getExpressionExplanationMap(expression) {
+    return {
+      ja: typeof expression.ja === 'string' ? expression.ja : typeof expression.descriptionJa === 'string' ? expression.descriptionJa : '',
+      en: typeof expression.en === 'string' ? expression.en : typeof expression.descriptionEn === 'string' ? expression.descriptionEn : '',
+      no: typeof expression.no === 'string' ? expression.no : typeof expression.descriptionNo === 'string' ? expression.descriptionNo : '',
+    };
+  }
+
+  function getExpressionExampleMap(expression) {
+    return {
+      default: typeof expression.example === 'string' ? expression.example : '',
+      ja: typeof expression.exampleJa === 'string' ? expression.exampleJa : '',
+      en: typeof expression.exampleEn === 'string' ? expression.exampleEn : '',
+      no: typeof expression.exampleNo === 'string' ? expression.exampleNo : '',
+    };
+  }
+
+  function getLocalizedExamples(data, lang) {
+    const order = [lang, 'default', ...uiLanguages.filter((item) => item !== lang)];
+    return order
+      .map((language) => ({ language, value: data[language] }))
+      .filter((entry, index, array) => typeof entry.value === 'string' && entry.value.trim() && array.findIndex((item) => item.value === entry.value) === index);
+  }
+
+  function renderLocalizedExamples(lang) {
+    document.querySelectorAll('[data-example-map]').forEach((container) => {
+      let data = {};
+      try {
+        data = JSON.parse(container.dataset.exampleMap || '{}');
+      } catch {
+        data = {};
+      }
+      const examples = getLocalizedExamples(data, lang);
+      const labels = getUiText(lang);
+      container.innerHTML = examples.length
+        ? '<span class="expression-example-label">' + escapeHtmlClient(labels.expressionExample) + '</span>' + examples.map((entry) => {
+          const label = entry.language === 'default' ? '' : '<span class="grammar-language-label">' + escapeHtmlClient(languageNames[entry.language]?.[lang] || entry.language) + ':</span> ';
+          return '<p>' + label + escapeHtmlClient(entry.value) + '</p>';
+        }).join('')
+        : '';
+      container.hidden = !examples.length;
+    });
+  }
 
     function closeExpressionMiniCard() {
       activeMiniCardPhrase = null;
@@ -508,7 +568,7 @@ const clientScript = `
       card.classList.add('expression-card-focus');
       window.setTimeout(() => {
         card.classList.remove('expression-card-focus');
-      }, 1400);
+      }, 2400);
     }
 
     function renderUiText(lang) {
@@ -546,6 +606,7 @@ const clientScript = `
       updateExpressionStatusButtons();
       updateExpressionPracticeLabels();
       renderLocalizedExplanations(lang);
+      renderLocalizedExamples(lang);
       updateExpressionMiniCardText();
     }
 
@@ -731,7 +792,7 @@ if (!text) {
         </div>
       </section>
 
-      <section class="text-content">
+      <section class="text-content" data-target-language={text.language}>
         <div id="target-text" set:html={highlightedTextHtml}></div>
         <aside class="expression-mini-card" id="expression-mini-card" hidden>
           <strong id="mini-card-phrase"></strong>
@@ -787,6 +848,17 @@ if (!text) {
                   </div>
                 ))}
               </div>
+              {hasExample(item) && (
+                <div class="expression-example-list" data-example-map={JSON.stringify(getExampleMap(item))}>
+                  <span class="expression-example-label">{uiText[defaultUiLang].expressionExample}</span>
+                  {getOrderedExamples(item, defaultUiLang).map((entry) => (
+                    <p>
+                      {entry.lang !== 'default' && <span class="grammar-language-label">{languageNames[entry.lang as UILang][defaultUiLang]}: </span>}
+                      {entry.value}
+                    </p>
+                  ))}
+                </div>
+              )}
             </article>
           ))}
         </div>

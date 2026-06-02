@@ -124,6 +124,7 @@
       },
       {
         "phrase": "en del av hverdagen",
+        "formInText": "en rolig del av hverdagen",
         "ja": "日常の一部",
         "en": "a part of everyday life"
       }
@@ -370,43 +371,46 @@
         "text": "のあとで、"
       },
       {
-        "text": "近く",
-        "reading": "ちかく"
+        "text": "近",
+        "reading": "ちか"
       },
       {
-        "text": "のカフェに"
+        "text": "くのカフェに"
       },
       {
-        "text": "行きました",
-        "reading": "いきました"
+        "text": "行",
+        "reading": "い"
       },
       {
-        "text": "。"
+        "text": "きました。"
       },
       {
-        "text": "少し",
-        "reading": "すこし"
+        "text": "少",
+        "reading": "すこ"
       },
       {
-        "text": "疲れて",
-        "reading": "つかれて"
+        "text": "し"
       },
       {
-        "text": "いましたが、"
+        "text": "疲",
+        "reading": "つか"
       },
       {
-        "text": "温かい",
-        "reading": "あたたかい"
+        "text": "れていましたが、"
       },
       {
-        "text": "コーヒーを"
+        "text": "温",
+        "reading": "あたた"
       },
       {
-        "text": "飲んだら",
-        "reading": "のんだら"
+        "text": "かいコーヒーを"
       },
       {
-        "text": "、"
+        "text": "飲",
+        "reading": "の"
+      },
+      {
+        "text": "んだら、"
       },
       {
         "text": "気分",
@@ -416,15 +420,25 @@
         "text": "が"
       },
       {
-        "text": "少し",
-        "reading": "すこし"
+        "text": "少",
+        "reading": "すこ"
       },
       {
-        "text": "落ち着きました",
-        "reading": "おちつきました"
+        "text": "し"
       },
       {
-        "text": "。"
+        "text": "落",
+        "reading": "お"
+      },
+      {
+        "text": "ち"
+      },
+      {
+        "text": "着",
+        "reading": "つ"
+      },
+      {
+        "text": "きました。"
       },
       {
         "text": "家",
@@ -434,8 +448,11 @@
         "text": "に"
       },
       {
-        "text": "帰る",
-        "reading": "かえる"
+        "text": "帰",
+        "reading": "かえ"
+      },
+      {
+        "text": "る"
       },
       {
         "text": "前",
@@ -466,11 +483,50 @@
         "text": "して、"
       },
       {
-        "text": "買い物",
-        "reading": "かいもの"
+        "text": "買",
+        "reading": "か"
       },
       {
-        "text": "リストも作りました。毎日忙しいですが、こういう小さな時間を"
+        "text": "い"
+      },
+      {
+        "text": "物",
+        "reading": "もの"
+      },
+      {
+        "text": "リストも"
+      },
+      {
+        "text": "作",
+        "reading": "つく"
+      },
+      {
+        "text": "りました。"
+      },
+      {
+        "text": "毎日",
+        "reading": "まいにち"
+      },
+      {
+        "text": "忙",
+        "reading": "いそが"
+      },
+      {
+        "text": "しいですが、こういう"
+      },
+      {
+        "text": "小",
+        "reading": "ちい"
+      },
+      {
+        "text": "さな"
+      },
+      {
+        "text": "時間",
+        "reading": "じかん"
+      },
+      {
+        "text": "を"
       },
       {
         "text": "大切",
@@ -485,46 +541,67 @@
         "phrase": "仕事のあとで",
         "ja": "仕事が終わったあとで",
         "en": "after work",
-        "no": "etter jobb"
+        "no": "etter jobb",
+        "example": "仕事のあとで、スーパーに寄りました。",
+        "exampleEn": "After work, I stopped by the supermarket.",
+        "exampleNo": "Etter jobb stakk jeg innom supermarkedet."
       },
       {
         "phrase": "近くの",
         "ja": "近い場所にある",
         "en": "nearby",
-        "no": "i nærheten"
+        "no": "i nærheten",
+        "example": "近くの図書館で勉強しました。",
+        "exampleEn": "I studied at the nearby library.",
+        "exampleNo": "Jeg studerte på biblioteket i nærheten."
       },
       {
         "phrase": "少し疲れていました",
         "ja": "少し疲れた状態でした",
         "en": "was a little tired",
-        "no": "var litt sliten"
+        "no": "var litt sliten",
+        "example": "昨日は少し疲れていました。",
+        "exampleEn": "I was a little tired yesterday.",
+        "exampleNo": "Jeg var litt sliten i går."
       },
       {
         "phrase": "気分が落ち着く",
         "formInText": "気分が少し落ち着きました",
         "ja": "気持ちが少し楽になる",
         "en": "feel calmer",
-        "no": "føle seg roligere"
+        "no": "føle seg roligere",
+        "example": "深呼吸をすると、気分が落ち着きます。",
+        "exampleEn": "When I take a deep breath, I feel calmer.",
+        "exampleNo": "Når jeg trekker pusten dypt, føler jeg meg roligere."
       },
       {
         "phrase": "家に帰る前に",
         "ja": "家へ帰るより前に",
         "en": "before going home",
-        "no": "før man drar hjem"
+        "no": "før man drar hjem",
+        "example": "家に帰る前に、友だちに電話しました。",
+        "exampleEn": "Before going home, I called a friend.",
+        "exampleNo": "Før jeg dro hjem, ringte jeg en venn."
       },
       {
         "phrase": "予定を確認する",
         "formInText": "予定を確認して",
         "ja": "予定をチェックする",
         "en": "check plans",
-        "no": "sjekke planer"
+        "no": "sjekke planer",
+        "example": "朝、今日の予定を確認しました。",
+        "exampleEn": "In the morning, I checked today's plans.",
+        "exampleNo": "Om morgenen sjekket jeg planene for dagen."
       },
       {
         "phrase": "大切にする",
         "formInText": "大切にしたいです",
         "ja": "価値があるものとして扱う",
         "en": "value / cherish",
-        "no": "sette pris på"
+        "no": "sette pris på",
+        "example": "家族との時間を大切にしています。",
+        "exampleEn": "I value the time I spend with my family.",
+        "exampleNo": "Jeg setter pris på tiden jeg har med familien."
       }
     ],
     "grammar": [
@@ -545,6 +622,1053 @@
         "descriptionJa": "「〜たい」は、自分がしたいことや望んでいることを表します。",
         "descriptionEn": "\"〜たい\" expresses what the speaker wants to do.",
         "descriptionNo": "「〜たい」 uttrykker hva taleren selv vil eller ønsker å gjøre."
+      }
+    ]
+  },
+  {
+    "id": "no_007",
+    "language": "no",
+    "category": "daily-life",
+    "level": "a2",
+    "title": "En melding når jeg blir sen",
+    "text": "I morges rakk jeg ikke bussen, så jeg sendte en kort melding til Lina. Jeg skrev at jeg blir litt sen, men at hun ikke trengte å vente ute i kulda. Hun svarte med en gang og sa at hun kunne gå inn på kafeen først. Det gjorde situasjonen mye roligere, og jeg kom dit så snart som mulig.",
+    "translationJa": "今朝はバスに間に合わなかったので、リナに短いメッセージを送りました。少し遅れるけれど、寒い外で待たなくていいと書きました。彼女はすぐに返事をして、先にカフェに入っていると言ってくれました。そのおかげで気持ちがかなり落ち着き、できるだけ早くそこへ向かいました。",
+    "translationEn": "This morning I missed the bus, so I sent Lina a short message. I wrote that I would be a little late, but that she did not need to wait outside in the cold. She replied right away and said she could go into the café first. That made the situation much calmer, and I got there as soon as I could.",
+    "expressions": [
+      {
+        "phrase": "rekke bussen",
+        "formInText": "rakk jeg ikke bussen",
+        "ja": "バスに間に合う",
+        "en": "catch the bus"
+      },
+      {
+        "phrase": "sende en melding til",
+        "formInText": "sendte en kort melding til",
+        "ja": "〜にメッセージを送る",
+        "en": "send a message to"
+      },
+      {
+        "phrase": "bli litt sen",
+        "formInText": "blir litt sen",
+        "ja": "少し遅れる",
+        "en": "be a little late"
+      },
+      {
+        "phrase": "med en gang",
+        "ja": "すぐに",
+        "en": "right away"
+      },
+      {
+        "phrase": "så snart som mulig",
+        "ja": "できるだけ早く",
+        "en": "as soon as possible"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Så + helsetning",
+        "descriptionJa": "「så」は「それで」「だから」の意味で、前の出来事の結果をつなげるときに使います。",
+        "descriptionEn": "\"Så\" can mean \"so\" and connects an event with its result.",
+        "descriptionNo": "\"Så\" kan bety «derfor» og knytter en hendelse til resultatet."
+      },
+      {
+        "title": "At-setninger",
+        "descriptionJa": "「at」で始まる節は、「〜だと書く」「〜だと言う」のように内容を説明します。",
+        "descriptionEn": "An \"at\" clause explains what someone writes, says, or thinks.",
+        "descriptionNo": "En at-setning forteller hva noen skriver, sier eller tenker."
+      }
+    ]
+  },
+  {
+    "id": "no_008",
+    "language": "no",
+    "category": "lærlingplass",
+    "level": "b1",
+    "title": "En ny oppgave på praksis",
+    "text": "På praksis i dag fikk jeg ansvar for en liten del av et prosjekt. Først visste jeg ikke helt hvor jeg skulle begynne, så jeg spurte veilederen min om hjelp. Hun viste meg hvordan jeg kunne komme i gang uten å gjøre alt perfekt med en gang. Etterpå jobbet jeg roligere, og jeg lærte mye av å prøve selv.",
+    "translationJa": "今日の実習では、プロジェクトの小さな一部分を任されました。最初はどこから始めればいいかよく分からなかったので、指導担当の人に助けを求めました。彼女は、最初から完璧にしようとしなくても、どう始めればいいかを見せてくれました。その後は落ち着いて作業でき、自分で試すことでたくさん学べました。",
+    "translationEn": "At my internship today, I was given responsibility for a small part of a project. At first I was not quite sure where to begin, so I asked my supervisor for help. She showed me how I could get started without making everything perfect right away. Afterwards I worked more calmly, and I learned a lot by trying it myself.",
+    "expressions": [
+      {
+        "phrase": "få ansvar for",
+        "formInText": "fikk jeg ansvar for",
+        "ja": "〜を任される / 責任を持つ",
+        "en": "be given responsibility for"
+      },
+      {
+        "phrase": "spørre om hjelp",
+        "formInText": "spurte veilederen min om hjelp",
+        "ja": "助けを求める",
+        "en": "ask for help"
+      },
+      {
+        "phrase": "komme i gang",
+        "ja": "始める / 作業に取りかかる",
+        "en": "get started"
+      },
+      {
+        "phrase": "med en gang",
+        "ja": "すぐに / 最初から",
+        "en": "right away"
+      },
+      {
+        "phrase": "lære av",
+        "formInText": "lærte mye av",
+        "ja": "〜から学ぶ",
+        "en": "learn from"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Indirekte spørsmål",
+        "descriptionJa": "「hvor jeg skulle begynne」のような間接疑問では、主語が動詞の前に来ます。",
+        "descriptionEn": "In indirect questions like \"hvor jeg skulle begynne\", the subject comes before the verb.",
+        "descriptionNo": "I indirekte spørsmål som «hvor jeg skulle begynne» kommer subjektet før verbet."
+      },
+      {
+        "title": "Uten å + infinitiv",
+        "descriptionJa": "「uten å」は「〜せずに」という意味で、後ろに動詞の不定詞が続きます。",
+        "descriptionEn": "\"Uten å\" means \"without doing\" and is followed by an infinitive.",
+        "descriptionNo": "«Uten å» betyr «without doing» og følges av infinitiv."
+      }
+    ]
+  },
+  {
+    "id": "no_009",
+    "language": "no",
+    "category": "norway-life",
+    "level": "b2",
+    "title": "Å forklare en mening",
+    "text": "På møtet i går prøvde jeg å forklare hvorfor jeg var litt skeptisk til den nye planen. På den ene siden liker jeg at vi vil prøve noe nytt, men på den andre siden må vi ta hensyn til tiden vi faktisk har. Jeg sa ikke nei til ideen, men jeg foreslo at vi skulle teste den i mindre skala først. Etter diskusjonen kom vi fram til en løsning alle kunne leve med.",
+    "translationJa": "昨日の会議では、新しい計画に少し慎重な理由を説明しようとしました。一方で、新しいことに挑戦しようとしている点は良いと思いますが、もう一方で、実際に使える時間も考慮しなければなりません。私はその案に反対したわけではなく、まずは小さな規模で試してみることを提案しました。話し合いの後、全員が納得できる解決策にたどり着きました。",
+    "translationEn": "At yesterday's meeting, I tried to explain why I was a little skeptical about the new plan. On the one hand, I like that we want to try something new, but on the other hand, we have to take into account the time we actually have. I did not say no to the idea, but I suggested that we test it on a smaller scale first. After the discussion, we arrived at a solution everyone could live with.",
+    "expressions": [
+      {
+        "phrase": "være skeptisk til",
+        "formInText": "var litt skeptisk til",
+        "ja": "〜に少し慎重である / 疑問を持つ",
+        "en": "be skeptical about"
+      },
+      {
+        "phrase": "på den ene siden",
+        "formInText": "På den ene siden",
+        "ja": "一方では",
+        "en": "on the one hand"
+      },
+      {
+        "phrase": "på den andre siden",
+        "ja": "他方では",
+        "en": "on the other hand"
+      },
+      {
+        "phrase": "ta hensyn til",
+        "ja": "〜を考慮する",
+        "en": "take into account"
+      },
+      {
+        "phrase": "komme fram til",
+        "formInText": "kom vi fram til",
+        "ja": "〜にたどり着く / 結論に達する",
+        "en": "arrive at / reach"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Hvorfor-setning",
+        "descriptionJa": "「hvorfor」で始まる節は理由を説明し、主文の目的語として使うことがあります。",
+        "descriptionEn": "A clause with \"hvorfor\" explains a reason and can act as the object of a sentence.",
+        "descriptionNo": "En leddsetning med «hvorfor» forklarer en grunn og kan være objekt i setningen."
+      },
+      {
+        "title": "Skulle + infinitiv",
+        "descriptionJa": "「skulle + 動詞」は、提案・予定・控えめな計画を表すことがあります。",
+        "descriptionEn": "\"Skulle + infinitive\" can express a suggestion, plan, or intended action.",
+        "descriptionNo": "«Skulle + infinitiv» kan uttrykke forslag, plan eller en tenkt handling."
+      }
+    ]
+  },
+  {
+    "id": "en_002",
+    "language": "en",
+    "category": "friends",
+    "level": "a2",
+    "title": "Making plans after rain",
+    "text": "It was raining when I left work, so I sent Maya a message and asked if she still wanted to meet up. She said we could grab a coffee instead of walking in the park. I was glad she could still make it, because I wanted to talk for a while and not rush home right away.",
+    "translationJa": "仕事を出るとき雨が降っていたので、マヤにメッセージを送って、まだ会うつもりか聞きました。彼女は、公園を散歩する代わりにコーヒーを飲みに行こうと言いました。急いで帰るのではなく、少し話したかったので、彼女がまだ来られると分かってうれしかったです。",
+    "translationNo": "Det regnet da jeg dro fra jobb, så jeg sendte Maya en melding og spurte om hun fortsatt ville møtes. Hun sa at vi kunne ta en kaffe i stedet for å gå i parken. Jeg var glad for at hun fortsatt kunne komme, fordi jeg ville snakke litt og ikke skynde meg hjem med en gang.",
+    "expressions": [
+      {
+        "phrase": "meet up",
+        "ja": "会う / 待ち合わせる",
+        "en": "meet someone",
+        "no": "møtes"
+      },
+      {
+        "phrase": "grab a coffee",
+        "ja": "コーヒーを飲みに行く",
+        "en": "get a coffee casually",
+        "no": "ta en kaffe"
+      },
+      {
+        "phrase": "instead of",
+        "ja": "〜の代わりに",
+        "en": "in place of",
+        "no": "i stedet for"
+      },
+      {
+        "phrase": "make it",
+        "ja": "来られる / 間に合う",
+        "en": "be able to come",
+        "no": "kunne komme"
+      },
+      {
+        "phrase": "right away",
+        "ja": "すぐに",
+        "en": "immediately",
+        "no": "med en gang"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Past continuous",
+        "descriptionJa": "「was raining」は、過去のある時点で進行していたことを表します。",
+        "descriptionEn": "\"Was raining\" shows an action or situation in progress at a past moment.",
+        "descriptionNo": "«Was raining» viser noe som pågikk på et tidspunkt i fortiden."
+      },
+      {
+        "title": "Instead of + -ing",
+        "descriptionJa": "「instead of」の後ろには、動詞の -ing 形がよく来ます。",
+        "descriptionEn": "\"Instead of\" is often followed by the -ing form of a verb.",
+        "descriptionNo": "Etter «instead of» bruker man ofte -ing-formen av verbet."
+      }
+    ]
+  },
+  {
+    "id": "en_003",
+    "language": "en",
+    "category": "daily-life",
+    "level": "b1",
+    "title": "Finding focus at the library",
+    "text": "I went to the library after lunch because I kept checking my phone at home. I put it in my bag, set a timer for thirty minutes, and focused on one chapter at a time. It was not a perfect study day, but I managed to get through the part I had been avoiding. On the way home, I felt lighter than I expected.",
+    "translationJa": "昼食のあと図書館へ行きました。家にいるとつい何度もスマホを見てしまうからです。スマホをかばんに入れ、30分のタイマーをセットして、一章ずつ集中しました。完璧な勉強日ではありませんでしたが、避けていた部分をなんとか終えることができました。帰り道、思っていたより気持ちが軽くなっていました。",
+    "translationNo": "Jeg dro til biblioteket etter lunsj fordi jeg stadig sjekket mobilen hjemme. Jeg la den i vesken, satte en timer på tretti minutter og fokuserte på ett kapittel om gangen. Det var ikke en perfekt studiedag, men jeg klarte å komme meg gjennom den delen jeg hadde utsatt. På vei hjem følte jeg meg lettere enn jeg hadde forventet.",
+    "expressions": [
+      {
+        "phrase": "keep doing",
+        "formInText": "kept checking",
+        "ja": "〜し続ける / つい〜してしまう",
+        "en": "continue doing",
+        "no": "fortsette å gjøre"
+      },
+      {
+        "phrase": "set a timer",
+        "ja": "タイマーをセットする",
+        "en": "start a timer",
+        "no": "sette en timer"
+      },
+      {
+        "phrase": "one at a time",
+        "formInText": "one chapter at a time",
+        "ja": "一つずつ",
+        "en": "one by one",
+        "no": "én om gangen"
+      },
+      {
+        "phrase": "manage to",
+        "formInText": "managed to get through",
+        "ja": "なんとか〜する",
+        "en": "succeed in doing",
+        "no": "klare å"
+      },
+      {
+        "phrase": "get through",
+        "ja": "やり切る / 終える",
+        "en": "finish or pass through something difficult",
+        "no": "komme seg gjennom"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Because-clause",
+        "descriptionJa": "「because」は理由を説明します。主文の後ろに置くことが多いです。",
+        "descriptionEn": "\"Because\" introduces a reason and often comes after the main clause.",
+        "descriptionNo": "«Because» innleder en grunn og står ofte etter hovedsetningen."
+      },
+      {
+        "title": "Past perfect continuous idea",
+        "descriptionJa": "「had been avoiding」は、過去のある時点まで続いていた状態や行動を表します。",
+        "descriptionEn": "\"Had been avoiding\" describes an action that continued up to a past point.",
+        "descriptionNo": "«Had been avoiding» beskriver en handling som fortsatte fram til et tidspunkt i fortiden."
+      }
+    ]
+  },
+  {
+    "id": "en_004",
+    "language": "en",
+    "category": "jobb",
+    "level": "b2",
+    "title": "A small problem at work",
+    "text": "This morning I noticed that a report had been sent with the wrong attachment. It was not a disaster, but it could have confused the client, so I brought it up with my manager right away. We agreed to send a short correction and explain what had happened without blaming anyone. By the end of the day, the client thanked us for being clear and quick.",
+    "translationJa": "今朝、レポートに間違った添付ファイルが付いたまま送られていたことに気づきました。大問題ではありませんでしたが、クライアントを混乱させる可能性があったので、すぐに上司に伝えました。私たちは短い訂正を送り、誰かを責めるのではなく何が起きたかを説明することにしました。その日の終わりには、クライアントから、分かりやすく素早く対応してくれてありがとうと言われました。",
+    "translationNo": "I morges la jeg merke til at en rapport var sendt med feil vedlegg. Det var ingen katastrofe, men det kunne ha forvirret kunden, så jeg tok det opp med lederen min med en gang. Vi ble enige om å sende en kort rettelse og forklare hva som hadde skjedd uten å legge skylden på noen. Ved slutten av dagen takket kunden oss for å være tydelige og raske.",
+    "expressions": [
+      {
+        "phrase": "notice that",
+        "formInText": "noticed that",
+        "ja": "〜だと気づく",
+        "en": "become aware that",
+        "no": "legge merke til at"
+      },
+      {
+        "phrase": "bring something up",
+        "formInText": "brought it up",
+        "ja": "話題に出す / 伝える",
+        "en": "mention a topic",
+        "no": "ta noe opp"
+      },
+      {
+        "phrase": "right away",
+        "ja": "すぐに",
+        "en": "immediately",
+        "no": "med en gang"
+      },
+      {
+        "phrase": "agree to",
+        "formInText": "agreed to send",
+        "ja": "〜することに合意する",
+        "en": "decide together to",
+        "no": "bli enige om å"
+      },
+      {
+        "phrase": "without blaming anyone",
+        "ja": "誰かを責めずに",
+        "en": "without placing blame",
+        "no": "uten å legge skylden på noen"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Past perfect passive",
+        "descriptionJa": "「had been sent」は、過去のある時点より前に受け身で起きていたことを表します。",
+        "descriptionEn": "\"Had been sent\" is past perfect passive and shows something happened before another past moment.",
+        "descriptionNo": "«Had been sent» er past perfect passive og viser at noe skjedde før et annet tidspunkt i fortiden."
+      },
+      {
+        "title": "Could have + past participle",
+        "descriptionJa": "「could have confused」は、実際には起きなかった可能性を表します。",
+        "descriptionEn": "\"Could have confused\" describes a possible result that did not necessarily happen.",
+        "descriptionNo": "«Could have confused» beskriver en mulig konsekvens som ikke nødvendigvis skjedde."
+      }
+    ]
+  },
+  {
+    "id": "ja_002",
+    "language": "ja",
+    "category": "friends",
+    "level": "b1",
+    "title": "仕事帰りに友だちと会う",
+    "text": "仕事帰りに、駅前で友だちのユイと会いました。お互い少し疲れていましたが、温かいラーメンを食べながら話しているうちに、だんだん元気が戻ってきました。最近考えていることや、週末に行ってみたい場所について話しました。短い時間でしたが、会えてよかったです。",
+    "translationEn": "On my way home from work, I met my friend Yui in front of the station. We were both a little tired, but while we talked over warm ramen, our energy gradually came back. We talked about things we had been thinking about lately and places we wanted to visit on the weekend. It was a short time, but I was glad we could meet.",
+    "translationNo": "På vei hjem fra jobb møtte jeg vennen min Yui foran stasjonen. Vi var begge litt slitne, men mens vi snakket over en varm ramen, fikk vi gradvis energien tilbake. Vi snakket om ting vi hadde tenkt på i det siste, og steder vi hadde lyst til å besøke i helgen. Det var kort tid, men jeg var glad for at vi fikk møtes.",
+    "rubyText": [
+      {
+        "text": "仕事",
+        "reading": "しごと"
+      },
+      {
+        "text": "帰",
+        "reading": "がえ"
+      },
+      {
+        "text": "りに、"
+      },
+      {
+        "text": "駅前",
+        "reading": "えきまえ"
+      },
+      {
+        "text": "で"
+      },
+      {
+        "text": "友",
+        "reading": "とも"
+      },
+      {
+        "text": "だちのユイと"
+      },
+      {
+        "text": "会",
+        "reading": "あ"
+      },
+      {
+        "text": "いました。お"
+      },
+      {
+        "text": "互",
+        "reading": "たが"
+      },
+      {
+        "text": "い"
+      },
+      {
+        "text": "少",
+        "reading": "すこ"
+      },
+      {
+        "text": "し"
+      },
+      {
+        "text": "疲",
+        "reading": "つか"
+      },
+      {
+        "text": "れていましたが、"
+      },
+      {
+        "text": "温",
+        "reading": "あたた"
+      },
+      {
+        "text": "かいラーメンを"
+      },
+      {
+        "text": "食",
+        "reading": "た"
+      },
+      {
+        "text": "べながら"
+      },
+      {
+        "text": "話",
+        "reading": "はな"
+      },
+      {
+        "text": "しているうちに、だんだん"
+      },
+      {
+        "text": "元気",
+        "reading": "げんき"
+      },
+      {
+        "text": "が"
+      },
+      {
+        "text": "戻",
+        "reading": "もど"
+      },
+      {
+        "text": "ってきました。"
+      },
+      {
+        "text": "最近",
+        "reading": "さいきん"
+      },
+      {
+        "text": "考",
+        "reading": "かんが"
+      },
+      {
+        "text": "えていることや、"
+      },
+      {
+        "text": "週末",
+        "reading": "しゅうまつ"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "行",
+        "reading": "い"
+      },
+      {
+        "text": "ってみたい"
+      },
+      {
+        "text": "場所",
+        "reading": "ばしょ"
+      },
+      {
+        "text": "について"
+      },
+      {
+        "text": "話",
+        "reading": "はな"
+      },
+      {
+        "text": "しました。"
+      },
+      {
+        "text": "短",
+        "reading": "みじか"
+      },
+      {
+        "text": "い"
+      },
+      {
+        "text": "時間",
+        "reading": "じかん"
+      },
+      {
+        "text": "でしたが、"
+      },
+      {
+        "text": "会",
+        "reading": "あ"
+      },
+      {
+        "text": "えてよかったです。"
+      }
+    ],
+    "expressions": [
+      {
+        "phrase": "仕事帰りに",
+        "ja": "仕事が終わったあと、帰る途中で",
+        "en": "on the way home from work",
+        "no": "på vei hjem fra jobb"
+      },
+      {
+        "phrase": "お互い",
+        "ja": "二人とも / 相手も自分も",
+        "en": "both of us / each other",
+        "no": "begge to / hverandre"
+      },
+      {
+        "phrase": "〜ながら",
+        "formInText": "食べながら",
+        "ja": "〜しながら",
+        "en": "while doing",
+        "no": "mens man gjør noe"
+      },
+      {
+        "phrase": "〜ているうちに",
+        "formInText": "話しているうちに",
+        "ja": "〜している間に、自然に変化する",
+        "en": "while doing something, gradually",
+        "no": "mens man gjør noe, gradvis"
+      },
+      {
+        "phrase": "〜について話す",
+        "formInText": "場所について話しました",
+        "ja": "〜を話題にして話す",
+        "en": "talk about",
+        "no": "snakke om"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "〜ながら",
+        "descriptionJa": "「〜ながら」は、二つの動作を同時にすることを表します。",
+        "descriptionEn": "\"〜ながら\" shows that two actions happen at the same time.",
+        "descriptionNo": "「〜ながら」 viser at to handlinger skjer samtidig."
+      },
+      {
+        "title": "〜ているうちに",
+        "descriptionJa": "「〜ているうちに」は、何かをしている間に少しずつ変化が起きることを表します。",
+        "descriptionEn": "\"〜ているうちに\" describes a gradual change while something is happening.",
+        "descriptionNo": "「〜ているうちに」 beskriver en gradvis endring mens noe skjer."
+      }
+    ]
+  },
+  {
+    "id": "ja_003",
+    "language": "ja",
+    "category": "cooking",
+    "level": "a2",
+    "title": "家で簡単な夕ごはんを作る",
+    "text": "今日は外で食べずに、家で簡単な夕ごはんを作りました。冷蔵庫に残っていた野菜を切って、卵と一緒に炒めました。味つけは少し薄かったですが、温かくてほっとしました。食べ終わったあと、明日のお弁当の分も少し残しておきました。",
+    "translationEn": "Today I did not eat out; I made a simple dinner at home. I cut some vegetables that were left in the fridge and fried them with eggs. The flavor was a little mild, but it was warm and comforting. After eating, I also saved a little for tomorrow's lunch box.",
+    "translationNo": "I dag spiste jeg ikke ute, men laget en enkel middag hjemme. Jeg kuttet grønnsakene som var igjen i kjøleskapet og stekte dem sammen med egg. Smaken var litt mild, men maten var varm og beroligende. Etter at jeg hadde spist, sparte jeg også litt til matpakken i morgen.",
+    "rubyText": [
+      {
+        "text": "今日",
+        "reading": "きょう"
+      },
+      {
+        "text": "は"
+      },
+      {
+        "text": "外",
+        "reading": "そと"
+      },
+      {
+        "text": "で"
+      },
+      {
+        "text": "食",
+        "reading": "た"
+      },
+      {
+        "text": "べずに、"
+      },
+      {
+        "text": "家",
+        "reading": "いえ"
+      },
+      {
+        "text": "で"
+      },
+      {
+        "text": "簡単",
+        "reading": "かんたん"
+      },
+      {
+        "text": "な"
+      },
+      {
+        "text": "夕",
+        "reading": "ゆう"
+      },
+      {
+        "text": "ごはんを"
+      },
+      {
+        "text": "作",
+        "reading": "つく"
+      },
+      {
+        "text": "りました。"
+      },
+      {
+        "text": "冷蔵庫",
+        "reading": "れいぞうこ"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "残",
+        "reading": "のこ"
+      },
+      {
+        "text": "っていた"
+      },
+      {
+        "text": "野菜",
+        "reading": "やさい"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "切",
+        "reading": "き"
+      },
+      {
+        "text": "って、"
+      },
+      {
+        "text": "卵",
+        "reading": "たまご"
+      },
+      {
+        "text": "と"
+      },
+      {
+        "text": "一緒",
+        "reading": "いっしょ"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "炒",
+        "reading": "いた"
+      },
+      {
+        "text": "めました。"
+      },
+      {
+        "text": "味",
+        "reading": "あじ"
+      },
+      {
+        "text": "つけは"
+      },
+      {
+        "text": "少",
+        "reading": "すこ"
+      },
+      {
+        "text": "し"
+      },
+      {
+        "text": "薄",
+        "reading": "うす"
+      },
+      {
+        "text": "かったですが、"
+      },
+      {
+        "text": "温",
+        "reading": "あたた"
+      },
+      {
+        "text": "かくてほっとしました。"
+      },
+      {
+        "text": "食",
+        "reading": "た"
+      },
+      {
+        "text": "べ"
+      },
+      {
+        "text": "終",
+        "reading": "お"
+      },
+      {
+        "text": "わったあと、"
+      },
+      {
+        "text": "明日",
+        "reading": "あした"
+      },
+      {
+        "text": "のお"
+      },
+      {
+        "text": "弁当",
+        "reading": "べんとう"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "分",
+        "reading": "ぶん"
+      },
+      {
+        "text": "も"
+      },
+      {
+        "text": "少",
+        "reading": "すこ"
+      },
+      {
+        "text": "し"
+      },
+      {
+        "text": "残",
+        "reading": "のこ"
+      },
+      {
+        "text": "しておきました。"
+      }
+    ],
+    "expressions": [
+      {
+        "phrase": "外で食べる",
+        "formInText": "外で食べずに",
+        "ja": "外食する",
+        "en": "eat out",
+        "no": "spise ute"
+      },
+      {
+        "phrase": "残っている",
+        "formInText": "残っていた",
+        "ja": "まだある / 余っている",
+        "en": "be left over",
+        "no": "være igjen"
+      },
+      {
+        "phrase": "一緒に",
+        "ja": "同じところで / 合わせて",
+        "en": "together / with",
+        "no": "sammen med"
+      },
+      {
+        "phrase": "ほっとする",
+        "formInText": "ほっとしました",
+        "ja": "安心する / 気持ちがゆるむ",
+        "en": "feel relieved",
+        "no": "føle seg lettet"
+      },
+      {
+        "phrase": "残しておく",
+        "formInText": "残しておきました",
+        "ja": "あとで使うために残す",
+        "en": "save for later",
+        "no": "spare til senere"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "〜ずに",
+        "descriptionJa": "「〜ずに」は「〜しないで」という意味で、少し書き言葉寄りの表現です。",
+        "descriptionEn": "\"〜ずに\" means \"without doing\" and sounds a little more written than \"〜ないで\".",
+        "descriptionNo": "「〜ずに」 betyr «uten å gjøre» og er litt mer skriftlig enn 「〜ないで」."
+      },
+      {
+        "title": "〜ておく",
+        "descriptionJa": "「〜ておく」は、あとで使うために準備したり、その状態にしておいたりすることを表します。",
+        "descriptionEn": "\"〜ておく\" means doing something in advance or leaving something ready for later.",
+        "descriptionNo": "「〜ておく」 betyr å gjøre noe på forhånd eller la noe være klart til senere."
+      }
+    ]
+  },
+  {
+    "id": "ja_004",
+    "language": "ja",
+    "category": "dog",
+    "level": "natural",
+    "title": "雨の日の犬の世話",
+    "text": "朝から雨が降っていたので、犬の散歩は短めにしました。外に出ると、犬は水たまりを避けながらも、何度も後ろを振り返って私を見ました。家に戻ってからタオルで足を拭くと、安心したようにソファの近くで丸くなりました。忙しい日でも、こういう小さな時間があると気持ちが整います。",
+    "translationEn": "It had been raining since morning, so I kept the dog's walk a little short. When we went outside, the dog avoided the puddles but kept looking back at me again and again. After we got home and I wiped its paws with a towel, it curled up near the sofa as if it felt relieved. Even on busy days, small moments like this help me feel settled.",
+    "translationNo": "Det hadde regnet siden morgenen, så jeg gjorde hundeturen litt kortere. Da vi gikk ut, unngikk hunden vanndammene, men så tilbake på meg flere ganger. Etter at vi kom hjem og jeg tørket potene med et håndkle, krøllet den seg sammen nær sofaen som om den var lettet. Selv på travle dager gjør slike små øyeblikk at jeg føler meg mer samlet.",
+    "rubyText": [
+      {
+        "text": "朝",
+        "reading": "あさ"
+      },
+      {
+        "text": "から"
+      },
+      {
+        "text": "雨",
+        "reading": "あめ"
+      },
+      {
+        "text": "が"
+      },
+      {
+        "text": "降",
+        "reading": "ふ"
+      },
+      {
+        "text": "っていたので、"
+      },
+      {
+        "text": "犬",
+        "reading": "いぬ"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "散歩",
+        "reading": "さんぽ"
+      },
+      {
+        "text": "は"
+      },
+      {
+        "text": "短",
+        "reading": "みじか"
+      },
+      {
+        "text": "めにしました。"
+      },
+      {
+        "text": "外",
+        "reading": "そと"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "出",
+        "reading": "で"
+      },
+      {
+        "text": "ると、犬は"
+      },
+      {
+        "text": "水",
+        "reading": "みず"
+      },
+      {
+        "text": "たまりを"
+      },
+      {
+        "text": "避",
+        "reading": "さ"
+      },
+      {
+        "text": "けながらも、"
+      },
+      {
+        "text": "何度",
+        "reading": "なんど"
+      },
+      {
+        "text": "も"
+      },
+      {
+        "text": "後",
+        "reading": "うし"
+      },
+      {
+        "text": "ろを"
+      },
+      {
+        "text": "振",
+        "reading": "ふ"
+      },
+      {
+        "text": "り"
+      },
+      {
+        "text": "返",
+        "reading": "かえ"
+      },
+      {
+        "text": "って"
+      },
+      {
+        "text": "私",
+        "reading": "わたし"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "見",
+        "reading": "み"
+      },
+      {
+        "text": "ました。"
+      },
+      {
+        "text": "家",
+        "reading": "いえ"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "戻",
+        "reading": "もど"
+      },
+      {
+        "text": "ってからタオルで"
+      },
+      {
+        "text": "足",
+        "reading": "あし"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "拭",
+        "reading": "ふ"
+      },
+      {
+        "text": "くと、"
+      },
+      {
+        "text": "安心",
+        "reading": "あんしん"
+      },
+      {
+        "text": "したようにソファの"
+      },
+      {
+        "text": "近",
+        "reading": "ちか"
+      },
+      {
+        "text": "くで"
+      },
+      {
+        "text": "丸",
+        "reading": "まる"
+      },
+      {
+        "text": "くなりました。"
+      },
+      {
+        "text": "忙",
+        "reading": "いそが"
+      },
+      {
+        "text": "しい"
+      },
+      {
+        "text": "日",
+        "reading": "ひ"
+      },
+      {
+        "text": "でも、こういう"
+      },
+      {
+        "text": "小",
+        "reading": "ちい"
+      },
+      {
+        "text": "さな"
+      },
+      {
+        "text": "時間",
+        "reading": "じかん"
+      },
+      {
+        "text": "があると"
+      },
+      {
+        "text": "気持",
+        "reading": "きも"
+      },
+      {
+        "text": "ちが"
+      },
+      {
+        "text": "整",
+        "reading": "ととの"
+      },
+      {
+        "text": "います。"
+      }
+    ],
+    "expressions": [
+      {
+        "phrase": "短めにする",
+        "formInText": "短めにしました",
+        "ja": "少し短くする",
+        "en": "make something a little shorter",
+        "no": "gjøre noe litt kortere"
+      },
+      {
+        "phrase": "〜ながらも",
+        "formInText": "避けながらも",
+        "ja": "〜しつつ、それでも",
+        "en": "while still doing",
+        "no": "mens man likevel gjør noe"
+      },
+      {
+        "phrase": "何度も",
+        "ja": "何回も",
+        "en": "again and again",
+        "no": "flere ganger"
+      },
+      {
+        "phrase": "振り返る",
+        "formInText": "振り返って",
+        "ja": "後ろを見る",
+        "en": "look back",
+        "no": "se tilbake"
+      },
+      {
+        "phrase": "気持ちが整う",
+        "formInText": "気持ちが整います",
+        "ja": "心が落ち着いてまとまる",
+        "en": "feel settled",
+        "no": "føle seg mer samlet"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "〜ていたので",
+        "descriptionJa": "「〜ていたので」は、続いていた状態を理由として説明するときに使います。",
+        "descriptionEn": "\"〜ていたので\" gives an ongoing state as the reason for what follows.",
+        "descriptionNo": "「〜ていたので」 bruker en pågående tilstand som grunn for det som følger."
+      },
+      {
+        "title": "〜ように",
+        "descriptionJa": "「安心したように」のように、見た目や様子からそう感じられることを表します。",
+        "descriptionEn": "\"〜ように\" can describe how something appears, as in \"as if it felt relieved.\"",
+        "descriptionNo": "「〜ように」 kan beskrive hvordan noe virker eller ser ut, som «som om»."
       }
     ]
   }

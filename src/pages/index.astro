@@ -27,6 +27,14 @@ const clientScript = `
     ja: '🇯🇵 日本語',
   };
   const levelKeys = ${JSON.stringify(levelKeys)};
+  const levelSortRank = {
+    a1: 0,
+    a2: 1,
+    b1: 2,
+    b2: 3,
+    c1: 4,
+    natural: 5,
+  };
   const legacyLevelMap = {
     basic: 'a1',
     useful: 'a2',
@@ -161,6 +169,17 @@ const clientScript = `
       if (selectedSort === 'least-practiced') {
         return aProgress.completedCount - bProgress.completedCount || a.title.localeCompare(b.title);
       }
+      if (selectedSort === 'recently-practiced') {
+        const aTime = Date.parse(aProgress.lastPracticedAt || '') || 0;
+        const bTime = Date.parse(bProgress.lastPracticedAt || '') || 0;
+        return bTime - aTime || a.title.localeCompare(b.title);
+      }
+      if (selectedSort === 'easiest') {
+        return levelSortRank[normalizeLevelKey(a.level)] - levelSortRank[normalizeLevelKey(b.level)] || a.title.localeCompare(b.title);
+      }
+      if (selectedSort === 'hardest') {
+        return levelSortRank[normalizeLevelKey(b.level)] - levelSortRank[normalizeLevelKey(a.level)] || a.title.localeCompare(b.title);
+      }
       if (selectedSort === 'az') {
         return a.title.localeCompare(b.title);
       }
@@ -280,7 +299,7 @@ const clientScript = `
 
       <section class="filters-card">
         <div class="filter-group">
-          <label for="text-language" data-i18n="language">{uiText[defaultUiLang].language}</label>
+          <label for="text-language" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
           <select id="text-language">
             <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
             {uiLanguages.map((lang) => (
@@ -312,6 +331,9 @@ const clientScript = `
             <option value="default" data-i18n="sortNewestDefault">{uiText[defaultUiLang].sortNewestDefault}</option>
             <option value="most-practiced" data-i18n="sortMostPracticed">{uiText[defaultUiLang].sortMostPracticed}</option>
             <option value="least-practiced" data-i18n="sortLeastPracticed">{uiText[defaultUiLang].sortLeastPracticed}</option>
+            <option value="recently-practiced" data-i18n="sortRecentlyPracticed">{uiText[defaultUiLang].sortRecentlyPracticed}</option>
+            <option value="easiest" data-i18n="sortEasiestFirst">{uiText[defaultUiLang].sortEasiestFirst}</option>
+            <option value="hardest" data-i18n="sortHardestFirst">{uiText[defaultUiLang].sortHardestFirst}</option>
             <option value="az" data-i18n="sortAlphabetical">{uiText[defaultUiLang].sortAlphabetical}</option>
           </select>
         </div>
