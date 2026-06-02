@@ -556,9 +556,10 @@
         "exampleNo": "Jeg studerte på biblioteket i nærheten."
       },
       {
-        "phrase": "少し疲れていました",
-        "ja": "少し疲れた状態でした",
-        "en": "was a little tired",
+        "phrase": "疲れている",
+        "formInText": "少し疲れていました",
+        "ja": "疲れを感じている",
+        "en": "be tired",
         "no": "var litt sliten",
         "example": "昨日は少し疲れていました。",
         "exampleEn": "I was a little tired yesterday.",
@@ -1132,20 +1133,6 @@
         "ja": "二人とも / 相手も自分も",
         "en": "both of us / each other",
         "no": "begge to / hverandre"
-      },
-      {
-        "phrase": "〜ながら",
-        "formInText": "食べながら",
-        "ja": "〜しながら",
-        "en": "while doing",
-        "no": "mens man gjør noe"
-      },
-      {
-        "phrase": "〜ているうちに",
-        "formInText": "話しているうちに",
-        "ja": "〜している間に、自然に変化する",
-        "en": "while doing something, gradually",
-        "no": "mens man gjør noe, gradvis"
       },
       {
         "phrase": "〜について話す",
@@ -2591,10 +2578,10 @@
         "en": "user experience"
       },
       {
-        "phrase": "strukturere i mindre steg",
+        "phrase": "dele opp i mindre steg",
         "formInText": "strukturere skjemaet i mindre steg",
-        "ja": "小さなステップに構造化する",
-        "en": "structure into smaller steps"
+        "ja": "小さなステップに分ける",
+        "en": "break into smaller steps"
       },
       {
         "phrase": "avklare om",
@@ -2638,10 +2625,10 @@
         "en": "approach the deadline"
       },
       {
-        "phrase": "prioritere først",
-        "formInText": "skulle løses først",
-        "ja": "最初に優先する",
-        "en": "prioritize first"
+        "phrase": "prioritere oppgaver",
+        "formInText": "prioritere hvilke oppgaver",
+        "ja": "タスクに優先順位をつける",
+        "en": "prioritize tasks"
       },
       {
         "phrase": "kunne vente til",
@@ -2688,9 +2675,9 @@
     "translationEn": "While working on the new component, we discovered that accessibility and responsive design could not be treated as two separate requirements. A solution that looks tidy on desktop can create problems if the focus order becomes illogical or the content does not work on mobile. Therefore, we decided to take a closer look at keyboard navigation, screen reader text, and how the layout breaks at small widths. Before making a final decision, we had to clarify which compromises were actually acceptable for the user experience.",
     "expressions": [
       {
-        "phrase": "arbeid med",
+        "phrase": "arbeide med",
         "formInText": "arbeidet med",
-        "ja": "〜に取り組むこと",
+        "ja": "〜に取り組む",
         "en": "work on"
       },
       {
@@ -2722,9 +2709,10 @@
         "en": "make a final decision"
       },
       {
-        "phrase": "avklare hvilke",
+        "phrase": "avklare",
+        "formInText": "avklare hvilke",
         "ja": "どれが〜か明確にする",
-        "en": "clarify which"
+        "en": "clarify"
       }
     ],
     "grammar": [
@@ -2764,8 +2752,8 @@
       {
         "phrase": "endre karakter",
         "formInText": "hadde endret karakter",
-        "ja": "性質が変わる",
-        "en": "change character"
+        "ja": "痛みや症状の性質が変わる",
+        "en": "change in character"
       },
       {
         "phrase": "føle seg svimmel",
@@ -2774,15 +2762,16 @@
         "en": "feel dizzy"
       },
       {
-        "phrase": "symptomene har blitt verre",
-        "ja": "症状が悪化している",
-        "en": "the symptoms have become worse"
+        "phrase": "bli verre",
+        "formInText": "symptomene har blitt verre",
+        "ja": "悪化する",
+        "en": "become worse"
       },
       {
         "phrase": "ha tung pust",
         "formInText": "fikk tung pust",
-        "ja": "息苦しい / 呼吸が重い",
-        "en": "have heavy breathing"
+        "ja": "息苦しさがある",
+        "en": "have shortness of breath"
       },
       {
         "phrase": "akutte smerter",
@@ -2816,7 +2805,7 @@
       {
         "phrase": "observere at",
         "formInText": "observerte sykepleieren at",
-        "ja": "〜だと観察する / 気づく",
+        "ja": "〜であることを観察する / 確認する",
         "en": "observe that"
       },
       {
@@ -2840,8 +2829,8 @@
       {
         "phrase": "gi beskjed til",
         "formInText": "ga beskjed til",
-        "ja": "〜に知らせる",
-        "en": "inform / notify"
+        "ja": "〜に報告する / 連絡する",
+        "en": "notify / inform"
       },
       {
         "phrase": "tyde på",
@@ -2874,10 +2863,10 @@
     "translationEn": "When the nurse entered the room, she asked the patient whether the pain radiated into the arm or back. The patient answered that it was not a sharp pain, but more like pressure that came in waves. He had heavy breathing when he walked to the bathroom, and he became nauseous if he tried to eat. The nurse calmly explained what would happen next and said they would follow up the patient closely while waiting for the results of the examination.",
     "expressions": [
       {
-        "phrase": "smertene stråler ut i",
+        "phrase": "stråle ut i",
         "formInText": "smertene strålte ut i",
         "ja": "痛みが〜に広がる",
-        "en": "the pain radiates into"
+        "en": "radiate into"
       },
       {
         "phrase": "komme i bølger",
@@ -2888,8 +2877,8 @@
       {
         "phrase": "ha tung pust",
         "formInText": "hadde tung pust",
-        "ja": "息苦しい / 呼吸が重い",
-        "en": "have heavy breathing"
+        "ja": "息苦しさがある",
+        "en": "have shortness of breath"
       },
       {
         "phrase": "bli kvalm",
@@ -2898,9 +2887,10 @@
         "en": "become nauseous"
       },
       {
-        "phrase": "følge opp pasienten",
-        "ja": "患者をフォローする",
-        "en": "follow up the patient"
+        "phrase": "følge opp",
+        "formInText": "følge opp pasienten",
+        "ja": "継続して確認・対応する",
+        "en": "follow up / continue monitoring"
       },
       {
         "phrase": "vente på svar fra",
@@ -2956,7 +2946,7 @@
       },
       {
         "phrase": "følge med på",
-        "ja": "〜に注意して見る",
+        "ja": "〜の変化に注意して見る",
         "en": "watch for / monitor"
       },
       {
@@ -2995,7 +2985,7 @@
     "expressions": [
       {
         "phrase": "sammensatt sykdomsbilde",
-        "ja": "複合的な病状",
+        "ja": "複数の症状や要因が重なった病状",
         "en": "complex clinical picture"
       },
       {
@@ -3010,9 +3000,10 @@
         "en": "reaction to the treatment"
       },
       {
-        "phrase": "observere pasienten videre",
-        "ja": "患者の観察を続ける",
-        "en": "continue observing the patient"
+        "phrase": "observere videre",
+        "formInText": "observere pasienten videre",
+        "ja": "継続して観察する",
+        "en": "continue observing"
       },
       {
         "phrase": "avklare med legen",
@@ -3026,8 +3017,8 @@
       },
       {
         "phrase": "fange opp",
-        "ja": "早めに見つける / 捉える",
-        "en": "detect / catch"
+        "ja": "変化や兆候を早めに察知する",
+        "en": "detect / pick up on"
       },
       {
         "phrase": "være i bedring",
@@ -3051,6 +3042,272 @@
         "title": "Som-setning",
         "descriptionJa": "「en situasjon som ...」のように、「som」は名詞を詳しく説明します。",
         "descriptionEn": "\"Som\" introduces a relative clause that gives more information about a noun."
+      }
+    ]
+  },
+  {
+    "id": "no_020",
+    "language": "no",
+    "category": "office-smalltalk",
+    "level": "b1",
+    "title": "Før møtet starter",
+    "text": "Før møtet startet, sto jeg ved kaffemaskinen sammen med Ingrid. Hun smilte og spurte: \"Hvordan går det?\" Jeg svarte at det hadde vært litt travelt i det siste, men at dagen virket roligere. Ingrid lo og sa at hun også trengte en kaffe før møtet. Vi snakket litt om været, og så gikk vi inn i møterommet.",
+    "translationJa": "会議が始まる前、私はイングリッドと一緒にコーヒーマシンの近くに立っていました。彼女は笑顔で「調子はどう？」と聞きました。私は、最近少し忙しかったけれど、今日は少し落ち着いていそうだと答えました。イングリッドは笑って、自分も会議の前にコーヒーが必要だと言いました。私たちは天気について少し話してから、会議室に入りました。",
+    "translationEn": "Before the meeting started, I stood by the coffee machine with Ingrid. She smiled and asked, \"How are you doing?\" I answered that things had been a little busy lately, but that the day seemed calmer. Ingrid laughed and said that she also needed a coffee before the meeting. We talked a little about the weather, and then we went into the meeting room.",
+    "expressions": [
+      {
+        "phrase": "Hvordan går det?",
+        "ja": "調子はどうですか？",
+        "en": "How are you doing?"
+      },
+      {
+        "phrase": "ha det travelt",
+        "formInText": "det hadde vært litt travelt",
+        "ja": "忙しい / ばたばたしている",
+        "en": "be busy"
+      },
+      {
+        "phrase": "i det siste",
+        "ja": "最近 / ここしばらく",
+        "en": "lately"
+      },
+      {
+        "phrase": "trenge en kaffe",
+        "formInText": "trengte en kaffe",
+        "ja": "コーヒーが必要だ / コーヒーを飲みたい",
+        "en": "need a coffee"
+      },
+      {
+        "phrase": "snakke litt om",
+        "formInText": "snakket litt om",
+        "ja": "〜について少し話す",
+        "en": "talk a little about"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Indirekte tale med at",
+        "descriptionJa": "「jeg svarte at ...」のように、答えた内容を「at」で続けて説明できます。",
+        "descriptionEn": "After verbs like \"svare\", an \"at\" clause can explain what someone answered."
+      },
+      {
+        "title": "Preteritum i småprat",
+        "descriptionJa": "最近の様子を話すときにも、過去形を使って「少し忙しかった」のように説明できます。",
+        "descriptionEn": "In small talk, the past tense can describe how things have been recently."
+      }
+    ]
+  },
+  {
+    "id": "no_021",
+    "language": "no",
+    "category": "office-smalltalk",
+    "level": "b1",
+    "title": "Lunsj med kolleger",
+    "text": "I lunsjen satte jeg meg ved siden av Marius og spurte om han hadde hatt en fin helg. Han fortalte at han hadde vært på hytta med familien, og jeg sa at det hørtes hyggelig ut. Etterpå spurte han om jeg hadde planer i helgen. Jeg svarte at jeg kanskje skulle møte en venn, men at vi fikk se hvordan det gikk.",
+    "translationJa": "昼休みに、私はマリウスの隣に座り、週末は楽しかったか聞きました。彼は家族と山小屋に行っていたと話し、私はそれは楽しそうだと言いました。そのあと彼は、私に週末の予定があるか聞きました。私は友だちに会うかもしれないけれど、どうなるかは様子を見ると答えました。",
+    "translationEn": "At lunch, I sat down next to Marius and asked if he had had a nice weekend. He told me that he had been at the cabin with his family, and I said that sounded nice. Afterwards he asked whether I had plans for the weekend. I answered that I might meet a friend, but that we would see how it went.",
+    "expressions": [
+      {
+        "phrase": "ha en fin helg",
+        "formInText": "hadde hatt en fin helg",
+        "ja": "よい週末を過ごす",
+        "en": "have a nice weekend"
+      },
+      {
+        "phrase": "Det høres hyggelig ut.",
+        "formInText": "det hørtes hyggelig ut",
+        "ja": "それは楽しそうですね / よさそうですね",
+        "en": "That sounds nice."
+      },
+      {
+        "phrase": "ha planer i helgen",
+        "formInText": "hadde planer i helgen",
+        "ja": "週末に予定がある",
+        "en": "have plans for the weekend"
+      },
+      {
+        "phrase": "Vi får se hvordan det går.",
+        "formInText": "vi fikk se hvordan det gikk",
+        "ja": "どうなるか様子を見ましょう",
+        "en": "We'll see how it goes."
+      },
+      {
+        "phrase": "møte en venn",
+        "ja": "友だちに会う",
+        "en": "meet a friend"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Om i indirekte spørsmål",
+        "descriptionJa": "「spurte om ...」は「〜かどうか聞いた」という意味で使えます。",
+        "descriptionEn": "\"Spurte om\" means \"asked whether\" in indirect questions."
+      },
+      {
+        "title": "Hadde hatt",
+        "descriptionJa": "「hadde hatt」は、過去の時点より前にあったことを話すときに使います。",
+        "descriptionEn": "\"Hadde hatt\" describes something that happened before another past point."
+      }
+    ]
+  },
+  {
+    "id": "no_022",
+    "language": "no",
+    "category": "office-smalltalk",
+    "level": "b2",
+    "title": "En travel morgen",
+    "text": "Da jeg kom inn på kontoret, sa Lina at hun hadde sovet dårlig og følte seg litt sliten. Jeg nikket og sa at det hadde vært litt travelt i det siste for meg også. Hun spurte om jeg hadde mye å gjøre den dagen, og jeg svarte at jeg skulle ta det litt rolig først og begynne med de enkleste oppgavene. Vi hentet kaffe sammen før vi åpnet hver vår laptop.",
+    "translationJa": "私がオフィスに入ると、リナはよく眠れなくて少し疲れていると言いました。私はうなずいて、自分も最近少し忙しかったと言いました。彼女はその日やることが多いのかと聞き、私はまず少しゆっくり進めて、簡単なタスクから始めるつもりだと答えました。私たちはそれぞれのノートパソコンを開く前に、一緒にコーヒーを取りに行きました。",
+    "translationEn": "When I came into the office, Lina said that she had slept badly and felt a little tired. I nodded and said that things had been a bit busy lately for me too. She asked whether I had a lot to do that day, and I answered that I would take it a little slowly at first and start with the easiest tasks. We got coffee together before we each opened our laptop.",
+    "expressions": [
+      {
+        "phrase": "føle seg sliten",
+        "formInText": "følte seg litt sliten",
+        "ja": "疲れていると感じる",
+        "en": "feel tired"
+      },
+      {
+        "phrase": "Det har vært litt travelt i det siste.",
+        "formInText": "det hadde vært litt travelt i det siste",
+        "ja": "最近少し忙しいです",
+        "en": "It has been a bit busy lately."
+      },
+      {
+        "phrase": "ha mye å gjøre",
+        "formInText": "hadde mye å gjøre",
+        "ja": "やることが多い",
+        "en": "have a lot to do"
+      },
+      {
+        "phrase": "ta det litt rolig",
+        "formInText": "ta det litt rolig først",
+        "ja": "少しゆっくり進める / 無理しすぎない",
+        "en": "take it a little easy"
+      },
+      {
+        "phrase": "begynne med",
+        "ja": "〜から始める",
+        "en": "start with"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Da + preteritum",
+        "descriptionJa": "「da」は過去のある時点を表し、後ろに過去形の文が続きます。",
+        "descriptionEn": "\"Da\" introduces a specific time in the past and is followed by past tense."
+      },
+      {
+        "title": "Hver vår",
+        "descriptionJa": "「hver vår laptop」は「それぞれ自分のノートパソコン」という意味です。",
+        "descriptionEn": "\"Hver vår laptop\" means \"each our own laptop.\""
+      }
+    ]
+  },
+  {
+    "id": "no_023",
+    "language": "no",
+    "category": "office-smalltalk",
+    "level": "b2",
+    "title": "Fredag ved kaffemaskinen",
+    "text": "Fredag ettermiddag møtte jeg Nora ved kaffemaskinen. Hun spurte hvordan det gikk med prosjektet, og jeg sa at vi nærmet oss slutten, men at det fortsatt var noen småting igjen. Nora smilte og sa at det ble godt med helg. Jeg var enig og fortalte at jeg ikke hadde store planer, bare en rolig middag og kanskje en tur hvis været holdt seg.",
+    "translationJa": "金曜日の午後、コーヒーマシンのところでノーラに会いました。彼女に「プロジェクトはどう？」と聞かれたので、もう少しで終わりそうだけど、細かい作業がまだいくつか残っていると答えました。ノーラは笑って、「やっと週末だね」と言いました。私もそうだねと答えて、特に大きな予定はなく、静かに夕食を食べて、天気がよければ少し散歩するかもしれないと話しました。",
+    "translationEn": "On Friday afternoon, I met Nora by the coffee machine. She asked how the project was going, and I said we were getting close to the end, but still had a few small things left to do. Nora smiled and said it would be nice to finally have the weekend. I agreed and told her I did not have any big plans, just a quiet dinner and maybe a walk if the weather was good.",
+    "expressions": [
+      {
+        "phrase": "Hvordan går det med prosjektet?",
+        "formInText": "hvordan det gikk med prosjektet",
+        "ja": "プロジェクトの進み具合はどうですか？",
+        "en": "How is the project going?"
+      },
+      {
+        "phrase": "nærme seg slutten",
+        "formInText": "nærmet oss slutten",
+        "ja": "終わりに近づく",
+        "en": "get close to the end"
+      },
+      {
+        "phrase": "være igjen",
+        "formInText": "var noen småting igjen",
+        "ja": "まだ残っている",
+        "en": "be left / remain"
+      },
+      {
+        "phrase": "Det blir godt med helg.",
+        "formInText": "det ble godt med helg",
+        "ja": "週末になるのが楽しみです / 週末がありがたいです",
+        "en": "It will be nice to have the weekend."
+      },
+      {
+        "phrase": "holde seg",
+        "formInText": "været holdt seg",
+        "ja": "その状態が続く",
+        "en": "hold / stay the same"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Hvordan det gikk",
+        "descriptionJa": "間接疑問では「hvordan gikk det」ではなく「hvordan det gikk」の語順になります。",
+        "descriptionEn": "In indirect questions, the word order is \"hvordan det gikk\", not \"hvordan gikk det.\""
+      },
+      {
+        "title": "Hvis + leddsetning",
+        "descriptionJa": "「hvis」は「もし〜なら」という条件を表します。",
+        "descriptionEn": "\"Hvis\" introduces a condition, similar to \"if.\""
+      }
+    ]
+  },
+  {
+    "id": "no_024",
+    "language": "no",
+    "category": "office-smalltalk",
+    "level": "natural",
+    "title": "Småprat på en grå mandag",
+    "text": "Mandag morgen var kontoret litt stille, og flere kom inn med våte jakker etter en lang busstur i regnet. Ved kaffemaskinen spurte Thomas om jeg hadde hatt en fin helg, og jeg svarte at den hadde vært rolig, men fin. Han fortalte at han hadde jobbet litt hjemme fordi uken før hadde vært krevende. Vi snakket kort om at det er lov å starte rolig på en grå mandag, og ble enige om å ta en kaffe til før vi gikk tilbake til pultene våre.",
+    "translationJa": "月曜日の朝、オフィスは少し静かで、雨の中を長くバスで移動してきた人たちが、濡れた上着を着て入ってきました。コーヒーマシンのところでトーマスが、週末は楽しかったかと聞き、私は静かだけれどよい週末だったと答えました。彼は、前の週が大変だったので家で少し仕事をしていたと話しました。私たちは、灰色の月曜日には少しゆっくり始めてもいいよねと短く話し、席に戻る前にもう一杯コーヒーを飲むことにしました。",
+    "translationEn": "On Monday morning, the office was a little quiet, and several people came in with wet jackets after a long bus ride in the rain. By the coffee machine, Thomas asked whether I had had a nice weekend, and I answered that it had been quiet but good. He said that he had worked a little from home because the week before had been demanding. We briefly talked about how it is okay to start slowly on a gray Monday, and agreed to have one more coffee before going back to our desks.",
+    "expressions": [
+      {
+        "phrase": "ha en fin helg",
+        "formInText": "hadde hatt en fin helg",
+        "ja": "よい週末を過ごす",
+        "en": "have a nice weekend"
+      },
+      {
+        "phrase": "jobbe hjemme",
+        "formInText": "hadde jobbet litt hjemme",
+        "ja": "家で仕事をする",
+        "en": "work from home"
+      },
+      {
+        "phrase": "være krevende",
+        "formInText": "hadde vært krevende",
+        "ja": "大変である / 負担が大きい",
+        "en": "be demanding"
+      },
+      {
+        "phrase": "starte rolig",
+        "formInText": "starte rolig på en grå mandag",
+        "ja": "ゆっくり始める",
+        "en": "start slowly"
+      },
+      {
+        "phrase": "bli enige om",
+        "formInText": "ble enige om",
+        "ja": "〜することにする / 合意する",
+        "en": "agree on / decide together"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Fordi + leddsetning",
+        "descriptionJa": "「fordi」は理由を表し、後ろの節では主語が動詞の前に来ます。",
+        "descriptionEn": "\"Fordi\" gives a reason, and the subject comes before the verb in the subordinate clause."
+      },
+      {
+        "title": "Å + infinitiv etter uttrykk",
+        "descriptionJa": "「ble enige om å ...」のように、表現の後ろに「å + 動詞」を続けられます。",
+        "descriptionEn": "Expressions like \"ble enige om\" can be followed by \"å + infinitive.\""
       }
     ]
   }

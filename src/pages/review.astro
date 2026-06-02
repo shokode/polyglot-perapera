@@ -188,8 +188,13 @@ const clientScript = `
     const reviewGrid = document.getElementById('review-grid');
     const emptyState = document.getElementById('review-empty-state');
     const sortSelect = document.getElementById('review-sort');
-    const filterSelect = document.getElementById('review-filter');
+    const statusFilterButton = document.getElementById('review-filter-button');
+    const statusFilterMenu = document.getElementById('review-filter-menu');
+    const statusFilterOptions = Array.from(document.querySelectorAll('[data-review-filter-option]'));
+    const statusFilterButtonLabel = document.getElementById('review-filter-button-label');
+    const statusFilterButtonCount = document.getElementById('review-filter-button-count');
     const targetLanguageSelect = document.getElementById('review-target-language');
+    let selectedFilter = 'review';
 
     function renderUiText(lang) {
       const labels = getUiText(lang);
@@ -210,6 +215,62 @@ const clientScript = `
       renderReviewItems();
     }
 
+    function getStatusFilterLabel(status, labels) {
+      if (status === 'all') {
+        return labels.filterAll;
+      }
+      return getExpressionStatusLabel(status, labels);
+    }
+
+    function getExpressionsForSelectedTargetLanguage() {
+      const selectedTargetLanguage = targetLanguageSelect.value;
+      return expressions.filter((expression) => selectedTargetLanguage === 'all' || expression.language === selectedTargetLanguage);
+    }
+
+    function getStatusCounts() {
+      const counts = { new: 0, review: 0, learned: 0, all: 0 };
+      getExpressionsForSelectedTargetLanguage().forEach((expression) => {
+        const status = getExpressionStatus(expression);
+        if (counts[status] !== undefined) {
+          counts[status] += 1;
+        }
+        counts.all += 1;
+      });
+      return counts;
+    }
+
+    function closeStatusFilter() {
+      statusFilterButton.setAttribute('aria-expanded', 'false');
+      statusFilterMenu.hidden = true;
+    }
+
+    function openStatusFilter() {
+      statusFilterButton.setAttribute('aria-expanded', 'true');
+      statusFilterMenu.hidden = false;
+      const selectedOption = statusFilterOptions.find((option) => option.dataset.reviewFilterOption === selectedFilter) || statusFilterOptions[0];
+      selectedOption?.focus();
+    }
+
+    function updateStatusFilterUi() {
+      const labels = getUiText(uiLanguageSelect.value);
+      const counts = getStatusCounts();
+      statusFilterOptions.forEach((option) => {
+        const status = option.dataset.reviewFilterOption;
+        const isSelected = status === selectedFilter;
+        option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        option.querySelector('[data-filter-option-label]').textContent = getStatusFilterLabel(status, labels);
+        option.querySelector('[data-filter-option-count]').textContent = counts[status] || 0;
+      });
+      statusFilterButtonLabel.textContent = getStatusFilterLabel(selectedFilter, labels);
+      statusFilterButtonCount.textContent = counts[selectedFilter] || 0;
+    }
+
+    function setStatusFilter(status) {
+      selectedFilter = ['review', 'learned', 'new', 'all'].includes(status) ? status : 'review';
+      closeStatusFilter();
+      renderReviewItems();
+    }
+
     function setExpressionStatus(expression, status) {
       const all = loadExpressionStatuses();
       all[getExpressionStorageKey(expression)] = status;
@@ -219,9 +280,9 @@ const clientScript = `
 
     function renderReviewItems() {
       const labels = getUiText(uiLanguageSelect.value);
-      const selectedFilter = filterSelect.value;
       const selectedSort = sortSelect.value;
       const selectedTargetLanguage = targetLanguageSelect.value;
+      updateStatusFilterUi();
       const reviewItems = expressions
         .filter((expression) => selectedTargetLanguage === 'all' || expression.language === selectedTargetLanguage)
         .filter((expression) => selectedFilter === 'all' || getExpressionStatus(expression) === selectedFilter)
@@ -299,7 +360,48 @@ const clientScript = `
     renderUiText(savedUiLanguage);
 
     sortSelect.addEventListener('change', renderReviewItems);
-    filterSelect.addEventListener('change', renderReviewItems);
+    statusFilterButton.addEventListener('click', () => {
+      if (statusFilterMenu.hidden) {
+        openStatusFilter();
+      } else {
+        closeStatusFilter();
+      }
+    });
+    statusFilterButton.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openStatusFilter();
+      }
+    });
+    statusFilterOptions.forEach((option, index) => {
+      option.addEventListener('click', () => {
+        setStatusFilter(option.dataset.reviewFilterOption);
+      });
+      option.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setStatusFilter(option.dataset.reviewFilterOption);
+        }
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeStatusFilter();
+          statusFilterButton.focus();
+        }
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          statusFilterOptions[(index + 1) % statusFilterOptions.length].focus();
+        }
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          statusFilterOptions[(index - 1 + statusFilterOptions.length) % statusFilterOptions.length].focus();
+        }
+      });
+    });
+    document.addEventListener('click', (event) => {
+      if (!statusFilterButton.contains(event.target) && !statusFilterMenu.contains(event.target)) {
+        closeStatusFilter();
+      }
+    });
     targetLanguageSelect.addEventListener('change', (event) => {
       const lang = event.target.value === 'all' || uiLanguages.includes(event.target.value) ? event.target.value : 'no';
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
@@ -355,13 +457,38 @@ const clientScript = `
             </select>
           </div>
           <div class="filter-group">
-            <label for="review-filter" data-i18n="filterLabel">{uiText[defaultUiLang].filterLabel}</label>
-            <select id="review-filter">
-              <option value="review" data-i18n="expressionStatusReview">{uiText[defaultUiLang].expressionStatusReview}</option>
-              <option value="learned" data-i18n="expressionStatusLearned">{uiText[defaultUiLang].expressionStatusLearned}</option>
-              <option value="new" data-i18n="expressionStatusNew">{uiText[defaultUiLang].expressionStatusNew}</option>
-              <option value="all" data-i18n="filterAll">{uiText[defaultUiLang].filterAll}</option>
-            </select>
+            <label id="review-filter-label" for="review-filter-button" data-i18n="filterLabel">{uiText[defaultUiLang].filterLabel}</label>
+            <div class="status-filter-dropdown">
+              <button
+                id="review-filter-button"
+                class="status-filter-button"
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-labelledby="review-filter-label review-filter-button-label review-filter-button-count"
+              >
+                <span id="review-filter-button-label">{uiText[defaultUiLang].expressionStatusReview}</span>
+                <span id="review-filter-button-count" class="status-filter-count">0</span>
+              </button>
+              <div id="review-filter-menu" class="status-filter-menu" role="listbox" aria-labelledby="review-filter-label" hidden>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-review-filter-option="review" aria-selected="true">
+                  <span data-filter-option-label>{uiText[defaultUiLang].expressionStatusReview}</span>
+                  <span class="status-filter-count" data-filter-option-count>0</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-review-filter-option="learned" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].expressionStatusLearned}</span>
+                  <span class="status-filter-count" data-filter-option-count>0</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-review-filter-option="new" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].expressionStatusNew}</span>
+                  <span class="status-filter-count" data-filter-option-count>0</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-review-filter-option="all" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].filterAll}</span>
+                  <span class="status-filter-count" data-filter-option-count>0</span>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="filter-group">
             <label for="review-sort" data-i18n="sortLabel">{uiText[defaultUiLang].sortLabel}</label>

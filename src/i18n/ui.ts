@@ -18,7 +18,8 @@ export type CategoryKey =
   | 'cooking'
   | 'norway-life'
   | 'frontend-office'
-  | 'health-medical';
+  | 'health-medical'
+  | 'office-smalltalk';
 
 export const categories: CategoryKey[] = [
   'daily-life',
@@ -32,6 +33,7 @@ export const categories: CategoryKey[] = [
   'norway-life',
   'frontend-office',
   'health-medical',
+  'office-smalltalk',
 ];
 
 export type LevelKey = 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'natural';
@@ -71,6 +73,7 @@ export const categoryLabels: Record<CategoryKey, Record<UILang, string>> = {
   'norway-life': { no: 'Norge', en: 'Norway Life', ja: 'ノルウェー生活' },
   'frontend-office': { no: 'Frontend og kontor', en: 'Frontend & Office', ja: 'フロントエンド・オフィス' },
   'health-medical': { no: 'Helse og medisin', en: 'Health & Medical', ja: '医療・ヘルスケア' },
+  'office-smalltalk': { no: 'Småprat på jobb', en: 'Office Small Talk', ja: '職場の雑談' },
 };
 
 export const levelLabels: Record<LevelKey, Record<UILang, string>> = {
