@@ -109,6 +109,7 @@ export type UILabels = {
   progress: string;
   accuracy: string;
   wpm: string;
+  cpm: string;
   japaneseTranslation: string;
   englishTranslation: string;
   norwegianTranslation: string;
@@ -175,6 +176,7 @@ export const uiText: Record<UILang, UILabels> = {
     progress: 'Fremgang',
     accuracy: 'Nøyaktighet',
     wpm: 'WPM',
+    cpm: 'tegn/min',
     japaneseTranslation: 'Japansk oversettelse',
     englishTranslation: 'Engelsk oversettelse',
     norwegianTranslation: 'Norsk oversettelse',
@@ -239,6 +241,7 @@ export const uiText: Record<UILang, UILabels> = {
     progress: 'Progress',
     accuracy: 'Accuracy',
     wpm: 'WPM',
+    cpm: 'CPM',
     japaneseTranslation: 'Japanese Translation',
     englishTranslation: 'English Translation',
     norwegianTranslation: 'Norwegian Translation',
@@ -303,6 +306,7 @@ export const uiText: Record<UILang, UILabels> = {
     progress: '進捗',
     accuracy: '正確さ',
     wpm: 'WPM',
+    cpm: '文字/分',
     japaneseTranslation: '日本語訳',
     englishTranslation: '英語訳',
     norwegianTranslation: 'ノルウェー語訳',

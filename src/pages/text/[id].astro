@@ -246,6 +246,7 @@ const clientScript = `
   const activeTypingTarget = activePracticeTranslationLang
     ? getClientTranslationValue(activePracticeTranslationLang)
     : text.text;
+  const activeTypingTargetLanguage = activePracticeTranslationLang || text.language;
 
   function safeReadStorage(key) {
     try {
@@ -391,6 +392,10 @@ const clientScript = `
 
   function getTranslationPracticeLabel(lang, labels) {
     return labels.translationPracticePrefix + (languageNames[lang]?.[uiLanguageSelect.value] || lang);
+  }
+
+  function getSpeedMetricLabel(labels) {
+    return activeTypingTargetLanguage === 'ja' ? labels.cpm : labels.wpm;
   }
 
   function getExplanationLanguageOrder(lang) {
@@ -714,11 +719,13 @@ const clientScript = `
       uiLanguageSelect.value = lang;
       readHeading.textContent = labels.readTypeUnderstand;
       readDescription.textContent = labels.focusNaturalMeaning;
-      typingHeading.textContent = labels.typingPractice;
+      typingHeading.textContent = activeIsTranslationPractice && activePracticeTranslationLang
+        ? getTranslationPracticeLabel(activePracticeTranslationLang, labels)
+        : labels.typingPractice;
       input.placeholder = labels.typingPlaceholder;
       progressTitle.textContent = labels.progress;
       accuracyTitle.textContent = labels.accuracy;
-      wpmTitle.textContent = labels.wpm;
+      wpmTitle.textContent = getSpeedMetricLabel(labels);
       document.querySelectorAll('[data-translation-title]').forEach((el) => {
         el.textContent = getTranslationTitle(el.dataset.translationTitle, labels);
       });
@@ -783,15 +790,19 @@ const clientScript = `
       const progress = Math.min(100, Math.round((correct / target.length) * 100));
       const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
       const elapsedMinutes = startTime ? Math.max((performance.now() - startTime) / 60000, 0.001) : 0;
-      const words = typed.trim().split(/\\s+/).filter(Boolean).length;
-      let wpm = 0;
+      let speed = 0;
       if (startTime && elapsedMinutes > 0) {
-        const rawWpm = Math.round(words / elapsedMinutes);
-        wpm = Math.min(rawWpm, 200);
+        if (activeTypingTargetLanguage === 'ja') {
+          speed = Math.round(correct / elapsedMinutes);
+        } else {
+          const words = typed.trim().split(/\\s+/).filter(Boolean).length;
+          const rawWpm = Math.round(words / elapsedMinutes);
+          speed = Math.min(rawWpm, 200);
+        }
       }
       progressValue.textContent = progress + '%';
       accuracyValue.textContent = accuracy + '%';
-      wpmValue.textContent = '' + wpm;
+      wpmValue.textContent = '' + speed;
       updateTargetTextProgress(typed);
       if (typed === target) {
         if (!activeIsTranslationPractice) {
@@ -801,15 +812,31 @@ const clientScript = `
         }
         if (!activeIsTranslationPractice && !hasRecordedCompletion) {
           hasRecordedCompletion = true;
-          recordCompletion(accuracy, wpm);
+          recordCompletion(accuracy, speed);
         }
       }
     }
 
     let startTime = null;
     let hasRecordedCompletion = false;
+    let isComposing = false;
 
     input.addEventListener('input', (event) => {
+      if (event.isComposing || isComposing) {
+        return;
+      }
+      if (!startTime) {
+        startTime = performance.now();
+      }
+      updateMetrics();
+    });
+
+    input.addEventListener('compositionstart', () => {
+      isComposing = true;
+    });
+
+    input.addEventListener('compositionend', () => {
+      isComposing = false;
       if (!startTime) {
         startTime = performance.now();
       }
@@ -899,7 +926,7 @@ if (!text) {
             <span class="meta-chip" id="language-chip">{languageNames[text.language as keyof typeof languageNames][defaultUiLang]}</span>
             <span class="meta-chip" id="category-chip">{categoryLabels[text.category as keyof typeof categoryLabels][defaultUiLang]}</span>
             <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[normalizeLevelKey(text.level)][defaultUiLang]}</span>
-            <span class="meta-chip" id="translation-practice-chip" hidden>
+            <span class="meta-chip" id="translation-practice-chip" hidden={!isTranslationPractice}>
               {practiceTranslationLang
                 ? `${uiText[defaultUiLang].translationPracticePrefix}${languageNames[practiceTranslationLang][defaultUiLang]}`
                 : uiText[defaultUiLang].translationPracticePrefix}
@@ -924,10 +951,10 @@ if (!text) {
         <p id="read-description" data-i18n="focusNaturalMeaning">{uiText[defaultUiLang].focusNaturalMeaning}</p>
       </section>
 
-      <section class="learning-focus-card" id="translation-practice-info" hidden>
+      <section class="learning-focus-card translation-practice-info-card" id="translation-practice-info" hidden={!isTranslationPractice}>
         <h3 id="original-text-title">{uiText[defaultUiLang].originalText}</h3>
-        <p>{text.text}</p>
-        <p id="translation-practice-note">{uiText[defaultUiLang].translationPracticeNoCards}</p>
+        <p class="translation-practice-original">{text.text}</p>
+        <p class="translation-practice-note" id="translation-practice-note">{uiText[defaultUiLang].translationPracticeNoCards}</p>
       </section>
 
       <section class="learning-focus-card" id="learning-focus-card" hidden={isTranslationPractice}>
@@ -952,7 +979,7 @@ if (!text) {
         </div>
       </section>
 
-      <section class="text-content" data-target-language={text.language} data-practice-mode={isTranslationPractice ? 'translation' : 'text'}>
+      <section class="text-content" data-target-language={practiceTranslationLang ?? text.language} data-practice-mode={isTranslationPractice ? 'translation' : 'text'}>
         <div id="target-text" set:html={highlightedTextHtml}></div>
         <aside class="expression-mini-card" id="expression-mini-card" hidden>
           <strong id="mini-card-phrase"></strong>
@@ -963,7 +990,11 @@ if (!text) {
       </section>
 
       <section class="note-card">
-        <h3 id="typing-heading" data-i18n="typingPractice">{uiText[defaultUiLang].typingPractice}</h3>
+        <h3 id="typing-heading" data-i18n="typingPractice">
+          {practiceTranslationLang
+            ? `${uiText[defaultUiLang].translationPracticePrefix}${languageNames[practiceTranslationLang][defaultUiLang]}`
+            : uiText[defaultUiLang].typingPractice}
+        </h3>
         <textarea id="typing-input" class="type-area" placeholder={uiText[defaultUiLang].typingPlaceholder} spellcheck="false"></textarea>
         <div class="stat-grid">
           <div class="stat-card"><strong id="progress-title" data-i18n="progress">{uiText[defaultUiLang].progress}</strong><p id="progress-value">0%</p></div>
