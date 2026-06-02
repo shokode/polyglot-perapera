@@ -129,6 +129,16 @@ function getTranslationsToShow(item: Record<string, unknown>) {
     .filter((translation): translation is { lang: UILang; value: string } => Boolean(translation.value));
 }
 
+function getTranslationPracticeButtonLabel(lang: UILang, labels: (typeof uiText)[UILang]) {
+  if (lang === 'ja') {
+    return labels.typeThisInJapanese;
+  }
+  if (lang === 'no') {
+    return labels.typeThisInNorwegian;
+  }
+  return labels.typeThisInEnglish;
+}
+
 function getExplanationMap(item: Record<string, unknown>) {
   return {
     ja: typeof item.ja === 'string' ? item.ja : typeof item.descriptionJa === 'string' ? item.descriptionJa : '',
@@ -170,14 +180,28 @@ function getOrderedExplanations(item: Record<string, unknown>, uiLang: UILang) {
 
 // TODO: Future Japanese typing mode can support exact kanji mode and kana reading mode.
 // For now, typing comparison intentionally uses the plain text field only.
+const requestedPracticeTranslation = Astro.url.searchParams.get('practiceTranslation');
+const practiceTranslationLang = text
+  && uiLanguages.includes(requestedPracticeTranslation as UILang)
+  && requestedPracticeTranslation !== text.language
+  && getTranslationValue(text, requestedPracticeTranslation as UILang)
+  ? requestedPracticeTranslation as UILang
+  : null;
+const isTranslationPractice = Boolean(practiceTranslationLang);
+const typingTarget = text
+  ? practiceTranslationLang
+    ? getTranslationValue(text, practiceTranslationLang) ?? text.text
+    : text.text
+  : '';
 const highlightedTextHtml = text
   ? renderProgressText(
-    text.text,
-    text.expressions,
-    text.language === 'ja' && 'rubyText' in text && Array.isArray(text.rubyText) ? text.rubyText : undefined
+    typingTarget,
+    isTranslationPractice ? [] : text.expressions,
+    !isTranslationPractice && text.language === 'ja' && 'rubyText' in text && Array.isArray(text.rubyText) ? text.rubyText : undefined
   )
   : '';
-const translationsToShow = text ? getTranslationsToShow(text) : [];
+const translationsToShow = text && !isTranslationPractice ? getTranslationsToShow(text) : [];
+const translationPracticeHrefBase = text ? `/text/${text.id}` : '';
 
 const clientScript = `
   const text = ${JSON.stringify(text)};
@@ -200,6 +224,28 @@ const clientScript = `
   const TEXT_PROGRESS_KEY = 'typingProgress';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
+  const translationFieldByLanguage = {
+    ja: 'translationJa',
+    en: 'translationEn',
+    no: 'translationNo',
+  };
+
+  function getClientTranslationValue(lang) {
+    const field = translationFieldByLanguage[lang];
+    const value = field ? text[field] : null;
+    return typeof value === 'string' && value.trim() ? value : null;
+  }
+
+  const requestedPracticeTranslation = new URLSearchParams(window.location.search).get('practiceTranslation');
+  const activePracticeTranslationLang = uiLanguages.includes(requestedPracticeTranslation)
+    && requestedPracticeTranslation !== text.language
+    && getClientTranslationValue(requestedPracticeTranslation)
+      ? requestedPracticeTranslation
+      : null;
+  const activeIsTranslationPractice = Boolean(activePracticeTranslationLang);
+  const activeTypingTarget = activePracticeTranslationLang
+    ? getClientTranslationValue(activePracticeTranslationLang)
+    : text.text;
 
   function safeReadStorage(key) {
     try {
@@ -324,6 +370,20 @@ const clientScript = `
     return labels.englishTranslation;
   }
 
+  function getTranslationPracticeButtonLabel(lang, labels) {
+    if (lang === 'ja') {
+      return labels.typeThisInJapanese;
+    }
+    if (lang === 'no') {
+      return labels.typeThisInNorwegian;
+    }
+    return labels.typeThisInEnglish;
+  }
+
+  function getTranslationPracticeLabel(lang, labels) {
+    return labels.translationPracticePrefix + (languageNames[lang]?.[uiLanguageSelect.value] || lang);
+  }
+
   function getExplanationLanguageOrder(lang) {
     return [lang, ...uiLanguages.filter((item) => item !== lang)];
   }
@@ -369,6 +429,12 @@ const clientScript = `
     const completionPanel = document.getElementById('completion-panel');
     const expressionsPanel = document.getElementById('expressions-panel');
     const grammarPanel = document.getElementById('grammar-panel');
+    const learningFocusCard = document.getElementById('learning-focus-card');
+    const translationPracticeInfo = document.getElementById('translation-practice-info');
+    const translationPracticeChip = document.getElementById('translation-practice-chip');
+    const translationPracticeNote = document.getElementById('translation-practice-note');
+    const originalTextTitle = document.getElementById('original-text-title');
+    const targetText = document.getElementById('target-text');
     const uiLanguageSelect = document.getElementById('ui-language-select');
     const languageChip = document.getElementById('language-chip');
     const categoryChip = document.getElementById('category-chip');
@@ -381,7 +447,7 @@ const clientScript = `
     const wpmTitle = document.getElementById('wpm-title');
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
-    const targetCharacters = document.querySelectorAll('[data-char-index]');
+    let targetCharacters = document.querySelectorAll('[data-char-index]');
     const textContent = document.querySelector('.text-content');
     const expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
     const expressionMiniCard = document.getElementById('expression-mini-card');
@@ -390,6 +456,64 @@ const clientScript = `
     const miniCardFallback = document.getElementById('mini-card-fallback');
     const miniCardDetails = document.getElementById('mini-card-details');
     let activeMiniCardPhrase = null;
+
+    function renderClientCharacter(value, index) {
+      return '<span class="target-char" data-char-index="' + index + '">' + escapeHtmlClient(value) + '</span>';
+    }
+
+    function renderClientCharacters(value, startIndex) {
+      return Array.from(value).map((char, offset) => renderClientCharacter(char, startIndex + offset)).join('');
+    }
+
+    function renderClientProgressParagraph(paragraph, paragraphStartIndex) {
+      let index = paragraphStartIndex;
+      return paragraph.split(/(\\s+)/).map((part) => {
+        const startIndex = index;
+        index += part.length;
+        if (!part) {
+          return '';
+        }
+        if (/^\\s+$/.test(part)) {
+          return '<span class="target-space">' + renderClientCharacters(part, startIndex) + '</span>';
+        }
+        return '<span class="target-word">' + renderClientCharacters(part, startIndex) + '</span>';
+      }).join('');
+    }
+
+    function renderClientProgressText(value) {
+      let index = 0;
+      return value.split('\\n\\n').map((paragraph) => {
+        const rendered = renderClientProgressParagraph(paragraph, index);
+        index += paragraph.length + 2;
+        return '<p>' + rendered + '</p>';
+      }).join('');
+    }
+
+    function applyPracticeModePresentation() {
+      if (!activeIsTranslationPractice) {
+        if (translationPracticeChip) {
+          translationPracticeChip.hidden = true;
+        }
+        return;
+      }
+
+      if (targetText) {
+        targetText.innerHTML = renderClientProgressText(activeTypingTarget);
+        targetCharacters = document.querySelectorAll('[data-char-index]');
+      }
+      if (textContent) {
+        textContent.dataset.targetLanguage = activePracticeTranslationLang;
+      }
+      if (learningFocusCard) {
+        learningFocusCard.hidden = true;
+      }
+      if (translationPracticeInfo) {
+        translationPracticeInfo.hidden = false;
+      }
+      if (translationPracticeChip) {
+        translationPracticeChip.hidden = false;
+      }
+    }
 
     function updateExpressionStatusButtons() {
       const labels = getUiText(uiLanguageSelect.value);
@@ -592,8 +716,24 @@ const clientScript = `
       document.querySelectorAll('[data-translation-title]').forEach((el) => {
         el.textContent = getTranslationTitle(el.dataset.translationTitle, labels);
       });
-      expressionsTitle.textContent = labels.usefulExpressions;
-      grammarTitle.textContent = labels.grammarFromText;
+      document.querySelectorAll('[data-translation-practice-button]').forEach((el) => {
+        el.textContent = getTranslationPracticeButtonLabel(el.dataset.translationPracticeButton, labels);
+      });
+      if (translationPracticeChip && activePracticeTranslationLang) {
+        translationPracticeChip.textContent = getTranslationPracticeLabel(activePracticeTranslationLang, labels);
+      }
+      if (translationPracticeNote) {
+        translationPracticeNote.textContent = labels.translationPracticeNoCards;
+      }
+      if (originalTextTitle) {
+        originalTextTitle.textContent = labels.originalText;
+      }
+      if (expressionsTitle) {
+        expressionsTitle.textContent = labels.usefulExpressions;
+      }
+      if (grammarTitle) {
+        grammarTitle.textContent = labels.grammarFromText;
+      }
       document.querySelectorAll('[data-expression-form-label]').forEach((el) => {
         el.textContent = labels.expressionTextForm;
       });
@@ -618,15 +758,15 @@ const clientScript = `
           return;
         }
         if (index < typed.length) {
-          char.classList.add(typed[index] === text.text[index] ? 'correct' : 'incorrect');
-        } else if (index === typed.length && typed.length < text.text.length) {
+          char.classList.add(typed[index] === activeTypingTarget[index] ? 'correct' : 'incorrect');
+        } else if (index === typed.length && typed.length < activeTypingTarget.length) {
           char.classList.add('current');
         }
       });
     }
 
     function updateMetrics() {
-      const target = text.text;
+      const target = activeTypingTarget;
       const typed = input.value;
       let correct = 0;
       for (let i = 0; i < typed.length; i += 1) {
@@ -648,10 +788,12 @@ const clientScript = `
       wpmValue.textContent = '' + wpm;
       updateTargetTextProgress(typed);
       if (typed === target) {
-        completionPanel.hidden = false;
-        expressionsPanel.hidden = false;
-        grammarPanel.hidden = false;
-        if (!hasRecordedCompletion) {
+        if (!activeIsTranslationPractice) {
+          completionPanel.hidden = false;
+          expressionsPanel.hidden = false;
+          grammarPanel.hidden = false;
+        }
+        if (!activeIsTranslationPractice && !hasRecordedCompletion) {
           hasRecordedCompletion = true;
           recordCompletion(accuracy, wpm);
         }
@@ -715,6 +857,7 @@ const clientScript = `
       closeExpressionMiniCard();
     });
 
+    applyPracticeModePresentation();
     const savedUiLanguage = getSavedUiLanguage();
     renderUiText(savedUiLanguage);
     updateExpressionStatusButtons();
@@ -750,6 +893,11 @@ if (!text) {
             <span class="meta-chip" id="language-chip">{languageNames[text.language as keyof typeof languageNames][defaultUiLang]}</span>
             <span class="meta-chip" id="category-chip">{categoryLabels[text.category as keyof typeof categoryLabels][defaultUiLang]}</span>
             <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[normalizeLevelKey(text.level)][defaultUiLang]}</span>
+            <span class="meta-chip" id="translation-practice-chip" hidden>
+              {practiceTranslationLang
+                ? `${uiText[defaultUiLang].translationPracticePrefix}${languageNames[practiceTranslationLang][defaultUiLang]}`
+                : uiText[defaultUiLang].translationPracticePrefix}
+            </span>
           </div>
         </div>
         <div class="top-actions">
@@ -770,7 +918,13 @@ if (!text) {
         <p id="read-description" data-i18n="focusNaturalMeaning">{uiText[defaultUiLang].focusNaturalMeaning}</p>
       </section>
 
-      <section class="learning-focus-card">
+      <section class="learning-focus-card" id="translation-practice-info" hidden>
+        <h3 id="original-text-title">{uiText[defaultUiLang].originalText}</h3>
+        <p>{text.text}</p>
+        <p id="translation-practice-note">{uiText[defaultUiLang].translationPracticeNoCards}</p>
+      </section>
+
+      <section class="learning-focus-card" id="learning-focus-card" hidden={isTranslationPractice}>
         <h3>Learning Focus</h3>
         <div class="learning-focus-row">
           <div>
@@ -823,6 +977,13 @@ if (!text) {
                   : uiText[defaultUiLang].englishTranslation}
             </h3>
             <p>{translation.value}</p>
+            <a
+              class="translation-practice-link"
+              href={`${translationPracticeHrefBase}?practiceTranslation=${translation.lang}`}
+              data-translation-practice-button={translation.lang}
+            >
+              {getTranslationPracticeButtonLabel(translation.lang, uiText[defaultUiLang])}
+            </a>
           </div>
         ))}
       </section>

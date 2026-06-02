@@ -1671,5 +1671,1387 @@
         "descriptionNo": "「〜ように」 kan beskrive hvordan noe virker eller ser ut, som «som om»."
       }
     ]
+  },
+  {
+    "id": "ja_005",
+    "language": "ja",
+    "category": "jobb",
+    "level": "b2",
+    "title": "ミーティング後の共有",
+    "text": "午前中のミーティングで、チームの進め方について少し意見を共有しました。最初は全員の判断が分かれていましたが、優先度を整理すると、今日中に対応することと、来週まで待てることが見えてきました。念のため、決まった内容を短くまとめてチャットに残しておくことにしました。",
+    "translationEn": "During the morning meeting, I shared a few thoughts about how the team should move forward. At first, everyone saw things differently, but once we organized the priorities, it became clear what needed to be handled today and what could wait until next week. Just in case, I decided to briefly summarize what we had agreed on and leave it in the chat.",
+    "translationNo": "På møtet om formiddagen delte jeg noen tanker om hvordan teamet burde gå videre. Først vurderte alle situasjonen litt forskjellig, men da vi ryddet i prioriteringene, ble det tydelig hva som måtte håndteres i dag, og hva som kunne vente til neste uke. For sikkerhets skyld bestemte jeg meg for å oppsummere det vi hadde blitt enige om kort og legge det igjen i chatten.",
+    "rubyText": [
+      {
+        "text": "午前中",
+        "reading": "ごぜんちゅう"
+      },
+      {
+        "text": "のミーティングで、チームの"
+      },
+      {
+        "text": "進",
+        "reading": "すす"
+      },
+      {
+        "text": "め"
+      },
+      {
+        "text": "方",
+        "reading": "かた"
+      },
+      {
+        "text": "について"
+      },
+      {
+        "text": "少",
+        "reading": "すこ"
+      },
+      {
+        "text": "し"
+      },
+      {
+        "text": "意見",
+        "reading": "いけん"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "共有",
+        "reading": "きょうゆう"
+      },
+      {
+        "text": "しました。"
+      },
+      {
+        "text": "最初",
+        "reading": "さいしょ"
+      },
+      {
+        "text": "は"
+      },
+      {
+        "text": "全員",
+        "reading": "ぜんいん"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "判断",
+        "reading": "はんだん"
+      },
+      {
+        "text": "が"
+      },
+      {
+        "text": "分",
+        "reading": "わ"
+      },
+      {
+        "text": "かれていましたが、"
+      },
+      {
+        "text": "優先度",
+        "reading": "ゆうせんど"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "整理",
+        "reading": "せいり"
+      },
+      {
+        "text": "すると、"
+      },
+      {
+        "text": "今日中",
+        "reading": "きょうじゅう"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "対応",
+        "reading": "たいおう"
+      },
+      {
+        "text": "することと、"
+      },
+      {
+        "text": "来週",
+        "reading": "らいしゅう"
+      },
+      {
+        "text": "まで"
+      },
+      {
+        "text": "待",
+        "reading": "ま"
+      },
+      {
+        "text": "てることが"
+      },
+      {
+        "text": "見",
+        "reading": "み"
+      },
+      {
+        "text": "えてきました。"
+      },
+      {
+        "text": "念",
+        "reading": "ねん"
+      },
+      {
+        "text": "のため、"
+      },
+      {
+        "text": "決",
+        "reading": "き"
+      },
+      {
+        "text": "まった"
+      },
+      {
+        "text": "内容",
+        "reading": "ないよう"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "短",
+        "reading": "みじか"
+      },
+      {
+        "text": "くまとめてチャットに"
+      },
+      {
+        "text": "残",
+        "reading": "のこ"
+      },
+      {
+        "text": "しておくことにしました。"
+      }
+    ],
+    "expressions": [
+      {
+        "phrase": "進め方",
+        "ja": "物事をどう進めるかという方法",
+        "en": "way of moving forward",
+        "no": "måten å gå videre på"
+      },
+      {
+        "phrase": "意見を共有する",
+        "formInText": "意見を共有しました",
+        "ja": "自分の考えを他の人に伝える",
+        "en": "share an opinion",
+        "no": "dele en mening"
+      },
+      {
+        "phrase": "判断が分かれる",
+        "formInText": "判断が分かれていました",
+        "ja": "人によって考えや結論が違う",
+        "en": "opinions or judgments differ",
+        "no": "vurderingene er forskjellige"
+      },
+      {
+        "phrase": "優先度を整理する",
+        "formInText": "優先度を整理すると",
+        "ja": "何を先にするかをはっきりさせる",
+        "en": "organize priorities",
+        "no": "rydde i prioriteringer"
+      },
+      {
+        "phrase": "対応する",
+        "ja": "状況に合わせて処理する",
+        "en": "handle / respond to",
+        "no": "håndtere / reagere på"
+      },
+      {
+        "phrase": "念のため",
+        "ja": "万が一に備えて",
+        "en": "just in case",
+        "no": "for sikkerhets skyld"
+      },
+      {
+        "phrase": "〜ことにする",
+        "formInText": "残しておくことにしました",
+        "ja": "自分で決めて〜する",
+        "en": "decide to do",
+        "no": "bestemme seg for å gjøre"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "〜ことにする",
+        "descriptionJa": "「〜ことにする」は、自分で決めた行動や方針を表します。",
+        "descriptionEn": "\"〜ことにする\" expresses a decision the speaker makes about what to do.",
+        "descriptionNo": "「〜ことにする」 uttrykker en beslutning taleren tar om hva de skal gjøre."
+      },
+      {
+        "title": "〜ておく",
+        "descriptionJa": "「〜ておく」は、あとで役に立つように準備したり残したりすることを表します。",
+        "descriptionEn": "\"〜ておく\" means doing or leaving something prepared for later.",
+        "descriptionNo": "「〜ておく」 betyr å gjøre eller la noe være klart til senere."
+      }
+    ]
+  },
+  {
+    "id": "ja_006",
+    "language": "ja",
+    "category": "norway-life",
+    "level": "c1",
+    "title": "新しい仕組みについて考える",
+    "text": "新しい仕組みを導入するかどうかについて、私はすぐに賛成とは言えませんでした。一方で、作業の無駄を減らせる可能性はあります。とはいえ、現場の負担が増えるなら、現実的な運用方法を具体的に考える必要があります。必要があれば、まず小さな範囲で試してから判断するのがよいと思います。",
+    "translationEn": "I could not immediately say that I supported introducing the new system. On the one hand, it may reduce wasted work. That said, if it increases the burden on the people actually using it, we need to think concretely about a realistic way to operate it. If necessary, I think it would be better to test it on a small scale first and then make a decision.",
+    "translationNo": "Jeg kunne ikke umiddelbart si at jeg støttet å innføre det nye systemet. På den ene siden kan det redusere unødvendig arbeid. Når det er sagt, hvis det øker belastningen for dem som faktisk skal bruke det, må vi tenke konkret på en realistisk måte å drifte det på. Om nødvendig synes jeg det er bedre å teste det i liten skala først og deretter ta en beslutning.",
+    "rubyText": [
+      {
+        "text": "新",
+        "reading": "あたら"
+      },
+      {
+        "text": "しい"
+      },
+      {
+        "text": "仕組",
+        "reading": "しく"
+      },
+      {
+        "text": "みを"
+      },
+      {
+        "text": "導入",
+        "reading": "どうにゅう"
+      },
+      {
+        "text": "するかどうかについて、"
+      },
+      {
+        "text": "私",
+        "reading": "わたし"
+      },
+      {
+        "text": "はすぐに"
+      },
+      {
+        "text": "賛成",
+        "reading": "さんせい"
+      },
+      {
+        "text": "とは"
+      },
+      {
+        "text": "言",
+        "reading": "い"
+      },
+      {
+        "text": "えませんでした。"
+      },
+      {
+        "text": "一方",
+        "reading": "いっぽう"
+      },
+      {
+        "text": "で、"
+      },
+      {
+        "text": "作業",
+        "reading": "さぎょう"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "無駄",
+        "reading": "むだ"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "減",
+        "reading": "へ"
+      },
+      {
+        "text": "らせる"
+      },
+      {
+        "text": "可能性",
+        "reading": "かのうせい"
+      },
+      {
+        "text": "はあります。とはいえ、"
+      },
+      {
+        "text": "現場",
+        "reading": "げんば"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "負担",
+        "reading": "ふたん"
+      },
+      {
+        "text": "が"
+      },
+      {
+        "text": "増",
+        "reading": "ふ"
+      },
+      {
+        "text": "えるなら、"
+      },
+      {
+        "text": "現実的",
+        "reading": "げんじつてき"
+      },
+      {
+        "text": "な"
+      },
+      {
+        "text": "運用方法",
+        "reading": "うんようほうほう"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "具体的",
+        "reading": "ぐたいてき"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "考",
+        "reading": "かんが"
+      },
+      {
+        "text": "える"
+      },
+      {
+        "text": "必要",
+        "reading": "ひつよう"
+      },
+      {
+        "text": "があります。"
+      },
+      {
+        "text": "必要",
+        "reading": "ひつよう"
+      },
+      {
+        "text": "があれば、まず"
+      },
+      {
+        "text": "小",
+        "reading": "ちい"
+      },
+      {
+        "text": "さな"
+      },
+      {
+        "text": "範囲",
+        "reading": "はんい"
+      },
+      {
+        "text": "で"
+      },
+      {
+        "text": "試",
+        "reading": "ため"
+      },
+      {
+        "text": "してから"
+      },
+      {
+        "text": "判断",
+        "reading": "はんだん"
+      },
+      {
+        "text": "するのがよいと"
+      },
+      {
+        "text": "思",
+        "reading": "おも"
+      },
+      {
+        "text": "います。"
+      }
+    ],
+    "expressions": [
+      {
+        "phrase": "導入する",
+        "ja": "新しい仕組みなどを取り入れる",
+        "en": "introduce / implement",
+        "no": "innføre / implementere"
+      },
+      {
+        "phrase": "賛成とは言えない",
+        "formInText": "賛成とは言えませんでした",
+        "ja": "完全には賛成できない",
+        "en": "cannot say one supports it",
+        "no": "kan ikke si at man støtter det"
+      },
+      {
+        "phrase": "一方で",
+        "formInText": "一方で",
+        "ja": "別の面から見ると",
+        "en": "on the other hand",
+        "no": "på den andre siden"
+      },
+      {
+        "phrase": "とはいえ",
+        "ja": "そうは言っても",
+        "en": "that said / nevertheless",
+        "no": "når det er sagt"
+      },
+      {
+        "phrase": "現実的",
+        "ja": "実際にできる可能性がある",
+        "en": "realistic",
+        "no": "realistisk"
+      },
+      {
+        "phrase": "具体的",
+        "ja": "はっきりした内容がある",
+        "en": "concrete / specific",
+        "no": "konkret"
+      },
+      {
+        "phrase": "必要があれば",
+        "ja": "必要な場合は",
+        "en": "if necessary",
+        "no": "om nødvendig"
+      },
+      {
+        "phrase": "判断する",
+        "ja": "情報をもとに決める",
+        "en": "judge / make a decision",
+        "no": "vurdere / ta en beslutning"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "〜かどうか",
+        "descriptionJa": "「〜かどうか」は、するかしないか、そうかそうでないかを表します。",
+        "descriptionEn": "\"〜かどうか\" means whether or not something is the case.",
+        "descriptionNo": "「〜かどうか」 betyr om noe er tilfelle eller ikke."
+      },
+      {
+        "title": "〜なら",
+        "descriptionJa": "「〜なら」は、ある条件を前提にして意見や判断を述べるときに使います。",
+        "descriptionEn": "\"〜なら\" sets a condition and is often used before giving an opinion or judgment.",
+        "descriptionNo": "「〜なら」 setter en betingelse og brukes ofte før en mening eller vurdering."
+      },
+      {
+        "title": "〜てから",
+        "descriptionJa": "「〜てから」は、ある行動のあとで次の行動をする順番を表します。",
+        "descriptionEn": "\"〜てから\" shows that one action happens after another.",
+        "descriptionNo": "「〜てから」 viser at én handling skjer etter en annen."
+      }
+    ]
+  },
+  {
+    "id": "ja_007",
+    "language": "ja",
+    "category": "friends",
+    "level": "natural",
+    "title": "予定を調整する夕方",
+    "text": "夕方、友人から予定を少し遅らせたいと連絡がありました。急な変更ではありましたが、理由を聞くと無理に急がせる必要はないと感じました。私は店の予約時間を調整し、念のため到着が遅れるかもしれないことも伝えておきました。こういう場面では、自分の都合だけで判断せず、相手の状況も見ながら対応するようにしています。",
+    "translationEn": "In the evening, a friend contacted me saying they wanted to push our plans back a little. It was a sudden change, but after hearing the reason, I felt there was no need to rush them. I adjusted the reservation time at the restaurant and, just in case, also let the place know that we might arrive late. In situations like this, I try not to decide based only on my own convenience, but to respond while considering the other person’s situation too.",
+    "translationNo": "Om kvelden fikk jeg en melding fra en venn som ville utsette planene litt. Det var en plutselig endring, men da jeg hørte grunnen, følte jeg at det ikke var nødvendig å stresse dem. Jeg justerte reservasjonstiden på restauranten og ga også beskjed for sikkerhets skyld om at vi kanskje kom litt sent. I slike situasjoner prøver jeg å ikke vurdere alt bare ut fra mine egne behov, men å reagere mens jeg også tar hensyn til den andres situasjon.",
+    "rubyText": [
+      {
+        "text": "夕方",
+        "reading": "ゆうがた"
+      },
+      {
+        "text": "、"
+      },
+      {
+        "text": "友人",
+        "reading": "ゆうじん"
+      },
+      {
+        "text": "から"
+      },
+      {
+        "text": "予定",
+        "reading": "よてい"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "少",
+        "reading": "すこ"
+      },
+      {
+        "text": "し"
+      },
+      {
+        "text": "遅",
+        "reading": "おく"
+      },
+      {
+        "text": "らせたいと"
+      },
+      {
+        "text": "連絡",
+        "reading": "れんらく"
+      },
+      {
+        "text": "がありました。"
+      },
+      {
+        "text": "急",
+        "reading": "きゅう"
+      },
+      {
+        "text": "な"
+      },
+      {
+        "text": "変更",
+        "reading": "へんこう"
+      },
+      {
+        "text": "ではありましたが、"
+      },
+      {
+        "text": "理由",
+        "reading": "りゆう"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "聞",
+        "reading": "き"
+      },
+      {
+        "text": "くと"
+      },
+      {
+        "text": "無理",
+        "reading": "むり"
+      },
+      {
+        "text": "に"
+      },
+      {
+        "text": "急",
+        "reading": "いそ"
+      },
+      {
+        "text": "がせる"
+      },
+      {
+        "text": "必要",
+        "reading": "ひつよう"
+      },
+      {
+        "text": "はないと"
+      },
+      {
+        "text": "感",
+        "reading": "かん"
+      },
+      {
+        "text": "じました。"
+      },
+      {
+        "text": "私",
+        "reading": "わたし"
+      },
+      {
+        "text": "は"
+      },
+      {
+        "text": "店",
+        "reading": "みせ"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "予約時間",
+        "reading": "よやくじかん"
+      },
+      {
+        "text": "を"
+      },
+      {
+        "text": "調整",
+        "reading": "ちょうせい"
+      },
+      {
+        "text": "し、"
+      },
+      {
+        "text": "念",
+        "reading": "ねん"
+      },
+      {
+        "text": "のため"
+      },
+      {
+        "text": "到着",
+        "reading": "とうちゃく"
+      },
+      {
+        "text": "が"
+      },
+      {
+        "text": "遅",
+        "reading": "おく"
+      },
+      {
+        "text": "れるかもしれないことも"
+      },
+      {
+        "text": "伝",
+        "reading": "つた"
+      },
+      {
+        "text": "えておきました。こういう"
+      },
+      {
+        "text": "場面",
+        "reading": "ばめん"
+      },
+      {
+        "text": "では、"
+      },
+      {
+        "text": "自分",
+        "reading": "じぶん"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "都合",
+        "reading": "つごう"
+      },
+      {
+        "text": "だけで"
+      },
+      {
+        "text": "判断",
+        "reading": "はんだん"
+      },
+      {
+        "text": "せず、"
+      },
+      {
+        "text": "相手",
+        "reading": "あいて"
+      },
+      {
+        "text": "の"
+      },
+      {
+        "text": "状況",
+        "reading": "じょうきょう"
+      },
+      {
+        "text": "も"
+      },
+      {
+        "text": "見",
+        "reading": "み"
+      },
+      {
+        "text": "ながら"
+      },
+      {
+        "text": "対応",
+        "reading": "たいおう"
+      },
+      {
+        "text": "するようにしています。"
+      }
+    ],
+    "expressions": [
+      {
+        "phrase": "予定を遅らせる",
+        "formInText": "予定を少し遅らせたい",
+        "ja": "予定の時間を後ろにずらす",
+        "en": "push plans back",
+        "no": "utsette planene"
+      },
+      {
+        "phrase": "連絡がある",
+        "formInText": "連絡がありました",
+        "ja": "知らせが来る",
+        "en": "receive a message / be contacted",
+        "no": "få beskjed / bli kontaktet"
+      },
+      {
+        "phrase": "急な変更",
+        "ja": "突然の予定変更",
+        "en": "sudden change",
+        "no": "plutselig endring"
+      },
+      {
+        "phrase": "無理に",
+        "ja": "自然ではない形で強く",
+        "en": "forcibly / too much",
+        "no": "med tvang / unødvendig hardt"
+      },
+      {
+        "phrase": "調整する",
+        "formInText": "調整し",
+        "ja": "ちょうどよく変える",
+        "en": "adjust",
+        "no": "justere"
+      },
+      {
+        "phrase": "念のため",
+        "ja": "万が一に備えて",
+        "en": "just in case",
+        "no": "for sikkerhets skyld"
+      },
+      {
+        "phrase": "伝えておく",
+        "formInText": "伝えておきました",
+        "ja": "あとで困らないように前もって伝える",
+        "en": "let someone know in advance",
+        "no": "gi beskjed på forhånd"
+      },
+      {
+        "phrase": "〜ようにしている",
+        "formInText": "対応するようにしています",
+        "ja": "意識していつも〜する",
+        "en": "make a point of doing",
+        "no": "prøve å gjøre til vane"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "〜かもしれない",
+        "descriptionJa": "「〜かもしれない」は、可能性があるけれど確実ではないことを表します。",
+        "descriptionEn": "\"〜かもしれない\" expresses that something may happen, but is not certain.",
+        "descriptionNo": "「〜かもしれない」 uttrykker at noe kan skje, men ikke er sikkert."
+      },
+      {
+        "title": "〜ようにしている",
+        "descriptionJa": "「〜ようにしている」は、意識して続けている習慣や方針を表します。",
+        "descriptionEn": "\"〜ようにしている\" describes a habit or policy someone consciously tries to maintain.",
+        "descriptionNo": "「〜ようにしている」 beskriver en vane eller praksis man bevisst prøver å holde fast ved."
+      },
+      {
+        "title": "〜ず",
+        "descriptionJa": "「〜ず」は「〜しないで」という意味で、少し硬めの表現です。",
+        "descriptionEn": "\"〜ず\" means \"without doing\" and sounds somewhat formal.",
+        "descriptionNo": "「〜ず」 betyr «uten å gjøre» og høres litt formelt ut."
+      }
+    ]
+  },
+  {
+    "id": "no_010",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b1",
+    "title": "En feil i mobilmenyen",
+    "text": "I dag la jeg merke til en feil i mobilmenyen. Knappen åpnet riktig komponent på desktop, men den fungerte ikke på mobil. Jeg skrev til Sara og forklarte hva jeg hadde testet, slik at hun kunne se nærmere på problemet. Etter en kort gjennomgang fant vi årsaken til feilen: en liten CSS-regel skjulte menyen på smale skjermer. Vi ble enige om en enkel løsning og testet den sammen før vi pushet endringen.",
+    "translationJa": "今日はモバイルメニューの不具合に気づきました。ボタンはデスクトップでは正しいコンポーネントを開きましたが、モバイルでは動きませんでした。私はサラに連絡し、何をテストしたかを説明しました。そうすれば彼女が問題を詳しく確認できるからです。短い確認のあと、不具合の原因が分かりました。小さなCSSルールが狭い画面でメニューを隠していたのです。私たちはシンプルな解決策に合意し、変更をpushする前に一緒にテストしました。",
+    "translationEn": "Today I noticed a bug in the mobile menu. The button opened the correct component on desktop, but it did not work on mobile. I wrote to Sara and explained what I had tested so that she could take a closer look at the problem. After a short review, we found the cause of the bug: a small CSS rule was hiding the menu on narrow screens. We agreed on a simple solution and tested it together before pushing the change.",
+    "expressions": [
+      {
+        "phrase": "legge merke til",
+        "formInText": "la jeg merke til",
+        "ja": "〜に気づく",
+        "en": "notice"
+      },
+      {
+        "phrase": "fungere på mobil",
+        "formInText": "fungerte ikke på mobil",
+        "ja": "モバイルで動作する",
+        "en": "work on mobile"
+      },
+      {
+        "phrase": "se nærmere på",
+        "ja": "詳しく見る / 調べる",
+        "en": "take a closer look at"
+      },
+      {
+        "phrase": "finne årsaken til",
+        "formInText": "fant vi årsaken til",
+        "ja": "〜の原因を見つける",
+        "en": "find the cause of"
+      },
+      {
+        "phrase": "bli enige om",
+        "formInText": "ble enige om",
+        "ja": "〜について合意する",
+        "en": "agree on"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Slik at + leddsetning",
+        "descriptionJa": "「slik at」は「〜できるように」という目的や結果を表します。",
+        "descriptionEn": "\"Slik at\" expresses purpose or result, similar to \"so that\"."
+      },
+      {
+        "title": "Preteritum i feilbeskrivelse",
+        "descriptionJa": "バグ報告では、何を試したか・何が起きたかを過去形で説明することがよくあります。",
+        "descriptionEn": "When describing a bug, Norwegian often uses the past tense to explain what was tested and what happened."
+      }
+    ]
+  },
+  {
+    "id": "no_011",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b1",
+    "title": "Kan du ta en gjennomgang?",
+    "text": "Før jeg åpnet pull requesten, ba jeg Jonas om å ta en rask gjennomgang av komponenten. Jeg var litt usikker på strukturen, spesielt fordi kravene hadde endret seg etter forrige møte. I meldingen skrev jeg at jeg trengte mer kontekst rundt valideringen, og at han gjerne kunne komme med forslag hvis noe virket uklart. Det gjorde code reviewen mer konkret og mindre stressende.",
+    "translationJa": "pull requestを開く前に、ヨナスにコンポーネントをざっと見てもらうよう頼みました。特に前回のミーティング後に要件が変わっていたため、構造に少し不安がありました。メッセージには、バリデーションについてもう少し文脈が必要だと書き、もし分かりにくい点があれば提案してほしいとも伝えました。そのおかげでコードレビューはより具体的で、あまり緊張しないものになりました。",
+    "translationEn": "Before I opened the pull request, I asked Jonas to do a quick review of the component. I was a little unsure about the structure, especially because the requirements had changed after the previous meeting. In the message, I wrote that I needed more context around the validation, and that he was welcome to suggest changes if anything seemed unclear. That made the code review more concrete and less stressful.",
+    "expressions": [
+      {
+        "phrase": "ta en gjennomgang",
+        "formInText": "ta en rask gjennomgang",
+        "ja": "確認する / レビューする",
+        "en": "do a review"
+      },
+      {
+        "phrase": "være usikker på",
+        "formInText": "var litt usikker på",
+        "ja": "〜に自信がない / 不確かである",
+        "en": "be unsure about"
+      },
+      {
+        "phrase": "kravene har endret seg",
+        "formInText": "kravene hadde endret seg",
+        "ja": "要件が変わった",
+        "en": "the requirements have changed"
+      },
+      {
+        "phrase": "trenge mer kontekst",
+        "formInText": "trengte mer kontekst",
+        "ja": "もっと文脈が必要である",
+        "en": "need more context"
+      },
+      {
+        "phrase": "komme med forslag",
+        "ja": "提案する",
+        "en": "make suggestions"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Før + leddsetning",
+        "descriptionJa": "「før」は「〜する前に」を表し、後ろに文を続けられます。",
+        "descriptionEn": "\"Før\" means \"before\" and can introduce a clause."
+      },
+      {
+        "title": "At-setninger etter skrive",
+        "descriptionJa": "「jeg skrev at ...」のように、書いた内容を「at」で説明できます。",
+        "descriptionEn": "After verbs like \"skrive\", an \"at\" clause can explain the content of the message."
+      }
+    ]
+  },
+  {
+    "id": "no_012",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b2",
+    "title": "Tilbakemelding på designet",
+    "text": "Etter designgjennomgangen fikk vi tilbakemelding om at skjemaet virket litt tungt å bruke. Selve løsningen fungerte teknisk, men brukeropplevelsen var ikke god nok når flere felter dukket opp samtidig. Jeg foreslo å strukturere skjemaet i mindre steg og vise hjelpetekst bare når brukeren trenger den. Designeren likte retningen, men ba oss avklare om dette fortsatt oppfylte alle kravene.",
+    "translationJa": "デザインレビューのあと、フォームが少し使いにくく感じるというフィードバックを受けました。解決策自体は技術的には機能していましたが、複数の項目が同時に表示されるとユーザー体験は十分ではありませんでした。私はフォームを小さなステップに分け、ユーザーが必要とするときだけヘルプテキストを表示することを提案しました。デザイナーはその方向性を気に入ってくれましたが、それがすべての要件をまだ満たしているか確認してほしいと言いました。",
+    "translationEn": "After the design review, we received feedback that the form felt a little heavy to use. The solution itself worked technically, but the user experience was not good enough when several fields appeared at the same time. I suggested structuring the form into smaller steps and showing help text only when the user needs it. The designer liked the direction, but asked us to clarify whether it still met all the requirements.",
+    "expressions": [
+      {
+        "phrase": "få tilbakemelding om",
+        "formInText": "fikk vi tilbakemelding om",
+        "ja": "〜というフィードバックを受ける",
+        "en": "receive feedback that"
+      },
+      {
+        "phrase": "virke tungt å bruke",
+        "formInText": "virket litt tungt å bruke",
+        "ja": "使いにくく感じる",
+        "en": "feel heavy to use"
+      },
+      {
+        "phrase": "brukeropplevelse",
+        "formInText": "brukeropplevelsen",
+        "ja": "ユーザー体験",
+        "en": "user experience"
+      },
+      {
+        "phrase": "strukturere i mindre steg",
+        "formInText": "strukturere skjemaet i mindre steg",
+        "ja": "小さなステップに構造化する",
+        "en": "structure into smaller steps"
+      },
+      {
+        "phrase": "avklare om",
+        "ja": "〜かどうか確認する",
+        "en": "clarify whether"
+      },
+      {
+        "phrase": "oppfylle krav",
+        "formInText": "oppfylte alle kravene",
+        "ja": "要件を満たす",
+        "en": "meet requirements"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Når + helsetning",
+        "descriptionJa": "「når」は「〜するとき」を表し、具体的な状況を説明します。",
+        "descriptionEn": "\"Når\" means \"when\" and describes a specific situation."
+      },
+      {
+        "title": "Om som indirekte spørsmål",
+        "descriptionJa": "「om」は「〜かどうか」という間接疑問を作ります。",
+        "descriptionEn": "\"Om\" can introduce an indirect yes/no question, like \"whether\"."
+      }
+    ]
+  },
+  {
+    "id": "no_013",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b2",
+    "title": "Prioritering før fristen",
+    "text": "Da vi nærmet oss fristen, måtte vi prioritere hvilke oppgaver som skulle løses først. Noen krav var viktige for lanseringen, mens andre kunne vente til neste sprint. Jeg laget en kort oversikt over feil, åpne spørsmål og mulige løsninger, slik at teamet kunne ta en felles vurdering. Det hjalp oss å jobbe mer strukturert og unngå at alle prøvde å fikse alt samtidig.",
+    "translationJa": "締め切りが近づくにつれて、どのタスクを先に解決するか優先順位をつける必要がありました。いくつかの要件はリリースにとって重要でしたが、他のものは次のスプリントまで待てました。私は不具合、未解決の質問、考えられる解決策を短く一覧にまとめ、チームが一緒に判断できるようにしました。そのおかげで、より構造的に作業でき、全員が同時に全部を直そうとする状況を避けられました。",
+    "translationEn": "As we got closer to the deadline, we had to prioritize which tasks should be solved first. Some requirements were important for the launch, while others could wait until the next sprint. I made a short overview of bugs, open questions, and possible solutions so that the team could make a shared assessment. This helped us work in a more structured way and avoid everyone trying to fix everything at the same time.",
+    "expressions": [
+      {
+        "phrase": "nærme seg fristen",
+        "formInText": "nærmet oss fristen",
+        "ja": "締め切りに近づく",
+        "en": "approach the deadline"
+      },
+      {
+        "phrase": "prioritere først",
+        "formInText": "skulle løses først",
+        "ja": "最初に優先する",
+        "en": "prioritize first"
+      },
+      {
+        "phrase": "kunne vente til",
+        "ja": "〜まで待てる",
+        "en": "can wait until"
+      },
+      {
+        "phrase": "mulige løsninger",
+        "ja": "考えられる解決策",
+        "en": "possible solutions"
+      },
+      {
+        "phrase": "ta en felles vurdering",
+        "ja": "共通の判断をする",
+        "en": "make a shared assessment"
+      },
+      {
+        "phrase": "jobbe mer strukturert",
+        "ja": "より構造的に作業する",
+        "en": "work in a more structured way"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Da + preteritum",
+        "descriptionJa": "「da」は過去の特定の時点や状況を表すときによく使います。",
+        "descriptionEn": "\"Da\" is often used for a specific time or situation in the past."
+      },
+      {
+        "title": "Mens",
+        "descriptionJa": "「mens」は「一方で」を表し、対比を作ることがあります。",
+        "descriptionEn": "\"Mens\" can mean \"while\" or \"whereas\" and can show contrast."
+      }
+    ]
+  },
+  {
+    "id": "no_014",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "c1",
+    "title": "Tilgjengelighet og responsivt design",
+    "text": "I arbeidet med den nye komponenten oppdaget vi at tilgjengelighet og responsivt design ikke kunne behandles som to separate krav. En løsning som ser ryddig ut på desktop, kan skape problemer hvis fokusrekkefølgen blir ulogisk eller innholdet ikke fungerer på mobil. Derfor bestemte vi oss for å se nærmere på både tastaturnavigasjon, skjermleser-tekst og hvordan layouten bryter ved små bredder. Før vi tok en endelig beslutning, måtte vi avklare hvilke kompromisser som faktisk var akseptable for brukeropplevelsen.",
+    "translationJa": "新しいコンポーネントに取り組む中で、アクセシビリティとレスポンシブデザインは別々の要件として扱えないことに気づきました。デスクトップでは整理されて見える解決策でも、フォーカス順が不自然だったり、内容がモバイルでうまく動かなかったりすると問題を生む可能性があります。そのため、キーボード操作、スクリーンリーダー用テキスト、小さい幅でレイアウトがどう崩れるかを詳しく確認することにしました。最終的な判断をする前に、ユーザー体験にとってどの妥協が実際に許容できるのかを明確にする必要がありました。",
+    "translationEn": "While working on the new component, we discovered that accessibility and responsive design could not be treated as two separate requirements. A solution that looks tidy on desktop can create problems if the focus order becomes illogical or the content does not work on mobile. Therefore, we decided to take a closer look at keyboard navigation, screen reader text, and how the layout breaks at small widths. Before making a final decision, we had to clarify which compromises were actually acceptable for the user experience.",
+    "expressions": [
+      {
+        "phrase": "arbeid med",
+        "formInText": "arbeidet med",
+        "ja": "〜に取り組むこと",
+        "en": "work on"
+      },
+      {
+        "phrase": "behandle som",
+        "formInText": "behandles som",
+        "ja": "〜として扱う",
+        "en": "treat as"
+      },
+      {
+        "phrase": "skape problemer",
+        "ja": "問題を生む",
+        "en": "create problems"
+      },
+      {
+        "phrase": "fungere på mobil",
+        "formInText": "fungerer på mobil",
+        "ja": "モバイルで動作する",
+        "en": "work on mobile"
+      },
+      {
+        "phrase": "se nærmere på",
+        "ja": "詳しく確認する",
+        "en": "take a closer look at"
+      },
+      {
+        "phrase": "ta en endelig beslutning",
+        "formInText": "tok en endelig beslutning",
+        "ja": "最終判断をする",
+        "en": "make a final decision"
+      },
+      {
+        "phrase": "avklare hvilke",
+        "ja": "どれが〜か明確にする",
+        "en": "clarify which"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Passiv med -s",
+        "descriptionJa": "「behandles」のような -s 受け身は、誰が行うかより行為そのものに焦点を当てます。",
+        "descriptionEn": "The -s passive, as in \"behandles\", focuses on the action rather than who performs it."
+      },
+      {
+        "title": "Hvis-setning",
+        "descriptionJa": "「hvis」は条件を表し、「もし〜なら」という意味で使います。",
+        "descriptionEn": "\"Hvis\" introduces a condition, similar to \"if\"."
+      },
+      {
+        "title": "Hvilke som",
+        "descriptionJa": "「hvilke ... som」は、どれが該当するかを説明する間接疑問で使われます。",
+        "descriptionEn": "\"Hvilke ... som\" is used in indirect questions to specify which items apply."
+      }
+    ]
+  },
+  {
+    "id": "no_015",
+    "language": "no",
+    "category": "health-medical",
+    "level": "b2",
+    "title": "Symptomer som endret seg",
+    "text": "Pasienten fortalte at hun hadde hatt smerter i brystet i tre dager, men at smertene hadde endret karakter i løpet av natten. Først var de svake og kom bare ved aktivitet, men nå kjente hun trykk også når hun satt stille. Hun følte seg svimmel da hun reiste seg, og hun beskrev lett kvalme og økende utmattelse. Siden symptomene har blitt verre, ble hun bedt om å ta kontakt igjen dersom hun fikk tung pust eller akutte smerter.",
+    "translationJa": "患者は、胸の痛みが3日間続いているが、夜の間に痛みの性質が変わったと話しました。最初は弱い痛みで、体を動かしたときだけ出ていましたが、今は座っていても圧迫感があると言いました。立ち上がったときにめまいを感じ、軽い吐き気と強くなっている疲労感も説明しました。症状が悪化しているため、息苦しさや急な痛みが出た場合は、もう一度連絡するよう伝えられました。",
+    "translationEn": "The patient said that she had had chest pain for three days, but that the pain had changed character during the night. At first it was mild and only came with activity, but now she felt pressure even when sitting still. She felt dizzy when she stood up, and she described mild nausea and increasing exhaustion. Since the symptoms had become worse, she was asked to contact the clinic again if she developed heavy breathing or acute pain.",
+    "expressions": [
+      {
+        "phrase": "ha smerter i",
+        "formInText": "hadde hatt smerter i",
+        "ja": "〜に痛みがある",
+        "en": "have pain in"
+      },
+      {
+        "phrase": "endre karakter",
+        "formInText": "hadde endret karakter",
+        "ja": "性質が変わる",
+        "en": "change character"
+      },
+      {
+        "phrase": "føle seg svimmel",
+        "formInText": "følte seg svimmel",
+        "ja": "めまいを感じる",
+        "en": "feel dizzy"
+      },
+      {
+        "phrase": "symptomene har blitt verre",
+        "ja": "症状が悪化している",
+        "en": "the symptoms have become worse"
+      },
+      {
+        "phrase": "ha tung pust",
+        "formInText": "fikk tung pust",
+        "ja": "息苦しい / 呼吸が重い",
+        "en": "have heavy breathing"
+      },
+      {
+        "phrase": "akutte smerter",
+        "ja": "急な強い痛み",
+        "en": "acute pain"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "At-setninger etter fortalte",
+        "descriptionJa": "「fortalte at ...」のように、患者が話した内容を「at」で続けて説明できます。",
+        "descriptionEn": "After \"fortalte\", an \"at\" clause can explain what the patient said."
+      },
+      {
+        "title": "Dersom + leddsetning",
+        "descriptionJa": "「dersom」は「もし〜なら」という条件を表し、医療の指示でもよく使われます。",
+        "descriptionEn": "\"Dersom\" means \"if\" and is often used in instructions or follow-up advice."
+      }
+    ]
+  },
+  {
+    "id": "no_016",
+    "language": "no",
+    "category": "health-medical",
+    "level": "b2",
+    "title": "Observasjon på kveldsvakten",
+    "text": "Under kveldsvakten observerte sykepleieren at pasienten virket blekere enn tidligere. Hun målte puls, tok blodtrykk og sjekket om hevelsen rundt ankelen hadde økt. Pasienten hadde også fått et lite utslett på armen, men temperaturen var normal. Sykepleieren dokumenterte funnene og ga beskjed til legen, fordi kombinasjonen av hevelse, utslett og smerter kunne tyde på en begynnende betennelse.",
+    "translationJa": "夜勤中、看護師は患者の顔色が以前より青白く見えることに気づきました。脈を測り、血圧を測定し、足首まわりの腫れが増えているか確認しました。患者には腕に小さな発疹も出ていましたが、体温は正常でした。看護師は所見を記録し、腫れ、発疹、痛みの組み合わせが初期の炎症を示している可能性があるため、医師に連絡しました。",
+    "translationEn": "During the evening shift, the nurse observed that the patient looked paler than before. She measured the pulse, took the blood pressure, and checked whether the swelling around the ankle had increased. The patient had also developed a small rash on the arm, but the temperature was normal. The nurse documented the findings and informed the doctor, because the combination of swelling, rash, and pain could indicate an early inflammation.",
+    "expressions": [
+      {
+        "phrase": "observere at",
+        "formInText": "observerte sykepleieren at",
+        "ja": "〜だと観察する / 気づく",
+        "en": "observe that"
+      },
+      {
+        "phrase": "måle puls",
+        "formInText": "målte puls",
+        "ja": "脈を測る",
+        "en": "measure pulse"
+      },
+      {
+        "phrase": "ta blodtrykk",
+        "formInText": "tok blodtrykk",
+        "ja": "血圧を測る",
+        "en": "take blood pressure"
+      },
+      {
+        "phrase": "sjekke om",
+        "formInText": "sjekket om",
+        "ja": "〜かどうか確認する",
+        "en": "check whether"
+      },
+      {
+        "phrase": "gi beskjed til",
+        "formInText": "ga beskjed til",
+        "ja": "〜に知らせる",
+        "en": "inform / notify"
+      },
+      {
+        "phrase": "tyde på",
+        "formInText": "kunne tyde på",
+        "ja": "〜を示している可能性がある",
+        "en": "indicate / suggest"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Om som indirekte spørsmål",
+        "descriptionJa": "「om」は「〜かどうか」という意味で、確認する内容を表します。",
+        "descriptionEn": "\"Om\" introduces an indirect yes/no question, like \"whether\"."
+      },
+      {
+        "title": "Kunne + infinitiv",
+        "descriptionJa": "「kunne」は断定せずに可能性を表すときに使えます。",
+        "descriptionEn": "\"Kunne\" can express possibility without making a firm conclusion."
+      }
+    ]
+  },
+  {
+    "id": "no_017",
+    "language": "no",
+    "category": "health-medical",
+    "level": "c1",
+    "title": "En rolig samtale med pasienten",
+    "text": "Da sykepleieren kom inn på rommet, spurte hun pasienten om smertene strålte ut i armen eller ryggen. Pasienten svarte at det ikke var en skarp smerte, men mer et press som kom i bølger. Han hadde tung pust når han gikk til badet, og han ble kvalm hvis han prøvde å spise. Sykepleieren forklarte rolig hva som skulle skje videre, og sa at de ville følge opp pasienten tett mens de ventet på svar fra undersøkelsen.",
+    "translationJa": "看護師が病室に入ると、痛みが腕や背中に広がっているかを患者に尋ねました。患者は、それは鋭い痛みではなく、波のように来る圧迫感に近いと答えました。トイレまで歩くと息苦しくなり、食べようとすると吐き気が出るとのことでした。看護師はこれから何が行われるかを落ち着いて説明し、検査結果を待つ間も患者をしっかりフォローすると伝えました。",
+    "translationEn": "When the nurse entered the room, she asked the patient whether the pain radiated into the arm or back. The patient answered that it was not a sharp pain, but more like pressure that came in waves. He had heavy breathing when he walked to the bathroom, and he became nauseous if he tried to eat. The nurse calmly explained what would happen next and said they would follow up the patient closely while waiting for the results of the examination.",
+    "expressions": [
+      {
+        "phrase": "smertene stråler ut i",
+        "formInText": "smertene strålte ut i",
+        "ja": "痛みが〜に広がる",
+        "en": "the pain radiates into"
+      },
+      {
+        "phrase": "komme i bølger",
+        "formInText": "kom i bølger",
+        "ja": "波のように来る",
+        "en": "come in waves"
+      },
+      {
+        "phrase": "ha tung pust",
+        "formInText": "hadde tung pust",
+        "ja": "息苦しい / 呼吸が重い",
+        "en": "have heavy breathing"
+      },
+      {
+        "phrase": "bli kvalm",
+        "formInText": "ble kvalm",
+        "ja": "吐き気がする",
+        "en": "become nauseous"
+      },
+      {
+        "phrase": "følge opp pasienten",
+        "ja": "患者をフォローする",
+        "en": "follow up the patient"
+      },
+      {
+        "phrase": "vente på svar fra",
+        "formInText": "ventet på svar fra",
+        "ja": "〜の結果を待つ",
+        "en": "wait for results from"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Da + preteritum",
+        "descriptionJa": "「da」は過去のある時点を表し、後ろに過去形の文が続きます。",
+        "descriptionEn": "\"Da\" refers to a specific time in the past and is followed by past tense."
+      },
+      {
+        "title": "Mens + leddsetning",
+        "descriptionJa": "「mens」は「〜している間に」を表し、同時に起きることを説明します。",
+        "descriptionEn": "\"Mens\" means \"while\" and describes something happening at the same time."
+      }
+    ]
+  },
+  {
+    "id": "no_018",
+    "language": "no",
+    "category": "health-medical",
+    "level": "c1",
+    "title": "Videre oppfølging etter undersøkelsen",
+    "text": "Etter undersøkelsen vurderte legen at pasienten burde bli henvist til spesialist, selv om tilstanden ikke virket akutt. Prøvene tydet ikke på en alvorlig infeksjon, men de kunne heller ikke utelukke en kronisk betennelse. Pasienten fikk informasjon om videre behandling og beskjed om å følge med på tegn til forverring, som økt feber, mer hevelse eller nye pustevansker. Dersom det oppstod rask bedring, skulle henvisningen likevel stå til vurdering.",
+    "translationJa": "検査のあと、医師は状態が急性には見えないものの、患者を専門医に紹介すべきだと判断しました。検査結果は重い感染症を示してはいませんでしたが、慢性的な炎症を否定することもできませんでした。患者は今後の治療について説明を受け、発熱の増加、腫れの悪化、新たな呼吸困難など、悪化のサインに注意するよう伝えられました。もし早い改善が見られた場合でも、紹介は引き続き検討することになりました。",
+    "translationEn": "After the examination, the doctor assessed that the patient should be referred to a specialist, even though the condition did not appear acute. The tests did not indicate a serious infection, but they also could not rule out chronic inflammation. The patient received information about further treatment and was told to watch for signs of worsening, such as increased fever, more swelling, or new breathing difficulties. Even if there was rapid improvement, the referral would still remain under consideration.",
+    "expressions": [
+      {
+        "phrase": "bli henvist til spesialist",
+        "ja": "専門医に紹介される",
+        "en": "be referred to a specialist"
+      },
+      {
+        "phrase": "virke akutt",
+        "formInText": "virket akutt",
+        "ja": "急性に見える",
+        "en": "appear acute"
+      },
+      {
+        "phrase": "tyde på",
+        "formInText": "tydet ikke på",
+        "ja": "〜を示す",
+        "en": "indicate"
+      },
+      {
+        "phrase": "utelukke",
+        "ja": "除外する / 否定する",
+        "en": "rule out"
+      },
+      {
+        "phrase": "følge med på",
+        "ja": "〜に注意して見る",
+        "en": "watch for / monitor"
+      },
+      {
+        "phrase": "tegn til forverring",
+        "ja": "悪化のサイン",
+        "en": "signs of worsening"
+      },
+      {
+        "phrase": "rask bedring",
+        "ja": "早い改善",
+        "en": "rapid improvement"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Selv om",
+        "descriptionJa": "「selv om」は「〜にもかかわらず」という意味で、対比を作ります。",
+        "descriptionEn": "\"Selv om\" means \"even though\" and creates a contrast."
+      },
+      {
+        "title": "Dersom",
+        "descriptionJa": "「dersom」は条件を表し、少し改まった文章でもよく使われます。",
+        "descriptionEn": "\"Dersom\" introduces a condition and is common in more formal instructions."
+      }
+    ]
+  },
+  {
+    "id": "no_019",
+    "language": "no",
+    "category": "health-medical",
+    "level": "natural",
+    "title": "Et sammensatt sykdomsbilde",
+    "text": "I rapporten beskrev sykepleieren et sammensatt sykdomsbilde: moderate smerter i magen, perioder med svimmelhet, lavt blodtrykk og en puls som steg hver gang pasienten forsøkte å reise seg. Det var foreløpig uklart om plagene skyldtes infeksjon, væskemangel eller en reaksjon på behandlingen. Teamet valgte derfor å observere pasienten videre, dokumentere endringer time for time og avklare med legen når det var nødvendig å justere planen. Målet var å fange opp en eventuell forverring tidlig, uten å overbehandle en situasjon som kanskje allerede var i bedring.",
+    "translationJa": "報告書で看護師は、複合的な病状を説明しました。腹部の中程度の痛み、めまいの時間帯、低い血圧、そして患者が立ち上がろうとするたびに上がる脈拍がありました。症状の原因が感染症なのか、脱水なのか、治療への反応なのかは、まだはっきりしていませんでした。そのためチームは、患者の観察を続け、時間ごとの変化を記録し、必要に応じて医師と計画の調整を確認することにしました。目的は、すでに改善に向かっているかもしれない状況を過剰に治療せず、悪化の可能性を早めに捉えることでした。",
+    "translationEn": "In the report, the nurse described a complex clinical picture: moderate abdominal pain, periods of dizziness, low blood pressure, and a pulse that rose every time the patient tried to stand up. It was still unclear whether the symptoms were caused by infection, dehydration, or a reaction to the treatment. The team therefore chose to continue observing the patient, document changes hour by hour, and clarify with the doctor when it was necessary to adjust the plan. The goal was to detect any possible worsening early without overtreating a situation that might already be improving.",
+    "expressions": [
+      {
+        "phrase": "sammensatt sykdomsbilde",
+        "ja": "複合的な病状",
+        "en": "complex clinical picture"
+      },
+      {
+        "phrase": "skyldes",
+        "formInText": "plagene skyldtes",
+        "ja": "〜が原因である",
+        "en": "be caused by"
+      },
+      {
+        "phrase": "reaksjon på behandlingen",
+        "ja": "治療への反応",
+        "en": "reaction to the treatment"
+      },
+      {
+        "phrase": "observere pasienten videre",
+        "ja": "患者の観察を続ける",
+        "en": "continue observing the patient"
+      },
+      {
+        "phrase": "avklare med legen",
+        "ja": "医師と確認する",
+        "en": "clarify with the doctor"
+      },
+      {
+        "phrase": "justere planen",
+        "ja": "計画を調整する",
+        "en": "adjust the plan"
+      },
+      {
+        "phrase": "fange opp",
+        "ja": "早めに見つける / 捉える",
+        "en": "detect / catch"
+      },
+      {
+        "phrase": "være i bedring",
+        "formInText": "var i bedring",
+        "ja": "改善に向かっている",
+        "en": "be improving"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "Om som indirekte spørsmål",
+        "descriptionJa": "「uklart om ...」のように、「om」は何が原因かまだ不明な内容を表せます。",
+        "descriptionEn": "In phrases like \"uklart om ...\", \"om\" introduces an indirect question or uncertainty."
+      },
+      {
+        "title": "Uten å + infinitiv",
+        "descriptionJa": "「uten å」は「〜せずに」という意味で、後ろに動詞の不定詞が続きます。",
+        "descriptionEn": "\"Uten å\" means \"without doing\" and is followed by an infinitive."
+      },
+      {
+        "title": "Som-setning",
+        "descriptionJa": "「en situasjon som ...」のように、「som」は名詞を詳しく説明します。",
+        "descriptionEn": "\"Som\" introduces a relative clause that gives more information about a noun."
+      }
+    ]
   }
 ]

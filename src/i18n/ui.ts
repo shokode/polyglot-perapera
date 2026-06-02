@@ -16,7 +16,9 @@ export type CategoryKey =
   | 'health'
   | 'dog'
   | 'cooking'
-  | 'norway-life';
+  | 'norway-life'
+  | 'frontend-office'
+  | 'health-medical';
 
 export const categories: CategoryKey[] = [
   'daily-life',
@@ -28,6 +30,8 @@ export const categories: CategoryKey[] = [
   'dog',
   'cooking',
   'norway-life',
+  'frontend-office',
+  'health-medical',
 ];
 
 export type LevelKey = 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'natural';
@@ -65,6 +69,8 @@ export const categoryLabels: Record<CategoryKey, Record<UILang, string>> = {
   dog: { no: 'Hund', en: 'Dog', ja: '犬' },
   cooking: { no: 'Matlaging', en: 'Cooking', ja: '料理' },
   'norway-life': { no: 'Norge', en: 'Norway Life', ja: 'ノルウェー生活' },
+  'frontend-office': { no: 'Frontend og kontor', en: 'Frontend & Office', ja: 'フロントエンド・オフィス' },
+  'health-medical': { no: 'Helse og medisin', en: 'Health & Medical', ja: '医療・ヘルスケア' },
 };
 
 export const levelLabels: Record<LevelKey, Record<UILang, string>> = {
@@ -103,6 +109,12 @@ export type UILabels = {
   japaneseTranslation: string;
   englishTranslation: string;
   norwegianTranslation: string;
+  typeThisInJapanese: string;
+  typeThisInEnglish: string;
+  typeThisInNorwegian: string;
+  translationPracticePrefix: string;
+  originalText: string;
+  translationPracticeNoCards: string;
   usefulExpressions: string;
   grammarFromText: string;
   levelLabel: string;
@@ -163,6 +175,12 @@ export const uiText: Record<UILang, UILabels> = {
     japaneseTranslation: 'Japansk oversettelse',
     englishTranslation: 'Engelsk oversettelse',
     norwegianTranslation: 'Norsk oversettelse',
+    typeThisInJapanese: 'Skriv denne på japansk',
+    typeThisInEnglish: 'Skriv denne på engelsk',
+    typeThisInNorwegian: 'Skriv denne på norsk',
+    translationPracticePrefix: 'Oversettelsesøvelse: ',
+    originalText: 'Originaltekst',
+    translationPracticeNoCards: 'Dette er en oversettelsesøvelse, så uttrykkskort vises ikke.',
     usefulExpressions: 'Nyttige uttrykk',
     grammarFromText: 'Grammatikk fra denne teksten',
     levelLabel: 'Nivå',
@@ -221,6 +239,12 @@ export const uiText: Record<UILang, UILabels> = {
     japaneseTranslation: 'Japanese Translation',
     englishTranslation: 'English Translation',
     norwegianTranslation: 'Norwegian Translation',
+    typeThisInJapanese: 'Type this in Japanese',
+    typeThisInEnglish: 'Type this in English',
+    typeThisInNorwegian: 'Type this in Norwegian',
+    translationPracticePrefix: 'Translation Practice: ',
+    originalText: 'Original text',
+    translationPracticeNoCards: 'This is translation practice, so learning cards are not shown.',
     usefulExpressions: 'Useful expressions',
     grammarFromText: 'Grammar from this text',
     levelLabel: 'Level',
@@ -279,6 +303,12 @@ export const uiText: Record<UILang, UILabels> = {
     japaneseTranslation: '日本語訳',
     englishTranslation: '英語訳',
     norwegianTranslation: 'ノルウェー語訳',
+    typeThisInJapanese: 'この日本語でタイピングする',
+    typeThisInEnglish: 'この英語でタイピングする',
+    typeThisInNorwegian: 'このノルウェー語でタイピングする',
+    translationPracticePrefix: '翻訳タイピング：',
+    originalText: '原文',
+    translationPracticeNoCards: 'これは翻訳タイピング練習なので、表現カードは表示していません。',
     usefulExpressions: '便利な表現',
     grammarFromText: 'この文章の文法',
     levelLabel: 'レベル',
