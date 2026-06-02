@@ -512,6 +512,7 @@ const clientScript = `
       }
       if (textContent) {
         textContent.dataset.targetLanguage = activePracticeTranslationLang;
+        textContent.dataset.practiceMode = 'translation';
       }
       if (learningFocusCard) {
         learningFocusCard.hidden = true;
@@ -951,7 +952,7 @@ if (!text) {
         </div>
       </section>
 
-      <section class="text-content" data-target-language={text.language}>
+      <section class="text-content" data-target-language={text.language} data-practice-mode={isTranslationPractice ? 'translation' : 'text'}>
         <div id="target-text" set:html={highlightedTextHtml}></div>
         <aside class="expression-mini-card" id="expression-mini-card" hidden>
           <strong id="mini-card-phrase"></strong>
