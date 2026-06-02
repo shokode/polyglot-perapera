@@ -93,11 +93,19 @@ export type UILabels = {
   category: string;
   level: string;
   start: string;
+  startRecommended: string;
+  randomPractice: string;
   view: string;
   allCategories: string;
   allLevels: string;
   allLanguages: string;
   noResults: string;
+  todayPractice: string;
+  totalSessions: string;
+  learnedExpressions: string;
+  reviewingExpressions: string;
+  newExpressions: string;
+  averageSpeed: string;
   favorite: string;
   favorited: string;
   reviewLater: string;
@@ -163,11 +171,19 @@ export const uiText: Record<UILang, UILabels> = {
     category: 'Kategori',
     level: 'Nivå',
     start: 'Start',
+    startRecommended: 'Start anbefalt',
+    randomPractice: 'Tilfeldig øvelse',
     view: 'Åpne',
     allCategories: 'Alle kategorier',
     allLevels: 'Alle nivåer',
     allLanguages: 'Alle språk',
     noResults: 'Ingen tekster funnet for valgene dine.',
+    todayPractice: 'Dagens øving',
+    totalSessions: 'Totalt antall økter',
+    learnedExpressions: 'Lærte uttrykk',
+    reviewingExpressions: 'Til repetisjon',
+    newExpressions: 'Nye uttrykk',
+    averageSpeed: 'Gjennomsnittsfart',
     favorite: '❤️ Favoritt',
     favorited: '❤️ Favorittert',
     reviewLater: '⭐ Se senere',
@@ -231,11 +247,19 @@ export const uiText: Record<UILang, UILabels> = {
     category: 'Category',
     level: 'Level',
     start: 'Start',
+    startRecommended: 'Start recommended',
+    randomPractice: 'Random practice',
     view: 'Open',
     allCategories: 'All categories',
     allLevels: 'All levels',
     allLanguages: 'All languages',
     noResults: 'No texts match your filters.',
+    todayPractice: 'Today’s practice',
+    totalSessions: 'Total sessions',
+    learnedExpressions: 'Learned expressions',
+    reviewingExpressions: 'Reviewing',
+    newExpressions: 'New expressions',
+    averageSpeed: 'Average speed',
     favorite: '❤️ Favorite',
     favorited: '❤️ Favorited',
     reviewLater: '⭐ Review Later',
@@ -299,11 +323,19 @@ export const uiText: Record<UILang, UILabels> = {
     category: 'カテゴリー',
     level: 'レベル',
     start: '開始',
+    startRecommended: 'おすすめを開始',
+    randomPractice: 'ランダムに練習',
     view: '開く',
     allCategories: 'すべてのカテゴリー',
     allLevels: 'すべてのレベル',
     allLanguages: 'すべての言語',
     noResults: 'フィルターに一致するテキストがありません。',
+    todayPractice: '今日の練習',
+    totalSessions: '総練習回数',
+    learnedExpressions: '覚えた表現',
+    reviewingExpressions: '復習中',
+    newExpressions: '新規表現',
+    averageSpeed: '平均速度',
     favorite: '❤️ お気に入り',
     favorited: '❤️ お気に入り済み',
     reviewLater: '⭐ あとでレビュー',

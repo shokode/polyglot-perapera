@@ -45,6 +45,7 @@ const clientScript = `
   const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
   const TARGET_LANGUAGE_STORAGE_KEY = 'typingSiteTargetLanguage';
   const TEXT_PROGRESS_KEY = 'typingProgress';
+  const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
 
   function safeReadStorage(key) {
     try {
@@ -92,6 +93,27 @@ const clientScript = `
     }
   }
 
+  function loadExpressionStatuses() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_STATUS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function getExpressionStorageKey(expression, language) {
+    return language + '::' + (expression.storageKey || expression.phrase);
+  }
+
+  function getExpressionStatus(expression, language, statuses) {
+    const stored = statuses[getExpressionStorageKey(expression, language)]
+      || statuses[expression.storageKey]
+      || statuses[language + '::' + expression.phrase]
+      || statuses[expression.phrase];
+    return ['new', 'review', 'learned'].includes(stored) ? stored : 'new';
+  }
+
   function getTextProgress(textId) {
     const entry = loadTextProgress()[textId] || {};
     return {
@@ -104,6 +126,15 @@ const clientScript = `
 
   function getPracticeLabel(count, labels) {
     return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function getLastPracticedLabel(isoDate, labels, lang) {
@@ -149,14 +180,63 @@ const clientScript = `
     });
   }
 
-  function renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState) {
+  function getExpressionStats() {
+    const statuses = loadExpressionStatuses();
+    const seen = new Set();
+    const counts = { new: 0, review: 0, learned: 0 };
+    texts.forEach((text) => {
+      text.expressions.forEach((expression) => {
+        const key = getExpressionStorageKey(expression, text.language);
+        if (seen.has(key)) {
+          return;
+        }
+        seen.add(key);
+        const status = getExpressionStatus(expression, text.language, statuses);
+        counts[status] += 1;
+      });
+    });
+    return counts;
+  }
+
+  function getReviewCountForText(text, statuses) {
+    return text.expressions.reduce((count, expression) => {
+      return count + (getExpressionStatus(expression, text.language, statuses) === 'review' ? 1 : 0);
+    }, 0);
+  }
+
+  function renderDashboard(uiLanguageSelect) {
+    const labels = getUiText(uiLanguageSelect.value);
+    const progressEntries = Object.values(loadTextProgress());
+    const totalSessions = progressEntries.reduce((sum, entry) => {
+      return sum + (Number.isFinite(entry.completedCount) ? entry.completedCount : 0);
+    }, 0);
+    const speedValues = progressEntries
+      .map((entry) => Number.isFinite(entry.bestWpm) ? entry.bestWpm : 0)
+      .filter((value) => value > 0);
+    const averageSpeed = speedValues.length
+      ? Math.round(speedValues.reduce((sum, value) => sum + value, 0) / speedValues.length)
+      : null;
+    const expressionStats = getExpressionStats();
+
+    document.getElementById('dashboard-title').textContent = labels.todayPractice;
+    document.getElementById('total-sessions-label').textContent = labels.totalSessions;
+    document.getElementById('total-sessions-value').textContent = totalSessions;
+    document.getElementById('learned-expressions-label').textContent = labels.learnedExpressions;
+    document.getElementById('learned-expressions-value').textContent = expressionStats.learned;
+    document.getElementById('reviewing-expressions-label').textContent = labels.reviewingExpressions;
+    document.getElementById('reviewing-expressions-value').textContent = expressionStats.review;
+    document.getElementById('new-expressions-label').textContent = labels.newExpressions;
+    document.getElementById('new-expressions-value').textContent = expressionStats.new;
+    document.getElementById('average-speed-label').textContent = labels.averageSpeed;
+    document.getElementById('average-speed-value').textContent = averageSpeed === null ? '—' : averageSpeed;
+  }
+
+  function getFilteredTexts(targetLanguageSelect, categorySelect, levelSelect, sortSelect) {
     const selectedTargetLanguage = targetLanguageSelect.value;
     const selectedCat = categorySelect.value;
     const selectedLevel = levelSelect.value;
     const selectedSort = sortSelect.value;
-    const uiLang = uiLanguageSelect.value;
-    const labels = getUiText(uiLang);
-    const filtered = texts.filter((item) => {
+    return texts.filter((item) => {
       return (selectedTargetLanguage === 'all' || item.language === selectedTargetLanguage)
         && (selectedCat === 'all' || item.category === selectedCat)
         && (selectedLevel === 'all' || normalizeLevelKey(item.level) === selectedLevel);
@@ -185,6 +265,13 @@ const clientScript = `
       }
       return 0;
     });
+  }
+
+  function renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState) {
+    const uiLang = uiLanguageSelect.value;
+    const labels = getUiText(uiLang);
+    const expressionStatuses = loadExpressionStatuses();
+    const filtered = getFilteredTexts(targetLanguageSelect, categorySelect, levelSelect, sortSelect);
 
     results.innerHTML = filtered.map((item) => {
       const progress = getTextProgress(item.id);
@@ -192,15 +279,17 @@ const clientScript = `
       const levelKey = normalizeLevelKey(item.level);
       const categoryLabel = categoryLabels[item.category]?.[uiLang] || item.category;
       const levelLabel = levelLabels[levelKey]?.[uiLang] || levelKey;
+      const reviewCount = getReviewCountForText(item, expressionStatuses);
+      const preview = item.text.slice(0, 110).replace(/\\n/g, ' ');
       return ''
-        + '<article class="card text-list-card" data-text-id="' + item.id + '" data-target-language="' + item.language + '">'
-        + '<div>'
-        + '<p class="meta"><span class="language-badge" data-target-language="' + item.language + '">' + targetLanguageBadges[item.language] + '</span><span>' + categoryLabel + ' · ' + levelLabel + '</span></p>'
-        + '<h2>' + item.title + '</h2>'
-        + '<p class="text-card-progress">' + getPracticeLabel(progress.completedCount, labels) + (lastPracticed ? ' · ' + lastPracticed : '') + '</p>'
-        + '<p class="snippet">' + item.text.slice(0, 128).replace(/\\n/g, ' ') + '…</p>'
+        + '<article class="card text-list-card" data-text-id="' + escapeHtml(item.id) + '" data-target-language="' + escapeHtml(item.language) + '">'
+        + '<div class="text-card-body">'
+        + '<p class="meta"><span class="language-badge" data-target-language="' + escapeHtml(item.language) + '">' + escapeHtml(targetLanguageBadges[item.language]) + '</span><span>' + escapeHtml(categoryLabel) + '</span><span>' + escapeHtml(levelLabel) + '</span></p>'
+        + '<h2>' + escapeHtml(item.title) + '</h2>'
+        + '<p class="text-card-progress">' + escapeHtml(getPracticeLabel(progress.completedCount, labels)) + (lastPracticed ? ' · ' + escapeHtml(lastPracticed) : '') + (reviewCount ? ' · ' + escapeHtml(labels.reviewingExpressions) + ': ' + reviewCount : '') + '</p>'
+        + '<p class="snippet">' + escapeHtml(preview) + '…</p>'
         + '</div>'
-        + '<a class="card-link" href="/text/' + item.id + '">' + getUiText(uiLang).view + '</a>'
+        + '<a class="card-link" href="/text/' + escapeHtml(item.id) + '">' + escapeHtml(labels.view) + '</a>'
         + '</article>';
     }).join('');
 
@@ -218,16 +307,48 @@ const clientScript = `
     return filtered;
   }
 
-  function updateStartButton(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton) {
+  function randomItem(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function getRecommendedText(filtered) {
+    if (!filtered.length) {
+      return null;
+    }
+    const expressionStatuses = loadExpressionStatuses();
+    const unpracticed = filtered.filter((item) => getTextProgress(item.id).completedCount === 0);
+    if (unpracticed.length) {
+      const maxReviewCount = Math.max(...unpracticed.map((item) => getReviewCountForText(item, expressionStatuses)));
+      return randomItem(unpracticed.filter((item) => getReviewCountForText(item, expressionStatuses) === maxReviewCount));
+    }
+    const allPracticed = filtered.every((item) => getTextProgress(item.id).completedCount > 0);
+    if (allPracticed) {
+      return randomItem(filtered);
+    }
+    const minPracticeCount = Math.min(...filtered.map((item) => getTextProgress(item.id).completedCount));
+    return randomItem(filtered.filter((item) => getTextProgress(item.id).completedCount === minPracticeCount));
+  }
+
+  function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton) {
+    renderDashboard(uiLanguageSelect);
     const filtered = renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState);
     if (filtered.length > 0) {
       startButton.disabled = false;
+      randomButton.disabled = false;
       startButton.onclick = () => {
-        window.location.href = '/text/' + filtered[0].id;
+        const recommended = getRecommendedText(filtered);
+        if (recommended) {
+          window.location.href = '/text/' + recommended.id;
+        }
+      };
+      randomButton.onclick = () => {
+        window.location.href = '/text/' + randomItem(filtered).id;
       };
     } else {
       startButton.disabled = true;
+      randomButton.disabled = true;
       startButton.onclick = null;
+      randomButton.onclick = null;
     }
   }
 
@@ -240,19 +361,20 @@ const clientScript = `
     const results = document.getElementById('results');
     const emptyState = document.getElementById('empty-state');
     const startButton = document.getElementById('start-button');
+    const randomButton = document.getElementById('random-button');
 
     function applyUiLanguage(lang) {
       safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
       translateUiLabels(lang);
       uiLanguageSelect.value = lang;
-      updateStartButton(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
     }
 
     function applyTargetLanguage(lang) {
       const nextTargetLanguage = lang === 'all' || uiLanguages.includes(lang) ? lang : 'no';
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, nextTargetLanguage);
       targetLanguageSelect.value = nextTargetLanguage;
-      updateStartButton(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
     }
 
     const savedUiLanguage = getSavedUiLanguage();
@@ -266,9 +388,9 @@ const clientScript = `
     targetLanguageSelect.addEventListener('change', (event) => {
       applyTargetLanguage(event.target.value);
     });
-    categorySelect.addEventListener('change', () => updateStartButton(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton));
-    levelSelect.addEventListener('change', () => updateStartButton(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton));
-    sortSelect.addEventListener('change', () => updateStartButton(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton));
+    categorySelect.addEventListener('change', () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton));
+    levelSelect.addEventListener('change', () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton));
+    sortSelect.addEventListener('change', () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton));
   });
 `;
 ---
@@ -294,6 +416,34 @@ const clientScript = `
               ))}
             </select>
           </div>
+        </div>
+      </section>
+
+      <section class="dashboard-card" aria-labelledby="dashboard-title">
+        <div class="dashboard-heading">
+          <h2 id="dashboard-title">{uiText[defaultUiLang].todayPractice}</h2>
+        </div>
+        <div class="dashboard-grid">
+          <article class="dashboard-stat">
+            <span id="total-sessions-label">{uiText[defaultUiLang].totalSessions}</span>
+            <strong id="total-sessions-value">0</strong>
+          </article>
+          <article class="dashboard-stat">
+            <span id="learned-expressions-label">{uiText[defaultUiLang].learnedExpressions}</span>
+            <strong id="learned-expressions-value">0</strong>
+          </article>
+          <article class="dashboard-stat">
+            <span id="reviewing-expressions-label">{uiText[defaultUiLang].reviewingExpressions}</span>
+            <strong id="reviewing-expressions-value">0</strong>
+          </article>
+          <article class="dashboard-stat">
+            <span id="new-expressions-label">{uiText[defaultUiLang].newExpressions}</span>
+            <strong id="new-expressions-value">0</strong>
+          </article>
+          <article class="dashboard-stat">
+            <span id="average-speed-label">{uiText[defaultUiLang].averageSpeed}</span>
+            <strong id="average-speed-value">—</strong>
+          </article>
         </div>
       </section>
 
@@ -340,7 +490,8 @@ const clientScript = `
       </section>
 
       <section class="actions-row">
-        <button id="start-button" class="primary-button" data-i18n="start">{uiText[defaultUiLang].start}</button>
+        <button id="start-button" class="primary-button" data-i18n="startRecommended">{uiText[defaultUiLang].startRecommended}</button>
+        <button id="random-button" class="secondary-button" type="button" data-i18n="randomPractice">{uiText[defaultUiLang].randomPractice}</button>
       </section>
 
       <section id="results" class="results-grid"></section>
