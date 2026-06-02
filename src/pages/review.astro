@@ -10,6 +10,22 @@ import {
 } from '../i18n/ui';
 
 const defaultUiLang: UILang = 'en';
+type ReviewExpression = {
+  phrase: string;
+  storageKey?: string;
+  formInText?: string;
+  ja: string;
+  en: string;
+  no?: string;
+  example?: string;
+  exampleJa?: string;
+  exampleEn?: string;
+  exampleNo?: string;
+  language: string;
+  textId: string;
+  level: string;
+};
+
 const expressions = Array.from(
   texts.reduce((map, item) => {
     item.expressions.forEach((expression) => {
@@ -19,7 +35,7 @@ const expressions = Array.from(
       }
     });
     return map;
-  }, new Map<string, { phrase: string; storageKey?: string; formInText?: string; ja: string; en: string; language: string; textId: string }>())
+  }, new Map<string, ReviewExpression>())
   .values()
 );
 
@@ -171,6 +187,39 @@ const clientScript = `
     return getExplanationLanguageOrder(lang)
       .map((language) => ({ language, value: expression[language] }))
       .filter((entry) => typeof entry.value === 'string' && entry.value.trim());
+  }
+
+  function getExpressionExampleMap(expression) {
+    return {
+      default: typeof expression.example === 'string' ? expression.example : '',
+      ja: typeof expression.exampleJa === 'string' ? expression.exampleJa : '',
+      en: typeof expression.exampleEn === 'string' ? expression.exampleEn : '',
+      no: typeof expression.exampleNo === 'string' ? expression.exampleNo : '',
+    };
+  }
+
+  function getLocalizedExpressionExamples(expression) {
+    const examples = getExpressionExampleMap(expression);
+    const order = ['default', ...uiLanguages.filter((language) => language !== expression.language)];
+    return order
+      .map((language) => ({ language, value: examples[language] }))
+      .filter((entry, index, array) => typeof entry.value === 'string' && entry.value.trim() && array.findIndex((item) => item.value === entry.value) === index);
+  }
+
+  function renderReviewExampleSection(expression, labels, uiLang) {
+    const examples = getLocalizedExpressionExamples(expression);
+    if (!examples.length) {
+      return '';
+    }
+
+    return ''
+      + '<div class="review-card-examples" data-review-examples>'
+      + '<button class="secondary-button review-example-toggle" type="button" data-review-example-toggle aria-expanded="false" data-show-label="' + escapeHtml(labels.showExpressionExample) + '" data-hide-label="' + escapeHtml(labels.hideExpressionExample) + '">' + escapeHtml(labels.showExpressionExample) + '</button>'
+      + '<div class="expression-example-list review-example-list" hidden>'
+      + '<span class="expression-example-label">' + escapeHtml(labels.expressionExample) + '</span>'
+      + examples.map((entry) => '<p>' + (entry.language !== 'default' ? '<span class="grammar-language-label">' + escapeHtml(languageNames[entry.language]?.[uiLang] || entry.language) + ':</span> ' : '') + escapeHtml(entry.value) + '</p>').join('')
+      + '</div>'
+      + '</div>';
   }
 
   function escapeHtml(value) {
@@ -384,11 +433,39 @@ const clientScript = `
       renderReviewItems();
     }
 
-    function setExpressionStatus(expression, status) {
+    function saveExpressionStatus(expression, status) {
       const all = loadExpressionStatuses();
       all[getExpressionStorageKey(expression)] = status;
       saveExpressionStatuses(all);
-      renderReviewItems();
+    }
+
+    function getNextExpressionStatus(status) {
+      if (status === 'new') {
+        return 'review';
+      }
+      if (status === 'review') {
+        return 'learned';
+      }
+      return 'new';
+    }
+
+    function updateReviewCardStatus(card, expression, status) {
+      const labels = getUiText(uiLanguageSelect.value);
+      const { practiceCount } = getExpressionPractice(expression);
+      const statusPill = card.querySelector('.status-pill');
+      card.dataset.status = status;
+      card.dataset.highRepetition = status === 'review' && practiceCount >= 10 ? 'true' : 'false';
+      if (statusPill) {
+        statusPill.dataset.status = status;
+        statusPill.textContent = getExpressionStatusLabel(status, labels);
+      }
+      updateStatusFilterUi();
+    }
+
+    function cycleExpressionStatus(expression, card) {
+      const nextStatus = getNextExpressionStatus(getExpressionStatus(expression));
+      saveExpressionStatus(expression, nextStatus);
+      updateReviewCardStatus(card, expression, nextStatus);
     }
 
     function renderReviewItems() {
@@ -427,6 +504,7 @@ const clientScript = `
         const isHighRepetition = status === 'review' && practiceCount >= 10;
         const expressionKey = getExpressionStorageKey(expression);
         const meanings = getLocalizedExpressionMeanings(expression, uiLanguageSelect.value);
+        const examples = renderReviewExampleSection(expression, labels, uiLanguageSelect.value);
         return ''
           + '<article class="expression-card review-expression-card" data-review-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
           + '<div class="expression-header">'
@@ -440,9 +518,9 @@ const clientScript = `
           + '<div class="review-card-meaning">'
           + meanings.map((entry) => '<p><span class="grammar-language-label">' + escapeHtml(languageNames[entry.language]?.[uiLanguageSelect.value] || entry.language) + ':</span> ' + escapeHtml(entry.value) + '</p>').join('')
           + '</div>'
+          + examples
           + '<div class="review-card-actions">'
-          + '<button class="secondary-button" type="button" data-review-action="keep" data-expression-key="' + escapeHtml(expressionKey) + '">' + escapeHtml(labels.keepReviewing) + '</button>'
-          + '<button class="learned-button" type="button" data-review-action="learned" data-expression-key="' + escapeHtml(expressionKey) + '">' + escapeHtml(labels.markAsLearned) + '</button>'
+          + '<button class="secondary-button" type="button" data-review-open-text data-text-id="' + escapeHtml(expression.textId) + '">' + escapeHtml(labels.practiceThisText) + '</button>'
           + '</div>'
           + '</article>';
       }).join('');
@@ -451,18 +529,37 @@ const clientScript = `
 
       reviewGrid.querySelectorAll('[data-review-card]').forEach((card) => {
         card.addEventListener('click', () => {
-          window.location.href = '/text/' + card.dataset.textId;
+          const expression = expressions.find((item) => getExpressionStorageKey(item) === card.dataset.expressionKey);
+          if (expression) {
+            cycleExpressionStatus(expression, card);
+          }
         });
       });
 
-      reviewGrid.querySelectorAll('[data-review-action]').forEach((button) => {
+      reviewGrid.querySelectorAll('[data-review-examples]').forEach((section) => {
+        section.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+      });
+
+      reviewGrid.querySelectorAll('[data-review-example-toggle]').forEach((button) => {
         button.addEventListener('click', (event) => {
           event.stopPropagation();
-          const nextStatus = button.dataset.reviewAction === 'learned' ? 'learned' : 'review';
-          const expression = expressions.find((item) => getExpressionStorageKey(item) === button.dataset.expressionKey);
-          if (expression) {
-            setExpressionStatus(expression, nextStatus);
+          const exampleList = button.parentElement?.querySelector('.review-example-list');
+          if (!exampleList) {
+            return;
           }
+          const isExpanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+          exampleList.hidden = isExpanded;
+          button.textContent = isExpanded ? button.dataset.showLabel : button.dataset.hideLabel;
+        });
+      });
+
+      reviewGrid.querySelectorAll('[data-review-open-text]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          window.location.href = '/text/' + button.dataset.textId;
         });
       });
     }

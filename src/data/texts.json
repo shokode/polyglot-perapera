@@ -46,7 +46,10 @@
         "storageKey": "legge merke til",
         "formInText": "la jeg merke til",
         "ja": "〜に気づく",
-        "en": "to notice"
+        "en": "to notice",
+        "example": "Jeg la merke til en feil i menyen.",
+        "exampleJa": "メニューの不具合に気づきました。",
+        "exampleEn": "I noticed a bug in the menu."
       },
       {
         "phrase": "å nøle",
@@ -317,14 +320,20 @@
         "storageKey": "give up",
         "formInText": "gave up",
         "ja": "あきらめる / やめる",
-        "en": "to stop trying"
+        "en": "to stop trying",
+        "example": "I almost gave up, but I tried one more time.",
+        "exampleJa": "諦めそうになりましたが、もう一度試しました。",
+        "exampleNo": "Jeg holdt nesten på å gi opp, men prøvde én gang til."
       },
       {
         "phrase": "to set aside time",
         "storageKey": "set aside time",
         "formInText": "set aside ten minutes",
         "ja": "時間を取っておく",
-        "en": "to reserve time for something"
+        "en": "to reserve time for something",
+        "example": "I set aside ten minutes every morning to read.",
+        "exampleJa": "毎朝、読むために10分取っておきます。",
+        "exampleNo": "Jeg setter av ti minutter hver morgen til å lese."
       },
       {
         "phrase": "little by little",
@@ -337,7 +346,10 @@
         "storageKey": "get used to",
         "formInText": "got used to",
         "ja": "〜に慣れる",
-        "en": "to become familiar with"
+        "en": "to become familiar with",
+        "example": "It took a week to get used to the new routine.",
+        "exampleJa": "新しい習慣に慣れるまで一週間かかりました。",
+        "exampleNo": "Det tok en uke å bli vant til den nye rutinen."
       },
       {
         "phrase": "to stick with",
@@ -350,7 +362,10 @@
         "storageKey": "keep track of",
         "formInText": "Keeping track of",
         "ja": "記録する / 把握しておく",
-        "en": "to record or follow progress"
+        "en": "to record or follow progress",
+        "example": "I keep track of my progress in a small notebook.",
+        "exampleJa": "小さなノートに自分の進捗を記録しています。",
+        "exampleNo": "Jeg følger med på fremgangen min i en liten notatbok."
       }
     ],
     "grammar": [
@@ -833,14 +848,20 @@
         "storageKey": "meet up",
         "ja": "会う / 待ち合わせる",
         "en": "to meet someone",
-        "no": "møtes"
+        "no": "møtes",
+        "example": "Do you want to meet up after work?",
+        "exampleJa": "仕事のあとで会いませんか？",
+        "exampleNo": "Vil du møtes etter jobb?"
       },
       {
         "phrase": "to grab a coffee",
         "storageKey": "grab a coffee",
         "ja": "コーヒーを飲みに行く",
         "en": "to get a coffee casually",
-        "no": "ta en kaffe"
+        "no": "ta en kaffe",
+        "example": "We can grab a coffee instead of taking a long walk.",
+        "exampleJa": "長く散歩する代わりに、コーヒーを飲みに行けます。",
+        "exampleNo": "Vi kan ta en kaffe i stedet for å gå en lang tur."
       },
       {
         "phrase": "instead of",
@@ -853,7 +874,10 @@
         "storageKey": "make it",
         "ja": "来られる / 間に合う",
         "en": "to be able to come",
-        "no": "kunne komme"
+        "no": "kunne komme",
+        "example": "I am glad you could make it today.",
+        "exampleJa": "今日来られてよかったです。",
+        "exampleNo": "Jeg er glad for at du kunne komme i dag."
       },
       {
         "phrase": "right away",
@@ -900,7 +924,10 @@
         "storageKey": "set a timer",
         "ja": "タイマーをセットする",
         "en": "to start a timer",
-        "no": "sette en timer"
+        "no": "sette en timer",
+        "example": "I set a timer for thirty minutes and started reading.",
+        "exampleJa": "30分のタイマーをセットして、読み始めました。",
+        "exampleNo": "Jeg satte en timer på tretti minutter og begynte å lese."
       },
       {
         "phrase": "one at a time",
@@ -915,7 +942,10 @@
         "formInText": "managed to get through",
         "ja": "なんとか〜する",
         "en": "to succeed in doing",
-        "no": "klare å"
+        "no": "klare å",
+        "example": "I managed to finish the chapter before dinner.",
+        "exampleJa": "夕食前にその章をなんとか読み終えました。",
+        "exampleNo": "Jeg klarte å bli ferdig med kapittelet før middag."
       },
       {
         "phrase": "to get through",
@@ -964,7 +994,10 @@
         "formInText": "brought it up",
         "ja": "話題に出す / 伝える",
         "en": "to mention a topic",
-        "no": "ta noe opp"
+        "no": "ta noe opp",
+        "example": "I brought the problem up with my manager.",
+        "exampleJa": "その問題を上司に伝えました。",
+        "exampleNo": "Jeg tok problemet opp med lederen min."
       },
       {
         "phrase": "right away",
@@ -978,7 +1011,10 @@
         "formInText": "agreed to send",
         "ja": "〜することに合意する",
         "en": "to decide together to",
-        "no": "bli enige om å"
+        "no": "bli enige om å",
+        "example": "We agreed to send a short correction.",
+        "exampleJa": "私たちは短い訂正を送ることに合意しました。",
+        "exampleNo": "Vi ble enige om å sende en kort rettelse."
       },
       {
         "phrase": "without blaming anyone",
@@ -1166,7 +1202,10 @@
         "phrase": "仕事帰りに",
         "ja": "仕事が終わったあと、帰る途中で",
         "en": "on the way home from work",
-        "no": "på vei hjem fra jobb"
+        "no": "på vei hjem fra jobb",
+        "example": "仕事帰りにスーパーに寄りました。",
+        "exampleEn": "I stopped by the supermarket on my way home from work.",
+        "exampleNo": "Jeg stakk innom supermarkedet på vei hjem fra jobb."
       },
       {
         "phrase": "お互い",
@@ -1179,7 +1218,10 @@
         "formInText": "場所について話しました",
         "ja": "〜を話題にして話す",
         "en": "talk about",
-        "no": "snakke om"
+        "no": "snakke om",
+        "example": "週末の予定について話しました。",
+        "exampleEn": "We talked about our weekend plans.",
+        "exampleNo": "Vi snakket om planene for helgen."
       }
     ],
     "grammar": [
@@ -1389,7 +1431,10 @@
         "formInText": "外で食べずに",
         "ja": "外食する",
         "en": "eat out",
-        "no": "spise ute"
+        "no": "spise ute",
+        "example": "今日は外で食べたいです。",
+        "exampleEn": "I want to eat out today.",
+        "exampleNo": "Jeg har lyst til å spise ute i dag."
       },
       {
         "phrase": "残っている",
@@ -1409,14 +1454,20 @@
         "formInText": "ほっとしました",
         "ja": "安心する / 気持ちがゆるむ",
         "en": "feel relieved",
-        "no": "føle seg lettet"
+        "no": "føle seg lettet",
+        "example": "温かいスープを飲んでほっとしました。",
+        "exampleEn": "I felt relieved after drinking warm soup.",
+        "exampleNo": "Jeg følte meg lettet etter å ha drukket varm suppe."
       },
       {
         "phrase": "残しておく",
         "formInText": "残しておきました",
         "ja": "あとで使うために残す",
         "en": "save for later",
-        "no": "spare til senere"
+        "no": "spare til senere",
+        "example": "明日の昼ごはんに少し残しておきます。",
+        "exampleEn": "I will save a little for tomorrow's lunch.",
+        "exampleNo": "Jeg sparer litt til lunsjen i morgen."
       }
     ],
     "grammar": [
@@ -1654,7 +1705,10 @@
         "formInText": "短めにしました",
         "ja": "少し短くする",
         "en": "make something a little shorter",
-        "no": "gjøre noe litt kortere"
+        "no": "gjøre noe litt kortere",
+        "example": "今日は散歩を短めにしました。",
+        "exampleEn": "I made the walk a little shorter today.",
+        "exampleNo": "Jeg gjorde turen litt kortere i dag."
       },
       {
         "phrase": "〜ながらも",
@@ -1674,14 +1728,20 @@
         "formInText": "振り返って",
         "ja": "後ろを見る",
         "en": "look back",
-        "no": "se tilbake"
+        "no": "se tilbake",
+        "example": "犬は何度も振り返りました。",
+        "exampleEn": "The dog looked back again and again.",
+        "exampleNo": "Hunden så tilbake flere ganger."
       },
       {
         "phrase": "気持ちが整う",
         "formInText": "気持ちが整います",
         "ja": "心が落ち着いてまとまる",
         "en": "feel settled",
-        "no": "føle seg mer samlet"
+        "no": "føle seg mer samlet",
+        "example": "朝の散歩をすると気持ちが整います。",
+        "exampleEn": "A morning walk helps me feel settled.",
+        "exampleNo": "En morgentur gjør at jeg føler meg mer samlet."
       }
     ],
     "grammar": [
@@ -2498,7 +2558,10 @@
         "storageKey": "legge merke til",
         "formInText": "la jeg merke til",
         "ja": "〜に気づく",
-        "en": "to notice"
+        "en": "to notice",
+        "example": "Jeg la merke til en feil i mobilmenyen.",
+        "exampleJa": "モバイルメニューの不具合に気づきました。",
+        "exampleEn": "I noticed a bug in the mobile menu."
       },
       {
         "phrase": "å fungere på mobil",
@@ -2511,7 +2574,10 @@
         "phrase": "å se nærmere på",
         "storageKey": "se nærmere på",
         "ja": "詳しく見る / 調べる",
-        "en": "to take a closer look at"
+        "en": "to take a closer look at",
+        "example": "Vi må se nærmere på problemet før vi endrer koden.",
+        "exampleJa": "コードを変更する前に、その問題を詳しく確認する必要があります。",
+        "exampleEn": "We need to take a closer look at the problem before changing the code."
       },
       {
         "phrase": "å finne årsaken til",
@@ -2525,7 +2591,10 @@
         "storageKey": "bli enige om",
         "formInText": "ble enige om",
         "ja": "〜について合意する",
-        "en": "to agree on"
+        "en": "to agree on",
+        "example": "Teamet ble enige om en enkel løsning.",
+        "exampleJa": "チームはシンプルな解決策に合意しました。",
+        "exampleEn": "The team agreed on a simple solution."
       }
     ],
     "grammar": [
@@ -2556,7 +2625,10 @@
         "storageKey": "ta en gjennomgang",
         "formInText": "ta en rask gjennomgang",
         "ja": "確認する / レビューする",
-        "en": "to do a review"
+        "en": "to do a review",
+        "example": "Kan du ta en gjennomgang av komponenten?",
+        "exampleJa": "コンポーネントを確認してもらえますか？",
+        "exampleEn": "Can you do a review of the component?"
       },
       {
         "phrase": "å være usikker på",
@@ -2576,7 +2648,10 @@
         "storageKey": "trenge mer kontekst",
         "formInText": "trengte mer kontekst",
         "ja": "もっと文脈が必要である",
-        "en": "to need more context"
+        "en": "to need more context",
+        "example": "Jeg trenger mer kontekst før jeg kan vurdere løsningen.",
+        "exampleJa": "その解決策を判断する前に、もう少し文脈が必要です。",
+        "exampleEn": "I need more context before I can assess the solution."
       },
       {
         "phrase": "å komme med forslag",
@@ -2613,7 +2688,10 @@
         "storageKey": "få tilbakemelding om",
         "formInText": "fikk vi tilbakemelding om",
         "ja": "〜というフィードバックを受ける",
-        "en": "to receive feedback that"
+        "en": "to receive feedback that",
+        "example": "Vi fikk tilbakemelding om at skjemaet var vanskelig å bruke.",
+        "exampleJa": "フォームが使いにくいというフィードバックを受けました。",
+        "exampleEn": "We received feedback that the form was hard to use."
       },
       {
         "phrase": "å virke tungt å bruke",
@@ -2639,7 +2717,10 @@
         "phrase": "å avklare om",
         "storageKey": "avklare om",
         "ja": "〜かどうか確認する",
-        "en": "to clarify whether"
+        "en": "to clarify whether",
+        "example": "Vi må avklare om løsningen oppfyller kravene.",
+        "exampleJa": "その解決策が要件を満たしているか確認する必要があります。",
+        "exampleEn": "We need to clarify whether the solution meets the requirements."
       },
       {
         "phrase": "å oppfylle krav",
@@ -2684,7 +2765,10 @@
         "storageKey": "prioritere oppgaver",
         "formInText": "prioritere hvilke oppgaver",
         "ja": "タスクに優先順位をつける",
-        "en": "to prioritize tasks"
+        "en": "to prioritize tasks",
+        "example": "Vi må prioritere oppgaver før fristen.",
+        "exampleJa": "締め切り前にタスクの優先順位をつける必要があります。",
+        "exampleEn": "We need to prioritize tasks before the deadline."
       },
       {
         "phrase": "å kunne vente til",
@@ -2701,7 +2785,10 @@
         "phrase": "å ta en felles vurdering",
         "storageKey": "ta en felles vurdering",
         "ja": "共通の判断をする",
-        "en": "to make a shared assessment"
+        "en": "to make a shared assessment",
+        "example": "Teamet tok en felles vurdering av risikoen.",
+        "exampleJa": "チームはリスクについて共通の判断をしました。",
+        "exampleEn": "The team made a shared assessment of the risk."
       },
       {
         "phrase": "å jobbe mer strukturert",
@@ -2738,7 +2825,10 @@
         "storageKey": "arbeide med",
         "formInText": "arbeidet med",
         "ja": "〜に取り組む",
-        "en": "to work on"
+        "en": "to work on",
+        "example": "Vi arbeider med en ny komponent denne uken.",
+        "exampleJa": "今週は新しいコンポーネントに取り組んでいます。",
+        "exampleEn": "We are working on a new component this week."
       },
       {
         "phrase": "å behandle som",
@@ -2771,7 +2861,10 @@
         "storageKey": "ta en endelig beslutning",
         "formInText": "tok en endelig beslutning",
         "ja": "最終判断をする",
-        "en": "to make a final decision"
+        "en": "to make a final decision",
+        "example": "Vi tar en endelig beslutning etter testen.",
+        "exampleJa": "テストのあとで最終判断をします。",
+        "exampleEn": "We will make a final decision after the test."
       },
       {
         "phrase": "å avklare",
@@ -2814,7 +2907,10 @@
         "storageKey": "ha smerter i",
         "formInText": "hadde hatt smerter i",
         "ja": "〜に痛みがある",
-        "en": "to have pain in"
+        "en": "to have pain in",
+        "example": "Pasienten har smerter i brystet.",
+        "exampleJa": "患者は胸に痛みがあります。",
+        "exampleEn": "The patient has pain in the chest."
       },
       {
         "phrase": "å endre karakter",
@@ -2828,7 +2924,10 @@
         "storageKey": "føle seg svimmel",
         "formInText": "følte seg svimmel",
         "ja": "めまいを感じる",
-        "en": "to feel dizzy"
+        "en": "to feel dizzy",
+        "example": "Hun følte seg svimmel da hun reiste seg.",
+        "exampleJa": "彼女は立ち上がったときにめまいを感じました。",
+        "exampleEn": "She felt dizzy when she stood up."
       },
       {
         "phrase": "å bli verre",
@@ -2842,7 +2941,10 @@
         "storageKey": "ha tung pust",
         "formInText": "fikk tung pust",
         "ja": "息苦しさがある",
-        "en": "to have shortness of breath"
+        "en": "to have shortness of breath",
+        "example": "Ta kontakt igjen dersom du får tung pust.",
+        "exampleJa": "息苦しさが出た場合は、もう一度連絡してください。",
+        "exampleEn": "Contact us again if you develop shortness of breath."
       },
       {
         "phrase": "akutte smerter",
@@ -2885,14 +2987,20 @@
         "storageKey": "måle puls",
         "formInText": "målte puls",
         "ja": "脈を測る",
-        "en": "to measure pulse"
+        "en": "to measure pulse",
+        "example": "Sykepleieren målte puls før hun tok blodtrykk.",
+        "exampleJa": "看護師は血圧を測る前に脈を測りました。",
+        "exampleEn": "The nurse measured the pulse before taking blood pressure."
       },
       {
         "phrase": "å ta blodtrykk",
         "storageKey": "ta blodtrykk",
         "formInText": "tok blodtrykk",
         "ja": "血圧を測る",
-        "en": "to take blood pressure"
+        "en": "to take blood pressure",
+        "example": "Legen ba sykepleieren ta blodtrykk.",
+        "exampleJa": "医師は看護師に血圧を測るよう頼みました。",
+        "exampleEn": "The doctor asked the nurse to take the blood pressure."
       },
       {
         "phrase": "å sjekke om",
@@ -2906,7 +3014,10 @@
         "storageKey": "gi beskjed til",
         "formInText": "ga beskjed til",
         "ja": "〜に報告する / 連絡する",
-        "en": "to notify / inform"
+        "en": "to notify / inform",
+        "example": "Sykepleieren ga beskjed til legen med en gang.",
+        "exampleJa": "看護師はすぐに医師へ報告しました。",
+        "exampleEn": "The nurse informed the doctor right away."
       },
       {
         "phrase": "å tyde på",
@@ -2972,14 +3083,20 @@
         "storageKey": "følge opp",
         "formInText": "følge opp pasienten",
         "ja": "継続して確認・対応する",
-        "en": "to follow up / continue monitoring"
+        "en": "to follow up / continue monitoring",
+        "example": "Sykepleieren skal følge opp pasienten i morgen.",
+        "exampleJa": "看護師は明日、患者の経過を確認します。",
+        "exampleEn": "The nurse will follow up with the patient tomorrow."
       },
       {
         "phrase": "å vente på svar fra",
         "storageKey": "vente på svar fra",
         "formInText": "ventet på svar fra",
         "ja": "〜の結果を待つ",
-        "en": "to wait for results from"
+        "en": "to wait for results from",
+        "example": "Vi venter på svar fra undersøkelsen.",
+        "exampleJa": "検査の結果を待っています。",
+        "exampleEn": "We are waiting for the results of the examination."
       }
     ],
     "grammar": [
@@ -3009,7 +3126,10 @@
         "phrase": "å bli henvist til spesialist",
         "storageKey": "bli henvist til spesialist",
         "ja": "専門医に紹介される",
-        "en": "to be referred to a specialist"
+        "en": "to be referred to a specialist",
+        "example": "Pasienten ble henvist til spesialist etter undersøkelsen.",
+        "exampleJa": "患者は検査後に専門医へ紹介されました。",
+        "exampleEn": "The patient was referred to a specialist after the examination."
       },
       {
         "phrase": "akutt tilstand",
@@ -3035,7 +3155,10 @@
         "phrase": "å følge med på",
         "storageKey": "følge med på",
         "ja": "〜の変化に注意して見る",
-        "en": "to watch for / monitor"
+        "en": "to watch for / monitor",
+        "example": "Følg med på tegn til forverring de neste dagene.",
+        "exampleJa": "今後数日は悪化のサインに注意してください。",
+        "exampleEn": "Watch for signs of worsening over the next few days."
       },
       {
         "phrase": "tegn til forverring",
@@ -3093,13 +3216,19 @@
         "storageKey": "observere videre",
         "formInText": "observere pasienten videre",
         "ja": "継続して観察する",
-        "en": "to continue observing"
+        "en": "to continue observing",
+        "example": "Teamet valgte å observere pasienten videre.",
+        "exampleJa": "チームは患者の観察を続けることにしました。",
+        "exampleEn": "The team chose to continue observing the patient."
       },
       {
         "phrase": "å avklare med legen",
         "storageKey": "avklare med legen",
         "ja": "医師と確認する",
-        "en": "to clarify with the doctor"
+        "en": "to clarify with the doctor",
+        "example": "Vi må avklare planen med legen.",
+        "exampleJa": "医師と計画を確認する必要があります。",
+        "exampleEn": "We need to clarify the plan with the doctor."
       },
       {
         "phrase": "å justere planen",
@@ -3111,7 +3240,10 @@
         "phrase": "å fange opp",
         "storageKey": "fange opp",
         "ja": "変化や兆候を早めに察知する",
-        "en": "to detect / pick up on"
+        "en": "to detect / pick up on",
+        "example": "Målet er å fange opp forverring tidlig.",
+        "exampleJa": "目的は悪化を早めに察知することです。",
+        "exampleEn": "The goal is to detect worsening early."
       },
       {
         "phrase": "å være i bedring",

@@ -160,13 +160,12 @@ function hasExample(item: Record<string, unknown>) {
   return Object.values(getExampleMap(item)).some((value) => value.trim());
 }
 
-function getOrderedExamples(item: Record<string, unknown>, uiLang: UILang) {
+function getOrderedExamples(item: Record<string, unknown>, uiLang: UILang, targetLang: UILang) {
   const examples = getExampleMap(item);
   return [
-    { lang: uiLang, value: examples[uiLang] },
     { lang: 'default', value: examples.default },
     ...explanationLanguageOrder
-      .filter((lang) => lang !== uiLang)
+      .filter((lang) => lang !== targetLang)
       .map((lang) => ({ lang, value: examples[lang] })),
   ].filter((entry, index, array) => entry.value && array.findIndex((item) => item.value === entry.value) === index);
 }
@@ -617,8 +616,8 @@ const clientScript = `
     };
   }
 
-  function getLocalizedExamples(data, lang) {
-    const order = [lang, 'default', ...uiLanguages.filter((item) => item !== lang)];
+  function getLocalizedExamples(data) {
+    const order = ['default', ...uiLanguages.filter((item) => item !== text.language)];
     return order
       .map((language) => ({ language, value: data[language] }))
       .filter((entry, index, array) => typeof entry.value === 'string' && entry.value.trim() && array.findIndex((item) => item.value === entry.value) === index);
@@ -632,7 +631,7 @@ const clientScript = `
       } catch {
         data = {};
       }
-      const examples = getLocalizedExamples(data, lang);
+      const examples = getLocalizedExamples(data);
       const labels = getUiText(lang);
       container.innerHTML = examples.length
         ? '<span class="expression-example-label">' + escapeHtmlClient(labels.expressionExample) + '</span>' + examples.map((entry) => {
@@ -1049,7 +1048,7 @@ if (!text) {
               {hasExample(item) && (
                 <div class="expression-example-list" data-example-map={JSON.stringify(getExampleMap(item))}>
                   <span class="expression-example-label">{uiText[defaultUiLang].expressionExample}</span>
-                  {getOrderedExamples(item, defaultUiLang).map((entry) => (
+                  {getOrderedExamples(item, defaultUiLang, text.language as UILang).map((entry) => (
                     <p>
                       {entry.lang !== 'default' && <span class="grammar-language-label">{languageNames[entry.lang as UILang][defaultUiLang]}: </span>}
                       {entry.value}
