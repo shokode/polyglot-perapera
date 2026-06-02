@@ -19,7 +19,7 @@ const expressions = Array.from(
       }
     });
     return map;
-  }, new Map<string, { phrase: string; formInText?: string; ja: string; en: string; language: string; textId: string }>())
+  }, new Map<string, { phrase: string; storageKey?: string; formInText?: string; ja: string; en: string; language: string; textId: string }>())
   .values()
 );
 
@@ -114,12 +114,12 @@ const clientScript = `
   }
 
   function getExpressionStorageKey(expression) {
-    return expression.language + '::' + expression.phrase;
+    return expression.language + '::' + (expression.storageKey || expression.phrase);
   }
 
   function getExpressionStatus(expression) {
     const all = loadExpressionStatuses();
-    const stored = all[getExpressionStorageKey(expression)] || all[expression.phrase];
+    const stored = all[getExpressionStorageKey(expression)] || all[expression.storageKey] || all[expression.language + '::' + expression.phrase] || all[expression.phrase];
     return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
   }
 
@@ -135,7 +135,7 @@ const clientScript = `
 
   function getExpressionPractice(expression) {
     const progress = loadExpressionProgress();
-    const entry = progress[getExpressionStorageKey(expression)] || progress[expression.phrase] || {};
+    const entry = progress[getExpressionStorageKey(expression)] || progress[expression.storageKey] || progress[expression.language + '::' + expression.phrase] || progress[expression.phrase] || {};
     const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
     return {
       practiceCount,
@@ -194,7 +194,118 @@ const clientScript = `
     const statusFilterButtonLabel = document.getElementById('review-filter-button-label');
     const statusFilterButtonCount = document.getElementById('review-filter-button-count');
     const targetLanguageSelect = document.getElementById('review-target-language');
+    const targetLanguageButton = document.getElementById('review-target-language-button');
+    const targetLanguageMenu = document.getElementById('review-target-language-menu');
+    const targetLanguageOptions = Array.from(document.querySelectorAll('[data-target-language-option]'));
+    const targetLanguageButtonLabel = document.getElementById('review-target-language-button-label');
+    const sortButton = document.getElementById('review-sort-button');
+    const sortMenu = document.getElementById('review-sort-menu');
+    const sortOptions = Array.from(document.querySelectorAll('[data-sort-option]'));
+    const sortButtonLabel = document.getElementById('review-sort-button-label');
     let selectedFilter = 'review';
+
+    function getTargetLanguageLabel(value, lang) {
+      const labels = getUiText(lang);
+      return value === 'all' ? labels.allLanguages : languageNames[value]?.[lang] || value;
+    }
+
+    function getSortLabel(value, labels) {
+      if (value === 'least-practiced') {
+        return labels.sortLeastPracticed;
+      }
+      if (value === 'recently-practiced') {
+        return labels.sortRecentlyPracticed;
+      }
+      if (value === 'easiest') {
+        return labels.sortEasiestFirst;
+      }
+      if (value === 'hardest') {
+        return labels.sortHardestFirst;
+      }
+      if (value === 'az') {
+        return labels.sortAlphabetical;
+      }
+      return labels.sortMostPracticed;
+    }
+
+    function updateSelectDropdownUi(select, options, buttonLabel, getLabel) {
+      const selectedValue = select.value;
+      options.forEach((option) => {
+        const value = option.dataset.dropdownValue;
+        const isSelected = value === selectedValue;
+        option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        option.querySelector('[data-filter-option-label]').textContent = getLabel(value);
+      });
+      buttonLabel.textContent = getLabel(selectedValue);
+    }
+
+    function closeSelectDropdown(button, menu) {
+      button.setAttribute('aria-expanded', 'false');
+      menu.hidden = true;
+    }
+
+    function openSelectDropdown(button, menu, options, selectedValue) {
+      button.setAttribute('aria-expanded', 'true');
+      menu.hidden = false;
+      const selectedOption = options.find((option) => option.dataset.dropdownValue === selectedValue) || options[0];
+      selectedOption?.focus();
+    }
+
+    function setupSelectDropdown({ select, button, menu, options, buttonLabel, getLabel, onChange }) {
+      const close = () => closeSelectDropdown(button, menu);
+      const update = () => updateSelectDropdownUi(select, options, buttonLabel, getLabel);
+      const chooseValue = (value) => {
+        select.value = value;
+        close();
+        update();
+        onChange(value);
+      };
+
+      button.addEventListener('click', () => {
+        if (menu.hidden) {
+          openSelectDropdown(button, menu, options, select.value);
+        } else {
+          close();
+        }
+      });
+      button.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openSelectDropdown(button, menu, options, select.value);
+        }
+      });
+      options.forEach((option, index) => {
+        option.addEventListener('click', () => {
+          chooseValue(option.dataset.dropdownValue);
+        });
+        option.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            chooseValue(option.dataset.dropdownValue);
+          }
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            close();
+            button.focus();
+          }
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            options[(index + 1) % options.length].focus();
+          }
+          if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            options[(index - 1 + options.length) % options.length].focus();
+          }
+        });
+      });
+      document.addEventListener('click', (event) => {
+        if (!button.contains(event.target) && !menu.contains(event.target)) {
+          close();
+        }
+      });
+
+      return { update, close };
+    }
 
     function renderUiText(lang) {
       const labels = getUiText(lang);
@@ -212,6 +323,8 @@ const clientScript = `
 
       uiLanguageSelect.value = lang;
       reviewTitle.textContent = labels.reviewPageTitle;
+      targetLanguageDropdown.update();
+      sortDropdown.update();
       renderReviewItems();
     }
 
@@ -357,9 +470,36 @@ const clientScript = `
     const savedUiLanguage = getSavedUiLanguage();
     const savedTargetLanguage = getSavedTargetLanguage();
     targetLanguageSelect.value = savedTargetLanguage;
+    const targetLanguageDropdown = setupSelectDropdown({
+      select: targetLanguageSelect,
+      button: targetLanguageButton,
+      menu: targetLanguageMenu,
+      options: targetLanguageOptions,
+      buttonLabel: targetLanguageButtonLabel,
+      getLabel: (value) => getTargetLanguageLabel(value, uiLanguageSelect.value),
+      onChange: (value) => {
+        const lang = value === 'all' || uiLanguages.includes(value) ? value : 'no';
+        safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
+        targetLanguageSelect.value = lang;
+        targetLanguageDropdown.update();
+        renderReviewItems();
+      },
+    });
+    const sortDropdown = setupSelectDropdown({
+      select: sortSelect,
+      button: sortButton,
+      menu: sortMenu,
+      options: sortOptions,
+      buttonLabel: sortButtonLabel,
+      getLabel: (value) => getSortLabel(value, getUiText(uiLanguageSelect.value)),
+      onChange: renderReviewItems,
+    });
     renderUiText(savedUiLanguage);
 
-    sortSelect.addEventListener('change', renderReviewItems);
+    sortSelect.addEventListener('change', () => {
+      sortDropdown.update();
+      renderReviewItems();
+    });
     statusFilterButton.addEventListener('click', () => {
       if (statusFilterMenu.hidden) {
         openStatusFilter();
@@ -406,6 +546,7 @@ const clientScript = `
       const lang = event.target.value === 'all' || uiLanguages.includes(event.target.value) ? event.target.value : 'no';
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
       targetLanguageSelect.value = lang;
+      targetLanguageDropdown.update();
       renderReviewItems();
     });
 
@@ -448,13 +589,35 @@ const clientScript = `
       <section class="expressions-card">
         <div class="review-controls">
           <div class="filter-group">
-            <label for="review-target-language" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
-            <select id="review-target-language">
+            <label id="review-target-language-label" for="review-target-language-button" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
+            <select id="review-target-language" class="native-filter-select" aria-hidden="true" tabindex="-1">
               <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
               {uiLanguages.map((lang) => (
                 <option value={lang} data-i18n-target-language={lang}>{languageNames[lang][defaultUiLang]}</option>
               ))}
             </select>
+            <div class="status-filter-dropdown">
+              <button
+                id="review-target-language-button"
+                class="status-filter-button"
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-labelledby="review-target-language-label review-target-language-button-label"
+              >
+                <span id="review-target-language-button-label">{uiText[defaultUiLang].allLanguages}</span>
+              </button>
+              <div id="review-target-language-menu" class="status-filter-menu" role="listbox" aria-labelledby="review-target-language-label" hidden>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-target-language-option data-dropdown-value="all" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].allLanguages}</span>
+                </button>
+                {uiLanguages.map((lang) => (
+                  <button class="status-filter-option" type="button" role="option" tabindex="-1" data-target-language-option data-dropdown-value={lang} aria-selected="false">
+                    <span data-filter-option-label>{languageNames[lang][defaultUiLang]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           <div class="filter-group">
             <label id="review-filter-label" for="review-filter-button" data-i18n="filterLabel">{uiText[defaultUiLang].filterLabel}</label>
@@ -491,8 +654,8 @@ const clientScript = `
             </div>
           </div>
           <div class="filter-group">
-            <label for="review-sort" data-i18n="sortLabel">{uiText[defaultUiLang].sortLabel}</label>
-            <select id="review-sort">
+            <label id="review-sort-label" for="review-sort-button" data-i18n="sortLabel">{uiText[defaultUiLang].sortLabel}</label>
+            <select id="review-sort" class="native-filter-select" aria-hidden="true" tabindex="-1">
               <option value="most-practiced" data-i18n="sortMostPracticed">{uiText[defaultUiLang].sortMostPracticed}</option>
               <option value="least-practiced" data-i18n="sortLeastPracticed">{uiText[defaultUiLang].sortLeastPracticed}</option>
               <option value="recently-practiced" data-i18n="sortRecentlyPracticed">{uiText[defaultUiLang].sortRecentlyPracticed}</option>
@@ -500,6 +663,38 @@ const clientScript = `
               <option value="hardest" data-i18n="sortHardestFirst">{uiText[defaultUiLang].sortHardestFirst}</option>
               <option value="az" data-i18n="sortAlphabetical">{uiText[defaultUiLang].sortAlphabetical}</option>
             </select>
+            <div class="status-filter-dropdown">
+              <button
+                id="review-sort-button"
+                class="status-filter-button"
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-labelledby="review-sort-label review-sort-button-label"
+              >
+                <span id="review-sort-button-label">{uiText[defaultUiLang].sortMostPracticed}</span>
+              </button>
+              <div id="review-sort-menu" class="status-filter-menu" role="listbox" aria-labelledby="review-sort-label" hidden>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-sort-option data-dropdown-value="most-practiced" aria-selected="true">
+                  <span data-filter-option-label>{uiText[defaultUiLang].sortMostPracticed}</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-sort-option data-dropdown-value="least-practiced" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].sortLeastPracticed}</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-sort-option data-dropdown-value="recently-practiced" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].sortRecentlyPracticed}</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-sort-option data-dropdown-value="easiest" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].sortEasiestFirst}</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-sort-option data-dropdown-value="hardest" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].sortHardestFirst}</span>
+                </button>
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-sort-option data-dropdown-value="az" aria-selected="false">
+                  <span data-filter-option-label>{uiText[defaultUiLang].sortAlphabetical}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div id="review-grid" class="expressions-grid"></div>

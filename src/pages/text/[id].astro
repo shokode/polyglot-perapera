@@ -305,13 +305,22 @@ const clientScript = `
     return levelKeys.includes(level) ? level : 'natural';
   }
 
+  function getExpressionByPhrase(phrase) {
+    return text.expressions.find((expression) => expression.phrase === phrase) || null;
+  }
+
+  function getExpressionLegacyKey(phrase) {
+    const expression = getExpressionByPhrase(phrase);
+    return expression?.storageKey || phrase;
+  }
+
   function getExpressionStorageKey(phrase) {
-    return text.language + '::' + phrase;
+    return text.language + '::' + getExpressionLegacyKey(phrase);
   }
 
   function getExpressionStatus(phrase) {
     const all = loadExpressionStatuses();
-    const stored = all[getExpressionStorageKey(phrase)] || all[phrase];
+    const stored = all[getExpressionStorageKey(phrase)] || all[getExpressionLegacyKey(phrase)] || all[text.language + '::' + phrase] || all[phrase];
     return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
   }
 
@@ -332,7 +341,7 @@ const clientScript = `
 
   function getExpressionPractice(phrase) {
     const progress = loadProgress(EXPRESSION_PROGRESS_KEY);
-    const entry = progress[getExpressionStorageKey(phrase)] || progress[phrase] || {};
+    const entry = progress[getExpressionStorageKey(phrase)] || progress[getExpressionLegacyKey(phrase)] || progress[text.language + '::' + phrase] || progress[phrase] || {};
     const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
     return {
       practiceCount,
@@ -583,10 +592,6 @@ const clientScript = `
       all[getExpressionStorageKey(phrase)] = getNextExpressionStatus(getExpressionStatus(phrase));
       saveExpressionStatuses(all);
       updateExpressionStatusButtons();
-    }
-
-    function getExpressionByPhrase(phrase) {
-      return text.expressions.find((expression) => expression.phrase === phrase) || null;
     }
 
   function getExpressionExplanationMap(expression) {

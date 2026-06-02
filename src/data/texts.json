@@ -10,21 +10,25 @@
     "translationEn": "I used to feel stressed when I had to speak Norwegian, especially when I needed to answer quickly. So I decided to practice a little every day instead of trying to learn everything at once. Over time, I noticed that I understood more and hesitated less when I spoke. Taking it easy and focusing on one thing at a time worked well for me.",
     "expressions": [
       {
-        "phrase": "pleie å",
+        "phrase": "pleie å + infinitiv",
+        "storageKey": "pleie å",
         "formInText": "pleide å",
         "ja": "よく〜する / 〜する習慣がある",
-        "en": "used to"
+        "en": "usually do / used to"
       },
       {
-        "phrase": "bli stresset når",
+        "phrase": "å bli stresset",
+        "storageKey": "bli stresset når",
+        "formInText": "bli stresset når",
         "ja": "〜すると緊張する / ストレスを感じる",
-        "en": "get stressed when"
+        "en": "to get stressed"
       },
       {
-        "phrase": "bestemme seg for å",
+        "phrase": "å bestemme seg for å",
+        "storageKey": "bestemme seg for å",
         "formInText": "bestemte jeg meg for å",
         "ja": "〜することに決める",
-        "en": "decide to"
+        "en": "to decide to"
       },
       {
         "phrase": "i stedet for å",
@@ -38,21 +42,24 @@
         "en": "over time / after a while"
       },
       {
-        "phrase": "legge merke til",
+        "phrase": "å legge merke til",
+        "storageKey": "legge merke til",
         "formInText": "la jeg merke til",
         "ja": "〜に気づく",
-        "en": "notice"
+        "en": "to notice"
       },
       {
-        "phrase": "nøle",
+        "phrase": "å nøle",
+        "storageKey": "nøle",
         "formInText": "nølte",
         "ja": "ためらう / 迷う",
-        "en": "hesitate"
+        "en": "to hesitate"
       },
       {
-        "phrase": "ta det med ro",
+        "phrase": "å ta det med ro",
+        "storageKey": "ta det med ro",
         "ja": "焦らずに進める / 落ち着く",
-        "en": "take it easy"
+        "en": "to take it easy"
       },
       {
         "phrase": "én ting om gangen",
@@ -62,17 +69,17 @@
     ],
     "grammar": [
       {
-        "title": "Når-ledd (When-clause)",
+        "title": "når + leddsetning",
         "descriptionJa": "「når」で始まる節は「〜するとき」「〜の場合」を表し、主文の後に置くこともできます。",
         "descriptionEn": "A clause with \"når\" means \"when\" or \"whenever\" and can also come after the main clause."
       },
       {
-        "title": "Derfor + verb + subjekt (Inverted word order)",
+        "title": "derfor + verb + subjekt",
         "descriptionJa": "文が「derfor」で始まると、語順が入れ替わり、動詞が主語の前に来ます。",
         "descriptionEn": "When a sentence starts with \"derfor\", the word order changes and the verb comes before the subject."
       },
       {
-        "title": "I stedet for å + infinitiv",
+        "title": "i stedet for å + infinitiv",
         "descriptionJa": "「i stedet for å」は「〜する代わりに」という意味で、後ろには動詞の不定詞が続きます。",
         "descriptionEn": "\"I stedet for å\" means \"instead of doing\" and is followed by an infinitive verb."
       }
@@ -100,21 +107,24 @@
         "en": "on the way to"
       },
       {
-        "phrase": "få med seg",
+        "phrase": "å få med seg",
+        "storageKey": "få med seg",
         "formInText": "får ikke med meg",
         "ja": "聞き取る / 理解する",
-        "en": "catch / take in"
+        "en": "to catch / take in"
       },
       {
-        "phrase": "legge merke til",
+        "phrase": "å legge merke til",
+        "storageKey": "legge merke til",
         "ja": "〜に気づく",
-        "en": "notice"
+        "en": "to notice"
       },
       {
-        "phrase": "skrive ned",
+        "phrase": "å skrive ned",
+        "storageKey": "skrive ned",
         "formInText": "skriver jeg ned",
         "ja": "書き留める",
-        "en": "write down"
+        "en": "to write down"
       },
       {
         "phrase": "på den måten",
@@ -131,12 +141,12 @@
     ],
     "grammar": [
       {
-        "title": "Når + leddsetning",
+        "title": "når + leddsetning",
         "descriptionJa": "「når」は「〜するとき」を表し、あとに文を続けて状況を説明できます。",
         "descriptionEn": "\"Når\" means \"when\" and introduces a clause that describes the situation."
       },
       {
-        "title": "På den måten",
+        "title": "på den måten",
         "descriptionJa": "「på den måten」は「そうすることで」「そのようにして」という意味で、前の内容を受けて結果を説明します。",
         "descriptionEn": "\"På den måten\" means \"in this way\" and connects an action to its result."
       }
@@ -162,14 +172,15 @@
         "en": "it is likely that"
       },
       {
-        "phrase": "tilbringe tid sammen",
+        "phrase": "å tilbringe tid sammen",
+        "storageKey": "tilbringe tid sammen",
         "ja": "一緒に時間を過ごす",
-        "en": "spend time together"
+        "en": "to spend time together"
       }
     ],
     "grammar": [
       {
-        "title": "Det er sannsynlig at...",
+        "title": "det er sannsynlig at + leddsetning",
         "descriptionJa": "「det er sannsynlig at...」は、「〜である可能性が高い」と言いたいときに使います。",
         "descriptionEn": "\"Det er sannsynlig at...\" is used to say that something is likely to happen or be true."
       }
@@ -191,10 +202,11 @@
     ],
     "expressions": [
       {
-        "phrase": "gå gjennom",
+        "phrase": "å gå gjennom",
+        "storageKey": "gå gjennom",
         "formInText": "gå gjennom alle detaljene",
         "ja": "〜を確認する / ひと通り見る",
-        "en": "go through / review"
+        "en": "to go through / review"
       },
       {
         "phrase": "lærlingplass",
@@ -205,7 +217,7 @@
     ],
     "grammar": [
       {
-        "title": "Må + infinitiv",
+        "title": "må + infinitiv",
         "descriptionJa": "「må」は必要性を表し、「〜しなければならない」という意味で使います。",
         "descriptionEn": "\"Må\" expresses necessity and means \"must\" or \"have to\"."
       }
@@ -228,10 +240,11 @@
     ],
     "expressions": [
       {
-        "phrase": "være dekket av",
+        "phrase": "å være dekket av",
+        "storageKey": "være dekket av",
         "formInText": "dekket av snø",
         "ja": "〜に覆われている",
-        "en": "be covered with / by"
+        "en": "to be covered with / by"
       },
       {
         "phrase": "gradvis",
@@ -242,7 +255,7 @@
     ],
     "grammar": [
       {
-        "title": "Det er fint å...",
+        "title": "det er fint å + infinitiv",
         "descriptionJa": "「det er fint å...」は、「〜するのは良い」「〜するのは気持ちがいい」と表す形です。",
         "descriptionEn": "\"Det er fint å...\" is used to say that doing something is nice, good, or pleasant."
       }
@@ -264,19 +277,21 @@
     ],
     "expressions": [
       {
-        "phrase": "ta det med ro",
+        "phrase": "å ta det med ro",
+        "storageKey": "ta det med ro",
         "ja": "ゆっくり休む",
-        "en": "take it easy"
+        "en": "to take it easy"
       },
       {
-        "phrase": "holde en god rutine",
+        "phrase": "å holde en god rutine",
+        "storageKey": "holde en god rutine",
         "ja": "良い習慣を続ける",
-        "en": "keep a good routine"
+        "en": "to keep a good routine"
       }
     ],
     "grammar": [
       {
-        "title": "Pleier å + infinitiv",
+        "title": "pleier å + infinitiv",
         "descriptionJa": "「pleier å」は習慣を表し、「いつも〜する」「〜することが多い」という意味で使います。",
         "descriptionEn": "\"Pleier å\" describes habits and means \"usually do\" or \"tend to do\"."
       }
@@ -298,16 +313,18 @@
         "en": "describes a past habit"
       },
       {
-        "phrase": "give up",
+        "phrase": "to give up",
+        "storageKey": "give up",
         "formInText": "gave up",
         "ja": "あきらめる / やめる",
-        "en": "stop trying"
+        "en": "to stop trying"
       },
       {
-        "phrase": "set aside time",
+        "phrase": "to set aside time",
+        "storageKey": "set aside time",
         "formInText": "set aside ten minutes",
         "ja": "時間を取っておく",
-        "en": "reserve time for something"
+        "en": "to reserve time for something"
       },
       {
         "phrase": "little by little",
@@ -316,31 +333,34 @@
         "en": "gradually"
       },
       {
-        "phrase": "get used to",
+        "phrase": "to get used to",
+        "storageKey": "get used to",
         "formInText": "got used to",
         "ja": "〜に慣れる",
-        "en": "become familiar with"
+        "en": "to become familiar with"
       },
       {
-        "phrase": "stick with",
+        "phrase": "to stick with",
+        "storageKey": "stick with",
         "ja": "続ける",
-        "en": "continue doing something"
+        "en": "to continue doing something"
       },
       {
-        "phrase": "keep track of",
+        "phrase": "to keep track of",
+        "storageKey": "keep track of",
         "formInText": "Keeping track of",
         "ja": "記録する / 把握しておく",
-        "en": "record or follow progress"
+        "en": "to record or follow progress"
       }
     ],
     "grammar": [
       {
-        "title": "Used to + base verb",
+        "title": "used to + base verb",
         "descriptionJa": "「used to + 動詞の原形」は、過去にはよくしていたけれど今は違う習慣を表します。",
         "descriptionEn": "\"Used to + base verb\" describes a past habit or situation that is no longer true."
       },
       {
-        "title": "Gerund as subject",
+        "title": "gerund as subject",
         "descriptionJa": "動名詞を主語にすると、「〜することは」という意味で文を始められます。",
         "descriptionEn": "A gerund can act as the subject of a sentence, as in \"Keeping track of small progress helped me.\""
       }
@@ -607,19 +627,19 @@
     ],
     "grammar": [
       {
-        "title": "〜たら",
+        "title": "Vた-form + ら",
         "descriptionJa": "「〜たら」は、あることが起きたあとで次の変化や結果があることを表します。",
         "descriptionEn": "\"〜たら\" can show that something happens after another action or condition.",
         "descriptionNo": "「〜たら」 brukes når noe skjer etter en handling eller betingelse."
       },
       {
-        "title": "〜前に",
+        "title": "V辞書形 + 前に",
         "descriptionJa": "「〜前に」は、「〜するより先に」という意味で、後ろには動詞の辞書形がよく来ます。",
         "descriptionEn": "\"〜前に\" means \"before doing something\" and is often used after the dictionary form of a verb.",
         "descriptionNo": "「〜前に」 betyr «før man gjør noe» og brukes ofte etter ordbokformen av verbet."
       },
       {
-        "title": "〜たい",
+        "title": "Vます-stem + たい",
         "descriptionJa": "「〜たい」は、自分がしたいことや望んでいることを表します。",
         "descriptionEn": "\"〜たい\" expresses what the speaker wants to do.",
         "descriptionNo": "「〜たい」 uttrykker hva taleren selv vil eller ønsker å gjøre."
@@ -637,22 +657,25 @@
     "translationEn": "This morning I missed the bus, so I sent Lina a short message. I wrote that I would be a little late, but that she did not need to wait outside in the cold. She replied right away and said she could go into the café first. That made the situation much calmer, and I got there as soon as I could.",
     "expressions": [
       {
-        "phrase": "rekke bussen",
+        "phrase": "å rekke bussen",
+        "storageKey": "rekke bussen",
         "formInText": "rakk jeg ikke bussen",
         "ja": "バスに間に合う",
-        "en": "catch the bus"
+        "en": "to catch the bus"
       },
       {
-        "phrase": "sende en melding til",
+        "phrase": "å sende en melding til",
+        "storageKey": "sende en melding til",
         "formInText": "sendte en kort melding til",
         "ja": "〜にメッセージを送る",
-        "en": "send a message to"
+        "en": "to send a message to"
       },
       {
-        "phrase": "bli litt sen",
+        "phrase": "å bli litt sen",
+        "storageKey": "bli litt sen",
         "formInText": "blir litt sen",
         "ja": "少し遅れる",
-        "en": "be a little late"
+        "en": "to be a little late"
       },
       {
         "phrase": "med en gang",
@@ -667,13 +690,13 @@
     ],
     "grammar": [
       {
-        "title": "Så + helsetning",
+        "title": "så + helsetning",
         "descriptionJa": "「så」は「それで」「だから」の意味で、前の出来事の結果をつなげるときに使います。",
         "descriptionEn": "\"Så\" can mean \"so\" and connects an event with its result.",
         "descriptionNo": "\"Så\" kan bety «derfor» og knytter en hendelse til resultatet."
       },
       {
-        "title": "At-setninger",
+        "title": "at + leddsetning",
         "descriptionJa": "「at」で始まる節は、「〜だと書く」「〜だと言う」のように内容を説明します。",
         "descriptionEn": "An \"at\" clause explains what someone writes, says, or thinks.",
         "descriptionNo": "En at-setning forteller hva noen skriver, sier eller tenker."
@@ -691,21 +714,24 @@
     "translationEn": "At my internship today, I was given responsibility for a small part of a project. At first I was not quite sure where to begin, so I asked my supervisor for help. She showed me how I could get started without making everything perfect right away. Afterwards I worked more calmly, and I learned a lot by trying it myself.",
     "expressions": [
       {
-        "phrase": "få ansvar for",
+        "phrase": "å få ansvar for",
+        "storageKey": "få ansvar for",
         "formInText": "fikk jeg ansvar for",
         "ja": "〜を任される / 責任を持つ",
-        "en": "be given responsibility for"
+        "en": "to be given responsibility for"
       },
       {
-        "phrase": "spørre om hjelp",
+        "phrase": "å spørre om hjelp",
+        "storageKey": "spørre om hjelp",
         "formInText": "spurte veilederen min om hjelp",
         "ja": "助けを求める",
-        "en": "ask for help"
+        "en": "to ask for help"
       },
       {
-        "phrase": "komme i gang",
+        "phrase": "å komme i gang",
+        "storageKey": "komme i gang",
         "ja": "始める / 作業に取りかかる",
-        "en": "get started"
+        "en": "to get started"
       },
       {
         "phrase": "med en gang",
@@ -713,21 +739,22 @@
         "en": "right away"
       },
       {
-        "phrase": "lære av",
+        "phrase": "å lære av",
+        "storageKey": "lære av",
         "formInText": "lærte mye av",
         "ja": "〜から学ぶ",
-        "en": "learn from"
+        "en": "to learn from"
       }
     ],
     "grammar": [
       {
-        "title": "Indirekte spørsmål",
+        "title": "indirekte spørsmål",
         "descriptionJa": "「hvor jeg skulle begynne」のような間接疑問では、主語が動詞の前に来ます。",
         "descriptionEn": "In indirect questions like \"hvor jeg skulle begynne\", the subject comes before the verb.",
         "descriptionNo": "I indirekte spørsmål som «hvor jeg skulle begynne» kommer subjektet før verbet."
       },
       {
-        "title": "Uten å + infinitiv",
+        "title": "uten å + infinitiv",
         "descriptionJa": "「uten å」は「〜せずに」という意味で、後ろに動詞の不定詞が続きます。",
         "descriptionEn": "\"Uten å\" means \"without doing\" and is followed by an infinitive.",
         "descriptionNo": "«Uten å» betyr «without doing» og følges av infinitiv."
@@ -745,10 +772,11 @@
     "translationEn": "At yesterday's meeting, I tried to explain why I was a little skeptical about the new plan. On the one hand, I like that we want to try something new, but on the other hand, we have to take into account the time we actually have. I did not say no to the idea, but I suggested that we test it on a smaller scale first. After the discussion, we arrived at a solution everyone could live with.",
     "expressions": [
       {
-        "phrase": "være skeptisk til",
+        "phrase": "å være skeptisk til",
+        "storageKey": "være skeptisk til",
         "formInText": "var litt skeptisk til",
         "ja": "〜に少し慎重である / 疑問を持つ",
-        "en": "be skeptical about"
+        "en": "to be skeptical about"
       },
       {
         "phrase": "på den ene siden",
@@ -762,26 +790,28 @@
         "en": "on the other hand"
       },
       {
-        "phrase": "ta hensyn til",
+        "phrase": "å ta hensyn til",
+        "storageKey": "ta hensyn til",
         "ja": "〜を考慮する",
-        "en": "take into account"
+        "en": "to take into account"
       },
       {
-        "phrase": "komme fram til",
+        "phrase": "å komme fram til",
+        "storageKey": "komme fram til",
         "formInText": "kom vi fram til",
         "ja": "〜にたどり着く / 結論に達する",
-        "en": "arrive at / reach"
+        "en": "to arrive at / reach"
       }
     ],
     "grammar": [
       {
-        "title": "Hvorfor-setning",
+        "title": "hvorfor + leddsetning",
         "descriptionJa": "「hvorfor」で始まる節は理由を説明し、主文の目的語として使うことがあります。",
         "descriptionEn": "A clause with \"hvorfor\" explains a reason and can act as the object of a sentence.",
         "descriptionNo": "En leddsetning med «hvorfor» forklarer en grunn og kan være objekt i setningen."
       },
       {
-        "title": "Skulle + infinitiv",
+        "title": "skulle + infinitiv",
         "descriptionJa": "「skulle + 動詞」は、提案・予定・控えめな計画を表すことがあります。",
         "descriptionEn": "\"Skulle + infinitive\" can express a suggestion, plan, or intended action.",
         "descriptionNo": "«Skulle + infinitiv» kan uttrykke forslag, plan eller en tenkt handling."
@@ -799,15 +829,17 @@
     "translationNo": "Det regnet da jeg dro fra jobb, så jeg sendte Maya en melding og spurte om hun fortsatt ville møtes. Hun sa at vi kunne ta en kaffe i stedet for å gå i parken. Jeg var glad for at hun fortsatt kunne komme, fordi jeg ville snakke litt og ikke skynde meg hjem med en gang.",
     "expressions": [
       {
-        "phrase": "meet up",
+        "phrase": "to meet up",
+        "storageKey": "meet up",
         "ja": "会う / 待ち合わせる",
-        "en": "meet someone",
+        "en": "to meet someone",
         "no": "møtes"
       },
       {
-        "phrase": "grab a coffee",
+        "phrase": "to grab a coffee",
+        "storageKey": "grab a coffee",
         "ja": "コーヒーを飲みに行く",
-        "en": "get a coffee casually",
+        "en": "to get a coffee casually",
         "no": "ta en kaffe"
       },
       {
@@ -817,9 +849,10 @@
         "no": "i stedet for"
       },
       {
-        "phrase": "make it",
+        "phrase": "to make it",
+        "storageKey": "make it",
         "ja": "来られる / 間に合う",
-        "en": "be able to come",
+        "en": "to be able to come",
         "no": "kunne komme"
       },
       {
@@ -831,13 +864,13 @@
     ],
     "grammar": [
       {
-        "title": "Past continuous",
+        "title": "past continuous",
         "descriptionJa": "「was raining」は、過去のある時点で進行していたことを表します。",
         "descriptionEn": "\"Was raining\" shows an action or situation in progress at a past moment.",
         "descriptionNo": "«Was raining» viser noe som pågikk på et tidspunkt i fortiden."
       },
       {
-        "title": "Instead of + -ing",
+        "title": "instead of + -ing",
         "descriptionJa": "「instead of」の後ろには、動詞の -ing 形がよく来ます。",
         "descriptionEn": "\"Instead of\" is often followed by the -ing form of a verb.",
         "descriptionNo": "Etter «instead of» bruker man ofte -ing-formen av verbet."
@@ -855,16 +888,18 @@
     "translationNo": "Jeg dro til biblioteket etter lunsj fordi jeg stadig sjekket mobilen hjemme. Jeg la den i vesken, satte en timer på tretti minutter og fokuserte på ett kapittel om gangen. Det var ikke en perfekt studiedag, men jeg klarte å komme meg gjennom den delen jeg hadde utsatt. På vei hjem følte jeg meg lettere enn jeg hadde forventet.",
     "expressions": [
       {
-        "phrase": "keep doing",
+        "phrase": "to keep doing",
+        "storageKey": "keep doing",
         "formInText": "kept checking",
         "ja": "〜し続ける / つい〜してしまう",
-        "en": "continue doing",
+        "en": "to continue doing",
         "no": "fortsette å gjøre"
       },
       {
-        "phrase": "set a timer",
+        "phrase": "to set a timer",
+        "storageKey": "set a timer",
         "ja": "タイマーをセットする",
-        "en": "start a timer",
+        "en": "to start a timer",
         "no": "sette en timer"
       },
       {
@@ -875,28 +910,30 @@
         "no": "én om gangen"
       },
       {
-        "phrase": "manage to",
+        "phrase": "to manage to",
+        "storageKey": "manage to",
         "formInText": "managed to get through",
         "ja": "なんとか〜する",
-        "en": "succeed in doing",
+        "en": "to succeed in doing",
         "no": "klare å"
       },
       {
-        "phrase": "get through",
+        "phrase": "to get through",
+        "storageKey": "get through",
         "ja": "やり切る / 終える",
-        "en": "finish or pass through something difficult",
+        "en": "to finish or pass through something difficult",
         "no": "komme seg gjennom"
       }
     ],
     "grammar": [
       {
-        "title": "Because-clause",
+        "title": "because + clause",
         "descriptionJa": "「because」は理由を説明します。主文の後ろに置くことが多いです。",
         "descriptionEn": "\"Because\" introduces a reason and often comes after the main clause.",
         "descriptionNo": "«Because» innleder en grunn og står ofte etter hovedsetningen."
       },
       {
-        "title": "Past perfect continuous idea",
+        "title": "past perfect continuous",
         "descriptionJa": "「had been avoiding」は、過去のある時点まで続いていた状態や行動を表します。",
         "descriptionEn": "\"Had been avoiding\" describes an action that continued up to a past point.",
         "descriptionNo": "«Had been avoiding» beskriver en handling som fortsatte fram til et tidspunkt i fortiden."
@@ -914,17 +951,19 @@
     "translationNo": "I morges la jeg merke til at en rapport var sendt med feil vedlegg. Det var ingen katastrofe, men det kunne ha forvirret kunden, så jeg tok det opp med lederen min med en gang. Vi ble enige om å sende en kort rettelse og forklare hva som hadde skjedd uten å legge skylden på noen. Ved slutten av dagen takket kunden oss for å være tydelige og raske.",
     "expressions": [
       {
-        "phrase": "notice that",
+        "phrase": "to notice that",
+        "storageKey": "notice that",
         "formInText": "noticed that",
         "ja": "〜だと気づく",
-        "en": "become aware that",
+        "en": "to become aware that",
         "no": "legge merke til at"
       },
       {
-        "phrase": "bring something up",
+        "phrase": "to bring something up",
+        "storageKey": "bring something up",
         "formInText": "brought it up",
         "ja": "話題に出す / 伝える",
-        "en": "mention a topic",
+        "en": "to mention a topic",
         "no": "ta noe opp"
       },
       {
@@ -934,10 +973,11 @@
         "no": "med en gang"
       },
       {
-        "phrase": "agree to",
+        "phrase": "to agree to",
+        "storageKey": "agree to",
         "formInText": "agreed to send",
         "ja": "〜することに合意する",
-        "en": "decide together to",
+        "en": "to decide together to",
         "no": "bli enige om å"
       },
       {
@@ -949,13 +989,13 @@
     ],
     "grammar": [
       {
-        "title": "Past perfect passive",
+        "title": "past perfect passive",
         "descriptionJa": "「had been sent」は、過去のある時点より前に受け身で起きていたことを表します。",
         "descriptionEn": "\"Had been sent\" is past perfect passive and shows something happened before another past moment.",
         "descriptionNo": "«Had been sent» er past perfect passive og viser at noe skjedde før et annet tidspunkt i fortiden."
       },
       {
-        "title": "Could have + past participle",
+        "title": "could have + past participle",
         "descriptionJa": "「could have confused」は、実際には起きなかった可能性を表します。",
         "descriptionEn": "\"Could have confused\" describes a possible result that did not necessarily happen.",
         "descriptionNo": "«Could have confused» beskriver en mulig konsekvens som ikke nødvendigvis skjedde."
@@ -1144,13 +1184,13 @@
     ],
     "grammar": [
       {
-        "title": "〜ながら",
+        "title": "Vます-stem + ながら",
         "descriptionJa": "「〜ながら」は、二つの動作を同時にすることを表します。",
         "descriptionEn": "\"〜ながら\" shows that two actions happen at the same time.",
         "descriptionNo": "「〜ながら」 viser at to handlinger skjer samtidig."
       },
       {
-        "title": "〜ているうちに",
+        "title": "Vている + うちに",
         "descriptionJa": "「〜ているうちに」は、何かをしている間に少しずつ変化が起きることを表します。",
         "descriptionEn": "\"〜ているうちに\" describes a gradual change while something is happening.",
         "descriptionNo": "「〜ているうちに」 beskriver en gradvis endring mens noe skjer."
@@ -1381,13 +1421,13 @@
     ],
     "grammar": [
       {
-        "title": "〜ずに",
+        "title": "Vない-stem + ずに",
         "descriptionJa": "「〜ずに」は「〜しないで」という意味で、少し書き言葉寄りの表現です。",
         "descriptionEn": "\"〜ずに\" means \"without doing\" and sounds a little more written than \"〜ないで\".",
         "descriptionNo": "「〜ずに」 betyr «uten å gjøre» og er litt mer skriftlig enn 「〜ないで」."
       },
       {
-        "title": "〜ておく",
+        "title": "Vて-form + おく",
         "descriptionJa": "「〜ておく」は、あとで使うために準備したり、その状態にしておいたりすることを表します。",
         "descriptionEn": "\"〜ておく\" means doing something in advance or leaving something ready for later.",
         "descriptionNo": "「〜ておく」 betyr å gjøre noe på forhånd eller la noe være klart til senere."
@@ -1646,13 +1686,13 @@
     ],
     "grammar": [
       {
-        "title": "〜ていたので",
+        "title": "Vていた + ので",
         "descriptionJa": "「〜ていたので」は、続いていた状態を理由として説明するときに使います。",
         "descriptionEn": "\"〜ていたので\" gives an ongoing state as the reason for what follows.",
         "descriptionNo": "「〜ていたので」 bruker en pågående tilstand som grunn for det som følger."
       },
       {
-        "title": "〜ように",
+        "title": "V辞書形 / Vない形 + ように",
         "descriptionJa": "「安心したように」のように、見た目や様子からそう感じられることを表します。",
         "descriptionEn": "\"〜ように\" can describe how something appears, as in \"as if it felt relieved.\"",
         "descriptionNo": "「〜ように」 kan beskrive hvordan noe virker eller ser ut, som «som om»."
@@ -1874,13 +1914,13 @@
     ],
     "grammar": [
       {
-        "title": "〜ことにする",
+        "title": "V辞書形 + ことにする",
         "descriptionJa": "「〜ことにする」は、自分で決めた行動や方針を表します。",
         "descriptionEn": "\"〜ことにする\" expresses a decision the speaker makes about what to do.",
         "descriptionNo": "「〜ことにする」 uttrykker en beslutning taleren tar om hva de skal gjøre."
       },
       {
-        "title": "〜ておく",
+        "title": "Vて-form + おく",
         "descriptionJa": "「〜ておく」は、あとで役に立つように準備したり残したりすることを表します。",
         "descriptionEn": "\"〜ておく\" means doing or leaving something prepared for later.",
         "descriptionNo": "「〜ておく」 betyr å gjøre eller la noe være klart til senere."
@@ -2127,19 +2167,19 @@
     ],
     "grammar": [
       {
-        "title": "〜かどうか",
+        "title": "plain form + かどうか",
         "descriptionJa": "「〜かどうか」は、するかしないか、そうかそうでないかを表します。",
         "descriptionEn": "\"〜かどうか\" means whether or not something is the case.",
         "descriptionNo": "「〜かどうか」 betyr om noe er tilfelle eller ikke."
       },
       {
-        "title": "〜なら",
+        "title": "N / plain form + なら",
         "descriptionJa": "「〜なら」は、ある条件を前提にして意見や判断を述べるときに使います。",
         "descriptionEn": "\"〜なら\" sets a condition and is often used before giving an opinion or judgment.",
         "descriptionNo": "「〜なら」 setter en betingelse og brukes ofte før en mening eller vurdering."
       },
       {
-        "title": "〜てから",
+        "title": "Vて-form + から",
         "descriptionJa": "「〜てから」は、ある行動のあとで次の行動をする順番を表します。",
         "descriptionEn": "\"〜てから\" shows that one action happens after another.",
         "descriptionNo": "「〜てから」 viser at én handling skjer etter en annen."
@@ -2424,19 +2464,19 @@
     ],
     "grammar": [
       {
-        "title": "〜かもしれない",
+        "title": "plain form + かもしれない",
         "descriptionJa": "「〜かもしれない」は、可能性があるけれど確実ではないことを表します。",
         "descriptionEn": "\"〜かもしれない\" expresses that something may happen, but is not certain.",
         "descriptionNo": "「〜かもしれない」 uttrykker at noe kan skje, men ikke er sikkert."
       },
       {
-        "title": "〜ようにしている",
+        "title": "V辞書形 + ようにしている",
         "descriptionJa": "「〜ようにしている」は、意識して続けている習慣や方針を表します。",
         "descriptionEn": "\"〜ようにしている\" describes a habit or policy someone consciously tries to maintain.",
         "descriptionNo": "「〜ようにしている」 beskriver en vane eller praksis man bevisst prøver å holde fast ved."
       },
       {
-        "title": "〜ず",
+        "title": "Vない-stem + ず",
         "descriptionJa": "「〜ず」は「〜しないで」という意味で、少し硬めの表現です。",
         "descriptionEn": "\"〜ず\" means \"without doing\" and sounds somewhat formal.",
         "descriptionNo": "「〜ず」 betyr «uten å gjøre» og høres litt formelt ut."
@@ -2454,43 +2494,48 @@
     "translationEn": "Today I noticed a bug in the mobile menu. The button opened the correct component on desktop, but it did not work on mobile. I wrote to Sara and explained what I had tested so that she could take a closer look at the problem. After a short review, we found the cause of the bug: a small CSS rule was hiding the menu on narrow screens. We agreed on a simple solution and tested it together before pushing the change.",
     "expressions": [
       {
-        "phrase": "legge merke til",
+        "phrase": "å legge merke til",
+        "storageKey": "legge merke til",
         "formInText": "la jeg merke til",
         "ja": "〜に気づく",
-        "en": "notice"
+        "en": "to notice"
       },
       {
-        "phrase": "fungere på mobil",
+        "phrase": "å fungere på mobil",
+        "storageKey": "fungere på mobil",
         "formInText": "fungerte ikke på mobil",
         "ja": "モバイルで動作する",
-        "en": "work on mobile"
+        "en": "to work on mobile"
       },
       {
-        "phrase": "se nærmere på",
+        "phrase": "å se nærmere på",
+        "storageKey": "se nærmere på",
         "ja": "詳しく見る / 調べる",
-        "en": "take a closer look at"
+        "en": "to take a closer look at"
       },
       {
-        "phrase": "finne årsaken til",
+        "phrase": "å finne årsaken til",
+        "storageKey": "finne årsaken til",
         "formInText": "fant vi årsaken til",
         "ja": "〜の原因を見つける",
-        "en": "find the cause of"
+        "en": "to find the cause of"
       },
       {
-        "phrase": "bli enige om",
+        "phrase": "å bli enige om",
+        "storageKey": "bli enige om",
         "formInText": "ble enige om",
         "ja": "〜について合意する",
-        "en": "agree on"
+        "en": "to agree on"
       }
     ],
     "grammar": [
       {
-        "title": "Slik at + leddsetning",
+        "title": "slik at + leddsetning",
         "descriptionJa": "「slik at」は「〜できるように」という目的や結果を表します。",
         "descriptionEn": "\"Slik at\" expresses purpose or result, similar to \"so that\"."
       },
       {
-        "title": "Preteritum i feilbeskrivelse",
+        "title": "preteritum i feilbeskrivelse",
         "descriptionJa": "バグ報告では、何を試したか・何が起きたかを過去形で説明することがよくあります。",
         "descriptionEn": "When describing a bug, Norwegian often uses the past tense to explain what was tested and what happened."
       }
@@ -2507,16 +2552,18 @@
     "translationEn": "Before I opened the pull request, I asked Jonas to do a quick review of the component. I was a little unsure about the structure, especially because the requirements had changed after the previous meeting. In the message, I wrote that I needed more context around the validation, and that he was welcome to suggest changes if anything seemed unclear. That made the code review more concrete and less stressful.",
     "expressions": [
       {
-        "phrase": "ta en gjennomgang",
+        "phrase": "å ta en gjennomgang",
+        "storageKey": "ta en gjennomgang",
         "formInText": "ta en rask gjennomgang",
         "ja": "確認する / レビューする",
-        "en": "do a review"
+        "en": "to do a review"
       },
       {
-        "phrase": "være usikker på",
+        "phrase": "å være usikker på",
+        "storageKey": "være usikker på",
         "formInText": "var litt usikker på",
         "ja": "〜に自信がない / 不確かである",
-        "en": "be unsure about"
+        "en": "to be unsure about"
       },
       {
         "phrase": "kravene har endret seg",
@@ -2525,25 +2572,27 @@
         "en": "the requirements have changed"
       },
       {
-        "phrase": "trenge mer kontekst",
+        "phrase": "å trenge mer kontekst",
+        "storageKey": "trenge mer kontekst",
         "formInText": "trengte mer kontekst",
         "ja": "もっと文脈が必要である",
-        "en": "need more context"
+        "en": "to need more context"
       },
       {
-        "phrase": "komme med forslag",
+        "phrase": "å komme med forslag",
+        "storageKey": "komme med forslag",
         "ja": "提案する",
-        "en": "make suggestions"
+        "en": "to make suggestions"
       }
     ],
     "grammar": [
       {
-        "title": "Før + leddsetning",
+        "title": "før + leddsetning",
         "descriptionJa": "「før」は「〜する前に」を表し、後ろに文を続けられます。",
         "descriptionEn": "\"Før\" means \"before\" and can introduce a clause."
       },
       {
-        "title": "At-setninger etter skrive",
+        "title": "at + leddsetning etter skrive",
         "descriptionJa": "「jeg skrev at ...」のように、書いた内容を「at」で説明できます。",
         "descriptionEn": "After verbs like \"skrive\", an \"at\" clause can explain the content of the message."
       }
@@ -2560,16 +2609,18 @@
     "translationEn": "After the design review, we received feedback that the form felt a little heavy to use. The solution itself worked technically, but the user experience was not good enough when several fields appeared at the same time. I suggested structuring the form into smaller steps and showing help text only when the user needs it. The designer liked the direction, but asked us to clarify whether it still met all the requirements.",
     "expressions": [
       {
-        "phrase": "få tilbakemelding om",
+        "phrase": "å få tilbakemelding om",
+        "storageKey": "få tilbakemelding om",
         "formInText": "fikk vi tilbakemelding om",
         "ja": "〜というフィードバックを受ける",
-        "en": "receive feedback that"
+        "en": "to receive feedback that"
       },
       {
-        "phrase": "virke tungt å bruke",
+        "phrase": "å virke tungt å bruke",
+        "storageKey": "virke tungt å bruke",
         "formInText": "virket litt tungt å bruke",
         "ja": "使いにくく感じる",
-        "en": "feel heavy to use"
+        "en": "to feel heavy to use"
       },
       {
         "phrase": "brukeropplevelse",
@@ -2578,31 +2629,34 @@
         "en": "user experience"
       },
       {
-        "phrase": "dele opp i mindre steg",
+        "phrase": "å dele opp i mindre steg",
+        "storageKey": "dele opp i mindre steg",
         "formInText": "strukturere skjemaet i mindre steg",
         "ja": "小さなステップに分ける",
-        "en": "break into smaller steps"
+        "en": "to break into smaller steps"
       },
       {
-        "phrase": "avklare om",
+        "phrase": "å avklare om",
+        "storageKey": "avklare om",
         "ja": "〜かどうか確認する",
-        "en": "clarify whether"
+        "en": "to clarify whether"
       },
       {
-        "phrase": "oppfylle krav",
+        "phrase": "å oppfylle krav",
+        "storageKey": "oppfylle krav",
         "formInText": "oppfylte alle kravene",
         "ja": "要件を満たす",
-        "en": "meet requirements"
+        "en": "to meet requirements"
       }
     ],
     "grammar": [
       {
-        "title": "Når + helsetning",
+        "title": "når + helsetning",
         "descriptionJa": "「når」は「〜するとき」を表し、具体的な状況を説明します。",
         "descriptionEn": "\"Når\" means \"when\" and describes a specific situation."
       },
       {
-        "title": "Om som indirekte spørsmål",
+        "title": "om som indirekte spørsmål",
         "descriptionJa": "「om」は「〜かどうか」という間接疑問を作ります。",
         "descriptionEn": "\"Om\" can introduce an indirect yes/no question, like \"whether\"."
       }
@@ -2619,21 +2673,24 @@
     "translationEn": "As we got closer to the deadline, we had to prioritize which tasks should be solved first. Some requirements were important for the launch, while others could wait until the next sprint. I made a short overview of bugs, open questions, and possible solutions so that the team could make a shared assessment. This helped us work in a more structured way and avoid everyone trying to fix everything at the same time.",
     "expressions": [
       {
-        "phrase": "nærme seg fristen",
+        "phrase": "å nærme seg fristen",
+        "storageKey": "nærme seg fristen",
         "formInText": "nærmet oss fristen",
         "ja": "締め切りに近づく",
-        "en": "approach the deadline"
+        "en": "to approach the deadline"
       },
       {
-        "phrase": "prioritere oppgaver",
+        "phrase": "å prioritere oppgaver",
+        "storageKey": "prioritere oppgaver",
         "formInText": "prioritere hvilke oppgaver",
         "ja": "タスクに優先順位をつける",
-        "en": "prioritize tasks"
+        "en": "to prioritize tasks"
       },
       {
-        "phrase": "kunne vente til",
+        "phrase": "å kunne vente til",
+        "storageKey": "kunne vente til",
         "ja": "〜まで待てる",
-        "en": "can wait until"
+        "en": "to be able to wait until"
       },
       {
         "phrase": "mulige løsninger",
@@ -2641,24 +2698,26 @@
         "en": "possible solutions"
       },
       {
-        "phrase": "ta en felles vurdering",
+        "phrase": "å ta en felles vurdering",
+        "storageKey": "ta en felles vurdering",
         "ja": "共通の判断をする",
-        "en": "make a shared assessment"
+        "en": "to make a shared assessment"
       },
       {
-        "phrase": "jobbe mer strukturert",
+        "phrase": "å jobbe mer strukturert",
+        "storageKey": "jobbe mer strukturert",
         "ja": "より構造的に作業する",
-        "en": "work in a more structured way"
+        "en": "to work in a more structured way"
       }
     ],
     "grammar": [
       {
-        "title": "Da + preteritum",
+        "title": "da + preteritum",
         "descriptionJa": "「da」は過去の特定の時点や状況を表すときによく使います。",
         "descriptionEn": "\"Da\" is often used for a specific time or situation in the past."
       },
       {
-        "title": "Mens",
+        "title": "mens + leddsetning",
         "descriptionJa": "「mens」は「一方で」を表し、対比を作ることがあります。",
         "descriptionEn": "\"Mens\" can mean \"while\" or \"whereas\" and can show contrast."
       }
@@ -2675,59 +2734,66 @@
     "translationEn": "While working on the new component, we discovered that accessibility and responsive design could not be treated as two separate requirements. A solution that looks tidy on desktop can create problems if the focus order becomes illogical or the content does not work on mobile. Therefore, we decided to take a closer look at keyboard navigation, screen reader text, and how the layout breaks at small widths. Before making a final decision, we had to clarify which compromises were actually acceptable for the user experience.",
     "expressions": [
       {
-        "phrase": "arbeide med",
+        "phrase": "å arbeide med",
+        "storageKey": "arbeide med",
         "formInText": "arbeidet med",
         "ja": "〜に取り組む",
-        "en": "work on"
+        "en": "to work on"
       },
       {
-        "phrase": "behandle som",
+        "phrase": "å behandle som",
+        "storageKey": "behandle som",
         "formInText": "behandles som",
         "ja": "〜として扱う",
-        "en": "treat as"
+        "en": "to treat as"
       },
       {
-        "phrase": "skape problemer",
+        "phrase": "å skape problemer",
+        "storageKey": "skape problemer",
         "ja": "問題を生む",
-        "en": "create problems"
+        "en": "to create problems"
       },
       {
-        "phrase": "fungere på mobil",
+        "phrase": "å fungere på mobil",
+        "storageKey": "fungere på mobil",
         "formInText": "fungerer på mobil",
         "ja": "モバイルで動作する",
-        "en": "work on mobile"
+        "en": "to work on mobile"
       },
       {
-        "phrase": "se nærmere på",
+        "phrase": "å se nærmere på",
+        "storageKey": "se nærmere på",
         "ja": "詳しく確認する",
-        "en": "take a closer look at"
+        "en": "to take a closer look at"
       },
       {
-        "phrase": "ta en endelig beslutning",
+        "phrase": "å ta en endelig beslutning",
+        "storageKey": "ta en endelig beslutning",
         "formInText": "tok en endelig beslutning",
         "ja": "最終判断をする",
-        "en": "make a final decision"
+        "en": "to make a final decision"
       },
       {
-        "phrase": "avklare",
+        "phrase": "å avklare",
+        "storageKey": "avklare",
         "formInText": "avklare hvilke",
         "ja": "どれが〜か明確にする",
-        "en": "clarify"
+        "en": "to clarify"
       }
     ],
     "grammar": [
       {
-        "title": "Passiv med -s",
+        "title": "-s passiv",
         "descriptionJa": "「behandles」のような -s 受け身は、誰が行うかより行為そのものに焦点を当てます。",
         "descriptionEn": "The -s passive, as in \"behandles\", focuses on the action rather than who performs it."
       },
       {
-        "title": "Hvis-setning",
+        "title": "hvis + leddsetning",
         "descriptionJa": "「hvis」は条件を表し、「もし〜なら」という意味で使います。",
         "descriptionEn": "\"Hvis\" introduces a condition, similar to \"if\"."
       },
       {
-        "title": "Hvilke som",
+        "title": "hvilke ... som",
         "descriptionJa": "「hvilke ... som」は、どれが該当するかを説明する間接疑問で使われます。",
         "descriptionEn": "\"Hvilke ... som\" is used in indirect questions to specify which items apply."
       }
@@ -2744,34 +2810,39 @@
     "translationEn": "The patient said that she had had chest pain for three days, but that the pain had changed character during the night. At first it was mild and only came with activity, but now she felt pressure even when sitting still. She felt dizzy when she stood up, and she described mild nausea and increasing exhaustion. Since the symptoms had become worse, she was asked to contact the clinic again if she developed heavy breathing or acute pain.",
     "expressions": [
       {
-        "phrase": "ha smerter i",
+        "phrase": "å ha smerter i",
+        "storageKey": "ha smerter i",
         "formInText": "hadde hatt smerter i",
         "ja": "〜に痛みがある",
-        "en": "have pain in"
+        "en": "to have pain in"
       },
       {
-        "phrase": "endre karakter",
+        "phrase": "å endre karakter",
+        "storageKey": "endre karakter",
         "formInText": "hadde endret karakter",
         "ja": "痛みや症状の性質が変わる",
-        "en": "change in character"
+        "en": "to change in character"
       },
       {
-        "phrase": "føle seg svimmel",
+        "phrase": "å føle seg svimmel",
+        "storageKey": "føle seg svimmel",
         "formInText": "følte seg svimmel",
         "ja": "めまいを感じる",
-        "en": "feel dizzy"
+        "en": "to feel dizzy"
       },
       {
-        "phrase": "bli verre",
+        "phrase": "å bli verre",
+        "storageKey": "bli verre",
         "formInText": "symptomene har blitt verre",
         "ja": "悪化する",
-        "en": "become worse"
+        "en": "to become worse"
       },
       {
-        "phrase": "ha tung pust",
+        "phrase": "å ha tung pust",
+        "storageKey": "ha tung pust",
         "formInText": "fikk tung pust",
         "ja": "息苦しさがある",
-        "en": "have shortness of breath"
+        "en": "to have shortness of breath"
       },
       {
         "phrase": "akutte smerter",
@@ -2781,12 +2852,12 @@
     ],
     "grammar": [
       {
-        "title": "At-setninger etter fortalte",
+        "title": "at + leddsetning etter fortalte",
         "descriptionJa": "「fortalte at ...」のように、患者が話した内容を「at」で続けて説明できます。",
         "descriptionEn": "After \"fortalte\", an \"at\" clause can explain what the patient said."
       },
       {
-        "title": "Dersom + leddsetning",
+        "title": "dersom + leddsetning",
         "descriptionJa": "「dersom」は「もし〜なら」という条件を表し、医療の指示でもよく使われます。",
         "descriptionEn": "\"Dersom\" means \"if\" and is often used in instructions or follow-up advice."
       }
@@ -2803,50 +2874,56 @@
     "translationEn": "During the evening shift, the nurse observed that the patient looked paler than before. She measured the pulse, took the blood pressure, and checked whether the swelling around the ankle had increased. The patient had also developed a small rash on the arm, but the temperature was normal. The nurse documented the findings and informed the doctor, because the combination of swelling, rash, and pain could indicate an early inflammation.",
     "expressions": [
       {
-        "phrase": "observere at",
+        "phrase": "å observere at",
+        "storageKey": "observere at",
         "formInText": "observerte sykepleieren at",
         "ja": "〜であることを観察する / 確認する",
-        "en": "observe that"
+        "en": "to observe that"
       },
       {
-        "phrase": "måle puls",
+        "phrase": "å måle puls",
+        "storageKey": "måle puls",
         "formInText": "målte puls",
         "ja": "脈を測る",
-        "en": "measure pulse"
+        "en": "to measure pulse"
       },
       {
-        "phrase": "ta blodtrykk",
+        "phrase": "å ta blodtrykk",
+        "storageKey": "ta blodtrykk",
         "formInText": "tok blodtrykk",
         "ja": "血圧を測る",
-        "en": "take blood pressure"
+        "en": "to take blood pressure"
       },
       {
-        "phrase": "sjekke om",
+        "phrase": "å sjekke om",
+        "storageKey": "sjekke om",
         "formInText": "sjekket om",
         "ja": "〜かどうか確認する",
-        "en": "check whether"
+        "en": "to check whether"
       },
       {
-        "phrase": "gi beskjed til",
+        "phrase": "å gi beskjed til",
+        "storageKey": "gi beskjed til",
         "formInText": "ga beskjed til",
         "ja": "〜に報告する / 連絡する",
-        "en": "notify / inform"
+        "en": "to notify / inform"
       },
       {
-        "phrase": "tyde på",
+        "phrase": "å tyde på",
+        "storageKey": "tyde på",
         "formInText": "kunne tyde på",
         "ja": "〜を示している可能性がある",
-        "en": "indicate / suggest"
+        "en": "to indicate / suggest"
       }
     ],
     "grammar": [
       {
-        "title": "Om som indirekte spørsmål",
+        "title": "om som indirekte spørsmål",
         "descriptionJa": "「om」は「〜かどうか」という意味で、確認する内容を表します。",
         "descriptionEn": "\"Om\" introduces an indirect yes/no question, like \"whether\"."
       },
       {
-        "title": "Kunne + infinitiv",
+        "title": "kunne + infinitiv",
         "descriptionJa": "「kunne」は断定せずに可能性を表すときに使えます。",
         "descriptionEn": "\"Kunne\" can express possibility without making a firm conclusion."
       }
@@ -2863,50 +2940,56 @@
     "translationEn": "When the nurse entered the room, she asked the patient whether the pain radiated into the arm or back. The patient answered that it was not a sharp pain, but more like pressure that came in waves. He had heavy breathing when he walked to the bathroom, and he became nauseous if he tried to eat. The nurse calmly explained what would happen next and said they would follow up the patient closely while waiting for the results of the examination.",
     "expressions": [
       {
-        "phrase": "stråle ut i",
+        "phrase": "å stråle ut i",
+        "storageKey": "stråle ut i",
         "formInText": "smertene strålte ut i",
         "ja": "痛みが〜に広がる",
-        "en": "radiate into"
+        "en": "to radiate into"
       },
       {
-        "phrase": "komme i bølger",
+        "phrase": "å komme i bølger",
+        "storageKey": "komme i bølger",
         "formInText": "kom i bølger",
         "ja": "波のように来る",
-        "en": "come in waves"
+        "en": "to come in waves"
       },
       {
-        "phrase": "ha tung pust",
+        "phrase": "å ha tung pust",
+        "storageKey": "ha tung pust",
         "formInText": "hadde tung pust",
         "ja": "息苦しさがある",
-        "en": "have shortness of breath"
+        "en": "to have shortness of breath"
       },
       {
-        "phrase": "bli kvalm",
+        "phrase": "å bli kvalm",
+        "storageKey": "bli kvalm",
         "formInText": "ble kvalm",
         "ja": "吐き気がする",
-        "en": "become nauseous"
+        "en": "to become nauseous"
       },
       {
-        "phrase": "følge opp",
+        "phrase": "å følge opp",
+        "storageKey": "følge opp",
         "formInText": "følge opp pasienten",
         "ja": "継続して確認・対応する",
-        "en": "follow up / continue monitoring"
+        "en": "to follow up / continue monitoring"
       },
       {
-        "phrase": "vente på svar fra",
+        "phrase": "å vente på svar fra",
+        "storageKey": "vente på svar fra",
         "formInText": "ventet på svar fra",
         "ja": "〜の結果を待つ",
-        "en": "wait for results from"
+        "en": "to wait for results from"
       }
     ],
     "grammar": [
       {
-        "title": "Da + preteritum",
+        "title": "da + preteritum",
         "descriptionJa": "「da」は過去のある時点を表し、後ろに過去形の文が続きます。",
         "descriptionEn": "\"Da\" refers to a specific time in the past and is followed by past tense."
       },
       {
-        "title": "Mens + leddsetning",
+        "title": "mens + leddsetning",
         "descriptionJa": "「mens」は「〜している間に」を表し、同時に起きることを説明します。",
         "descriptionEn": "\"Mens\" means \"while\" and describes something happening at the same time."
       }
@@ -2923,31 +3006,36 @@
     "translationEn": "After the examination, the doctor assessed that the patient should be referred to a specialist, even though the condition did not appear acute. The tests did not indicate a serious infection, but they also could not rule out chronic inflammation. The patient received information about further treatment and was told to watch for signs of worsening, such as increased fever, more swelling, or new breathing difficulties. Even if there was rapid improvement, the referral would still remain under consideration.",
     "expressions": [
       {
-        "phrase": "bli henvist til spesialist",
+        "phrase": "å bli henvist til spesialist",
+        "storageKey": "bli henvist til spesialist",
         "ja": "専門医に紹介される",
-        "en": "be referred to a specialist"
+        "en": "to be referred to a specialist"
       },
       {
-        "phrase": "virke akutt",
+        "phrase": "akutt tilstand",
+        "storageKey": "virke akutt",
         "formInText": "virket akutt",
-        "ja": "急性に見える",
-        "en": "appear acute"
+        "ja": "急性の状態",
+        "en": "acute condition"
       },
       {
-        "phrase": "tyde på",
+        "phrase": "å tyde på",
+        "storageKey": "tyde på",
         "formInText": "tydet ikke på",
         "ja": "〜を示す",
-        "en": "indicate"
+        "en": "to indicate"
       },
       {
-        "phrase": "utelukke",
+        "phrase": "å utelukke",
+        "storageKey": "utelukke",
         "ja": "除外する / 否定する",
-        "en": "rule out"
+        "en": "to rule out"
       },
       {
-        "phrase": "følge med på",
+        "phrase": "å følge med på",
+        "storageKey": "følge med på",
         "ja": "〜の変化に注意して見る",
-        "en": "watch for / monitor"
+        "en": "to watch for / monitor"
       },
       {
         "phrase": "tegn til forverring",
@@ -2962,12 +3050,12 @@
     ],
     "grammar": [
       {
-        "title": "Selv om",
+        "title": "selv om + leddsetning",
         "descriptionJa": "「selv om」は「〜にもかかわらず」という意味で、対比を作ります。",
         "descriptionEn": "\"Selv om\" means \"even though\" and creates a contrast."
       },
       {
-        "title": "Dersom",
+        "title": "dersom + leddsetning",
         "descriptionJa": "「dersom」は条件を表し、少し改まった文章でもよく使われます。",
         "descriptionEn": "\"Dersom\" introduces a condition and is common in more formal instructions."
       }
@@ -2989,10 +3077,11 @@
         "en": "complex clinical picture"
       },
       {
-        "phrase": "skyldes",
+        "phrase": "å skyldes",
+        "storageKey": "skyldes",
         "formInText": "plagene skyldtes",
         "ja": "〜が原因である",
-        "en": "be caused by"
+        "en": "to be caused by"
       },
       {
         "phrase": "reaksjon på behandlingen",
@@ -3000,46 +3089,51 @@
         "en": "reaction to the treatment"
       },
       {
-        "phrase": "observere videre",
+        "phrase": "å observere videre",
+        "storageKey": "observere videre",
         "formInText": "observere pasienten videre",
         "ja": "継続して観察する",
-        "en": "continue observing"
+        "en": "to continue observing"
       },
       {
-        "phrase": "avklare med legen",
+        "phrase": "å avklare med legen",
+        "storageKey": "avklare med legen",
         "ja": "医師と確認する",
-        "en": "clarify with the doctor"
+        "en": "to clarify with the doctor"
       },
       {
-        "phrase": "justere planen",
+        "phrase": "å justere planen",
+        "storageKey": "justere planen",
         "ja": "計画を調整する",
-        "en": "adjust the plan"
+        "en": "to adjust the plan"
       },
       {
-        "phrase": "fange opp",
+        "phrase": "å fange opp",
+        "storageKey": "fange opp",
         "ja": "変化や兆候を早めに察知する",
-        "en": "detect / pick up on"
+        "en": "to detect / pick up on"
       },
       {
-        "phrase": "være i bedring",
+        "phrase": "å være i bedring",
+        "storageKey": "være i bedring",
         "formInText": "var i bedring",
         "ja": "改善に向かっている",
-        "en": "be improving"
+        "en": "to be improving"
       }
     ],
     "grammar": [
       {
-        "title": "Om som indirekte spørsmål",
+        "title": "om som indirekte spørsmål",
         "descriptionJa": "「uklart om ...」のように、「om」は何が原因かまだ不明な内容を表せます。",
         "descriptionEn": "In phrases like \"uklart om ...\", \"om\" introduces an indirect question or uncertainty."
       },
       {
-        "title": "Uten å + infinitiv",
+        "title": "uten å + infinitiv",
         "descriptionJa": "「uten å」は「〜せずに」という意味で、後ろに動詞の不定詞が続きます。",
         "descriptionEn": "\"Uten å\" means \"without doing\" and is followed by an infinitive."
       },
       {
-        "title": "Som-setning",
+        "title": "som + leddsetning",
         "descriptionJa": "「en situasjon som ...」のように、「som」は名詞を詳しく説明します。",
         "descriptionEn": "\"Som\" introduces a relative clause that gives more information about a noun."
       }
@@ -3061,10 +3155,11 @@
         "en": "How are you doing?"
       },
       {
-        "phrase": "ha det travelt",
+        "phrase": "å ha det travelt",
+        "storageKey": "ha det travelt",
         "formInText": "det hadde vært litt travelt",
         "ja": "忙しい / ばたばたしている",
-        "en": "be busy"
+        "en": "to be busy"
       },
       {
         "phrase": "i det siste",
@@ -3072,26 +3167,28 @@
         "en": "lately"
       },
       {
-        "phrase": "trenge en kaffe",
+        "phrase": "å trenge en kaffe",
+        "storageKey": "trenge en kaffe",
         "formInText": "trengte en kaffe",
         "ja": "コーヒーが必要だ / コーヒーを飲みたい",
-        "en": "need a coffee"
+        "en": "to need a coffee"
       },
       {
-        "phrase": "snakke litt om",
+        "phrase": "å snakke litt om",
+        "storageKey": "snakke litt om",
         "formInText": "snakket litt om",
         "ja": "〜について少し話す",
-        "en": "talk a little about"
+        "en": "to talk a little about"
       }
     ],
     "grammar": [
       {
-        "title": "Indirekte tale med at",
+        "title": "indirekte tale med at",
         "descriptionJa": "「jeg svarte at ...」のように、答えた内容を「at」で続けて説明できます。",
         "descriptionEn": "After verbs like \"svare\", an \"at\" clause can explain what someone answered."
       },
       {
-        "title": "Preteritum i småprat",
+        "title": "preteritum i småprat",
         "descriptionJa": "最近の様子を話すときにも、過去形を使って「少し忙しかった」のように説明できます。",
         "descriptionEn": "In small talk, the past tense can describe how things have been recently."
       }
@@ -3108,10 +3205,11 @@
     "translationEn": "At lunch, I sat down next to Marius and asked if he had had a nice weekend. He told me that he had been at the cabin with his family, and I said that sounded nice. Afterwards he asked whether I had plans for the weekend. I answered that I might meet a friend, but that we would see how it went.",
     "expressions": [
       {
-        "phrase": "ha en fin helg",
+        "phrase": "å ha en fin helg",
+        "storageKey": "ha en fin helg",
         "formInText": "hadde hatt en fin helg",
         "ja": "よい週末を過ごす",
-        "en": "have a nice weekend"
+        "en": "to have a nice weekend"
       },
       {
         "phrase": "Det høres hyggelig ut.",
@@ -3120,10 +3218,11 @@
         "en": "That sounds nice."
       },
       {
-        "phrase": "ha planer i helgen",
+        "phrase": "å ha planer i helgen",
+        "storageKey": "ha planer i helgen",
         "formInText": "hadde planer i helgen",
         "ja": "週末に予定がある",
-        "en": "have plans for the weekend"
+        "en": "to have plans for the weekend"
       },
       {
         "phrase": "Vi får se hvordan det går.",
@@ -3132,19 +3231,20 @@
         "en": "We'll see how it goes."
       },
       {
-        "phrase": "møte en venn",
+        "phrase": "å møte en venn",
+        "storageKey": "møte en venn",
         "ja": "友だちに会う",
-        "en": "meet a friend"
+        "en": "to meet a friend"
       }
     ],
     "grammar": [
       {
-        "title": "Om i indirekte spørsmål",
+        "title": "om i indirekte spørsmål",
         "descriptionJa": "「spurte om ...」は「〜かどうか聞いた」という意味で使えます。",
         "descriptionEn": "\"Spurte om\" means \"asked whether\" in indirect questions."
       },
       {
-        "title": "Hadde hatt",
+        "title": "pluskvamperfekt: hadde hatt",
         "descriptionJa": "「hadde hatt」は、過去の時点より前にあったことを話すときに使います。",
         "descriptionEn": "\"Hadde hatt\" describes something that happened before another past point."
       }
@@ -3161,10 +3261,11 @@
     "translationEn": "When I came into the office, Lina said that she had slept badly and felt a little tired. I nodded and said that things had been a bit busy lately for me too. She asked whether I had a lot to do that day, and I answered that I would take it a little slowly at first and start with the easiest tasks. We got coffee together before we each opened our laptop.",
     "expressions": [
       {
-        "phrase": "føle seg sliten",
+        "phrase": "å føle seg sliten",
+        "storageKey": "føle seg sliten",
         "formInText": "følte seg litt sliten",
         "ja": "疲れていると感じる",
-        "en": "feel tired"
+        "en": "to feel tired"
       },
       {
         "phrase": "Det har vært litt travelt i det siste.",
@@ -3173,31 +3274,34 @@
         "en": "It has been a bit busy lately."
       },
       {
-        "phrase": "ha mye å gjøre",
+        "phrase": "å ha mye å gjøre",
+        "storageKey": "ha mye å gjøre",
         "formInText": "hadde mye å gjøre",
         "ja": "やることが多い",
-        "en": "have a lot to do"
+        "en": "to have a lot to do"
       },
       {
-        "phrase": "ta det litt rolig",
+        "phrase": "å ta det litt rolig",
+        "storageKey": "ta det litt rolig",
         "formInText": "ta det litt rolig først",
         "ja": "少しゆっくり進める / 無理しすぎない",
-        "en": "take it a little easy"
+        "en": "to take it a little easy"
       },
       {
-        "phrase": "begynne med",
+        "phrase": "å begynne med",
+        "storageKey": "begynne med",
         "ja": "〜から始める",
-        "en": "start with"
+        "en": "to start with"
       }
     ],
     "grammar": [
       {
-        "title": "Da + preteritum",
+        "title": "da + preteritum",
         "descriptionJa": "「da」は過去のある時点を表し、後ろに過去形の文が続きます。",
         "descriptionEn": "\"Da\" introduces a specific time in the past and is followed by past tense."
       },
       {
-        "title": "Hver vår",
+        "title": "hver vår + substantiv",
         "descriptionJa": "「hver vår laptop」は「それぞれ自分のノートパソコン」という意味です。",
         "descriptionEn": "\"Hver vår laptop\" means \"each our own laptop.\""
       }
@@ -3220,16 +3324,18 @@
         "en": "How is the project going?"
       },
       {
-        "phrase": "nærme seg slutten",
+        "phrase": "å nærme seg slutten",
+        "storageKey": "nærme seg slutten",
         "formInText": "nærmet oss slutten",
         "ja": "終わりに近づく",
-        "en": "get close to the end"
+        "en": "to get close to the end"
       },
       {
-        "phrase": "være igjen",
+        "phrase": "å være igjen",
+        "storageKey": "være igjen",
         "formInText": "var noen småting igjen",
         "ja": "まだ残っている",
-        "en": "be left / remain"
+        "en": "to be left / remain"
       },
       {
         "phrase": "Det blir godt med helg.",
@@ -3238,20 +3344,21 @@
         "en": "It will be nice to have the weekend."
       },
       {
-        "phrase": "holde seg",
+        "phrase": "å holde seg",
+        "storageKey": "holde seg",
         "formInText": "været holdt seg",
         "ja": "その状態が続く",
-        "en": "hold / stay the same"
+        "en": "to hold / stay the same"
       }
     ],
     "grammar": [
       {
-        "title": "Hvordan det gikk",
+        "title": "indirekte spørsmål: hvordan det gikk",
         "descriptionJa": "間接疑問では「hvordan gikk det」ではなく「hvordan det gikk」の語順になります。",
         "descriptionEn": "In indirect questions, the word order is \"hvordan det gikk\", not \"hvordan gikk det.\""
       },
       {
-        "title": "Hvis + leddsetning",
+        "title": "hvis + leddsetning",
         "descriptionJa": "「hvis」は「もし〜なら」という条件を表します。",
         "descriptionEn": "\"Hvis\" introduces a condition, similar to \"if.\""
       }
@@ -3268,44 +3375,49 @@
     "translationEn": "On Monday morning, the office was a little quiet, and several people came in with wet jackets after a long bus ride in the rain. By the coffee machine, Thomas asked whether I had had a nice weekend, and I answered that it had been quiet but good. He said that he had worked a little from home because the week before had been demanding. We briefly talked about how it is okay to start slowly on a gray Monday, and agreed to have one more coffee before going back to our desks.",
     "expressions": [
       {
-        "phrase": "ha en fin helg",
+        "phrase": "å ha en fin helg",
+        "storageKey": "ha en fin helg",
         "formInText": "hadde hatt en fin helg",
         "ja": "よい週末を過ごす",
-        "en": "have a nice weekend"
+        "en": "to have a nice weekend"
       },
       {
-        "phrase": "jobbe hjemme",
+        "phrase": "å jobbe hjemme",
+        "storageKey": "jobbe hjemme",
         "formInText": "hadde jobbet litt hjemme",
         "ja": "家で仕事をする",
-        "en": "work from home"
+        "en": "to work from home"
       },
       {
-        "phrase": "være krevende",
+        "phrase": "å være krevende",
+        "storageKey": "være krevende",
         "formInText": "hadde vært krevende",
         "ja": "大変である / 負担が大きい",
-        "en": "be demanding"
+        "en": "to be demanding"
       },
       {
-        "phrase": "starte rolig",
+        "phrase": "å starte rolig",
+        "storageKey": "starte rolig",
         "formInText": "starte rolig på en grå mandag",
         "ja": "ゆっくり始める",
-        "en": "start slowly"
+        "en": "to start slowly"
       },
       {
-        "phrase": "bli enige om",
+        "phrase": "å bli enige om",
+        "storageKey": "bli enige om",
         "formInText": "ble enige om",
         "ja": "〜することにする / 合意する",
-        "en": "agree on / decide together"
+        "en": "to agree on / decide together"
       }
     ],
     "grammar": [
       {
-        "title": "Fordi + leddsetning",
+        "title": "fordi + leddsetning",
         "descriptionJa": "「fordi」は理由を表し、後ろの節では主語が動詞の前に来ます。",
         "descriptionEn": "\"Fordi\" gives a reason, and the subject comes before the verb in the subordinate clause."
       },
       {
-        "title": "Å + infinitiv etter uttrykk",
+        "title": "å + infinitiv etter uttrykk",
         "descriptionJa": "「ble enige om å ...」のように、表現の後ろに「å + 動詞」を続けられます。",
         "descriptionEn": "Expressions like \"ble enige om\" can be followed by \"å + infinitive.\""
       }

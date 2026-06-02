@@ -144,6 +144,10 @@ textarea {
   color: var(--text);
 }
 
+.filter-group .native-filter-select {
+  display: none;
+}
+
 .status-filter-dropdown {
   position: relative;
 }
