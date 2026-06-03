@@ -610,7 +610,7 @@ textarea {
 }
 
 .completion-modal {
-  width: min(620px, 100%);
+  width: min(760px, 100%);
   max-height: min(760px, calc(100vh - 48px));
   overflow: auto;
   padding: 24px;
@@ -670,14 +670,17 @@ textarea {
 }
 
 .assessment-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
 .assessment-actions .secondary-button {
+  width: 100%;
+  min-width: 0;
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 11px 12px;
+  white-space: nowrap;
 }
 
 .completion-note {
@@ -1642,8 +1645,12 @@ h3 {
     padding: 18px;
     border-radius: 20px;
   }
+  .assessment-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .assessment-actions .secondary-button {
     width: 100%;
+    white-space: normal;
   }
   .post-completion-actions {
     display: grid;
