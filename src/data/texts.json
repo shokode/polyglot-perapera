@@ -3554,5 +3554,324 @@
         "descriptionEn": "Expressions like \"ble enige om\" can be followed by \"å + infinitive.\""
       }
     ]
+  },
+  {
+    "id": "no_025",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b1",
+    "title": "Å samle informasjon fra brukeren",
+    "text": "Når en bruker melder inn et problem, prøver jeg først å samle informasjon fra brukeren. Jeg spør hva som skjedde, når problemet startet, og om feilen skjer hver gang. Deretter ber jeg brukeren forklare med egne ord hva han eller hun prøvde å gjøre. På den måten kan jeg finne ut hva som faktisk skjer, slik at jeg ikke begynner å løse feil problem.",
+    "translationJa": "ユーザーが問題を報告したとき、私はまずユーザーから情報を集めようとします。何が起きたのか、いつ問題が始まったのか、そのエラーが毎回起きるのかを質問します。その後、ユーザーが何をしようとしていたのか、自分の言葉で説明してもらいます。そうすることで、実際に何が起きているのかを把握でき、間違った問題を解決し始めずに済みます。",
+    "translationEn": "When a user reports a problem, I first try to collect information from the user. I ask what happened, when the problem started, and whether the error happens every time. Then I ask the user to explain in their own words what they tried to do. In that way, I can find out what is actually happening, so that I do not start solving the wrong problem.",
+    "expressions": [
+      {
+        "phrase": "å melde inn et problem",
+        "storageKey": "melde inn et problem",
+        "formInText": "melder inn et problem",
+        "ja": "問題を報告する",
+        "en": "to report a problem",
+        "example": "Brukeren meldte inn et problem med innloggingen.",
+        "exampleJa": "ユーザーはログインの問題を報告しました。",
+        "exampleEn": "The user reported a problem with logging in."
+      },
+      {
+        "phrase": "å samle informasjon fra brukeren",
+        "storageKey": "samle informasjon fra brukeren",
+        "formInText": "samle informasjon fra brukeren",
+        "ja": "ユーザーから情報を集める",
+        "en": "to collect information from the user",
+        "example": "Før jeg feilsøker, må jeg samle informasjon fra brukeren.",
+        "exampleJa": "トラブルシューティングの前に、ユーザーから情報を集める必要があります。",
+        "exampleEn": "Before I troubleshoot, I need to collect information from the user."
+      },
+      {
+        "phrase": "å skje hver gang",
+        "storageKey": "skje hver gang",
+        "formInText": "skjer hver gang",
+        "ja": "毎回起きる",
+        "en": "to happen every time",
+        "example": "Det er viktig å vite om feilen skjer hver gang.",
+        "exampleJa": "そのエラーが毎回起きるかを知ることは重要です。",
+        "exampleEn": "It is important to know whether the error happens every time."
+      },
+      {
+        "phrase": "å forklare med egne ord",
+        "storageKey": "forklare med egne ord",
+        "formInText": "forklare med egne ord",
+        "ja": "自分の言葉で説明する",
+        "en": "to explain in one's own words",
+        "example": "Jeg ba brukeren forklare problemet med egne ord.",
+        "exampleJa": "私はユーザーに問題を自分の言葉で説明してもらいました。",
+        "exampleEn": "I asked the user to explain the problem in their own words."
+      },
+      {
+        "phrase": "å finne ut hva som faktisk skjer",
+        "storageKey": "finne ut hva som faktisk skjer",
+        "formInText": "finne ut hva som faktisk skjer",
+        "ja": "実際に何が起きているのかを把握する",
+        "en": "to find out what is actually happening",
+        "example": "Målet er å finne ut hva som faktisk skjer på maskinen.",
+        "exampleJa": "目的は、その端末で実際に何が起きているのかを把握することです。",
+        "exampleEn": "The goal is to find out what is actually happening on the machine."
+      }
+    ],
+    "grammar": [
+      {
+        "title": "først / deretter / til slutt",
+        "descriptionJa": "「først」「deretter」「til slutt」は、手順を順番に説明するときに便利です。",
+        "descriptionEn": "\"Først\", \"deretter\", and \"til slutt\" are useful when explaining steps in order."
+      },
+      {
+        "title": "indirekte spørsmål",
+        "descriptionJa": "「hva som skjedde」のように、間接疑問では主語が動詞の前に来ます。",
+        "descriptionEn": "In indirect questions like \"hva som skjedde\", the subject comes before the verb."
+      },
+      {
+        "title": "slik at + leddsetning",
+        "descriptionJa": "「slik at」は目的や結果を表し、「〜できるように」という意味で使えます。",
+        "descriptionEn": "\"Slik at\" shows purpose or result, similar to \"so that.\""
+      }
+    ]
+  },
+  {
+    "id": "no_026",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b1",
+    "title": "Å forklare problemet enkelt",
+    "text": "I brukerstøtte er det viktig å tilpasse forklaringen til brukerens nivå. Hvis brukeren ikke jobber med IT, prøver jeg å forklare med enkle ord og unngå for mye fagterminologi. Jeg kan si at programmet ikke får kontakt med serveren, i stedet for å bruke lange tekniske forklaringer. Da føler brukeren seg ofte tryggere, og vi kan samarbeide bedre.",
+    "translationJa": "ユーザーサポートでは、説明をユーザーのレベルに合わせることが重要です。ユーザーがITの仕事をしていない場合、私は簡単な言葉で説明し、専門用語を使いすぎないようにします。長い技術的な説明をする代わりに、プログラムがサーバーに接続できていないと言うことができます。そうすると、ユーザーは安心しやすくなり、よりよく協力できます。",
+    "translationEn": "In user support, it is important to adapt the explanation to the user's level. If the user does not work with IT, I try to explain with simple words and avoid too much technical terminology. I can say that the program cannot contact the server instead of using long technical explanations. Then the user often feels safer, and we can cooperate better.",
+    "expressions": [
+      {
+        "phrase": "å tilpasse forklaringen til brukerens nivå",
+        "storageKey": "tilpasse forklaringen til brukerens nivå",
+        "formInText": "tilpasse forklaringen til brukerens nivå",
+        "ja": "説明をユーザーのレベルに合わせる",
+        "en": "to adapt the explanation to the user's level",
+        "example": "En god supportmedarbeider tilpasser forklaringen til brukerens nivå.",
+        "exampleJa": "よいサポート担当者は、説明をユーザーのレベルに合わせます。",
+        "exampleEn": "A good support worker adapts the explanation to the user's level."
+      },
+      {
+        "phrase": "å forklare med enkle ord",
+        "storageKey": "forklare med enkle ord",
+        "formInText": "forklare med enkle ord",
+        "ja": "簡単な言葉で説明する",
+        "en": "to explain with simple words",
+        "example": "Jeg prøver å forklare feilen med enkle ord.",
+        "exampleJa": "私はそのエラーを簡単な言葉で説明しようとします。",
+        "exampleEn": "I try to explain the error with simple words."
+      },
+      {
+        "phrase": "å unngå for mye fagterminologi",
+        "storageKey": "unngå for mye fagterminologi",
+        "formInText": "unngå for mye fagterminologi",
+        "ja": "専門用語を使いすぎないようにする",
+        "en": "to avoid too much technical terminology",
+        "example": "I en muntlig forklaring bør jeg unngå for mye fagterminologi.",
+        "exampleJa": "口頭で説明するときは、専門用語を使いすぎないようにするべきです。",
+        "exampleEn": "In an oral explanation, I should avoid too much technical terminology."
+      },
+      {
+        "phrase": "å få kontakt med serveren",
+        "storageKey": "få kontakt med serveren",
+        "formInText": "får kontakt med serveren",
+        "ja": "サーバーと接続できる",
+        "en": "to connect to the server",
+        "example": "Programmet får ikke kontakt med serveren akkurat nå.",
+        "exampleJa": "そのプログラムは今サーバーに接続できていません。",
+        "exampleEn": "The program cannot connect to the server right now."
+      },
+      {
+        "phrase": "å samarbeide bedre",
+        "storageKey": "samarbeide bedre",
+        "formInText": "samarbeide bedre",
+        "ja": "よりよく協力する",
+        "en": "to cooperate better",
+        "example": "Når brukeren forstår situasjonen, kan vi samarbeide bedre.",
+        "exampleJa": "ユーザーが状況を理解すると、私たちはよりよく協力できます。",
+        "exampleEn": "When the user understands the situation, we can cooperate better."
+      }
+    ],
+    "grammar": [
+      {
+        "title": "hvis + leddsetning",
+        "descriptionJa": "「hvis」は条件を表し、後ろの節では主語が動詞の前に来ます。",
+        "descriptionEn": "\"Hvis\" introduces a condition, and the subject comes before the verb in the subordinate clause."
+      },
+      {
+        "title": "å + infinitiv",
+        "descriptionJa": "「å forklare」「å unngå」のように、不定詞は行動や目的を表すときによく使います。",
+        "descriptionEn": "Infinitives like \"å forklare\" and \"å unngå\" are often used to describe actions or goals."
+      },
+      {
+        "title": "i stedet for å + infinitiv",
+        "descriptionJa": "「i stedet for å」は「〜する代わりに」という意味で使えます。",
+        "descriptionEn": "\"I stedet for å\" means \"instead of doing\" and is followed by an infinitive."
+      }
+    ]
+  },
+  {
+    "id": "no_027",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b2",
+    "title": "Systematisk feilsøking",
+    "text": "Når jeg feilsøker en sak, prøver jeg først å avgrense problemet. Jeg undersøker om feilen gjelder én bruker, flere brukere eller hele systemet. Deretter bruker jeg en systematisk feilsøkingsstrategi og tester én mulig årsak om gangen. Hvis jeg endrer mange ting samtidig, blir det vanskelig å vite hva som faktisk løste problemet. Derfor noterer jeg hva jeg tester, og hva resultatet blir.",
+    "translationJa": "案件をトラブルシューティングするとき、私はまず問題の範囲を絞ろうとします。そのエラーが一人のユーザーに関係するのか、複数のユーザーに関係するのか、システム全体に関係するのかを調べます。その後、体系的なトラブルシューティング戦略を使い、一度に一つの考えられる原因をテストします。同時に多くのことを変更すると、実際に何が問題を解決したのか分かりにくくなります。そのため、何をテストしたのか、結果がどうなったのかをメモします。",
+    "translationEn": "When I troubleshoot a case, I first try to narrow down the problem. I check whether the error affects one user, several users, or the whole system. Then I use a systematic troubleshooting strategy and test one possible cause at a time. If I change many things at the same time, it becomes difficult to know what actually solved the problem. Therefore, I note what I test and what the result is.",
+    "expressions": [
+      {
+        "phrase": "å feilsøke en sak",
+        "storageKey": "feilsøke en sak",
+        "formInText": "feilsøker en sak",
+        "ja": "案件をトラブルシューティングする",
+        "en": "to troubleshoot a case",
+        "example": "Jeg feilsøker en sak om tregt nettverk.",
+        "exampleJa": "私は遅いネットワークに関する案件をトラブルシューティングしています。",
+        "exampleEn": "I am troubleshooting a case about a slow network."
+      },
+      {
+        "phrase": "å avgrense problemet",
+        "storageKey": "avgrense problemet",
+        "formInText": "avgrense problemet",
+        "ja": "問題の範囲を絞る",
+        "en": "to narrow down the problem",
+        "example": "Først må vi avgrense problemet.",
+        "exampleJa": "まず問題の範囲を絞る必要があります。",
+        "exampleEn": "First, we need to narrow down the problem."
+      },
+      {
+        "phrase": "å gjelde én bruker",
+        "storageKey": "gjelde én bruker",
+        "formInText": "gjelder én bruker",
+        "ja": "一人のユーザーに関係する",
+        "en": "to affect one user",
+        "example": "Feilen ser ut til å gjelde én bruker.",
+        "exampleJa": "そのエラーは一人のユーザーに関係しているようです。",
+        "exampleEn": "The error seems to affect one user."
+      },
+      {
+        "phrase": "å bruke en systematisk feilsøkingsstrategi",
+        "storageKey": "bruke en systematisk feilsøkingsstrategi",
+        "formInText": "bruker jeg en systematisk feilsøkingsstrategi",
+        "ja": "体系的なトラブルシューティング戦略を使う",
+        "en": "to use a systematic troubleshooting strategy",
+        "example": "På eksamen kan jeg forklare at jeg bruker en systematisk feilsøkingsstrategi.",
+        "exampleJa": "試験では、体系的なトラブルシューティング戦略を使うと説明できます。",
+        "exampleEn": "In the exam, I can explain that I use a systematic troubleshooting strategy."
+      },
+      {
+        "phrase": "å teste én mulig årsak om gangen",
+        "storageKey": "teste én mulig årsak om gangen",
+        "formInText": "tester én mulig årsak om gangen",
+        "ja": "一度に一つの考えられる原因をテストする",
+        "en": "to test one possible cause at a time",
+        "example": "Det er lurt å teste én mulig årsak om gangen.",
+        "exampleJa": "一度に一つの考えられる原因をテストするのが賢明です。",
+        "exampleEn": "It is wise to test one possible cause at a time."
+      }
+    ],
+    "grammar": [
+      {
+        "title": "om + indirekte spørsmål",
+        "descriptionJa": "「om feilen gjelder ...」のように、「om」は不確かな内容を説明するときに使えます。",
+        "descriptionEn": "In phrases like \"om feilen gjelder ...\", \"om\" introduces uncertainty or an indirect question."
+      },
+      {
+        "title": "hvis + leddsetning",
+        "descriptionJa": "「Hvis jeg endrer ...」のように、条件を先に言うと、その後に結果を説明できます。",
+        "descriptionEn": "A clause with \"hvis\" can state a condition before explaining the result."
+      },
+      {
+        "title": "hva som + verb（間接疑問）",
+        "descriptionJa": "「hva som + 動詞」は「何が〜したのか」を表す間接疑問です。hva が主語の役割をしているため、som が必要です。例: hva som løste problemet = 何が問題を解決したのか。一方、hva jeg testet では jeg が主語で、hva は目的語なので som は使いません。",
+        "descriptionEn": "\"Hva som + verb\" is used in indirect questions meaning what did something or what caused something. Here, \"hva\" is the subject, so Norwegian uses \"som.\" Example: \"hva som løste problemet\" = what solved the problem. In \"hva jeg testet,\" \"jeg\" is the subject and \"hva\" is the object, so \"som\" is not used.",
+        "example": "Jeg vil dokumentere hva som faktisk løste problemet.",
+        "exampleJa": "実際に何が問題を解決したのかを記録したいです。",
+        "exampleEn": "I want to document what actually solved the problem."
+      }
+    ]
+  },
+  {
+    "id": "no_028",
+    "language": "no",
+    "category": "frontend-office",
+    "level": "b2",
+    "title": "Eskalering og dokumentasjon",
+    "text": "Hvis jeg ikke kan løse saken selv, må jeg vurdere om den skal eskaleres. Før jeg eskalerer saken, prøver jeg å gi brukeren en midlertidig løsning, slik at arbeidet kan fortsette. Jeg skriver også ned hvilke tester jeg gjorde, og hvordan saken ble håndtert. God dokumentasjon gjør det lettere å dokumentere hva problemet var, og hvordan det ble løst senere.",
+    "translationJa": "自分で案件を解決できない場合、それをエスカレーションすべきか判断しなければなりません。エスカレーションする前に、作業を続けられるよう、ユーザーに一時的な解決策を出すようにします。また、どのテストを行ったのか、その案件がどのように対応されたのかを書き留めます。よいドキュメントがあると、問題が何だったのか、そして後でどのように解決されたのかを記録しやすくなります。",
+    "translationEn": "If I cannot solve the case myself, I have to consider whether it should be escalated. Before I escalate the case, I try to give the user a temporary solution so that the work can continue. I also write down which tests I did, and how the case was handled. Good documentation makes it easier to document what the problem was, and how it was solved later.",
+    "expressions": [
+      {
+        "phrase": "å løse saken selv",
+        "storageKey": "løse saken selv",
+        "formInText": "løse saken selv",
+        "ja": "案件を自分で解決する",
+        "en": "to solve the case oneself",
+        "example": "Hvis jeg ikke kan løse saken selv, ber jeg om hjelp.",
+        "exampleJa": "自分で案件を解決できない場合、助けを求めます。",
+        "exampleEn": "If I cannot solve the case myself, I ask for help."
+      },
+      {
+        "phrase": "å eskalere saken",
+        "storageKey": "eskalere saken",
+        "formInText": "eskalerer saken",
+        "ja": "案件をエスカレーションする",
+        "en": "to escalate the case",
+        "example": "Vi må eskalere saken til en tekniker med mer tilgang.",
+        "exampleJa": "より多くの権限を持つ技術者に案件をエスカレーションする必要があります。",
+        "exampleEn": "We need to escalate the case to a technician with more access."
+      },
+      {
+        "phrase": "å gi en midlertidig løsning",
+        "storageKey": "gi en midlertidig løsning",
+        "formInText": "gi brukeren en midlertidig løsning",
+        "ja": "一時的な解決策を出す",
+        "en": "to give a temporary solution",
+        "example": "Jeg ga brukeren en midlertidig løsning til feilen var rettet.",
+        "exampleJa": "エラーが修正されるまで、私はユーザーに一時的な解決策を出しました。",
+        "exampleEn": "I gave the user a temporary solution until the error was fixed."
+      },
+      {
+        "phrase": "å dokumentere hva problemet var",
+        "storageKey": "dokumentere hva problemet var",
+        "formInText": "dokumentere hva problemet var",
+        "ja": "問題が何だったのかを記録する",
+        "en": "to document what the problem was",
+        "example": "I saken må jeg dokumentere hva problemet var.",
+        "exampleJa": "その案件では、問題が何だったのかを記録しなければなりません。",
+        "exampleEn": "In the case, I must document what the problem was."
+      },
+      {
+        "phrase": "å dokumentere hvordan det ble løst",
+        "storageKey": "dokumentere hvordan det ble løst",
+        "formInText": "dokumentere hvordan det ble løst",
+        "ja": "どのように解決されたのかを記録する",
+        "en": "to document how it was solved",
+        "example": "Etterpå dokumenterte jeg hvordan det ble løst.",
+        "exampleJa": "その後、私はそれがどのように解決されたのかを記録しました。",
+        "exampleEn": "Afterwards, I documented how it was solved."
+      }
+    ],
+    "grammar": [
+      {
+        "title": "hvis + leddsetning",
+        "descriptionJa": "「Hvis jeg ikke kan ...」は条件を表し、「もし〜できないなら」という意味です。",
+        "descriptionEn": "\"Hvis jeg ikke kan ...\" introduces a condition, meaning \"if I cannot ...\""
+      },
+      {
+        "title": "før + leddsetning",
+        "descriptionJa": "「Før jeg eskalerer saken」のように、「før」はある行動の前に何をするかを説明します。",
+        "descriptionEn": "\"Før\" explains what happens before another action, as in \"Før jeg eskalerer saken.\""
+      },
+      {
+        "title": "slik at + leddsetning",
+        "descriptionJa": "「slik at arbeidet kan fortsette」は目的を表し、「作業を続けられるように」という意味です。",
+        "descriptionEn": "\"Slik at arbeidet kan fortsette\" shows purpose: so that the work can continue."
+      }
+    ]
   }
 ]
