@@ -45,9 +45,9 @@ const clientScript = `
   const uiLanguages = ${JSON.stringify(uiLanguages)};
   const languageNames = ${JSON.stringify(languageNames)};
   const targetLanguageBadges = {
-    no: '🇳🇴 Norsk',
-    en: '🇬🇧 English',
-    ja: '🇯🇵 日本語',
+    no: 'NO',
+    en: 'EN',
+    ja: 'JA',
   };
   const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
   const TARGET_LANGUAGE_STORAGE_KEY = 'typingSiteTargetLanguage';
@@ -113,13 +113,34 @@ const clientScript = `
     return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
   }
 
+  function normalizeTargetLanguageValue(value) {
+    if (value === 'all') {
+      return 'all';
+    }
+    if (typeof value !== 'string') {
+      return 'no';
+    }
+    const normalized = value.toLowerCase();
+    return uiLanguages.includes(normalized) ? normalized : 'no';
+  }
+
   function getSavedTargetLanguage() {
     const stored = safeReadStorage(TARGET_LANGUAGE_STORAGE_KEY);
-    return stored === 'all' || uiLanguages.includes(stored) ? stored : 'no';
+    return normalizeTargetLanguageValue(stored);
   }
 
   function getUiText(lang) {
     return ui[lang] || ui.en;
+  }
+
+  function getLanguageTitle(value, lang) {
+    return languageNames[value]?.[lang] || value;
+  }
+
+  function getLanguageBadgeHtml(value, lang) {
+    const label = targetLanguageBadges[value] || value;
+    const title = getLanguageTitle(value, lang);
+    return '<span class="language-badge language-badge--' + escapeHtml(value) + '" data-target-language="' + escapeHtml(value) + '" title="' + escapeHtml(title) + '" aria-label="' + escapeHtml(title) + '">' + escapeHtml(label) + '</span>';
   }
 
   function normalizeLevelKey(level) {
@@ -214,10 +235,10 @@ const clientScript = `
 
     return ''
       + '<div class="review-card-examples" data-review-examples>'
-      + '<button class="secondary-button review-example-toggle" type="button" data-review-example-toggle aria-expanded="false" data-show-label="' + escapeHtml(labels.showExpressionExample) + '" data-hide-label="' + escapeHtml(labels.hideExpressionExample) + '">' + escapeHtml(labels.showExpressionExample) + '</button>'
-      + '<div class="expression-example-list review-example-list" hidden>'
+      + '<button class="example-toggle" type="button" data-review-example-toggle aria-expanded="false" aria-label="' + escapeHtml(labels.showExpressionExample) + '" data-show-label="' + escapeHtml(labels.showExpressionExample) + '" data-hide-label="' + escapeHtml(labels.hideExpressionExample) + '"><span>' + escapeHtml(labels.expressionExample) + '</span><span class="example-toggle__icon" aria-hidden="true">⌄</span></button>'
+      + '<div class="expression-example-list review-example-list example-section" hidden>'
       + '<span class="expression-example-label">' + escapeHtml(labels.expressionExample) + '</span>'
-      + examples.map((entry) => '<p>' + (entry.language !== 'default' ? '<span class="grammar-language-label">' + escapeHtml(languageNames[entry.language]?.[uiLang] || entry.language) + ':</span> ' : '') + escapeHtml(entry.value) + '</p>').join('')
+      + examples.map((entry) => '<p>' + (entry.language !== 'default' ? getLanguageBadgeHtml(entry.language, uiLang) + ' ' : '') + escapeHtml(entry.value) + '</p>').join('')
       + '</div>'
       + '</div>';
   }
@@ -255,7 +276,7 @@ const clientScript = `
 
     function getTargetLanguageLabel(value, lang) {
       const labels = getUiText(lang);
-      return value === 'all' ? labels.allLanguages : languageNames[value]?.[lang] || value;
+      return value === 'all' ? labels.allLanguages : targetLanguageBadges[value] || value;
     }
 
     function getSortLabel(value, labels) {
@@ -367,7 +388,7 @@ const clientScript = `
       });
       document.querySelectorAll('[data-i18n-target-language]').forEach((option) => {
         const value = option.dataset.i18nTargetLanguage;
-        option.textContent = value === 'all' ? labels.allLanguages : languageNames[value]?.[lang] || value;
+        option.textContent = getTargetLanguageLabel(value, lang);
       });
 
       uiLanguageSelect.value = lang;
@@ -506,20 +527,24 @@ const clientScript = `
         const meanings = getLocalizedExpressionMeanings(expression, uiLanguageSelect.value);
         const examples = renderReviewExampleSection(expression, labels, uiLanguageSelect.value);
         return ''
-          + '<article class="expression-card review-expression-card" data-review-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
+          + '<article class="expression-card review-expression-card review-card" data-review-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
+          + '<div class="review-card__body">'
           + '<div class="expression-header">'
-          + '<div class="expression-title-stack"><strong>' + escapeHtml(expression.phrase) + '</strong><span class="language-badge" data-target-language="' + escapeHtml(expression.language) + '">' + escapeHtml(targetLanguageBadges[expression.language]) + '</span></div>'
-          + '<span class="status-button status-pill" data-status="' + status + '">' + escapeHtml(label) + '</span>'
+          + '<div class="expression-title-stack"><strong>' + escapeHtml(expression.phrase) + '</strong></div>'
+          + '<div class="review-card__status-area">'
+          + '<span class="status-button status-pill review-card__status-badge" data-status="' + status + '">' + escapeHtml(label) + '</span>'
+          + '<span class="review-card__practice-count">' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span>'
           + '</div>'
-          + '<p class="expression-practice review-card-practice"><span>' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span><span class="high-repetition-label">' + escapeHtml(labels.highRepetition) + '</span></p>'
+          + '</div>'
           + '<div class="review-card-meta">'
           + (expression.formInText && expression.formInText !== expression.phrase ? '<span class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</span>' : '')
           + '</div>'
           + '<div class="review-card-meaning">'
-          + meanings.map((entry) => '<p><span class="grammar-language-label">' + escapeHtml(languageNames[entry.language]?.[uiLanguageSelect.value] || entry.language) + ':</span> ' + escapeHtml(entry.value) + '</p>').join('')
+          + meanings.map((entry) => '<p>' + getLanguageBadgeHtml(entry.language, uiLanguageSelect.value) + ' ' + escapeHtml(entry.value) + '</p>').join('')
           + '</div>'
           + examples
-          + '<div class="review-card-actions">'
+          + '</div>'
+          + '<div class="review-card-actions review-card__actions">'
           + '<button class="secondary-button" type="button" data-review-open-text data-text-id="' + escapeHtml(expression.textId) + '">' + escapeHtml(labels.practiceThisText) + '</button>'
           + '</div>'
           + '</article>';
@@ -551,8 +576,13 @@ const clientScript = `
           }
           const isExpanded = button.getAttribute('aria-expanded') === 'true';
           button.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+          button.setAttribute('aria-label', isExpanded ? button.dataset.showLabel : button.dataset.hideLabel);
+          button.classList.toggle('is-open', !isExpanded);
+          const icon = button.querySelector('.example-toggle__icon');
+          if (icon) {
+            icon.textContent = isExpanded ? '⌄' : '⌃';
+          }
           exampleList.hidden = isExpanded;
-          button.textContent = isExpanded ? button.dataset.showLabel : button.dataset.hideLabel;
         });
       });
 
@@ -575,7 +605,7 @@ const clientScript = `
       buttonLabel: targetLanguageButtonLabel,
       getLabel: (value) => getTargetLanguageLabel(value, uiLanguageSelect.value),
       onChange: (value) => {
-        const lang = value === 'all' || uiLanguages.includes(value) ? value : 'no';
+        const lang = normalizeTargetLanguageValue(value);
         safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
         targetLanguageSelect.value = lang;
         targetLanguageDropdown.update();
@@ -640,7 +670,7 @@ const clientScript = `
       }
     });
     targetLanguageSelect.addEventListener('change', (event) => {
-      const lang = event.target.value === 'all' || uiLanguages.includes(event.target.value) ? event.target.value : 'no';
+      const lang = normalizeTargetLanguageValue(event.target.value);
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
       targetLanguageSelect.value = lang;
       targetLanguageDropdown.update();
@@ -690,7 +720,7 @@ const clientScript = `
             <select id="review-target-language" class="native-filter-select" aria-hidden="true" tabindex="-1">
               <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
               {uiLanguages.map((lang) => (
-                <option value={lang} data-i18n-target-language={lang}>{languageNames[lang][defaultUiLang]}</option>
+                <option value={lang} data-i18n-target-language={lang}>{lang.toUpperCase()}</option>
               ))}
             </select>
             <div class="status-filter-dropdown">
@@ -710,7 +740,7 @@ const clientScript = `
                 </button>
                 {uiLanguages.map((lang) => (
                   <button class="status-filter-option" type="button" role="option" tabindex="-1" data-target-language-option data-dropdown-value={lang} aria-selected="false">
-                    <span data-filter-option-label>{languageNames[lang][defaultUiLang]}</span>
+                    <span data-filter-option-label>{lang.toUpperCase()}</span>
                   </button>
                 ))}
               </div>

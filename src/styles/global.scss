@@ -404,21 +404,24 @@ textarea {
   background: rgba(255, 255, 255, 0.055);
   color: #d8e1ef;
   font-size: 0.78rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
 }
 
-.language-badge[data-target-language="no"] {
+.language-badge[data-target-language="no"],
+.language-badge--no {
   border-color: rgba(90, 200, 255, 0.34);
   background: rgba(90, 200, 255, 0.1);
 }
 
-.language-badge[data-target-language="en"] {
+.language-badge[data-target-language="en"],
+.language-badge--en {
   border-color: rgba(168, 133, 255, 0.32);
   background: rgba(168, 133, 255, 0.1);
 }
 
-.language-badge[data-target-language="ja"] {
+.language-badge[data-target-language="ja"],
+.language-badge--ja {
   border-color: rgba(251, 113, 133, 0.32);
   background: rgba(251, 113, 133, 0.1);
 }
@@ -802,6 +805,51 @@ textarea {
   cursor: pointer;
 }
 
+.review-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.review-card__body {
+  flex: 1 1 auto;
+}
+
+.review-card__actions {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.review-card__status-area {
+  display: grid;
+  gap: 5px;
+  justify-items: end;
+  flex: 0 0 auto;
+  min-width: max-content;
+  text-align: right;
+}
+
+.review-card__status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  min-width: 68px;
+  padding: 5px 10px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+.review-card__practice-count {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .review-expression-card[data-status="review"]:hover {
   background: rgba(245, 158, 11, 0.07);
 }
@@ -878,7 +926,7 @@ textarea {
   margin-bottom: 0.35rem;
   color: #cbd5e1;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -914,15 +962,49 @@ textarea {
 
 .review-card-meaning p {
   margin: 0;
+  font-weight: 400;
 }
 
 .review-card-examples {
   margin-top: 0.85rem;
 }
 
-.review-example-toggle {
-  padding: 6px 10px;
-  font-size: 0.78rem;
+.example-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.example-toggle:hover,
+.example-toggle:focus-visible,
+.example-toggle.is-open {
+  color: var(--text);
+}
+
+.example-toggle:focus-visible {
+  outline: 2px solid rgba(90, 200, 255, 0.42);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.example-toggle__icon {
+  color: currentColor;
+  font-size: 0.9rem;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.example-section {
+  margin-top: 0.55rem;
 }
 
 .review-example-list {
@@ -933,6 +1015,7 @@ textarea {
 .review-example-list p {
   margin: 0.28rem 0;
   font-size: 0.88rem;
+  font-weight: 400;
 }
 
 .expression-practice {
@@ -964,10 +1047,15 @@ textarea {
   display: inline-flex;
 }
 
+.review-card[data-high-repetition="true"] .review-card__practice-count {
+  color: #f8d991;
+  font-weight: 600;
+}
+
 .expression-text-form span {
   color: var(--text-muted);
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .grammar-card-item strong {
@@ -990,7 +1078,7 @@ textarea {
 .grammar-language-label {
   color: #cbd5e1;
   font-size: 0.76rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.02em;
 }
 
@@ -1027,7 +1115,7 @@ textarea {
   color: #cbd5e1;
   cursor: pointer;
   font-size: 0.76rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
   transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
   user-select: none;
@@ -1080,7 +1168,7 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 0;
 }
 
 .secondary-button,
@@ -1425,6 +1513,10 @@ h3 {
   }
   .review-controls {
     grid-template-columns: 1fr;
+  }
+  .review-card__status-area {
+    justify-items: start;
+    text-align: left;
   }
   .page-top {
     flex-direction: column;

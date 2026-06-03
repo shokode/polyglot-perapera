@@ -22,9 +22,9 @@ const clientScript = `
   const levelLabels = ${JSON.stringify(levelLabels)};
   const languageNames = ${JSON.stringify(languageNames)};
   const targetLanguageBadges = {
-    no: '🇳🇴 Norsk',
-    en: '🇬🇧 English',
-    ja: '🇯🇵 日本語',
+    no: 'NO',
+    en: 'EN',
+    ja: 'JA',
   };
   const levelKeys = ${JSON.stringify(levelKeys)};
   const levelSortRank = {
@@ -75,6 +75,20 @@ const clientScript = `
 
   function getUiText(lang) {
     return ui[lang] || ui.en;
+  }
+
+  function getLanguageLabel(value, lang) {
+    return value === 'all' ? getUiText(lang).allLanguages : targetLanguageBadges[value] || value;
+  }
+
+  function getLanguageTitle(value, lang) {
+    return languageNames[value]?.[lang] || value;
+  }
+
+  function getLanguageBadgeHtml(value, lang) {
+    const label = targetLanguageBadges[value] || value;
+    const title = getLanguageTitle(value, lang);
+    return '<span class="language-badge language-badge--' + escapeHtml(value) + '" data-target-language="' + escapeHtml(value) + '" title="' + escapeHtml(title) + '" aria-label="' + escapeHtml(title) + '">' + escapeHtml(label) + '</span>';
   }
 
   function normalizeLevelKey(level) {
@@ -166,7 +180,7 @@ const clientScript = `
 
     document.querySelectorAll('[data-i18n-target-language]').forEach((option) => {
       const value = option.dataset.i18nTargetLanguage;
-      option.textContent = value === 'all' ? getUiText(lang).allLanguages : languageNames[value]?.[lang] || value;
+      option.textContent = getLanguageLabel(value, lang);
     });
 
     document.querySelectorAll('[data-i18n-category]').forEach((option) => {
@@ -284,7 +298,7 @@ const clientScript = `
       return ''
         + '<article class="card text-list-card" data-text-id="' + escapeHtml(item.id) + '" data-target-language="' + escapeHtml(item.language) + '">'
         + '<div class="text-card-body">'
-        + '<p class="meta"><span class="language-badge" data-target-language="' + escapeHtml(item.language) + '">' + escapeHtml(targetLanguageBadges[item.language]) + '</span><span>' + escapeHtml(categoryLabel) + '</span><span>' + escapeHtml(levelLabel) + '</span></p>'
+        + '<p class="meta">' + getLanguageBadgeHtml(item.language, uiLang) + '<span>' + escapeHtml(categoryLabel) + '</span><span>' + escapeHtml(levelLabel) + '</span></p>'
         + '<h2>' + escapeHtml(item.title) + '</h2>'
         + '<p class="text-card-progress">' + escapeHtml(getPracticeLabel(progress.completedCount, labels)) + (lastPracticed ? ' · ' + escapeHtml(lastPracticed) : '') + (reviewCount ? ' · ' + escapeHtml(labels.reviewingExpressions) + ': ' + reviewCount : '') + '</p>'
         + '<p class="snippet">' + escapeHtml(preview) + '…</p>'
@@ -453,7 +467,7 @@ const clientScript = `
           <select id="text-language">
             <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
             {uiLanguages.map((lang) => (
-              <option value={lang} data-i18n-target-language={lang}>{languageNames[lang][defaultUiLang]}</option>
+              <option value={lang} data-i18n-target-language={lang}>{lang.toUpperCase()}</option>
             ))}
           </select>
         </div>

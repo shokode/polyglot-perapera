@@ -19,6 +19,11 @@ export function getStaticPaths() {
 
 const text = texts.find((item) => item.id === Astro.params.id);
 const defaultUiLang: UILang = 'en';
+const targetLanguageBadges: Record<UILang, string> = {
+  no: 'NO',
+  en: 'EN',
+  ja: 'JA',
+};
 
 function escapeHtml(value: string) {
   return value
@@ -139,6 +144,10 @@ function getTranslationPracticeButtonLabel(lang: UILang, labels: (typeof uiText)
   return labels.typeThisInEnglish;
 }
 
+function getLanguageBadgeClass(lang: UILang) {
+  return `language-badge language-badge--${lang}`;
+}
+
 function getExplanationMap(item: Record<string, unknown>) {
   return {
     ja: typeof item.ja === 'string' ? item.ja : typeof item.descriptionJa === 'string' ? item.descriptionJa : '',
@@ -217,6 +226,7 @@ const clientScript = `
   const categoryLabels = ${JSON.stringify(categoryLabels)};
   const levelLabels = ${JSON.stringify(levelLabels)};
   const languageNames = ${JSON.stringify(languageNames)};
+  const targetLanguageBadges = ${JSON.stringify(targetLanguageBadges)};
   const levelKeys = ${JSON.stringify(levelKeys)};
   const legacyLevelMap = {
     basic: 'a1',
@@ -304,6 +314,16 @@ const clientScript = `
 
   function getUiText(lang) {
     return ui[lang] || ui.en;
+  }
+
+  function getLanguageTitle(value, lang) {
+    return languageNames[value]?.[lang] || value;
+  }
+
+  function getLanguageBadgeHtml(value, lang) {
+    const label = targetLanguageBadges[value] || value;
+    const title = getLanguageTitle(value, lang);
+    return '<span class="language-badge language-badge--' + escapeHtmlClient(value) + '" data-target-language="' + escapeHtmlClient(value) + '" title="' + escapeHtmlClient(title) + '" aria-label="' + escapeHtmlClient(title) + '">' + escapeHtmlClient(label) + '</span>';
   }
 
   function normalizeLevelKey(level) {
@@ -480,7 +500,7 @@ const clientScript = `
   }
 
   function getTranslationPracticeLabel(lang, labels) {
-    return labels.translationPracticePrefix + (languageNames[lang]?.[uiLanguageSelect.value] || lang);
+    return labels.translationPracticePrefix + (targetLanguageBadges[lang] || lang);
   }
 
   function getSpeedMetricLabel(labels) {
@@ -516,8 +536,7 @@ const clientScript = `
         data = {};
       }
       container.innerHTML = getLocalizedExplanations(data, lang).map((entry) => {
-        const label = languageNames[entry.language]?.[lang] || entry.language;
-        return '<div class="localized-explanation"><span class="grammar-language-label">' + escapeHtmlClient(label) + ':</span><p>' + escapeHtmlClient(entry.value) + '</p></div>';
+        return '<div class="localized-explanation">' + getLanguageBadgeHtml(entry.language, lang) + '<p>' + escapeHtmlClient(entry.value) + '</p></div>';
       }).join('');
     });
   }
@@ -742,7 +761,7 @@ const clientScript = `
       const labels = getUiText(lang);
       container.innerHTML = examples.length
         ? '<span class="expression-example-label">' + escapeHtmlClient(labels.expressionExample) + '</span>' + examples.map((entry) => {
-          const label = entry.language === 'default' ? '' : '<span class="grammar-language-label">' + escapeHtmlClient(languageNames[entry.language]?.[lang] || entry.language) + ':</span> ';
+          const label = entry.language === 'default' ? '' : getLanguageBadgeHtml(entry.language, lang) + ' ';
           return '<p>' + label + escapeHtmlClient(entry.value) + '</p>';
         }).join('')
         : '';
@@ -869,7 +888,7 @@ const clientScript = `
         postCompletionHome.textContent = labels.backHome;
       }
       document.querySelectorAll('[data-translation-title]').forEach((el) => {
-        el.textContent = getTranslationTitle(el.dataset.translationTitle, labels);
+        el.innerHTML = getLanguageBadgeHtml(el.dataset.translationTitle, lang);
       });
       document.querySelectorAll('[data-translation-practice-button]').forEach((el) => {
         el.textContent = getTranslationPracticeButtonLabel(el.dataset.translationPracticeButton, labels);
@@ -895,7 +914,7 @@ const clientScript = `
       if (miniCardDetails) {
         miniCardDetails.textContent = labels.expressionDetails;
       }
-      languageChip.textContent = languageNames[text.language]?.[lang] || text.language;
+      languageChip.innerHTML = getLanguageBadgeHtml(text.language, lang);
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
@@ -1227,12 +1246,20 @@ if (!text) {
         <div>
           <h1 class="text-title">{text.title}</h1>
           <div class="meta-strip">
-            <span class="meta-chip" id="language-chip">{languageNames[text.language as keyof typeof languageNames][defaultUiLang]}</span>
+            <span
+              class={`${getLanguageBadgeClass(text.language as UILang)} meta-chip`}
+              id="language-chip"
+              data-target-language={text.language}
+              title={languageNames[text.language as UILang][defaultUiLang]}
+              aria-label={languageNames[text.language as UILang][defaultUiLang]}
+            >
+              {targetLanguageBadges[text.language as UILang]}
+            </span>
             <span class="meta-chip" id="category-chip">{categoryLabels[text.category as keyof typeof categoryLabels][defaultUiLang]}</span>
             <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[normalizeLevelKey(text.level)][defaultUiLang]}</span>
             <span class="meta-chip" id="translation-practice-chip" hidden={!isTranslationPractice}>
               {practiceTranslationLang
-                ? `${uiText[defaultUiLang].translationPracticePrefix}${languageNames[practiceTranslationLang][defaultUiLang]}`
+                ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
                 : uiText[defaultUiLang].translationPracticePrefix}
             </span>
           </div>
@@ -1296,7 +1323,7 @@ if (!text) {
       <section class="note-card">
         <h3 id="typing-heading" data-i18n="typingPractice">
           {practiceTranslationLang
-            ? `${uiText[defaultUiLang].translationPracticePrefix}${languageNames[practiceTranslationLang][defaultUiLang]}`
+            ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
             : uiText[defaultUiLang].typingPractice}
         </h3>
         <textarea id="typing-input" class="type-area" placeholder={uiText[defaultUiLang].typingPlaceholder} spellcheck="false"></textarea>
@@ -1349,11 +1376,14 @@ if (!text) {
           {translationsToShow.map((translation) => (
             <div>
               <h3 data-translation-title={translation.lang}>
-                {translation.lang === 'ja'
-                  ? uiText[defaultUiLang].japaneseTranslation
-                  : translation.lang === 'no'
-                    ? uiText[defaultUiLang].norwegianTranslation
-                    : uiText[defaultUiLang].englishTranslation}
+                <span
+                  class={getLanguageBadgeClass(translation.lang)}
+                  data-target-language={translation.lang}
+                  title={languageNames[translation.lang][defaultUiLang]}
+                  aria-label={languageNames[translation.lang][defaultUiLang]}
+                >
+                  {targetLanguageBadges[translation.lang]}
+                </span>
               </h3>
               <p>{translation.value}</p>
               <a
@@ -1383,7 +1413,14 @@ if (!text) {
               <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
                 {getOrderedExplanations(item, defaultUiLang).map((entry) => (
                   <div class="localized-explanation">
-                    <span class="grammar-language-label">{languageNames[entry.lang][defaultUiLang]}:</span>
+                    <span
+                      class={getLanguageBadgeClass(entry.lang as UILang)}
+                      data-target-language={entry.lang}
+                      title={languageNames[entry.lang as UILang][defaultUiLang]}
+                      aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                    >
+                      {targetLanguageBadges[entry.lang as UILang]}
+                    </span>
                     <p>{entry.value}</p>
                   </div>
                 ))}
@@ -1393,7 +1430,17 @@ if (!text) {
                   <span class="expression-example-label">{uiText[defaultUiLang].expressionExample}</span>
                   {getOrderedExamples(item, defaultUiLang, text.language as UILang).map((entry) => (
                     <p>
-                      {entry.lang !== 'default' && <span class="grammar-language-label">{languageNames[entry.lang as UILang][defaultUiLang]}: </span>}
+                      {entry.lang !== 'default' && (
+                        <span
+                          class={getLanguageBadgeClass(entry.lang as UILang)}
+                          data-target-language={entry.lang}
+                          title={languageNames[entry.lang as UILang][defaultUiLang]}
+                          aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                        >
+                          {targetLanguageBadges[entry.lang as UILang]}
+                        </span>
+                      )}
+                      {entry.lang !== 'default' && ' '}
                       {entry.value}
                     </p>
                   ))}
@@ -1413,7 +1460,14 @@ if (!text) {
               <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
                 {getOrderedExplanations(item, defaultUiLang).map((entry) => (
                   <div class="localized-explanation">
-                    <span class="grammar-language-label">{languageNames[entry.lang][defaultUiLang]}:</span>
+                    <span
+                      class={getLanguageBadgeClass(entry.lang as UILang)}
+                      data-target-language={entry.lang}
+                      title={languageNames[entry.lang as UILang][defaultUiLang]}
+                      aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                    >
+                      {targetLanguageBadges[entry.lang as UILang]}
+                    </span>
                     <p>{entry.value}</p>
                   </div>
                 ))}
