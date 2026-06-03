@@ -542,6 +542,10 @@ const clientScript = `
     const assessmentActions = document.getElementById('self-assessment-actions');
     const assessmentFeedback = document.getElementById('self-assessment-feedback');
     const assessmentButtons = document.querySelectorAll('[data-assessment-level]');
+    const postCompletionActions = document.getElementById('post-completion-actions');
+    const postCompletionPracticeAgain = document.getElementById('post-completion-practice-again');
+    const postCompletionNext = document.getElementById('post-completion-next');
+    const postCompletionHome = document.getElementById('post-completion-home');
     const expressionsPanel = document.getElementById('expressions-panel');
     const grammarPanel = document.getElementById('grammar-panel');
     const learningFocusCard = document.getElementById('learning-focus-card');
@@ -855,6 +859,15 @@ const clientScript = `
       if (assessmentFeedback && assessmentFeedback.dataset.saved === 'true') {
         assessmentFeedback.textContent = labels.assessmentSaved;
       }
+      if (postCompletionPracticeAgain) {
+        postCompletionPracticeAgain.textContent = labels.practiceAgain;
+      }
+      if (postCompletionNext) {
+        postCompletionNext.textContent = labels.nextRecommended;
+      }
+      if (postCompletionHome) {
+        postCompletionHome.textContent = labels.backHome;
+      }
       document.querySelectorAll('[data-translation-title]').forEach((el) => {
         el.textContent = getTranslationTitle(el.dataset.translationTitle, labels);
       });
@@ -978,6 +991,9 @@ const clientScript = `
       if (completionTranslations) {
         completionTranslations.hidden = true;
       }
+      if (postCompletionActions) {
+        postCompletionActions.hidden = true;
+      }
       updateTargetTextProgress('');
       input.focus();
     }
@@ -1019,6 +1035,9 @@ const clientScript = `
       if (assessmentActions) {
         assessmentActions.hidden = true;
       }
+      if (postCompletionActions) {
+        postCompletionActions.hidden = false;
+      }
       if (closeCompletionTimer) {
         window.clearTimeout(closeCompletionTimer);
       }
@@ -1030,6 +1049,17 @@ const clientScript = `
       if (level === 'again') {
         resetPractice();
       }
+    }
+
+    function goToRecommendedText() {
+      const recommended = getRecommendedText();
+      if (!recommended) {
+        return;
+      }
+      const translationQuery = activeIsTranslationPractice && activePracticeTranslationLang
+        ? '?practiceTranslation=' + encodeURIComponent(activePracticeTranslationLang)
+        : '';
+      window.location.href = '/text/' + recommended.id + translationQuery;
     }
 
     function updateMetrics() {
@@ -1146,6 +1176,20 @@ const clientScript = `
       });
     });
 
+    if (postCompletionPracticeAgain) {
+      postCompletionPracticeAgain.addEventListener('click', resetPractice);
+    }
+
+    if (postCompletionNext) {
+      postCompletionNext.addEventListener('click', goToRecommendedText);
+    }
+
+    if (postCompletionHome) {
+      postCompletionHome.addEventListener('click', () => {
+        window.location.href = '/';
+      });
+    }
+
     document.addEventListener('click', () => {
       closeExpressionMiniCard();
     });
@@ -1261,6 +1305,12 @@ if (!text) {
           <div class="stat-card"><strong id="accuracy-title" data-i18n="accuracy">{uiText[defaultUiLang].accuracy}</strong><p id="accuracy-value">100%</p></div>
           <div class="stat-card"><strong id="wpm-title" data-i18n="wpm">{uiText[defaultUiLang].wpm}</strong><p id="wpm-value">0</p></div>
         </div>
+      </section>
+
+      <section class="post-completion-actions" id="post-completion-actions" hidden>
+        <button class="secondary-button" type="button" id="post-completion-practice-again">{uiText[defaultUiLang].practiceAgain}</button>
+        <button class="primary-button" type="button" id="post-completion-next">{uiText[defaultUiLang].nextRecommended}</button>
+        <button class="secondary-button" type="button" id="post-completion-home">{uiText[defaultUiLang].backHome}</button>
       </section>
 
       <section class="completion-overlay" id="completion-panel" hidden>
