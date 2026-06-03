@@ -22,6 +22,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -517,17 +521,34 @@ textarea {
   word-break: break-word;
 }
 
-.completion-card {
+.completion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
   display: grid;
-  gap: 22px;
+  place-items: center;
+  padding: 24px;
+  background: rgba(3, 7, 18, 0.62);
+  backdrop-filter: blur(6px);
 }
 
-.completion-summary {
+.completion-modal {
+  width: min(620px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 24px;
+  background: rgba(31, 36, 48, 0.98);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+}
+
+.completion-modal__summary {
   display: grid;
   gap: 16px;
 }
 
-.completion-summary h3 {
+.completion-modal__summary h3 {
   margin: 0;
 }
 
@@ -558,14 +579,26 @@ textarea {
   font-weight: 800;
 }
 
-.completion-actions {
+.self-assessment-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.self-assessment-panel strong {
+  color: var(--text);
+}
+
+.assessment-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.completion-actions .primary-button,
-.completion-actions .secondary-button {
+.assessment-actions .secondary-button {
   border-radius: 16px;
   padding: 12px 16px;
 }
@@ -576,11 +609,9 @@ textarea {
   font-size: 0.92rem;
 }
 
-.completion-translations {
+.completion-translations-card {
   display: grid;
   gap: 18px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(148, 163, 184, 0.12);
 }
 
 .learning-focus-row {
@@ -1357,6 +1388,17 @@ h3 {
   }
   .completion-stat-grid {
     grid-template-columns: 1fr;
+  }
+  .completion-overlay {
+    padding: 12px;
+  }
+  .completion-modal {
+    max-height: calc(100vh - 24px);
+    padding: 18px;
+    border-radius: 20px;
+  }
+  .assessment-actions .secondary-button {
+    width: 100%;
   }
   .review-controls {
     grid-template-columns: 1fr;

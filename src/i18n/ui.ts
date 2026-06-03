@@ -120,6 +120,12 @@ export type UILabels = {
   wpm: string;
   cpm: string;
   completionMessage: string;
+  selfAssessmentPrompt: string;
+  assessmentPerfect: string;
+  assessmentMostly: string;
+  assessmentUnsure: string;
+  assessmentAgain: string;
+  assessmentSaved: string;
   nextRecommended: string;
   practiceAgain: string;
   backHome: string;
@@ -206,6 +212,12 @@ export const uiText: Record<UILang, UILabels> = {
     wpm: 'WPM',
     cpm: 'tegn/min',
     completionMessage: 'Ferdig! Bra jobbet.',
+    selfAssessmentPrompt: 'Hvor godt forstod du teksten?',
+    assessmentPerfect: 'Jeg forstod alt',
+    assessmentMostly: 'Jeg forstod det meste',
+    assessmentUnsure: 'Litt usikker',
+    assessmentAgain: 'Øv igjen',
+    assessmentSaved: 'Lagret',
     nextRecommended: 'Neste anbefalte',
     practiceAgain: 'Øv igjen',
     backHome: 'Tilbake hjem',
@@ -290,6 +302,12 @@ export const uiText: Record<UILang, UILabels> = {
     wpm: 'WPM',
     cpm: 'CPM',
     completionMessage: 'Complete! Nice work.',
+    selfAssessmentPrompt: 'How well did you understand this text?',
+    assessmentPerfect: 'I understood it perfectly',
+    assessmentMostly: 'I mostly understood it',
+    assessmentUnsure: 'Still a bit unsure',
+    assessmentAgain: 'Practice again',
+    assessmentSaved: 'Saved',
     nextRecommended: 'Next recommended',
     practiceAgain: 'Practice again',
     backHome: 'Back home',
@@ -374,6 +392,12 @@ export const uiText: Record<UILang, UILabels> = {
     wpm: 'WPM',
     cpm: '文字/分',
     completionMessage: '完了しました！おつかれさまです。',
+    selfAssessmentPrompt: 'この文章をどれくらい理解できましたか？',
+    assessmentPerfect: '完璧に分かった',
+    assessmentMostly: 'だいたい分かった',
+    assessmentUnsure: '少し怪しい',
+    assessmentAgain: 'もう一度やる',
+    assessmentSaved: '保存しました',
     nextRecommended: '次のおすすめへ',
     practiceAgain: 'もう一度練習',
     backHome: 'ホームへ戻る',

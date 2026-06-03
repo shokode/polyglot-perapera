@@ -229,6 +229,7 @@ const clientScript = `
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const TEXT_PROGRESS_KEY = 'typingProgress';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
+  const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   const translationFieldByLanguage = {
     ja: 'translationJa',
@@ -376,6 +377,25 @@ const clientScript = `
     };
   }
 
+  function getAssessmentStorageKeyForText(textId, mode, targetLanguage) {
+    return textId + '::' + mode + '::' + targetLanguage;
+  }
+
+  function getCurrentAssessmentStorageKey() {
+    return getAssessmentStorageKeyForText(
+      text.id,
+      activeIsTranslationPractice ? 'translation' : 'text',
+      activeTypingTargetLanguage
+    );
+  }
+
+  function getAssessmentPriorityForText(textId, targetLanguage) {
+    const assessments = loadProgress(SELF_ASSESSMENT_KEY);
+    const textAssessment = assessments[getAssessmentStorageKeyForText(textId, 'text', targetLanguage)] || {};
+    const priority = Number.isFinite(textAssessment.priority) ? textAssessment.priority : 0;
+    return priority;
+  }
+
   function getReviewCountForText(item, statuses) {
     return item.expressions.reduce((count, expression) => {
       return count + (getExpressionStatusForItem(expression, item.language, statuses) === 'review' ? 1 : 0);
@@ -397,6 +417,13 @@ const clientScript = `
     }
 
     const expressionStatuses = loadExpressionStatuses();
+    const highestPriority = Math.max(...candidates.map((item) => getAssessmentPriorityForText(item.id, item.language)));
+    if (highestPriority >= 2) {
+      const priorityCandidates = candidates.filter((item) => getAssessmentPriorityForText(item.id, item.language) === highestPriority);
+      const minPracticeCount = Math.min(...priorityCandidates.map((item) => getTextProgress(item.id).completedCount));
+      return randomItem(priorityCandidates.filter((item) => getTextProgress(item.id).completedCount === minPracticeCount));
+    }
+
     const unpracticed = candidates.filter((item) => getTextProgress(item.id).completedCount === 0);
     if (unpracticed.length) {
       const maxReviewCount = Math.max(...unpracticed.map((item) => getReviewCountForText(item, expressionStatuses)));
@@ -509,12 +536,12 @@ const clientScript = `
     const completionSpeedValue = document.getElementById('completion-speed-value');
     const completionMistakesTitle = document.getElementById('completion-mistakes-title');
     const completionMistakesValue = document.getElementById('completion-mistakes-value');
-    const completionNextButton = document.getElementById('completion-next-button');
-    const completionAgainButton = document.getElementById('completion-again-button');
-    const completionHomeButton = document.getElementById('completion-home-button');
-    const completionReviewButton = document.getElementById('completion-review-button');
-    const completionReviewNote = document.getElementById('completion-review-note');
     const completionTranslations = document.getElementById('completion-translations');
+    const assessmentPanel = document.getElementById('self-assessment-panel');
+    const assessmentPrompt = document.getElementById('self-assessment-prompt');
+    const assessmentActions = document.getElementById('self-assessment-actions');
+    const assessmentFeedback = document.getElementById('self-assessment-feedback');
+    const assessmentButtons = document.querySelectorAll('[data-assessment-level]');
     const expressionsPanel = document.getElementById('expressions-panel');
     const grammarPanel = document.getElementById('grammar-panel');
     const learningFocusCard = document.getElementById('learning-focus-card');
@@ -544,6 +571,7 @@ const clientScript = `
     const miniCardFallback = document.getElementById('mini-card-fallback');
     const miniCardDetails = document.getElementById('mini-card-details');
     let activeMiniCardPhrase = null;
+    let closeCompletionTimer = null;
 
     function renderClientCharacter(value, index) {
       return '<span class="target-char" data-char-index="' + index + '">' + escapeHtmlClient(value) + '</span>';
@@ -809,10 +837,23 @@ const clientScript = `
       if (completionMistakesTitle) {
         completionMistakesTitle.textContent = labels.mistakes;
       }
-      if (completionReviewNote) {
-        completionReviewNote.textContent = activeIsTranslationPractice
-          ? labels.translationPracticeReviewUnavailable
-          : '';
+      if (assessmentPrompt) {
+        assessmentPrompt.textContent = labels.selfAssessmentPrompt;
+      }
+      assessmentButtons.forEach((button) => {
+        const level = button.dataset.assessmentLevel;
+        if (level === 'perfect') {
+          button.textContent = labels.assessmentPerfect;
+        } else if (level === 'good') {
+          button.textContent = labels.assessmentMostly;
+        } else if (level === 'shaky') {
+          button.textContent = labels.assessmentUnsure;
+        } else if (level === 'again') {
+          button.textContent = labels.assessmentAgain;
+        }
+      });
+      if (assessmentFeedback && assessmentFeedback.dataset.saved === 'true') {
+        assessmentFeedback.textContent = labels.assessmentSaved;
       }
       document.querySelectorAll('[data-translation-title]').forEach((el) => {
         el.textContent = getTranslationTitle(el.dataset.translationTitle, labels);
@@ -881,23 +922,37 @@ const clientScript = `
       if (completionMistakesValue) {
         completionMistakesValue.textContent = '' + mistakes;
       }
-      if (completionReviewButton) {
-        completionReviewButton.hidden = activeIsTranslationPractice;
-        completionReviewButton.disabled = false;
-        completionReviewButton.textContent = labels.addToReview;
-      }
-      if (completionReviewNote) {
-        completionReviewNote.hidden = !activeIsTranslationPractice;
-        completionReviewNote.textContent = activeIsTranslationPractice
-          ? labels.translationPracticeReviewUnavailable
-          : '';
-      }
       if (completionTranslations) {
         completionTranslations.hidden = activeIsTranslationPractice;
+      }
+      if (assessmentPanel) {
+        assessmentPanel.hidden = false;
+      }
+      if (assessmentFeedback && assessmentFeedback.dataset.saved !== 'true') {
+        assessmentFeedback.textContent = '';
+        assessmentFeedback.hidden = true;
+      }
+      if (assessmentPrompt && assessmentFeedback?.dataset.saved !== 'true') {
+        assessmentPrompt.hidden = false;
+      }
+      if (assessmentActions && assessmentFeedback?.dataset.saved !== 'true') {
+        assessmentActions.hidden = false;
+      }
+    }
+
+    function closeCompletionModal() {
+      completionPanel.hidden = true;
+      if (closeCompletionTimer) {
+        window.clearTimeout(closeCompletionTimer);
+        closeCompletionTimer = null;
       }
     }
 
     function resetPractice() {
+      if (closeCompletionTimer) {
+        window.clearTimeout(closeCompletionTimer);
+        closeCompletionTimer = null;
+      }
       input.value = '';
       startTime = null;
       hasRecordedCompletion = false;
@@ -909,24 +964,71 @@ const clientScript = `
       progressValue.textContent = '0%';
       accuracyValue.textContent = '100%';
       wpmValue.textContent = '0';
+      if (assessmentFeedback) {
+        assessmentFeedback.dataset.saved = 'false';
+        assessmentFeedback.textContent = '';
+        assessmentFeedback.hidden = true;
+      }
+      if (assessmentPrompt) {
+        assessmentPrompt.hidden = false;
+      }
+      if (assessmentActions) {
+        assessmentActions.hidden = false;
+      }
+      if (completionTranslations) {
+        completionTranslations.hidden = true;
+      }
       updateTargetTextProgress('');
       input.focus();
     }
 
-    function addExpressionsToReview() {
-      const labels = getUiText(uiLanguageSelect.value);
-      const statuses = loadExpressionStatuses();
-      text.expressions.forEach((expression) => {
-        const currentStatus = getExpressionStatus(expression.phrase);
-        if (currentStatus !== 'review' && currentStatus !== 'learned') {
-          statuses[getExpressionStorageKey(expression.phrase)] = 'review';
-        }
-      });
-      saveExpressionStatuses(statuses);
-      updateExpressionStatusButtons();
-      if (completionReviewButton) {
-        completionReviewButton.textContent = labels.addedToReview;
-        completionReviewButton.disabled = true;
+    function getAssessmentPriority(level) {
+      if (level === 'again') {
+        return 3;
+      }
+      if (level === 'shaky') {
+        return 2;
+      }
+      if (level === 'good') {
+        return 1;
+      }
+      return 0;
+    }
+
+    function saveSelfAssessment(level) {
+      const now = new Date().toISOString();
+      const assessments = loadProgress(SELF_ASSESSMENT_KEY);
+      assessments[getCurrentAssessmentStorageKey()] = {
+        textId: text.id,
+        mode: activeIsTranslationPractice ? 'translation' : 'text',
+        targetLanguage: activeTypingTargetLanguage,
+        level,
+        priority: getAssessmentPriority(level),
+        reviewTarget: level !== 'perfect',
+        assessedAt: now,
+      };
+      saveProgress(SELF_ASSESSMENT_KEY, assessments);
+      if (assessmentFeedback) {
+        assessmentFeedback.dataset.saved = 'true';
+        assessmentFeedback.textContent = getUiText(uiLanguageSelect.value).assessmentSaved;
+        assessmentFeedback.hidden = false;
+      }
+      if (assessmentPrompt) {
+        assessmentPrompt.hidden = true;
+      }
+      if (assessmentActions) {
+        assessmentActions.hidden = true;
+      }
+      if (closeCompletionTimer) {
+        window.clearTimeout(closeCompletionTimer);
+      }
+      closeCompletionTimer = window.setTimeout(closeCompletionModal, 800);
+    }
+
+    function handleSelfAssessment(level) {
+      saveSelfAssessment(level);
+      if (level === 'again') {
+        resetPractice();
       }
     }
 
@@ -1038,28 +1140,11 @@ const clientScript = `
       });
     }
 
-    if (completionNextButton) {
-      completionNextButton.addEventListener('click', () => {
-        const recommended = getRecommendedText();
-        if (recommended) {
-          window.location.href = '/text/' + recommended.id;
-        }
+    assessmentButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        handleSelfAssessment(button.dataset.assessmentLevel);
       });
-    }
-
-    if (completionAgainButton) {
-      completionAgainButton.addEventListener('click', resetPractice);
-    }
-
-    if (completionHomeButton) {
-      completionHomeButton.addEventListener('click', () => {
-        window.location.href = '/';
-      });
-    }
-
-    if (completionReviewButton) {
-      completionReviewButton.addEventListener('click', addExpressionsToReview);
-    }
+    });
 
     document.addEventListener('click', () => {
       closeExpressionMiniCard();
@@ -1178,9 +1263,10 @@ if (!text) {
         </div>
       </section>
 
-      <section class="translation-card completion-card" id="completion-panel" hidden>
-        <div class="completion-summary">
-          <h3 data-i18n="completionMessage">{uiText[defaultUiLang].completionMessage}</h3>
+      <section class="completion-overlay" id="completion-panel" hidden>
+        <div class="completion-modal" role="dialog" aria-modal="true" aria-labelledby="completion-title">
+        <div class="completion-modal__summary">
+          <h3 id="completion-title" data-i18n="completionMessage">{uiText[defaultUiLang].completionMessage}</h3>
           <div class="completion-stat-grid">
             <div class="completion-stat">
               <strong id="completion-accuracy-title">{uiText[defaultUiLang].accuracy}</strong>
@@ -1195,15 +1281,21 @@ if (!text) {
               <p id="completion-mistakes-value">0</p>
             </div>
           </div>
-          <div class="completion-actions">
-            <button class="primary-button" type="button" id="completion-next-button" data-i18n="nextRecommended">{uiText[defaultUiLang].nextRecommended}</button>
-            <button class="secondary-button" type="button" id="completion-again-button" data-i18n="practiceAgain">{uiText[defaultUiLang].practiceAgain}</button>
-            <button class="secondary-button" type="button" id="completion-home-button" data-i18n="backHome">{uiText[defaultUiLang].backHome}</button>
-            <button class="secondary-button" type="button" id="completion-review-button" data-i18n="addToReview" hidden={isTranslationPractice}>{uiText[defaultUiLang].addToReview}</button>
+          <div class="completion-modal__assessment self-assessment-panel" id="self-assessment-panel" hidden>
+            <strong id="self-assessment-prompt">{uiText[defaultUiLang].selfAssessmentPrompt}</strong>
+            <div class="assessment-actions" id="self-assessment-actions">
+              <button class="secondary-button" type="button" data-assessment-level="perfect">{uiText[defaultUiLang].assessmentPerfect}</button>
+              <button class="secondary-button" type="button" data-assessment-level="good">{uiText[defaultUiLang].assessmentMostly}</button>
+              <button class="secondary-button" type="button" data-assessment-level="shaky">{uiText[defaultUiLang].assessmentUnsure}</button>
+              <button class="secondary-button" type="button" data-assessment-level="again">{uiText[defaultUiLang].assessmentAgain}</button>
+            </div>
+            <p class="completion-note" id="self-assessment-feedback" data-saved="false" hidden></p>
           </div>
-          <p class="completion-note" id="completion-review-note" hidden={!isTranslationPractice}>{uiText[defaultUiLang].translationPracticeReviewUnavailable}</p>
         </div>
-        <div class="completion-translations" id="completion-translations" hidden={isTranslationPractice}>
+        </div>
+      </section>
+
+      <section class="translation-card completion-translations-card" id="completion-translations" hidden>
           {translationsToShow.map((translation) => (
             <div>
               <h3 data-translation-title={translation.lang}>
@@ -1223,7 +1315,6 @@ if (!text) {
               </a>
             </div>
           ))}
-        </div>
       </section>
 
       <section class="expressions-card" id="expressions-panel" hidden>
