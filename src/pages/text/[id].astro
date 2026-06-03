@@ -244,6 +244,7 @@ const clientScript = `
   const TEXT_PROGRESS_KEY = 'typingProgress';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
+  const TYPING_MODE_KEY = 'typingMode';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
   const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
@@ -835,6 +836,9 @@ const clientScript = `
     const readHeading = document.getElementById('read-heading');
     const readDescription = document.getElementById('read-description');
     const typingHeading = document.getElementById('typing-heading');
+    const typingModeTitle = document.getElementById('typing-mode-title');
+    const typingModeButtons = document.querySelectorAll('[data-typing-mode]');
+    const typingModeDescription = document.getElementById('typing-mode-description');
     const progressTitle = document.getElementById('progress-title');
     const accuracyTitle = document.getElementById('accuracy-title');
     const wpmTitle = document.getElementById('wpm-title');
@@ -852,6 +856,45 @@ const clientScript = `
     const miniCardDetails = document.getElementById('mini-card-details');
     let activeMiniCardPhrase = null;
     let closeCompletionTimer = null;
+    let currentTypingMode = loadTypingMode();
+    let flowAcceptedValue = '';
+    let flowMistakes = 0;
+
+    function loadTypingMode() {
+      try {
+        const saved = localStorage.getItem(TYPING_MODE_KEY);
+        return saved === 'flow' ? 'flow' : 'strict';
+      } catch {
+        return 'strict';
+      }
+    }
+
+    function getCorrectPrefix(value) {
+      let prefix = '';
+      for (let index = 0; index < value.length && index < activeTypingTarget.length; index += 1) {
+        if (value[index] !== activeTypingTarget[index]) {
+          break;
+        }
+        prefix += value[index];
+      }
+      return prefix;
+    }
+
+    function saveTypingMode(mode) {
+      currentTypingMode = mode === 'flow' ? 'flow' : 'strict';
+      try {
+        localStorage.setItem(TYPING_MODE_KEY, currentTypingMode);
+      } catch {
+        // Keep the in-memory mode even if storage is unavailable.
+      }
+      if (currentTypingMode === 'flow') {
+        flowAcceptedValue = getCorrectPrefix(input.value);
+        input.value = flowAcceptedValue;
+        flowMistakes = 0;
+      }
+      updateTypingModeControls();
+      updateMetrics();
+    }
 
     function renderClientCharacter(value, index) {
       return '<span class="target-char" data-char-index="' + index + '">' + escapeHtmlClient(value) + '</span>';
@@ -1117,6 +1160,16 @@ const clientScript = `
         ? getTranslationPracticeLabel(activePracticeTranslationLang, labels)
         : labels.typingPractice;
       input.placeholder = labels.typingPlaceholder;
+      if (typingModeTitle) {
+        typingModeTitle.textContent = labels.typingMode;
+      }
+      typingModeButtons.forEach((button) => {
+        const mode = button.dataset.typingMode;
+        button.textContent = mode === 'flow' ? labels.typingModeFlow : labels.typingModeStrict;
+      });
+      if (typingModeDescription) {
+        typingModeDescription.textContent = labels.typingModeFlowDescription;
+      }
       progressTitle.textContent = labels.progress;
       accuracyTitle.textContent = labels.accuracy;
       wpmTitle.textContent = getSpeedMetricLabel(labels);
@@ -1194,6 +1247,18 @@ const clientScript = `
       updatePinButton();
       updateTranslationPracticePinButtons();
       updateExpressionMiniCardText();
+      updateTypingModeControls();
+    }
+
+    function updateTypingModeControls() {
+      typingModeButtons.forEach((button) => {
+        const selected = button.dataset.typingMode === currentTypingMode;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+      if (typingModeDescription) {
+        typingModeDescription.hidden = currentTypingMode !== 'flow';
+      }
     }
 
     function updatePinButton() {
@@ -1285,6 +1350,8 @@ const clientScript = `
         closeCompletionTimer = null;
       }
       input.value = '';
+      flowAcceptedValue = '';
+      flowMistakes = 0;
       startTime = null;
       hasRecordedCompletion = false;
       completionPanel.hidden = true;
@@ -1377,9 +1444,8 @@ const clientScript = `
       window.location.href = getRecommendedHref(recommended);
     }
 
-    function updateMetrics() {
+    function getTypingStats(typed) {
       const target = activeTypingTarget;
-      const typed = input.value;
       let correct = 0;
       for (let i = 0; i < typed.length; i += 1) {
         if (typed[i] === target[i]) {
@@ -1387,7 +1453,8 @@ const clientScript = `
         }
       }
       const progress = Math.min(100, Math.round((correct / target.length) * 100));
-      const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
+      const attempts = currentTypingMode === 'flow' ? typed.length + flowMistakes : typed.length;
+      const accuracy = attempts ? Math.round((correct / attempts) * 100) : 100;
       const elapsedMinutes = startTime ? Math.max((performance.now() - startTime) / 60000, 0.001) : 0;
       let speed = 0;
       if (startTime && elapsedMinutes > 0) {
@@ -1399,12 +1466,19 @@ const clientScript = `
           speed = Math.min(rawWpm, 200);
         }
       }
+      const mistakes = currentTypingMode === 'flow' ? flowMistakes : typed.length - correct;
+      return { accuracy, correct, mistakes, progress, speed };
+    }
+
+    function updateMetrics() {
+      const typed = input.value;
+      const { accuracy, mistakes, progress, speed } = getTypingStats(typed);
       progressValue.textContent = progress + '%';
       accuracyValue.textContent = accuracy + '%';
       wpmValue.textContent = '' + speed;
       updateTargetTextProgress(typed);
-      if (typed === target) {
-        showCompletionPanel(accuracy, speed, typed.length - correct);
+      if (typed === activeTypingTarget) {
+        showCompletionPanel(accuracy, speed, mistakes);
         if (!activeIsTranslationPractice) {
           expressionsPanel.hidden = false;
           grammarPanel.hidden = false;
@@ -1420,12 +1494,54 @@ const clientScript = `
     let hasRecordedCompletion = false;
     let isComposing = false;
 
+    function flashCurrentMistake(index) {
+      const currentChar = Array.from(targetCharacters).find((char) => Number(char.dataset.charIndex) === index);
+      if (!currentChar) {
+        return;
+      }
+      currentChar.classList.remove('flow-mistake');
+      void currentChar.offsetWidth;
+      currentChar.classList.add('flow-mistake');
+      window.setTimeout(() => {
+        currentChar.classList.remove('flow-mistake');
+      }, 280);
+    }
+
+    function processFlowInput() {
+      const target = activeTypingTarget;
+      const rawValue = input.value;
+      if (rawValue.length < flowAcceptedValue.length) {
+        flowAcceptedValue = rawValue.slice(0, Math.min(rawValue.length, target.length));
+        input.value = flowAcceptedValue;
+        return;
+      }
+
+      let nextAccepted = flowAcceptedValue;
+      const pending = rawValue.slice(flowAcceptedValue.length);
+      for (const char of Array.from(pending)) {
+        if (nextAccepted.length >= target.length) {
+          break;
+        }
+        if (char === target[nextAccepted.length]) {
+          nextAccepted += char;
+        } else {
+          flowMistakes += 1;
+          flashCurrentMistake(nextAccepted.length);
+        }
+      }
+      flowAcceptedValue = nextAccepted;
+      input.value = nextAccepted;
+    }
+
     input.addEventListener('input', (event) => {
       if (event.isComposing || isComposing) {
         return;
       }
       if (!startTime) {
         startTime = performance.now();
+      }
+      if (currentTypingMode === 'flow') {
+        processFlowInput();
       }
       updateMetrics();
     });
@@ -1439,7 +1555,17 @@ const clientScript = `
       if (!startTime) {
         startTime = performance.now();
       }
+      if (currentTypingMode === 'flow') {
+        processFlowInput();
+      }
       updateMetrics();
+    });
+
+    typingModeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        saveTypingMode(button.dataset.typingMode);
+        input.focus();
+      });
     });
 
     statusButtons.forEach((button) => {
@@ -1657,6 +1783,14 @@ if (!text) {
             ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
             : uiText[defaultUiLang].typingPractice}
         </h3>
+        <div class="typing-mode-control" aria-label={uiText[defaultUiLang].typingMode}>
+          <span id="typing-mode-title">{uiText[defaultUiLang].typingMode}</span>
+          <div class="typing-mode-buttons">
+            <button class="typing-mode-button active" type="button" data-typing-mode="strict" aria-pressed="true">{uiText[defaultUiLang].typingModeStrict}</button>
+            <button class="typing-mode-button" type="button" data-typing-mode="flow" aria-pressed="false">{uiText[defaultUiLang].typingModeFlow}</button>
+          </div>
+          <p class="typing-mode-description" id="typing-mode-description" hidden>{uiText[defaultUiLang].typingModeFlowDescription}</p>
+        </div>
         <textarea id="typing-input" class="type-area" placeholder={uiText[defaultUiLang].typingPlaceholder} spellcheck="false"></textarea>
         <div class="stat-grid">
           <div class="stat-card"><strong id="progress-title" data-i18n="progress">{uiText[defaultUiLang].progress}</strong><p id="progress-value">0%</p></div>

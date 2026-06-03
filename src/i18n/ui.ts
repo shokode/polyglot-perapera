@@ -116,6 +116,10 @@ export type UILabels = {
   focusNaturalMeaning: string;
   typingPractice: string;
   typingPlaceholder: string;
+  typingMode: string;
+  typingModeStrict: string;
+  typingModeFlow: string;
+  typingModeFlowDescription: string;
   progress: string;
   accuracy: string;
   mistakes: string;
@@ -216,6 +220,10 @@ export const uiText: Record<UILang, UILabels> = {
     focusNaturalMeaning: 'Fokuser på naturlig mening og grammatikk i kontekst. Skriv hele teksten under og få oversettelse, uttrykk og grammatikk etterpå.',
     typingPractice: 'Skriveøvelse',
     typingPlaceholder: 'Begynn å skrive her...',
+    typingMode: 'Skrivemodus',
+    typingModeStrict: 'Nøyaktig modus',
+    typingModeFlow: 'Flytmodus',
+    typingModeFlowDescription: 'Feil telles, men du trenger ikke slette dem. Markøren venter til du skriver riktig tegn.',
     progress: 'Fremgang',
     accuracy: 'Nøyaktighet',
     mistakes: 'Feil',
@@ -314,6 +322,10 @@ export const uiText: Record<UILang, UILabels> = {
     focusNaturalMeaning: 'Focus on natural meaning and grammar in context. Type the full text below and unlock translation, expressions, and grammar notes after completion.',
     typingPractice: 'Typing practice',
     typingPlaceholder: 'Start typing here...',
+    typingMode: 'Typing mode',
+    typingModeStrict: 'Strict mode',
+    typingModeFlow: 'Flow mode',
+    typingModeFlowDescription: 'Mistakes are counted, but you do not need to delete them. The cursor waits until you type the correct character.',
     progress: 'Progress',
     accuracy: 'Accuracy',
     mistakes: 'Mistakes',
@@ -412,6 +424,10 @@ export const uiText: Record<UILang, UILabels> = {
     focusNaturalMeaning: '自然な意味と文法に注目しましょう。下の全文をタイプして、完了後に翻訳・表現・文法を確認できます。',
     typingPractice: 'タイピング練習',
     typingPlaceholder: 'ここに入力してください...',
+    typingMode: '入力モード',
+    typingModeStrict: '正確モード',
+    typingModeFlow: 'フローモード',
+    typingModeFlowDescription: '間違えても削除せず、正しい文字を打つまで進みません。',
     progress: '進捗',
     accuracy: '正確さ',
     mistakes: 'ミス',
