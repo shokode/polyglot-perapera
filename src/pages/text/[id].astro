@@ -46,38 +46,49 @@ const learningFocusExpressions = text?.expressions.map((item) => item.phrase) ??
 const learningFocusGrammar = text?.grammar.map((item) => item.title) ?? [];
 const explanationLanguageOrder: UILang[] = ['ja', 'en', 'no'];
 
+type ExpressionRange = { start: number; end: number; phrase: string; markerId: string };
+
 function getExpressionRanges(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>) {
-  return expressionsArray.flatMap((expression) => {
+  return expressionsArray.flatMap((expression, expressionIndex) => {
     const textForm = getTextForm(expression);
-    const ranges: Array<{ start: number; end: number; phrase: string }> = [];
+    const ranges: ExpressionRange[] = [];
     let start = value.indexOf(textForm);
+    let occurrence = 0;
     while (start !== -1) {
-      ranges.push({ start, end: start + textForm.length, phrase: expression.phrase });
+      ranges.push({
+        start,
+        end: start + textForm.length,
+        phrase: expression.phrase,
+        markerId: `expression-${expressionIndex}-${occurrence}`,
+      });
       start = value.indexOf(textForm, start + textForm.length);
+      occurrence += 1;
     }
     return ranges;
   });
 }
 
-function getExpressionRangeAtIndex(index: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
+function getExpressionRangeAtIndex(index: number, ranges: ExpressionRange[]) {
   return ranges.find((range) => index >= range.start && index < range.end);
 }
 
-function renderCharacter(value: string, index: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
+function renderCharacter(value: string, index: number, ranges: ExpressionRange[]) {
   const classes = ['target-char'];
   const expressionRange = getExpressionRangeAtIndex(index, ranges);
-  const expressionAttribute = expressionRange ? ` data-expression-phrase="${escapeHtml(expressionRange.phrase)}"` : '';
+  const expressionAttribute = expressionRange
+    ? ` data-expression-phrase="${escapeHtml(expressionRange.phrase)}" data-marker-id="${escapeHtml(expressionRange.markerId)}"`
+    : '';
   if (expressionRange) {
     classes.push('target-highlight', 'learning-highlight', 'expression');
   }
   return `<span class="${classes.join(' ')}" data-char-index="${index}"${expressionAttribute}>${escapeHtml(value)}</span>`;
 }
 
-function renderCharacters(value: string, startIndex: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
+function renderCharacters(value: string, startIndex: number, ranges: ExpressionRange[]) {
   return Array.from(value).map((char, offset) => renderCharacter(char, startIndex + offset, ranges)).join('');
 }
 
-function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string }>, ranges: Array<{ start: number; end: number; phrase: string }>) {
+function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string }>, ranges: ExpressionRange[]) {
   let index = 0;
   return `<p>${rubyText.map((part) => {
     const rendered = renderCharacters(part.text, index, ranges);
@@ -88,7 +99,7 @@ function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string
   }).join('')}</p>`;
 }
 
-function renderProgressParagraph(paragraph: string, paragraphStartIndex: number, ranges: Array<{ start: number; end: number; phrase: string }>) {
+function renderProgressParagraph(paragraph: string, paragraphStartIndex: number, ranges: ExpressionRange[]) {
   let index = paragraphStartIndex;
   return paragraph.split(/(\s+)/).map((part) => {
     const startIndex = index;
@@ -848,7 +859,7 @@ const clientScript = `
     const translationPracticePinButtons = document.querySelectorAll('[data-translation-practice-pin]');
     let targetCharacters = document.querySelectorAll('[data-char-index]');
     const textContent = document.querySelector('.text-content');
-    const expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
+    let expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
     const expressionMiniCard = document.getElementById('expression-mini-card');
     const miniCardPhrase = document.getElementById('mini-card-phrase');
     const miniCardMeaning = document.getElementById('mini-card-meaning');
@@ -928,6 +939,38 @@ const clientScript = `
       }).join('');
     }
 
+    function setMarkerHoverState(markerId, isHovered) {
+      document.querySelectorAll('[data-marker-id]').forEach((marker) => {
+        if (marker.dataset.markerId === markerId) {
+          marker.classList.toggle('is-marker-hovered', isHovered);
+        }
+      });
+    }
+
+    function bindExpressionHighlights(highlights) {
+      highlights.forEach((highlight) => {
+        if (highlight.dataset.expressionHighlightBound === 'true') {
+          return;
+        }
+        highlight.dataset.expressionHighlightBound = 'true';
+        highlight.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const phrase = highlight.dataset.expressionPhrase;
+          if (phrase) {
+            showExpressionMiniCard(phrase, event);
+          }
+        });
+        const markerId = highlight.dataset.markerId;
+        if (!markerId) {
+          return;
+        }
+        highlight.addEventListener('mouseenter', () => setMarkerHoverState(markerId, true));
+        highlight.addEventListener('mouseleave', () => setMarkerHoverState(markerId, false));
+        highlight.addEventListener('focusin', () => setMarkerHoverState(markerId, true));
+        highlight.addEventListener('focusout', () => setMarkerHoverState(markerId, false));
+      });
+    }
+
     function applyPracticeModePresentation() {
       if (!activeIsTranslationPractice) {
         if (translationPracticeChip) {
@@ -939,6 +982,8 @@ const clientScript = `
       if (targetText) {
         targetText.innerHTML = renderClientProgressText(activeTypingTarget);
         targetCharacters = document.querySelectorAll('[data-char-index]');
+        expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
+        bindExpressionHighlights(expressionHighlights);
       }
       if (textContent) {
         textContent.dataset.targetLanguage = activePracticeTranslationLang;
@@ -1593,15 +1638,7 @@ const clientScript = `
       });
     });
 
-    expressionHighlights.forEach((highlight) => {
-      highlight.addEventListener('click', (event) => {
-        event.stopPropagation();
-        const phrase = highlight.dataset.expressionPhrase;
-        if (phrase) {
-          showExpressionMiniCard(phrase, event);
-        }
-      });
-    });
+    bindExpressionHighlights(expressionHighlights);
 
     if (miniCardDetails) {
       miniCardDetails.addEventListener('click', (event) => {

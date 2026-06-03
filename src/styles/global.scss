@@ -1361,10 +1361,10 @@ textarea {
   hyphens: none;
   padding: 28px;
   border-radius: 24px;
-  background: #243041;
-  border: 1px solid rgba(203, 213, 225, 0.16);
-  color: #f1f5f9;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 42px rgba(0, 0, 0, 0.16);
+  background: #e6e8e3;
+  border: 1px solid rgba(100, 116, 139, 0.24);
+  color: #111827;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 42px rgba(0, 0, 0, 0.14);
 }
 
 .text-content[data-target-language="ja"] {
@@ -1386,11 +1386,11 @@ textarea {
 }
 
 .text-content rt {
-  color: #cbd5e1;
+  color: #475569;
   font-size: 0.42em;
   font-weight: 600;
   letter-spacing: 0.04em;
-  opacity: 0.72;
+  opacity: 0.86;
   transform: translateY(-0.18em);
 }
 
@@ -1418,105 +1418,136 @@ textarea {
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.2em;
   border-radius: 0.2em;
-  transition: background-color 80ms ease, box-shadow 80ms ease, color 80ms ease, text-decoration-color 80ms ease;
+  transition: background-color 80ms ease, box-shadow 80ms ease, color 80ms ease, text-decoration-color 80ms ease, text-decoration-thickness 80ms ease;
 }
 
 .target-highlight {
   background: transparent;
-  color: #f1f5f9;
+  color: #111827;
   padding: 0;
   border-radius: 0;
 }
 
 .target-char.correct {
-  background: rgba(74, 222, 128, 0.08);
-  color: #e8fff1;
+  background: rgba(80, 180, 110, 0.18);
+  color: inherit;
+  border-radius: 0;
   text-decoration-line: none;
 }
 
 .target-char.incorrect {
-  background: rgba(248, 113, 113, 0.18);
-  color: #fecdd3;
+  animation: typing-shake 160ms ease-in-out;
+  background: rgba(239, 68, 68, 0.14);
+  color: #b91c1c;
+  border-radius: 0.12em;
   text-decoration-line: underline;
-  text-decoration-color: rgba(248, 113, 113, 0.88);
+  text-decoration-color: rgba(220, 38, 38, 0.9);
 }
 
 .target-char.current {
-  background: rgba(96, 165, 250, 0.22);
-  color: #ffffff;
-  box-shadow: inset 0 -0.16em 0 rgba(96, 165, 250, 0.86);
+  background: rgba(37, 99, 235, 0.12);
+  color: #111827;
+  box-shadow: inset 0 -0.16em 0 rgba(37, 99, 235, 0.78);
   text-decoration-line: underline;
-  text-decoration-color: rgba(147, 197, 253, 0.9);
+  text-decoration-color: rgba(37, 99, 235, 0.86);
 }
 
 .target-char.learning-highlight.expression {
   cursor: pointer;
   text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: rgba(196, 181, 253, 0.72);
-  text-decoration-thickness: 0.09em;
+  text-decoration-style: solid;
+  text-decoration-color: rgba(124, 58, 237, 0.48);
+  text-decoration-thickness: 1px;
   text-underline-offset: 0.24em;
 }
 
 .target-char.learning-highlight.grammar {
   text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: rgba(251, 191, 36, 0.72);
-  text-decoration-thickness: 0.09em;
+  text-decoration-style: solid;
+  text-decoration-color: rgba(180, 83, 9, 0.46);
+  text-decoration-thickness: 1px;
   text-underline-offset: 0.24em;
 }
 
+.target-char.learning-highlight.expression.is-marker-hovered,
+.target-char.learning-highlight.expression:focus-visible {
+  text-decoration-color: rgba(124, 58, 237, 0.78);
+  text-decoration-thickness: 2px;
+}
+
+.target-char.learning-highlight.grammar.is-marker-hovered,
+.target-char.learning-highlight.grammar:focus-visible {
+  text-decoration-color: rgba(180, 83, 9, 0.76);
+  text-decoration-thickness: 2px;
+}
+
 .target-char.correct.learning-highlight.expression {
-  background: rgba(74, 222, 128, 0.14);
+  background: rgba(80, 180, 110, 0.18);
+  border-radius: 0;
   text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: rgba(196, 181, 253, 0.76);
+  text-decoration-style: solid;
+  text-decoration-color: rgba(124, 58, 237, 0.54);
 }
 
 .target-char.incorrect.learning-highlight.expression {
-  background: rgba(248, 113, 113, 0.08);
-  color: #fb7185;
+  background: rgba(239, 68, 68, 0.14);
+  color: #b91c1c;
   text-decoration-line: underline;
   text-decoration-style: solid;
-  text-decoration-color: rgba(248, 113, 113, 0.62);
+  text-decoration-color: rgba(220, 38, 38, 0.72);
 }
 
 .target-char.current.learning-highlight.expression {
   text-decoration-line: underline;
   text-decoration-style: solid;
-  text-decoration-color: rgba(96, 165, 250, 0.75);
+  text-decoration-color: rgba(37, 99, 235, 0.78);
 }
 
 .target-char.flow-mistake {
-  animation: flow-mistake-pulse 280ms ease;
-  background: rgba(248, 113, 113, 0.26);
-  color: #fff1f2;
-  text-decoration-color: rgba(248, 113, 113, 0.92);
+  animation: typing-shake 160ms ease-in-out;
+  background: rgba(239, 68, 68, 0.2);
+  color: #b91c1c;
+  border-radius: 0.12em;
+  text-decoration-color: rgba(220, 38, 38, 0.92);
 }
 
-@keyframes flow-mistake-pulse {
-  0% {
-    transform: translateX(0);
-  }
-  35% {
-    transform: translateX(-0.04em);
-  }
-  70% {
-    transform: translateX(0.04em);
-  }
+@keyframes typing-shake {
+  0%,
   100% {
     transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .target-char.incorrect,
+  .target-char.flow-mistake {
+    animation: none;
   }
 }
 
 .text-content[data-target-language="ja"] .target-char.learning-highlight.expression {
-  text-decoration-color: rgba(196, 181, 253, 0.42);
-  text-decoration-thickness: 0.06em;
+  text-decoration-color: rgba(124, 58, 237, 0.5);
+  text-decoration-thickness: 1px;
   text-underline-offset: 0.32em;
 }
 
 .text-content[data-target-language="ja"] .target-char.correct.learning-highlight.expression {
-  text-decoration-color: rgba(196, 181, 253, 0.48);
+  text-decoration-color: rgba(124, 58, 237, 0.56);
+}
+
+.text-content[data-target-language="ja"] .target-char.learning-highlight.expression.is-marker-hovered,
+.text-content[data-target-language="ja"] .target-char.learning-highlight.expression:focus-visible {
+  text-decoration-color: rgba(124, 58, 237, 0.78);
+  text-decoration-thickness: 2px;
 }
 
 .text-content[data-target-language="ja"] .target-char.current.learning-highlight.expression,
