@@ -214,6 +214,7 @@ const translationPracticeHrefBase = text ? `/text/${text.id}` : '';
 const recommendationTexts = texts.map((item) => ({
   id: item.id,
   language: item.language,
+  title: item.title,
   expressions: item.expressions,
 }));
 
@@ -240,6 +241,7 @@ const clientScript = `
   const TEXT_PROGRESS_KEY = 'typingProgress';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
+  const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   const translationFieldByLanguage = {
     ja: 'translationJa',
@@ -287,6 +289,32 @@ const clientScript = `
       return parsed && typeof parsed === 'object' ? parsed : {};
     } catch {
       return {};
+    }
+  }
+
+  function loadPinnedTextIds() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(PINNED_TEXTS_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function savePinnedTextIds(ids) {
+    safeWriteStorage(PINNED_TEXTS_KEY, JSON.stringify(Array.from(new Set(ids))));
+  }
+
+  function isTextPinned(textId) {
+    return loadPinnedTextIds().includes(textId);
+  }
+
+  function togglePinnedText(textId) {
+    const pinned = loadPinnedTextIds();
+    if (pinned.includes(textId)) {
+      savePinnedTextIds(pinned.filter((id) => id !== textId));
+    } else {
+      savePinnedTextIds([...pinned, textId]);
     }
   }
 
@@ -422,6 +450,11 @@ const clientScript = `
     }, 0);
   }
 
+  function isTextLearned(item, statuses) {
+    return item.expressions.length > 0
+      && item.expressions.every((expression) => getExpressionStatusForItem(expression, item.language, statuses) === 'learned');
+  }
+
   function randomItem(items) {
     return items[Math.floor(Math.random() * items.length)];
   }
@@ -437,26 +470,48 @@ const clientScript = `
     }
 
     const expressionStatuses = loadExpressionStatuses();
-    const highestPriority = Math.max(...candidates.map((item) => getAssessmentPriorityForText(item.id, item.language)));
-    if (highestPriority >= 2) {
-      const priorityCandidates = candidates.filter((item) => getAssessmentPriorityForText(item.id, item.language) === highestPriority);
-      const minPracticeCount = Math.min(...priorityCandidates.map((item) => getTextProgress(item.id).completedCount));
-      return randomItem(priorityCandidates.filter((item) => getTextProgress(item.id).completedCount === minPracticeCount));
-    }
-
-    const unpracticed = candidates.filter((item) => getTextProgress(item.id).completedCount === 0);
-    if (unpracticed.length) {
-      const maxReviewCount = Math.max(...unpracticed.map((item) => getReviewCountForText(item, expressionStatuses)));
-      return randomItem(unpracticed.filter((item) => getReviewCountForText(item, expressionStatuses) === maxReviewCount));
-    }
-
-    const allPracticed = candidates.every((item) => getTextProgress(item.id).completedCount > 0);
-    if (allPracticed) {
-      return randomItem(candidates);
-    }
-
-    const minPracticeCount = Math.min(...candidates.map((item) => getTextProgress(item.id).completedCount));
-    return randomItem(candidates.filter((item) => getTextProgress(item.id).completedCount === minPracticeCount));
+    const pinnedTextIds = loadPinnedTextIds();
+    const scored = candidates.map((item) => {
+      const progress = getTextProgress(item.id);
+      const reviewCount = getReviewCountForText(item, expressionStatuses);
+      const assessmentPriority = getAssessmentPriorityForText(item.id, item.language);
+      const learned = isTextLearned(item, expressionStatuses);
+      const pinned = pinnedTextIds.includes(item.id);
+      let group = 4;
+      if (pinned) {
+        group = learned ? 1 : 0;
+      } else if (assessmentPriority >= 2) {
+        group = 2;
+      } else if (reviewCount > 0) {
+        group = 3;
+      } else if (learned) {
+        group = 6;
+      } else if (progress.completedCount === 0) {
+        group = 5;
+      }
+      return {
+        item,
+        group,
+        assessmentPriority,
+        reviewCount,
+        practiceCount: progress.completedCount,
+        title: item.title || item.id,
+      };
+    }).sort((a, b) => {
+      return a.group - b.group
+        || b.assessmentPriority - a.assessmentPriority
+        || b.reviewCount - a.reviewCount
+        || a.practiceCount - b.practiceCount
+        || a.title.localeCompare(b.title);
+    });
+    const best = scored.filter((entry) => {
+      const first = scored[0];
+      return entry.group === first.group
+        && entry.assessmentPriority === first.assessmentPriority
+        && entry.reviewCount === first.reviewCount
+        && entry.practiceCount === first.practiceCount;
+    });
+    return randomItem(best).item;
   }
 
   function getPracticeLevel(count) {
@@ -585,6 +640,7 @@ const clientScript = `
     const wpmTitle = document.getElementById('wpm-title');
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
+    const pinButton = document.getElementById('text-pin-button');
     let targetCharacters = document.querySelectorAll('[data-char-index]');
     const textContent = document.querySelector('.text-content');
     const expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
@@ -921,7 +977,21 @@ const clientScript = `
       updateExpressionPracticeLabels();
       renderLocalizedExplanations(lang);
       renderLocalizedExamples(lang);
+      updatePinButton();
       updateExpressionMiniCardText();
+    }
+
+    function updatePinButton() {
+      if (!pinButton) {
+        return;
+      }
+      const labels = getUiText(uiLanguageSelect.value);
+      const pinned = isTextPinned(text.id);
+      pinButton.classList.toggle('is-pinned', pinned);
+      pinButton.textContent = pinned ? '★' : '☆';
+      pinButton.title = pinned ? labels.unpinText : labels.pinText;
+      pinButton.setAttribute('aria-label', pinned ? labels.unpinText : labels.pinText);
+      pinButton.setAttribute('aria-pressed', pinned ? 'true' : 'false');
     }
 
     function updateTargetTextProgress(typed) {
@@ -1209,6 +1279,13 @@ const clientScript = `
       });
     }
 
+    if (pinButton) {
+      pinButton.addEventListener('click', () => {
+        togglePinnedText(text.id);
+        updatePinButton();
+      });
+    }
+
     document.addEventListener('click', () => {
       closeExpressionMiniCard();
     });
@@ -1218,6 +1295,7 @@ const clientScript = `
     renderUiText(savedUiLanguage);
     updateExpressionStatusButtons();
     updateExpressionPracticeLabels();
+    updatePinButton();
     updateTargetTextProgress(input.value);
 
     uiLanguageSelect.addEventListener('change', (event) => {
@@ -1244,7 +1322,10 @@ if (!text) {
     <main class="page-shell text-page">
       <section class="hero-card page-top">
         <div>
-          <h1 class="text-title">{text.title}</h1>
+          <div class="text-title-row">
+            <h1 class="text-title">{text.title}</h1>
+            <button class="pin-button text-page__pin" type="button" id="text-pin-button" aria-label={uiText[defaultUiLang].pinText} title={uiText[defaultUiLang].pinText} aria-pressed="false">☆</button>
+          </div>
           <div class="meta-strip">
             <span
               class={`${getLanguageBadgeClass(text.language as UILang)} meta-chip`}

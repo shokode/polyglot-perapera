@@ -46,6 +46,8 @@ const clientScript = `
   const TARGET_LANGUAGE_STORAGE_KEY = 'typingSiteTargetLanguage';
   const TEXT_PROGRESS_KEY = 'typingProgress';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
+  const PINNED_TEXTS_KEY = 'typingPinnedTexts';
 
   function safeReadStorage(key) {
     try {
@@ -81,6 +83,37 @@ const clientScript = `
     return value === 'all' ? getUiText(lang).allLanguages : targetLanguageBadges[value] || value;
   }
 
+  function getCategoryLabel(value, lang) {
+    return value === 'all' ? getUiText(lang).allCategories : categoryLabels[value]?.[lang] || value;
+  }
+
+  function getLevelLabel(value, lang) {
+    const level = value === 'all' ? value : normalizeLevelKey(value);
+    return level === 'all' ? getUiText(lang).allLevels : levelLabels[level]?.[lang] || value;
+  }
+
+  function getSortLabel(value, labels) {
+    if (value === 'most-practiced') {
+      return labels.sortMostPracticed;
+    }
+    if (value === 'least-practiced') {
+      return labels.sortLeastPracticed;
+    }
+    if (value === 'recently-practiced') {
+      return labels.sortRecentlyPracticed;
+    }
+    if (value === 'easiest') {
+      return labels.sortEasiestFirst;
+    }
+    if (value === 'hardest') {
+      return labels.sortHardestFirst;
+    }
+    if (value === 'az') {
+      return labels.sortAlphabetical;
+    }
+    return labels.sortNewestDefault;
+  }
+
   function getLanguageTitle(value, lang) {
     return languageNames[value]?.[lang] || value;
   }
@@ -113,6 +146,41 @@ const clientScript = `
       return parsed && typeof parsed === 'object' ? parsed : {};
     } catch {
       return {};
+    }
+  }
+
+  function loadSelfAssessments() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(SELF_ASSESSMENT_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function loadPinnedTextIds() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(PINNED_TEXTS_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function savePinnedTextIds(ids) {
+    safeWriteStorage(PINNED_TEXTS_KEY, JSON.stringify(Array.from(new Set(ids))));
+  }
+
+  function isTextPinned(textId) {
+    return loadPinnedTextIds().includes(textId);
+  }
+
+  function togglePinnedText(textId) {
+    const pinned = loadPinnedTextIds();
+    if (pinned.includes(textId)) {
+      savePinnedTextIds(pinned.filter((id) => id !== textId));
+    } else {
+      savePinnedTextIds([...pinned, textId]);
     }
   }
 
@@ -194,6 +262,85 @@ const clientScript = `
     });
   }
 
+  function updateSelectDropdownUi(select, options, buttonLabel, getLabel) {
+    const selectedValue = select.value;
+    options.forEach((option) => {
+      const value = option.dataset.dropdownValue;
+      const isSelected = value === selectedValue;
+      option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      option.querySelector('[data-filter-option-label]').textContent = getLabel(value);
+    });
+    buttonLabel.textContent = getLabel(selectedValue);
+  }
+
+  function closeSelectDropdown(button, menu) {
+    button.setAttribute('aria-expanded', 'false');
+    menu.hidden = true;
+  }
+
+  function openSelectDropdown(button, menu, options, selectedValue) {
+    button.setAttribute('aria-expanded', 'true');
+    menu.hidden = false;
+    const selectedOption = options.find((option) => option.dataset.dropdownValue === selectedValue) || options[0];
+    selectedOption?.focus();
+  }
+
+  function setupSelectDropdown({ select, button, menu, options, buttonLabel, getLabel, onChange }) {
+    const close = () => closeSelectDropdown(button, menu);
+    const update = () => updateSelectDropdownUi(select, options, buttonLabel, getLabel);
+    const chooseValue = (value) => {
+      select.value = value;
+      close();
+      update();
+      onChange(value);
+    };
+
+    button.addEventListener('click', () => {
+      if (menu.hidden) {
+        openSelectDropdown(button, menu, options, select.value);
+      } else {
+        close();
+      }
+    });
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openSelectDropdown(button, menu, options, select.value);
+      }
+    });
+    options.forEach((option, index) => {
+      option.addEventListener('click', () => {
+        chooseValue(option.dataset.dropdownValue);
+      });
+      option.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          chooseValue(option.dataset.dropdownValue);
+        }
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          close();
+          button.focus();
+        }
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          options[(index + 1) % options.length].focus();
+        }
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          options[(index - 1 + options.length) % options.length].focus();
+        }
+      });
+    });
+    document.addEventListener('click', (event) => {
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        close();
+      }
+    });
+
+    return { update, close };
+  }
+
   function getExpressionStats() {
     const statuses = loadExpressionStatuses();
     const seen = new Set();
@@ -218,18 +365,69 @@ const clientScript = `
     }, 0);
   }
 
+  function getTextById(textId) {
+    return texts.find((item) => item.id === textId) || null;
+  }
+
+  function getValidSpeedForLanguage(entry, language) {
+    const speed = Number(entry.bestWpm);
+    if (!Number.isFinite(speed) || speed <= 0) {
+      return null;
+    }
+    if (language === 'ja') {
+      return speed <= 1000 ? speed : null;
+    }
+    return speed <= 250 ? speed : null;
+  }
+
+  function getAverageSpeedValues() {
+    const values = { wpm: [], cpm: [] };
+    Object.entries(loadTextProgress()).forEach(([textId, entry]) => {
+      if (!entry || typeof entry !== 'object' || !Number.isFinite(entry.completedCount) || entry.completedCount <= 0) {
+        return;
+      }
+      const textItem = getTextById(textId);
+      if (!textItem) {
+        return;
+      }
+      const speed = getValidSpeedForLanguage(entry, textItem.language);
+      if (speed === null) {
+        return;
+      }
+      if (textItem.language === 'ja') {
+        values.cpm.push(speed);
+      } else {
+        values.wpm.push(speed);
+      }
+    });
+    return {
+      wpm: values.wpm.length ? Math.round(values.wpm.reduce((sum, value) => sum + value, 0) / values.wpm.length) : null,
+      cpm: values.cpm.length ? Math.round(values.cpm.reduce((sum, value) => sum + value, 0) / values.cpm.length) : null,
+    };
+  }
+
+  function isTextLearned(text, statuses) {
+    return text.expressions.length > 0
+      && text.expressions.every((expression) => getExpressionStatus(expression, text.language, statuses) === 'learned');
+  }
+
+  function getAssessmentPriorityForText(textId, targetLanguage) {
+    const assessments = loadSelfAssessments();
+    const entry = assessments[textId + '::text::' + targetLanguage] || {};
+    return Number.isFinite(entry.priority) ? entry.priority : 0;
+  }
+
+  function getPinButtonLabel(textId, labels) {
+    return isTextPinned(textId) ? labels.unpinText : labels.pinText;
+  }
+
   function renderDashboard(uiLanguageSelect) {
     const labels = getUiText(uiLanguageSelect.value);
     const progressEntries = Object.values(loadTextProgress());
     const totalSessions = progressEntries.reduce((sum, entry) => {
       return sum + (Number.isFinite(entry.completedCount) ? entry.completedCount : 0);
     }, 0);
-    const speedValues = progressEntries
-      .map((entry) => Number.isFinite(entry.bestWpm) ? entry.bestWpm : 0)
-      .filter((value) => value > 0);
-    const averageSpeed = speedValues.length
-      ? Math.round(speedValues.reduce((sum, value) => sum + value, 0) / speedValues.length)
-      : null;
+    const averageSpeeds = getAverageSpeedValues();
     const expressionStats = getExpressionStats();
 
     document.getElementById('dashboard-title').textContent = labels.todayPractice;
@@ -241,8 +439,10 @@ const clientScript = `
     document.getElementById('reviewing-expressions-value').textContent = expressionStats.review;
     document.getElementById('new-expressions-label').textContent = labels.newExpressions;
     document.getElementById('new-expressions-value').textContent = expressionStats.new;
-    document.getElementById('average-speed-label').textContent = labels.averageSpeed;
-    document.getElementById('average-speed-value').textContent = averageSpeed === null ? '—' : averageSpeed;
+    document.getElementById('average-wpm-label').textContent = labels.averageWpm;
+    document.getElementById('average-wpm-value').textContent = averageSpeeds.wpm === null ? '—' : averageSpeeds.wpm;
+    document.getElementById('average-cpm-label').textContent = labels.averageCpm;
+    document.getElementById('average-cpm-value').textContent = averageSpeeds.cpm === null ? '—' : averageSpeeds.cpm;
   }
 
   function getFilteredTexts(targetLanguageSelect, categorySelect, levelSelect, sortSelect) {
@@ -285,10 +485,12 @@ const clientScript = `
     const uiLang = uiLanguageSelect.value;
     const labels = getUiText(uiLang);
     const expressionStatuses = loadExpressionStatuses();
+    const pinnedTextIds = loadPinnedTextIds();
     const filtered = getFilteredTexts(targetLanguageSelect, categorySelect, levelSelect, sortSelect);
 
     results.innerHTML = filtered.map((item) => {
       const progress = getTextProgress(item.id);
+      const isPinned = pinnedTextIds.includes(item.id);
       const lastPracticed = getLastPracticedLabel(progress.lastPracticedAt, labels, uiLang);
       const levelKey = normalizeLevelKey(item.level);
       const categoryLabel = categoryLabels[item.category]?.[uiLang] || item.category;
@@ -297,6 +499,7 @@ const clientScript = `
       const preview = item.text.slice(0, 110).replace(/\\n/g, ' ');
       return ''
         + '<article class="card text-list-card" data-text-id="' + escapeHtml(item.id) + '" data-target-language="' + escapeHtml(item.language) + '">'
+        + '<button class="pin-button text-card__pin' + (isPinned ? ' is-pinned' : '') + '" type="button" data-pin-text-id="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(getPinButtonLabel(item.id, labels)) + '" title="' + escapeHtml(getPinButtonLabel(item.id, labels)) + '" aria-pressed="' + (isPinned ? 'true' : 'false') + '">' + (isPinned ? '★' : '☆') + '</button>'
         + '<div class="text-card-body">'
         + '<p class="meta">' + getLanguageBadgeHtml(item.language, uiLang) + '<span>' + escapeHtml(categoryLabel) + '</span><span>' + escapeHtml(levelLabel) + '</span></p>'
         + '<h2>' + escapeHtml(item.title) + '</h2>'
@@ -318,6 +521,13 @@ const clientScript = `
         event.stopPropagation();
       });
     });
+    results.querySelectorAll('[data-pin-text-id]').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        togglePinnedText(button.dataset.pinTextId);
+        renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState);
+      });
+    });
     return filtered;
   }
 
@@ -330,17 +540,48 @@ const clientScript = `
       return null;
     }
     const expressionStatuses = loadExpressionStatuses();
-    const unpracticed = filtered.filter((item) => getTextProgress(item.id).completedCount === 0);
-    if (unpracticed.length) {
-      const maxReviewCount = Math.max(...unpracticed.map((item) => getReviewCountForText(item, expressionStatuses)));
-      return randomItem(unpracticed.filter((item) => getReviewCountForText(item, expressionStatuses) === maxReviewCount));
-    }
-    const allPracticed = filtered.every((item) => getTextProgress(item.id).completedCount > 0);
-    if (allPracticed) {
-      return randomItem(filtered);
-    }
-    const minPracticeCount = Math.min(...filtered.map((item) => getTextProgress(item.id).completedCount));
-    return randomItem(filtered.filter((item) => getTextProgress(item.id).completedCount === minPracticeCount));
+    const pinnedTextIds = loadPinnedTextIds();
+    const scored = filtered.map((item) => {
+      const progress = getTextProgress(item.id);
+      const reviewCount = getReviewCountForText(item, expressionStatuses);
+      const assessmentPriority = getAssessmentPriorityForText(item.id, item.language);
+      const learned = isTextLearned(item, expressionStatuses);
+      const pinned = pinnedTextIds.includes(item.id);
+      let group = 4;
+      if (pinned) {
+        group = learned ? 1 : 0;
+      } else if (assessmentPriority >= 2) {
+        group = 2;
+      } else if (reviewCount > 0) {
+        group = 3;
+      } else if (learned) {
+        group = 6;
+      } else if (progress.completedCount === 0) {
+        group = 5;
+      }
+      return {
+        item,
+        group,
+        assessmentPriority,
+        reviewCount,
+        practiceCount: progress.completedCount,
+        title: item.title,
+      };
+    }).sort((a, b) => {
+      return a.group - b.group
+        || b.assessmentPriority - a.assessmentPriority
+        || b.reviewCount - a.reviewCount
+        || a.practiceCount - b.practiceCount
+        || a.title.localeCompare(b.title);
+    });
+    const best = scored.filter((entry) => {
+      const first = scored[0];
+      return entry.group === first.group
+        && entry.assessmentPriority === first.assessmentPriority
+        && entry.reviewCount === first.reviewCount
+        && entry.practiceCount === first.practiceCount;
+    });
+    return randomItem(best).item;
   }
 
   function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton) {
@@ -376,11 +617,68 @@ const clientScript = `
     const emptyState = document.getElementById('empty-state');
     const startButton = document.getElementById('start-button');
     const randomButton = document.getElementById('random-button');
+    const targetLanguageButton = document.getElementById('text-language-button');
+    const targetLanguageMenu = document.getElementById('text-language-menu');
+    const targetLanguageOptions = Array.from(document.querySelectorAll('[data-home-target-language-option]'));
+    const targetLanguageButtonLabel = document.getElementById('text-language-button-label');
+    const categoryButton = document.getElementById('text-category-button');
+    const categoryMenu = document.getElementById('text-category-menu');
+    const categoryOptions = Array.from(document.querySelectorAll('[data-home-category-option]'));
+    const categoryButtonLabel = document.getElementById('text-category-button-label');
+    const levelButton = document.getElementById('text-level-button');
+    const levelMenu = document.getElementById('text-level-menu');
+    const levelOptions = Array.from(document.querySelectorAll('[data-home-level-option]'));
+    const levelButtonLabel = document.getElementById('text-level-button-label');
+    const sortButton = document.getElementById('text-sort-button');
+    const sortMenu = document.getElementById('text-sort-menu');
+    const sortOptions = Array.from(document.querySelectorAll('[data-home-sort-option]'));
+    const sortButtonLabel = document.getElementById('text-sort-button-label');
+
+    const updateFilters = () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
+    const dropdowns = [];
+
+    dropdowns.push(setupSelectDropdown({
+      select: targetLanguageSelect,
+      button: targetLanguageButton,
+      menu: targetLanguageMenu,
+      options: targetLanguageOptions,
+      buttonLabel: targetLanguageButtonLabel,
+      getLabel: (value) => getLanguageLabel(value, uiLanguageSelect.value),
+      onChange: applyTargetLanguage,
+    }));
+    dropdowns.push(setupSelectDropdown({
+      select: categorySelect,
+      button: categoryButton,
+      menu: categoryMenu,
+      options: categoryOptions,
+      buttonLabel: categoryButtonLabel,
+      getLabel: (value) => getCategoryLabel(value, uiLanguageSelect.value),
+      onChange: updateFilters,
+    }));
+    dropdowns.push(setupSelectDropdown({
+      select: levelSelect,
+      button: levelButton,
+      menu: levelMenu,
+      options: levelOptions,
+      buttonLabel: levelButtonLabel,
+      getLabel: (value) => getLevelLabel(value, uiLanguageSelect.value),
+      onChange: updateFilters,
+    }));
+    dropdowns.push(setupSelectDropdown({
+      select: sortSelect,
+      button: sortButton,
+      menu: sortMenu,
+      options: sortOptions,
+      buttonLabel: sortButtonLabel,
+      getLabel: (value) => getSortLabel(value, getUiText(uiLanguageSelect.value)),
+      onChange: updateFilters,
+    }));
 
     function applyUiLanguage(lang) {
       safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
       translateUiLabels(lang);
       uiLanguageSelect.value = lang;
+      dropdowns.forEach((dropdown) => dropdown.update());
       updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
     }
 
@@ -388,6 +686,7 @@ const clientScript = `
       const nextTargetLanguage = lang === 'all' || uiLanguages.includes(lang) ? lang : 'no';
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, nextTargetLanguage);
       targetLanguageSelect.value = nextTargetLanguage;
+      dropdowns.forEach((dropdown) => dropdown.update());
       updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
     }
 
@@ -402,9 +701,18 @@ const clientScript = `
     targetLanguageSelect.addEventListener('change', (event) => {
       applyTargetLanguage(event.target.value);
     });
-    categorySelect.addEventListener('change', () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton));
-    levelSelect.addEventListener('change', () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton));
-    sortSelect.addEventListener('change', () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton));
+    categorySelect.addEventListener('change', () => {
+      dropdowns.forEach((dropdown) => dropdown.update());
+      updateFilters();
+    });
+    levelSelect.addEventListener('change', () => {
+      dropdowns.forEach((dropdown) => dropdown.update());
+      updateFilters();
+    });
+    sortSelect.addEventListener('change', () => {
+      dropdowns.forEach((dropdown) => dropdown.update());
+      updateFilters();
+    });
   });
 `;
 ---
@@ -455,8 +763,12 @@ const clientScript = `
             <strong id="new-expressions-value">0</strong>
           </article>
           <article class="dashboard-stat">
-            <span id="average-speed-label">{uiText[defaultUiLang].averageSpeed}</span>
-            <strong id="average-speed-value">—</strong>
+            <span id="average-wpm-label">{uiText[defaultUiLang].averageWpm}</span>
+            <strong id="average-wpm-value">—</strong>
+          </article>
+          <article class="dashboard-stat">
+            <span id="average-cpm-label">{uiText[defaultUiLang].averageCpm}</span>
+            <strong id="average-cpm-value">—</strong>
           </article>
         </div>
       </section>
@@ -464,34 +776,100 @@ const clientScript = `
       <section class="filters-card">
         <div class="filter-group">
           <label for="text-language" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
-          <select id="text-language">
+          <select id="text-language" class="native-filter-select" aria-hidden="true" tabindex="-1">
             <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
             {uiLanguages.map((lang) => (
               <option value={lang} data-i18n-target-language={lang}>{lang.toUpperCase()}</option>
             ))}
           </select>
+          <div class="status-filter-dropdown">
+            <button
+              id="text-language-button"
+              class="status-filter-button"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-labelledby="text-language-button-label"
+            >
+              <span id="text-language-button-label">{uiText[defaultUiLang].allLanguages}</span>
+            </button>
+            <div id="text-language-menu" class="status-filter-menu" role="listbox" hidden>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-target-language-option data-dropdown-value="all" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].allLanguages}</span>
+              </button>
+              {uiLanguages.map((lang) => (
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-target-language-option data-dropdown-value={lang} aria-selected="false">
+                  <span data-filter-option-label>{lang.toUpperCase()}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         <div class="filter-group">
           <label for="text-category" data-i18n="category">{uiText[defaultUiLang].category}</label>
-          <select id="text-category">
+          <select id="text-category" class="native-filter-select" aria-hidden="true" tabindex="-1">
             <option value="all" data-i18n="allCategories">{uiText[defaultUiLang].allCategories}</option>
             {categoryKeys.map((category) => (
               <option value={category} data-i18n-category={category}>{categoryLabels[category][defaultUiLang]}</option>
             ))}
           </select>
+          <div class="status-filter-dropdown">
+            <button
+              id="text-category-button"
+              class="status-filter-button"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-labelledby="text-category-button-label"
+            >
+              <span id="text-category-button-label">{uiText[defaultUiLang].allCategories}</span>
+            </button>
+            <div id="text-category-menu" class="status-filter-menu" role="listbox" hidden>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-category-option data-dropdown-value="all" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].allCategories}</span>
+              </button>
+              {categoryKeys.map((category) => (
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-category-option data-dropdown-value={category} aria-selected="false">
+                  <span data-filter-option-label>{categoryLabels[category][defaultUiLang]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         <div class="filter-group">
           <label for="text-level" data-i18n="level">{uiText[defaultUiLang].level}</label>
-          <select id="text-level">
+          <select id="text-level" class="native-filter-select" aria-hidden="true" tabindex="-1">
             <option value="all" data-i18n="allLevels">{uiText[defaultUiLang].allLevels}</option>
             {levelKeys.map((level) => (
               <option value={level} data-i18n-level={level}>{levelLabels[level][defaultUiLang]}</option>
             ))}
           </select>
+          <div class="status-filter-dropdown">
+            <button
+              id="text-level-button"
+              class="status-filter-button"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-labelledby="text-level-button-label"
+            >
+              <span id="text-level-button-label">{uiText[defaultUiLang].allLevels}</span>
+            </button>
+            <div id="text-level-menu" class="status-filter-menu" role="listbox" hidden>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-level-option data-dropdown-value="all" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].allLevels}</span>
+              </button>
+              {levelKeys.map((level) => (
+                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-level-option data-dropdown-value={level} aria-selected="false">
+                  <span data-filter-option-label>{levelLabels[level][defaultUiLang]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         <div class="filter-group">
           <label for="text-sort" data-i18n="sortLabel">{uiText[defaultUiLang].sortLabel}</label>
-          <select id="text-sort">
+          <select id="text-sort" class="native-filter-select" aria-hidden="true" tabindex="-1">
             <option value="default" data-i18n="sortNewestDefault">{uiText[defaultUiLang].sortNewestDefault}</option>
             <option value="most-practiced" data-i18n="sortMostPracticed">{uiText[defaultUiLang].sortMostPracticed}</option>
             <option value="least-practiced" data-i18n="sortLeastPracticed">{uiText[defaultUiLang].sortLeastPracticed}</option>
@@ -500,6 +878,41 @@ const clientScript = `
             <option value="hardest" data-i18n="sortHardestFirst">{uiText[defaultUiLang].sortHardestFirst}</option>
             <option value="az" data-i18n="sortAlphabetical">{uiText[defaultUiLang].sortAlphabetical}</option>
           </select>
+          <div class="status-filter-dropdown">
+            <button
+              id="text-sort-button"
+              class="status-filter-button"
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-labelledby="text-sort-button-label"
+            >
+              <span id="text-sort-button-label">{uiText[defaultUiLang].sortNewestDefault}</span>
+            </button>
+            <div id="text-sort-menu" class="status-filter-menu" role="listbox" hidden>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="default" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortNewestDefault}</span>
+              </button>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="most-practiced" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortMostPracticed}</span>
+              </button>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="least-practiced" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortLeastPracticed}</span>
+              </button>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="recently-practiced" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortRecentlyPracticed}</span>
+              </button>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="easiest" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortEasiestFirst}</span>
+              </button>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="hardest" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortHardestFirst}</span>
+              </button>
+              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="az" aria-selected="false">
+                <span data-filter-option-label>{uiText[defaultUiLang].sortAlphabetical}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 

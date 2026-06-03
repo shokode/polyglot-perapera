@@ -106,6 +106,8 @@ export type UILabels = {
   reviewingExpressions: string;
   newExpressions: string;
   averageSpeed: string;
+  averageWpm: string;
+  averageCpm: string;
   favorite: string;
   favorited: string;
   reviewLater: string;
@@ -174,6 +176,9 @@ export type UILabels = {
   filterAll: string;
   lastPracticedPrefix: string;
   lastPracticedToday: string;
+  pinText: string;
+  unpinText: string;
+  pinnedText: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -192,12 +197,14 @@ export const uiText: Record<UILang, UILabels> = {
     allLevels: 'Alle nivåer',
     allLanguages: 'Alle språk',
     noResults: 'Ingen tekster funnet for valgene dine.',
-    todayPractice: 'Dagens øving',
-    totalSessions: 'Totalt antall økter',
-    learnedExpressions: 'Lærte uttrykk',
-    reviewingExpressions: 'Til repetisjon',
-    newExpressions: 'Nye uttrykk',
+    todayPractice: 'Fremgang',
+    totalSessions: 'Øvinger totalt',
+    learnedExpressions: 'Lært',
+    reviewingExpressions: 'Repeteres',
+    newExpressions: 'Nye',
     averageSpeed: 'Gjennomsnittsfart',
+    averageWpm: 'Snitt WPM',
+    averageCpm: 'Snitt CPM',
     favorite: '❤️ Favoritt',
     favorited: '❤️ Favorittert',
     reviewLater: '⭐ Se senere',
@@ -266,6 +273,9 @@ export const uiText: Record<UILang, UILabels> = {
     filterAll: 'Alle',
     lastPracticedPrefix: 'Sist: ',
     lastPracticedToday: 'i dag',
+    pinText: 'Fest',
+    unpinText: 'Fjern festing',
+    pinnedText: 'Festet',
   },
   en: {
     title: 'Read & Type',
@@ -282,12 +292,14 @@ export const uiText: Record<UILang, UILabels> = {
     allLevels: 'All levels',
     allLanguages: 'All languages',
     noResults: 'No texts match your filters.',
-    todayPractice: 'Today’s practice',
-    totalSessions: 'Total sessions',
-    learnedExpressions: 'Learned expressions',
-    reviewingExpressions: 'Reviewing',
-    newExpressions: 'New expressions',
+    todayPractice: 'Progress',
+    totalSessions: 'Total practices',
+    learnedExpressions: 'Learned',
+    reviewingExpressions: 'In review',
+    newExpressions: 'New',
     averageSpeed: 'Average speed',
+    averageWpm: 'Avg WPM',
+    averageCpm: 'Avg CPM',
     favorite: '❤️ Favorite',
     favorited: '❤️ Favorited',
     reviewLater: '⭐ Review Later',
@@ -356,6 +368,9 @@ export const uiText: Record<UILang, UILabels> = {
     filterAll: 'All',
     lastPracticedPrefix: 'Last: ',
     lastPracticedToday: 'today',
+    pinText: 'Pin',
+    unpinText: 'Unpin',
+    pinnedText: 'Pinned',
   },
   ja: {
     title: '読むと打つ',
@@ -372,12 +387,14 @@ export const uiText: Record<UILang, UILabels> = {
     allLevels: 'すべてのレベル',
     allLanguages: 'すべての言語',
     noResults: 'フィルターに一致するテキストがありません。',
-    todayPractice: '今日の練習',
+    todayPractice: '学習状況',
     totalSessions: '総練習回数',
     learnedExpressions: '覚えた表現',
     reviewingExpressions: '復習中',
     newExpressions: '新規表現',
     averageSpeed: '平均速度',
+    averageWpm: '平均WPM',
+    averageCpm: '平均CPM',
     favorite: '❤️ お気に入り',
     favorited: '❤️ お気に入り済み',
     reviewLater: '⭐ あとでレビュー',
@@ -446,5 +463,8 @@ export const uiText: Record<UILang, UILabels> = {
     filterAll: 'すべて',
     lastPracticedPrefix: '最後: ',
     lastPracticedToday: '今日',
+    pinText: 'ピン留め',
+    unpinText: 'ピンを外す',
+    pinnedText: 'ピン留め済み',
   },
 };
