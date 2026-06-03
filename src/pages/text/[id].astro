@@ -216,6 +216,9 @@ const recommendationTexts = texts.map((item) => ({
   language: item.language,
   title: item.title,
   expressions: item.expressions,
+  translationJa: item.translationJa,
+  translationEn: item.translationEn,
+  translationNo: item.translationNo,
 }));
 
 const clientScript = `
@@ -242,6 +245,8 @@ const clientScript = `
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
+  const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
+  const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   const translationFieldByLanguage = {
     ja: 'translationJa',
@@ -301,25 +306,143 @@ const clientScript = `
     }
   }
 
+  function normalizePracticeTarget(target) {
+    if (!target || typeof target !== 'object' || typeof target.textId !== 'string') {
+      return null;
+    }
+    if (target.practiceType === 'translation' && uiLanguages.includes(target.practiceTranslation)) {
+      return {
+        textId: target.textId,
+        practiceType: 'translation',
+        practiceTranslation: target.practiceTranslation,
+      };
+    }
+    return {
+      textId: target.textId,
+      practiceType: 'original',
+      practiceTranslation: null,
+    };
+  }
+
+  function getPracticeTargetKey(target) {
+    return target.textId + '::' + target.practiceType + '::' + (target.practiceTranslation || '');
+  }
+
+  function getOriginalPracticeTarget(textId) {
+    return { textId, practiceType: 'original', practiceTranslation: null };
+  }
+
+  function getCurrentPracticeTarget() {
+    return activeIsTranslationPractice && activePracticeTranslationLang
+      ? { textId: text.id, practiceType: 'translation', practiceTranslation: activePracticeTranslationLang }
+      : getOriginalPracticeTarget(text.id);
+  }
+
+  function loadPinnedPracticeTargets() {
+    const targets = loadPinnedTextIds().map(getOriginalPracticeTarget);
+    try {
+      const parsed = JSON.parse(safeReadStorage(PINNED_PRACTICE_TARGETS_KEY) || '[]');
+      if (Array.isArray(parsed)) {
+        parsed.forEach((item) => {
+          const target = normalizePracticeTarget(item);
+          if (target) {
+            targets.push(target);
+          }
+        });
+      }
+    } catch {
+      // ignore
+    }
+    const seen = new Set();
+    return targets.filter((target) => {
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function savePinnedPracticeTargets(targets) {
+    const normalized = targets.map(normalizePracticeTarget).filter(Boolean);
+    const seen = new Set();
+    const deduped = normalized.filter((target) => {
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+    safeWriteStorage(PINNED_PRACTICE_TARGETS_KEY, JSON.stringify(deduped));
+  }
+
   function savePinnedTextIds(ids) {
     safeWriteStorage(PINNED_TEXTS_KEY, JSON.stringify(Array.from(new Set(ids))));
   }
 
-  function isTextPinned(textId) {
-    return loadPinnedTextIds().includes(textId);
+  function isPracticeTargetPinned(target) {
+    const normalized = normalizePracticeTarget(target);
+    if (!normalized) {
+      return false;
+    }
+    const key = getPracticeTargetKey(normalized);
+    return loadPinnedPracticeTargets().some((item) => getPracticeTargetKey(item) === key);
   }
 
-  function togglePinnedText(textId) {
-    const pinned = loadPinnedTextIds();
-    if (pinned.includes(textId)) {
-      savePinnedTextIds(pinned.filter((id) => id !== textId));
+  function togglePinnedPracticeTarget(target) {
+    const normalized = normalizePracticeTarget(target);
+    if (!normalized) {
+      return;
+    }
+    const key = getPracticeTargetKey(normalized);
+    const pinnedTargets = loadPinnedPracticeTargets();
+    const wasPinned = pinnedTargets.some((item) => getPracticeTargetKey(item) === key);
+    if (wasPinned) {
+      savePinnedPracticeTargets(pinnedTargets.filter((item) => getPracticeTargetKey(item) !== key));
     } else {
-      savePinnedTextIds([...pinned, textId]);
+      savePinnedPracticeTargets([...pinnedTargets, normalized]);
+    }
+    if (normalized.practiceType === 'original') {
+      const pinned = loadPinnedTextIds();
+      if (wasPinned) {
+        savePinnedTextIds(pinned.filter((id) => id !== normalized.textId));
+      } else {
+        savePinnedTextIds([...pinned, normalized.textId]);
+      }
     }
   }
 
   function saveExpressionStatuses(data) {
     safeWriteStorage(EXPRESSION_STATUS_KEY, JSON.stringify(data));
+  }
+
+  function loadStarredExpressionKeys() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(STARRED_EXPRESSIONS_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((key) => typeof key === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveStarredExpressionKeys(keys) {
+    safeWriteStorage(STARRED_EXPRESSIONS_KEY, JSON.stringify(Array.from(new Set(keys))));
+  }
+
+  function isExpressionStarred(phrase) {
+    return loadStarredExpressionKeys().includes(getExpressionStorageKey(phrase));
+  }
+
+  function toggleStarredExpression(phrase) {
+    const key = getExpressionStorageKey(phrase);
+    const starred = loadStarredExpressionKeys();
+    if (starred.includes(key)) {
+      saveStarredExpressionKeys(starred.filter((item) => item !== key));
+    } else {
+      saveStarredExpressionKeys([...starred, key]);
+    }
   }
 
   function loadProgress(key) {
@@ -437,9 +560,9 @@ const clientScript = `
     );
   }
 
-  function getAssessmentPriorityForText(textId, targetLanguage) {
+  function getAssessmentPriorityForText(textId, targetLanguage, mode = 'text') {
     const assessments = loadProgress(SELF_ASSESSMENT_KEY);
-    const textAssessment = assessments[getAssessmentStorageKeyForText(textId, 'text', targetLanguage)] || {};
+    const textAssessment = assessments[getAssessmentStorageKeyForText(textId, mode, targetLanguage)] || {};
     const priority = Number.isFinite(textAssessment.priority) ? textAssessment.priority : 0;
     return priority;
   }
@@ -450,9 +573,70 @@ const clientScript = `
     }, 0);
   }
 
+  function getTranslationValueForItem(item, lang) {
+    const field = translationFieldByLanguage[lang];
+    const value = field ? item[field] : null;
+    return typeof value === 'string' && value.trim() ? value : null;
+  }
+
+  function getTranslationLanguagesForText(item) {
+    return uiLanguages.filter((lang) => lang !== item.language && getTranslationValueForItem(item, lang));
+  }
+
   function isTextLearned(item, statuses) {
     return item.expressions.length > 0
       && item.expressions.every((expression) => getExpressionStatusForItem(expression, item.language, statuses) === 'learned');
+  }
+
+  function getAssessmentPriorityForPracticeTarget(target, item) {
+    const mode = target.practiceType === 'translation' ? 'translation' : 'text';
+    const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : item.language;
+    return getAssessmentPriorityForText(target.textId, targetLanguage, mode);
+  }
+
+  function getRecommendedHref(target) {
+    if (target.practiceType === 'translation' && target.practiceTranslation) {
+      return '/text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation);
+    }
+    return '/text/' + encodeURIComponent(target.textId);
+  }
+
+  function getStarredExpressionPracticeTargets(items) {
+    const starredExpressionKeys = new Set(loadStarredExpressionKeys());
+    const targets = [];
+    items.forEach((item) => {
+      const hasStarredExpression = item.expressions.some((expression) => {
+        return starredExpressionKeys.has(getExpressionStorageKeyForItem(expression, item.language));
+      });
+      if (hasStarredExpression) {
+        targets.push(getOriginalPracticeTarget(item.id));
+      }
+    });
+    return targets;
+  }
+
+  function getStarredPracticeTargets(items) {
+    const itemIds = new Set(items.map((item) => item.id));
+    const targets = [
+      ...loadPinnedPracticeTargets().filter((target) => itemIds.has(target.textId)),
+      ...getStarredExpressionPracticeTargets(items),
+    ];
+    const seen = new Set();
+    return targets.filter((target) => {
+      const item = allTexts.find((entry) => entry.id === target.textId);
+      if (!item) {
+        return false;
+      }
+      if (target.practiceType === 'translation' && !getTranslationLanguagesForText(item).includes(target.practiceTranslation)) {
+        return false;
+      }
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
   }
 
   function randomItem(items) {
@@ -460,27 +644,41 @@ const clientScript = `
   }
 
   function getRecommendedText() {
-    const sameLanguage = allTexts.filter((item) => item.id !== text.id && item.language === activeTypingTargetLanguage);
-    let candidates = sameLanguage.length ? sameLanguage : allTexts.filter((item) => item.id !== text.id);
-    if (!candidates.length) {
-      candidates = allTexts;
-    }
-    if (!candidates.length) {
+    const baseItems = allTexts.filter((item) => item.id !== text.id);
+    const fallbackItems = baseItems.length ? baseItems : allTexts;
+    if (!fallbackItems.length) {
       return null;
     }
 
     const expressionStatuses = loadExpressionStatuses();
-    const pinnedTextIds = loadPinnedTextIds();
-    const scored = candidates.map((item) => {
+    const starredTargets = getStarredPracticeTargets(fallbackItems);
+    if (starredTargets.length && Math.random() < 0.25) {
+      return randomItem(starredTargets);
+    }
+    const practiceTargets = fallbackItems.flatMap((item) => {
+      const originalTarget = getOriginalPracticeTarget(item.id);
+      const translationTargets = getTranslationLanguagesForText(item)
+        .map((lang) => ({ textId: item.id, practiceType: 'translation', practiceTranslation: lang }))
+        .filter((target) => {
+          return getAssessmentPriorityForPracticeTarget(target, item) >= 2;
+        });
+      return [
+        { item, target: originalTarget },
+        ...translationTargets.map((target) => ({ item, target })),
+      ];
+    });
+    const sameLanguage = practiceTargets.filter(({ item, target }) => {
+      const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : item.language;
+      return targetLanguage === activeTypingTargetLanguage;
+    });
+    const candidates = sameLanguage.length ? sameLanguage : practiceTargets;
+    const scored = candidates.map(({ item, target }) => {
       const progress = getTextProgress(item.id);
       const reviewCount = getReviewCountForText(item, expressionStatuses);
-      const assessmentPriority = getAssessmentPriorityForText(item.id, item.language);
+      const assessmentPriority = getAssessmentPriorityForPracticeTarget(target, item);
       const learned = isTextLearned(item, expressionStatuses);
-      const pinned = pinnedTextIds.includes(item.id);
       let group = 4;
-      if (pinned) {
-        group = learned ? 1 : 0;
-      } else if (assessmentPriority >= 2) {
+      if (assessmentPriority >= 2) {
         group = 2;
       } else if (reviewCount > 0) {
         group = 3;
@@ -491,11 +689,12 @@ const clientScript = `
       }
       return {
         item,
+        target,
         group,
         assessmentPriority,
         reviewCount,
         practiceCount: progress.completedCount,
-        title: item.title || item.id,
+        title: (item.title || item.id) + (target.practiceTranslation || ''),
       };
     }).sort((a, b) => {
       return a.group - b.group
@@ -511,7 +710,7 @@ const clientScript = `
         && entry.reviewCount === first.reviewCount
         && entry.practiceCount === first.practiceCount;
     });
-    return randomItem(best).item;
+    return randomItem(best).target;
   }
 
   function getPracticeLevel(count) {
@@ -598,6 +797,7 @@ const clientScript = `
 
   document.addEventListener('DOMContentLoaded', () => {
     const statusButtons = document.querySelectorAll('[data-expression-status]');
+    const starButtons = document.querySelectorAll('[data-expression-star]');
     const expressionCards = document.querySelectorAll('[data-expression-card]');
     const input = document.getElementById('typing-input');
     const progressValue = document.getElementById('progress-value');
@@ -641,6 +841,7 @@ const clientScript = `
     const expressionsTitle = document.getElementById('expressions-title');
     const grammarTitle = document.getElementById('grammar-title');
     const pinButton = document.getElementById('text-pin-button');
+    const translationPracticePinButtons = document.querySelectorAll('[data-translation-practice-pin]');
     let targetCharacters = document.querySelectorAll('[data-char-index]');
     const textContent = document.querySelector('.text-content');
     const expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
@@ -726,6 +927,18 @@ const clientScript = `
           card.dataset.status = status;
           card.title = labels.expressionStatusAction;
         }
+      });
+    }
+
+    function updateExpressionStarButtons() {
+      starButtons.forEach((button) => {
+        const phrase = button.dataset.expressionStar;
+        const starred = isExpressionStarred(phrase);
+        button.classList.toggle('is-starred', starred);
+        button.textContent = starred ? '⭐' : '☆';
+        button.title = starred ? getUiText(uiLanguageSelect.value).starredPageTitle : getUiText(uiLanguageSelect.value).starredPageTitle;
+        button.setAttribute('aria-label', phrase + ': ' + getUiText(uiLanguageSelect.value).starredPageTitle);
+        button.setAttribute('aria-pressed', starred ? 'true' : 'false');
       });
     }
 
@@ -974,10 +1187,12 @@ const clientScript = `
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
+      updateExpressionStarButtons();
       updateExpressionPracticeLabels();
       renderLocalizedExplanations(lang);
       renderLocalizedExamples(lang);
       updatePinButton();
+      updateTranslationPracticePinButtons();
       updateExpressionMiniCardText();
     }
 
@@ -986,12 +1201,26 @@ const clientScript = `
         return;
       }
       const labels = getUiText(uiLanguageSelect.value);
-      const pinned = isTextPinned(text.id);
+      const pinned = isPracticeTargetPinned(getCurrentPracticeTarget());
       pinButton.classList.toggle('is-pinned', pinned);
       pinButton.textContent = pinned ? '★' : '☆';
       pinButton.title = pinned ? labels.unpinText : labels.pinText;
       pinButton.setAttribute('aria-label', pinned ? labels.unpinText : labels.pinText);
       pinButton.setAttribute('aria-pressed', pinned ? 'true' : 'false');
+    }
+
+    function updateTranslationPracticePinButtons() {
+      const labels = getUiText(uiLanguageSelect.value);
+      translationPracticePinButtons.forEach((button) => {
+        const practiceTranslation = button.dataset.translationPracticePin;
+        const target = { textId: text.id, practiceType: 'translation', practiceTranslation };
+        const pinned = isPracticeTargetPinned(target);
+        button.classList.toggle('is-pinned', pinned);
+        button.textContent = pinned ? '★' : '☆';
+        button.title = pinned ? labels.unpinText : labels.pinText;
+        button.setAttribute('aria-label', pinned ? labels.unpinText : labels.pinText);
+        button.setAttribute('aria-pressed', pinned ? 'true' : 'false');
+      });
     }
 
     function updateTargetTextProgress(typed) {
@@ -1145,10 +1374,7 @@ const clientScript = `
       if (!recommended) {
         return;
       }
-      const translationQuery = activeIsTranslationPractice && activePracticeTranslationLang
-        ? '?practiceTranslation=' + encodeURIComponent(activePracticeTranslationLang)
-        : '';
-      window.location.href = '/text/' + recommended.id + translationQuery;
+      window.location.href = getRecommendedHref(recommended);
     }
 
     function updateMetrics() {
@@ -1223,6 +1449,14 @@ const clientScript = `
       });
     });
 
+    starButtons.forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleStarredExpression(button.dataset.expressionStar);
+        updateExpressionStarButtons();
+      });
+    });
+
     expressionCards.forEach((card) => {
       card.addEventListener('click', () => {
         const selectedText = window.getSelection()?.toString();
@@ -1281,10 +1515,23 @@ const clientScript = `
 
     if (pinButton) {
       pinButton.addEventListener('click', () => {
-        togglePinnedText(text.id);
+        togglePinnedPracticeTarget(getCurrentPracticeTarget());
         updatePinButton();
+        updateTranslationPracticePinButtons();
       });
     }
+
+    translationPracticePinButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        togglePinnedPracticeTarget({
+          textId: text.id,
+          practiceType: 'translation',
+          practiceTranslation: button.dataset.translationPracticePin,
+        });
+        updatePinButton();
+        updateTranslationPracticePinButtons();
+      });
+    });
 
     document.addEventListener('click', () => {
       closeExpressionMiniCard();
@@ -1294,8 +1541,10 @@ const clientScript = `
     const savedUiLanguage = getSavedUiLanguage();
     renderUiText(savedUiLanguage);
     updateExpressionStatusButtons();
+    updateExpressionStarButtons();
     updateExpressionPracticeLabels();
     updatePinButton();
+    updateTranslationPracticePinButtons();
     updateTargetTextProgress(input.value);
 
     uiLanguageSelect.addEventListener('change', (event) => {
@@ -1347,6 +1596,7 @@ if (!text) {
         </div>
         <div class="top-actions">
           <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <a class="nav-link" href="/starred" data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
           <div class="language-switcher">
             <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
             <select id="ui-language-select">
@@ -1467,13 +1717,25 @@ if (!text) {
                 </span>
               </h3>
               <p>{translation.value}</p>
-              <a
-                class="translation-practice-link"
-                href={`${translationPracticeHrefBase}?practiceTranslation=${translation.lang}`}
-                data-translation-practice-button={translation.lang}
-              >
-                {getTranslationPracticeButtonLabel(translation.lang, uiText[defaultUiLang])}
-              </a>
+              <div class="translation-practice-actions">
+                <a
+                  class="translation-practice-link"
+                  href={`${translationPracticeHrefBase}?practiceTranslation=${translation.lang}`}
+                  data-translation-practice-button={translation.lang}
+                >
+                  {getTranslationPracticeButtonLabel(translation.lang, uiText[defaultUiLang])}
+                </a>
+                <button
+                  class="pin-button translation-practice-pin"
+                  type="button"
+                  data-translation-practice-pin={translation.lang}
+                  aria-label={uiText[defaultUiLang].pinText}
+                  title={uiText[defaultUiLang].pinText}
+                  aria-pressed="false"
+                >
+                  ☆
+                </button>
+              </div>
             </div>
           ))}
       </section>
@@ -1485,7 +1747,10 @@ if (!text) {
             <article class="expression-card" data-expression-card={item.phrase}>
               <div class="expression-header">
                 <strong>{item.phrase}</strong>
-                <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
+                <div class="expression-header-actions">
+                  <button class="expression-star-button" type="button" data-expression-star={item.phrase} aria-pressed="false" title={uiText[defaultUiLang].starredPageTitle}>☆</button>
+                  <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
+                </div>
               </div>
               {item.formInText && item.formInText !== item.phrase && (
                 <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>

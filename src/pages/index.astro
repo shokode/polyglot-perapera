@@ -48,6 +48,8 @@ const clientScript = `
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
+  const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
+  const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
 
   function safeReadStorage(key) {
     try {
@@ -167,21 +169,119 @@ const clientScript = `
     }
   }
 
+  function loadStarredExpressionKeys() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(STARRED_EXPRESSIONS_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((key) => typeof key === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function normalizePracticeTarget(target) {
+    if (!target || typeof target !== 'object' || typeof target.textId !== 'string') {
+      return null;
+    }
+    if (target.practiceType === 'translation' && uiLanguages.includes(target.practiceTranslation)) {
+      return {
+        textId: target.textId,
+        practiceType: 'translation',
+        practiceTranslation: target.practiceTranslation,
+      };
+    }
+    return {
+      textId: target.textId,
+      practiceType: 'original',
+      practiceTranslation: null,
+    };
+  }
+
+  function getPracticeTargetKey(target) {
+    return target.textId + '::' + target.practiceType + '::' + (target.practiceTranslation || '');
+  }
+
+  function getOriginalPracticeTarget(textId) {
+    return { textId, practiceType: 'original', practiceTranslation: null };
+  }
+
+  function loadPinnedPracticeTargets() {
+    const targets = loadPinnedTextIds().map(getOriginalPracticeTarget);
+    try {
+      const parsed = JSON.parse(safeReadStorage(PINNED_PRACTICE_TARGETS_KEY) || '[]');
+      if (Array.isArray(parsed)) {
+        parsed.forEach((item) => {
+          const target = normalizePracticeTarget(item);
+          if (target) {
+            targets.push(target);
+          }
+        });
+      }
+    } catch {
+      // ignore
+    }
+    const seen = new Set();
+    return targets.filter((target) => {
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function savePinnedPracticeTargets(targets) {
+    const normalized = targets.map(normalizePracticeTarget).filter(Boolean);
+    const seen = new Set();
+    const deduped = normalized.filter((target) => {
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+    safeWriteStorage(PINNED_PRACTICE_TARGETS_KEY, JSON.stringify(deduped));
+  }
+
   function savePinnedTextIds(ids) {
     safeWriteStorage(PINNED_TEXTS_KEY, JSON.stringify(Array.from(new Set(ids))));
   }
 
+  function isPracticeTargetPinned(target) {
+    const key = getPracticeTargetKey(normalizePracticeTarget(target));
+    return loadPinnedPracticeTargets().some((item) => getPracticeTargetKey(item) === key);
+  }
+
   function isTextPinned(textId) {
-    return loadPinnedTextIds().includes(textId);
+    return isPracticeTargetPinned(getOriginalPracticeTarget(textId));
+  }
+
+  function togglePinnedPracticeTarget(target) {
+    const normalized = normalizePracticeTarget(target);
+    if (!normalized) {
+      return;
+    }
+    const key = getPracticeTargetKey(normalized);
+    const pinnedTargets = loadPinnedPracticeTargets();
+    const wasPinned = pinnedTargets.some((item) => getPracticeTargetKey(item) === key);
+    if (wasPinned) {
+      savePinnedPracticeTargets(pinnedTargets.filter((item) => getPracticeTargetKey(item) !== key));
+    } else {
+      savePinnedPracticeTargets([...pinnedTargets, normalized]);
+    }
+    if (normalized.practiceType === 'original') {
+      const pinned = loadPinnedTextIds();
+      if (wasPinned) {
+        savePinnedTextIds(pinned.filter((id) => id !== normalized.textId));
+      } else {
+        savePinnedTextIds([...pinned, normalized.textId]);
+      }
+    }
   }
 
   function togglePinnedText(textId) {
-    const pinned = loadPinnedTextIds();
-    if (pinned.includes(textId)) {
-      savePinnedTextIds(pinned.filter((id) => id !== textId));
-    } else {
-      savePinnedTextIds([...pinned, textId]);
-    }
+    togglePinnedPracticeTarget(getOriginalPracticeTarget(textId));
   }
 
   function getExpressionStorageKey(expression, language) {
@@ -417,6 +517,74 @@ const clientScript = `
     return Number.isFinite(entry.priority) ? entry.priority : 0;
   }
 
+  function getAssessmentPriorityForPracticeTarget(target, textItem) {
+    const assessments = loadSelfAssessments();
+    const mode = target.practiceType === 'translation' ? 'translation' : 'text';
+    const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : textItem.language;
+    const entry = assessments[target.textId + '::' + mode + '::' + targetLanguage] || {};
+    return Number.isFinite(entry.priority) ? entry.priority : 0;
+  }
+
+  function getTranslationLanguagesForText(textItem) {
+    return uiLanguages.filter((lang) => {
+      const field = lang === 'ja' ? 'translationJa' : lang === 'en' ? 'translationEn' : 'translationNo';
+      return lang !== textItem.language && typeof textItem[field] === 'string' && textItem[field].trim();
+    });
+  }
+
+  function getRecommendedHref(target) {
+    if (target.practiceType === 'translation' && target.practiceTranslation) {
+      return '/text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation);
+    }
+    return '/text/' + encodeURIComponent(target.textId);
+  }
+
+  function getTextForPracticeTarget(target) {
+    return texts.find((item) => item.id === target.textId) || null;
+  }
+
+  function getStarredExpressionPracticeTargets(filtered) {
+    const filteredTextIds = new Set(filtered.map((item) => item.id));
+    const starredExpressionKeys = new Set(loadStarredExpressionKeys());
+    const targets = [];
+    texts.forEach((item) => {
+      if (!filteredTextIds.has(item.id)) {
+        return;
+      }
+      const hasStarredExpression = item.expressions.some((expression) => {
+        return starredExpressionKeys.has(getExpressionStorageKey(expression, item.language));
+      });
+      if (hasStarredExpression) {
+        targets.push(getOriginalPracticeTarget(item.id));
+      }
+    });
+    return targets;
+  }
+
+  function getStarredPracticeTargets(filtered) {
+    const filteredTextIds = new Set(filtered.map((item) => item.id));
+    const targets = [
+      ...loadPinnedPracticeTargets().filter((target) => filteredTextIds.has(target.textId)),
+      ...getStarredExpressionPracticeTargets(filtered),
+    ];
+    const seen = new Set();
+    return targets.filter((target) => {
+      const item = getTextForPracticeTarget(target);
+      if (!item) {
+        return false;
+      }
+      if (target.practiceType === 'translation' && !getTranslationLanguagesForText(item).includes(target.practiceTranslation)) {
+        return false;
+      }
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
   function getPinButtonLabel(textId, labels) {
     return isTextPinned(textId) ? labels.unpinText : labels.pinText;
   }
@@ -540,17 +708,29 @@ const clientScript = `
       return null;
     }
     const expressionStatuses = loadExpressionStatuses();
-    const pinnedTextIds = loadPinnedTextIds();
-    const scored = filtered.map((item) => {
+    const starredTargets = getStarredPracticeTargets(filtered);
+    if (starredTargets.length && Math.random() < 0.25) {
+      return randomItem(starredTargets);
+    }
+    const targets = filtered.flatMap((item) => {
+      const originalTarget = getOriginalPracticeTarget(item.id);
+      const translationTargets = getTranslationLanguagesForText(item)
+        .map((lang) => ({ textId: item.id, practiceType: 'translation', practiceTranslation: lang }))
+        .filter((target) => {
+          return getAssessmentPriorityForPracticeTarget(target, item) >= 2;
+        });
+      return [
+        { item, target: originalTarget },
+        ...translationTargets.map((target) => ({ item, target })),
+      ];
+    });
+    const scored = targets.map(({ item, target }) => {
       const progress = getTextProgress(item.id);
       const reviewCount = getReviewCountForText(item, expressionStatuses);
-      const assessmentPriority = getAssessmentPriorityForText(item.id, item.language);
+      const assessmentPriority = getAssessmentPriorityForPracticeTarget(target, item);
       const learned = isTextLearned(item, expressionStatuses);
-      const pinned = pinnedTextIds.includes(item.id);
       let group = 4;
-      if (pinned) {
-        group = learned ? 1 : 0;
-      } else if (assessmentPriority >= 2) {
+      if (assessmentPriority >= 2) {
         group = 2;
       } else if (reviewCount > 0) {
         group = 3;
@@ -561,11 +741,12 @@ const clientScript = `
       }
       return {
         item,
+        target,
         group,
         assessmentPriority,
         reviewCount,
         practiceCount: progress.completedCount,
-        title: item.title,
+        title: item.title + (target.practiceTranslation || ''),
       };
     }).sort((a, b) => {
       return a.group - b.group
@@ -581,7 +762,18 @@ const clientScript = `
         && entry.reviewCount === first.reviewCount
         && entry.practiceCount === first.practiceCount;
     });
-    return randomItem(best).item;
+    return randomItem(best).target;
+  }
+
+  function getRandomPracticeTarget(filtered) {
+    if (!filtered.length) {
+      return null;
+    }
+    const starredTargets = getStarredPracticeTargets(filtered);
+    if (starredTargets.length && Math.random() < 0.25) {
+      return randomItem(starredTargets);
+    }
+    return getOriginalPracticeTarget(randomItem(filtered).id);
   }
 
   function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton) {
@@ -593,11 +785,14 @@ const clientScript = `
       startButton.onclick = () => {
         const recommended = getRecommendedText(filtered);
         if (recommended) {
-          window.location.href = '/text/' + recommended.id;
+          window.location.href = getRecommendedHref(recommended);
         }
       };
       randomButton.onclick = () => {
-        window.location.href = '/text/' + randomItem(filtered).id;
+        const randomTarget = getRandomPracticeTarget(filtered);
+        if (randomTarget) {
+          window.location.href = getRecommendedHref(randomTarget);
+        }
       };
     } else {
       startButton.disabled = true;
@@ -730,6 +925,7 @@ const clientScript = `
         </div>
         <div class="top-actions">
           <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <a class="nav-link" href="/starred" data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
           <div class="language-switcher">
             <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
             <select id="ui-language-select">

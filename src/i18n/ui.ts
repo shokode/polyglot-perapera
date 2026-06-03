@@ -156,8 +156,11 @@ export type UILabels = {
   showExpressionExample: string;
   hideExpressionExample: string;
   reviewPageTitle: string;
+  starredPageTitle: string;
   noReviewItems: string;
+  noStarredItems: string;
   practiceThisText: string;
+  practiceStarredRandomly: string;
   keepReviewing: string;
   markAsLearned: string;
   expressionPracticePrefix: string;
@@ -253,8 +256,11 @@ export const uiText: Record<UILang, UILabels> = {
     showExpressionExample: 'Vis eksempel',
     hideExpressionExample: 'Skjul eksempel',
     reviewPageTitle: 'Repeter',
+    starredPageTitle: 'Stjernemerket',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
+    noStarredItems: 'Ingen stjernemerkede elementer ennå',
     practiceThisText: 'Øv på denne teksten',
+    practiceStarredRandomly: 'Øv tilfeldig fra stjernemerkede',
     keepReviewing: 'Fortsett å repetere',
     markAsLearned: 'Marker som lært',
     expressionPracticePrefix: 'Øvd ',
@@ -348,8 +354,11 @@ export const uiText: Record<UILang, UILabels> = {
     showExpressionExample: 'Show example',
     hideExpressionExample: 'Hide example',
     reviewPageTitle: 'Review',
+    starredPageTitle: 'Starred',
     noReviewItems: 'No review items yet',
+    noStarredItems: 'No starred items yet',
     practiceThisText: 'Practice this text',
+    practiceStarredRandomly: 'Practice starred randomly',
     keepReviewing: 'Keep reviewing',
     markAsLearned: 'Mark as learned',
     expressionPracticePrefix: 'Practiced ',
@@ -443,8 +452,11 @@ export const uiText: Record<UILang, UILabels> = {
     showExpressionExample: '例文を表示',
     hideExpressionExample: '例文を隠す',
     reviewPageTitle: '復習',
+    starredPageTitle: 'お気に入り',
     noReviewItems: '復習する表現はまだありません',
+    noStarredItems: 'スター付きの項目はまだありません',
     practiceThisText: 'この文をタイピングする',
+    practiceStarredRandomly: 'スター付きからランダム練習',
     keepReviewing: '復習を続ける',
     markAsLearned: '覚えた',
     expressionPracticePrefix: '',

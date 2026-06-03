@@ -1,0 +1,640 @@
+---
+import '../styles/global.scss';
+import texts from '../data/texts.json' assert { type: 'json' };
+import {
+  uiLanguages,
+  uiLanguageNames,
+  uiText,
+  languageNames,
+  type UILang,
+} from '../i18n/ui';
+
+const defaultUiLang: UILang = 'en';
+type StarredExpression = {
+  phrase: string;
+  storageKey?: string;
+  formInText?: string;
+  ja: string;
+  en: string;
+  no?: string;
+  example?: string;
+  exampleJa?: string;
+  exampleEn?: string;
+  exampleNo?: string;
+  language: string;
+  textId: string;
+};
+
+const expressions = Array.from(
+  texts.reduce((map, item) => {
+    item.expressions.forEach((expression) => {
+      const expressionKey = `${item.language}::${expression.storageKey || expression.phrase}`;
+      if (!map.has(expressionKey)) {
+        map.set(expressionKey, { ...expression, language: item.language, textId: item.id });
+      }
+    });
+    return map;
+  }, new Map<string, StarredExpression>())
+  .values()
+);
+
+const clientScript = `
+  const texts = ${JSON.stringify(texts)};
+  const expressions = ${JSON.stringify(expressions)};
+  const ui = ${JSON.stringify(uiText)};
+  const uiLanguages = ${JSON.stringify(uiLanguages)};
+  const languageNames = ${JSON.stringify(languageNames)};
+  const targetLanguageBadges = { no: 'NO', en: 'EN', ja: 'JA' };
+  const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
+  const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const TEXT_PROGRESS_KEY = 'typingProgress';
+  const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
+  const PINNED_TEXTS_KEY = 'typingPinnedTexts';
+  const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
+  const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
+  const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
+  const translationFieldByLanguage = {
+    ja: 'translationJa',
+    en: 'translationEn',
+    no: 'translationNo',
+  };
+
+  function safeReadStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function safeWriteStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore
+    }
+  }
+
+  function getSavedUiLanguage() {
+    const stored = safeReadStorage(UI_LANGUAGE_STORAGE_KEY);
+    return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
+  }
+
+  function getUiText(lang) {
+    return ui[lang] || ui.en;
+  }
+
+  function loadExpressionStatuses() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_STATUS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function loadExpressionProgress() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_PROGRESS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function loadTextProgress() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(TEXT_PROGRESS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function loadPinnedTextIds() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(PINNED_TEXTS_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function savePinnedTextIds(ids) {
+    safeWriteStorage(PINNED_TEXTS_KEY, JSON.stringify(Array.from(new Set(ids))));
+  }
+
+  function normalizePracticeTarget(target) {
+    if (!target || typeof target !== 'object' || typeof target.textId !== 'string') {
+      return null;
+    }
+    if (target.practiceType === 'translation' && uiLanguages.includes(target.practiceTranslation)) {
+      return {
+        textId: target.textId,
+        practiceType: 'translation',
+        practiceTranslation: target.practiceTranslation,
+      };
+    }
+    return {
+      textId: target.textId,
+      practiceType: 'original',
+      practiceTranslation: null,
+    };
+  }
+
+  function getPracticeTargetKey(target) {
+    return target.textId + '::' + target.practiceType + '::' + (target.practiceTranslation || '');
+  }
+
+  function getOriginalPracticeTarget(textId) {
+    return { textId, practiceType: 'original', practiceTranslation: null };
+  }
+
+  function loadPinnedPracticeTargets() {
+    const targets = loadPinnedTextIds().map(getOriginalPracticeTarget);
+    try {
+      const parsed = JSON.parse(safeReadStorage(PINNED_PRACTICE_TARGETS_KEY) || '[]');
+      if (Array.isArray(parsed)) {
+        parsed.forEach((item) => {
+          const target = normalizePracticeTarget(item);
+          if (target) {
+            targets.push(target);
+          }
+        });
+      }
+    } catch {
+      // ignore
+    }
+    const seen = new Set();
+    return targets.filter((target) => {
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function savePinnedPracticeTargets(targets) {
+    const normalized = targets.map(normalizePracticeTarget).filter(Boolean);
+    const seen = new Set();
+    const deduped = normalized.filter((target) => {
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+    safeWriteStorage(PINNED_PRACTICE_TARGETS_KEY, JSON.stringify(deduped));
+  }
+
+  function loadStarredExpressionKeys() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(STARRED_EXPRESSIONS_KEY) || '[]');
+      return Array.isArray(parsed) ? parsed.filter((key) => typeof key === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveStarredExpressionKeys(keys) {
+    safeWriteStorage(STARRED_EXPRESSIONS_KEY, JSON.stringify(Array.from(new Set(keys))));
+  }
+
+  function getExpressionStorageKey(expression) {
+    return expression.language + '::' + (expression.storageKey || expression.phrase);
+  }
+
+  function getTextById(textId) {
+    return texts.find((item) => item.id === textId) || null;
+  }
+
+  function getTranslationValueForText(textItem, lang) {
+    const field = translationFieldByLanguage[lang];
+    const value = field ? textItem[field] : null;
+    return typeof value === 'string' && value.trim() ? value : null;
+  }
+
+  function getTranslationLanguagesForText(textItem) {
+    return uiLanguages.filter((lang) => lang !== textItem.language && getTranslationValueForText(textItem, lang));
+  }
+
+  function isValidPracticeTarget(target) {
+    const textItem = getTextById(target.textId);
+    if (!textItem) {
+      return false;
+    }
+    if (target.practiceType === 'translation') {
+      return getTranslationLanguagesForText(textItem).includes(target.practiceTranslation);
+    }
+    return true;
+  }
+
+  function getPracticeTargetHref(target) {
+    if (target.practiceType === 'translation' && target.practiceTranslation) {
+      return '/text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation);
+    }
+    return '/text/' + encodeURIComponent(target.textId);
+  }
+
+  function getPracticeTargetLanguage(target, textItem) {
+    return target.practiceType === 'translation' && target.practiceTranslation ? target.practiceTranslation : textItem.language;
+  }
+
+  function getPracticeTargetDescription(target, textItem, lang) {
+    if (target.practiceType === 'translation' && target.practiceTranslation) {
+      return getUiText(lang).translationPracticePrefix + (targetLanguageBadges[target.practiceTranslation] || target.practiceTranslation);
+    }
+    return getUiText(lang).originalText;
+  }
+
+  function getTextPracticeCount(textId) {
+    const entry = loadTextProgress()[textId] || {};
+    return Number.isFinite(entry.completedCount) ? entry.completedCount : 0;
+  }
+
+  function getExpressionStatus(expression) {
+    const all = loadExpressionStatuses();
+    const stored = all[getExpressionStorageKey(expression)] || all[expression.storageKey] || all[expression.language + '::' + expression.phrase] || all[expression.phrase];
+    return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
+  }
+
+  function getExpressionStatusLabel(status, labels) {
+    if (status === 'review') {
+      return labels.expressionStatusReview;
+    }
+    if (status === 'learned') {
+      return labels.expressionStatusLearned;
+    }
+    return labels.expressionStatusNew;
+  }
+
+  function getExpressionPractice(expression) {
+    const progress = loadExpressionProgress();
+    const entry = progress[getExpressionStorageKey(expression)] || progress[expression.storageKey] || progress[expression.language + '::' + expression.phrase] || progress[expression.phrase] || {};
+    const practiceCount = Number.isFinite(entry.practiceCount) ? entry.practiceCount : 0;
+    return { practiceCount };
+  }
+
+  function getPracticeLevel(count) {
+    if (count >= 5) {
+      return '3';
+    }
+    if (count >= 3) {
+      return '2';
+    }
+    if (count >= 1) {
+      return '1';
+    }
+    return '0';
+  }
+
+  function getPracticeLabel(count, labels) {
+    if (count <= 0) {
+      return labels.expressionNotPracticed;
+    }
+    return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
+  }
+
+  function getTextPracticeLabel(count, labels) {
+    return labels.expressionPracticePrefix + count + labels.expressionPracticeSuffix;
+  }
+
+  function getLanguageTitle(value, lang) {
+    return languageNames[value]?.[lang] || value;
+  }
+
+  function getLanguageBadgeHtml(value, lang) {
+    const label = targetLanguageBadges[value] || value;
+    const title = getLanguageTitle(value, lang);
+    return '<span class="language-badge language-badge--' + escapeHtml(value) + '" data-target-language="' + escapeHtml(value) + '" title="' + escapeHtml(title) + '" aria-label="' + escapeHtml(title) + '">' + escapeHtml(label) + '</span>';
+  }
+
+  function getExplanationLanguageOrder(lang) {
+    return [lang, ...uiLanguages.filter((item) => item !== lang)];
+  }
+
+  function getLocalizedExpressionMeanings(expression, lang) {
+    return getExplanationLanguageOrder(lang)
+      .map((language) => ({ language, value: expression[language] }))
+      .filter((entry) => typeof entry.value === 'string' && entry.value.trim());
+  }
+
+  function getExpressionExampleMap(expression) {
+    return {
+      default: typeof expression.example === 'string' ? expression.example : '',
+      ja: typeof expression.exampleJa === 'string' ? expression.exampleJa : '',
+      en: typeof expression.exampleEn === 'string' ? expression.exampleEn : '',
+      no: typeof expression.exampleNo === 'string' ? expression.exampleNo : '',
+    };
+  }
+
+  function getLocalizedExpressionExamples(expression) {
+    const examples = getExpressionExampleMap(expression);
+    const order = ['default', ...uiLanguages.filter((language) => language !== expression.language)];
+    return order
+      .map((language) => ({ language, value: examples[language] }))
+      .filter((entry, index, array) => typeof entry.value === 'string' && entry.value.trim() && array.findIndex((item) => item.value === entry.value) === index);
+  }
+
+  function renderExampleSection(expression, labels, uiLang) {
+    const examples = getLocalizedExpressionExamples(expression);
+    if (!examples.length) {
+      return '';
+    }
+    return ''
+      + '<div class="review-card-examples" data-starred-examples>'
+      + '<button class="example-toggle" type="button" data-starred-example-toggle aria-expanded="false" aria-label="' + escapeHtml(labels.showExpressionExample) + '" data-show-label="' + escapeHtml(labels.showExpressionExample) + '" data-hide-label="' + escapeHtml(labels.hideExpressionExample) + '"><span>' + escapeHtml(labels.expressionExample) + '</span><span class="example-toggle__icon" aria-hidden="true">⌄</span></button>'
+      + '<div class="expression-example-list review-example-list example-section" hidden>'
+      + '<span class="expression-example-label">' + escapeHtml(labels.expressionExample) + '</span>'
+      + examples.map((entry) => '<p>' + (entry.language !== 'default' ? getLanguageBadgeHtml(entry.language, uiLang) + ' ' : '') + escapeHtml(entry.value) + '</p>').join('')
+      + '</div>'
+      + '</div>';
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const uiLanguageSelect = document.getElementById('ui-language-select');
+    const starredTitle = document.getElementById('starred-title');
+    const starredGrid = document.getElementById('starred-grid');
+    const emptyState = document.getElementById('starred-empty-state');
+    const randomStarredButton = document.getElementById('practice-starred-randomly');
+
+    function renderUiText(lang) {
+      const labels = getUiText(lang);
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        const value = labels[key];
+        if (typeof value === 'string') {
+          el.textContent = value;
+        }
+      });
+      uiLanguageSelect.value = lang;
+      starredTitle.textContent = labels.starredPageTitle;
+      if (randomStarredButton) {
+        randomStarredButton.textContent = labels.practiceStarredRandomly;
+      }
+      renderStarredItems();
+    }
+
+    function unstarExpression(expression) {
+      const key = getExpressionStorageKey(expression);
+      saveStarredExpressionKeys(loadStarredExpressionKeys().filter((item) => item !== key));
+      renderStarredItems();
+    }
+
+    function unstarPracticeTarget(target) {
+      const key = getPracticeTargetKey(target);
+      savePinnedPracticeTargets(loadPinnedPracticeTargets().filter((item) => getPracticeTargetKey(item) !== key));
+      if (target.practiceType === 'original') {
+        savePinnedTextIds(loadPinnedTextIds().filter((id) => id !== target.textId));
+      }
+      renderStarredItems();
+    }
+
+    function getStarredExpressionTargets(starredExpressionItems) {
+      const seen = new Set();
+      return starredExpressionItems.map((expression) => getOriginalPracticeTarget(expression.textId)).filter((target) => {
+        const key = getPracticeTargetKey(target);
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function getAllStarredPracticeTargets(starredExpressionItems) {
+      const targets = [
+        ...loadPinnedPracticeTargets(),
+        ...getStarredExpressionTargets(starredExpressionItems),
+      ];
+      const seen = new Set();
+      return targets.filter((target) => {
+        if (!isValidPracticeTarget(target)) {
+          return false;
+        }
+        const key = getPracticeTargetKey(target);
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function renderPracticeTargetCard(target, labels, uiLang) {
+      const textItem = getTextById(target.textId);
+      if (!textItem) {
+        return '';
+      }
+      const targetLanguage = getPracticeTargetLanguage(target, textItem);
+      const practiceCount = getTextPracticeCount(textItem.id);
+      const description = getPracticeTargetDescription(target, textItem, uiLang);
+      const preview = (target.practiceType === 'translation'
+        ? getTranslationValueForText(textItem, target.practiceTranslation) || textItem.text
+        : textItem.text).slice(0, 120).replace(/\\n/g, ' ');
+      return ''
+        + '<article class="card text-list-card starred-practice-card" data-starred-practice-card data-practice-target-key="' + escapeHtml(getPracticeTargetKey(target)) + '" data-text-id="' + escapeHtml(textItem.id) + '" data-target-language="' + escapeHtml(targetLanguage) + '">'
+        + '<button class="pin-button text-card__pin is-pinned" type="button" data-starred-practice-remove aria-label="' + escapeHtml(labels.unpinText) + '" title="' + escapeHtml(labels.unpinText) + '" aria-pressed="true">★</button>'
+        + '<div class="text-card-body">'
+        + '<p class="meta">' + getLanguageBadgeHtml(targetLanguage, uiLang) + '<span>' + escapeHtml(description) + '</span></p>'
+        + '<h2>' + escapeHtml(textItem.title) + '</h2>'
+        + '<p class="text-card-progress">' + escapeHtml(getTextPracticeLabel(practiceCount, labels)) + '</p>'
+        + '<p class="snippet">' + escapeHtml(preview) + '…</p>'
+        + '</div>'
+        + '<button class="secondary-button card-link" type="button" data-starred-open-target data-practice-target-key="' + escapeHtml(getPracticeTargetKey(target)) + '">' + escapeHtml(labels.practiceThisText) + '</button>'
+        + '</article>';
+    }
+
+    function renderStarredItems() {
+      const labels = getUiText(uiLanguageSelect.value);
+      const starred = new Set(loadStarredExpressionKeys());
+      const starredItems = expressions.filter((expression) => starred.has(getExpressionStorageKey(expression)));
+      const starredPracticeTargets = loadPinnedPracticeTargets().filter(isValidPracticeTarget);
+
+      starredGrid.innerHTML = [
+        ...starredPracticeTargets.map((target) => renderPracticeTargetCard(target, labels, uiLanguageSelect.value)),
+        ...starredItems.map((expression) => {
+        const status = getExpressionStatus(expression);
+        const label = getExpressionStatusLabel(status, labels);
+        const { practiceCount } = getExpressionPractice(expression);
+        const isHighRepetition = status === 'review' && practiceCount >= 10;
+        const expressionKey = getExpressionStorageKey(expression);
+        const meanings = getLocalizedExpressionMeanings(expression, uiLanguageSelect.value);
+        const examples = renderExampleSection(expression, labels, uiLanguageSelect.value);
+        return ''
+          + '<article class="expression-card review-expression-card review-card" data-starred-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
+          + '<div class="review-card__body">'
+          + '<div class="expression-header">'
+          + '<div class="expression-title-stack"><strong>' + escapeHtml(expression.phrase) + '</strong>' + getLanguageBadgeHtml(expression.language, uiLanguageSelect.value) + '</div>'
+          + '<div class="review-card__status-area">'
+          + '<button class="expression-star-button is-starred" type="button" data-starred-remove aria-pressed="true" title="' + escapeHtml(labels.starredPageTitle) + '">⭐</button>'
+          + '<span class="status-button status-pill review-card__status-badge" data-status="' + status + '">' + escapeHtml(label) + '</span>'
+          + '<span class="review-card__practice-count">' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span>'
+          + '</div>'
+          + '</div>'
+          + '<div class="review-card-meta">'
+          + (expression.formInText && expression.formInText !== expression.phrase ? '<span class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</span>' : '')
+          + '</div>'
+          + '<div class="review-card-meaning">'
+          + meanings.map((entry) => '<p>' + getLanguageBadgeHtml(entry.language, uiLanguageSelect.value) + ' ' + escapeHtml(entry.value) + '</p>').join('')
+          + '</div>'
+          + examples
+          + '</div>'
+          + '<div class="review-card-actions review-card__actions">'
+          + '<button class="secondary-button" type="button" data-starred-open-text data-text-id="' + escapeHtml(expression.textId) + '">' + escapeHtml(labels.practiceThisText) + '</button>'
+          + '</div>'
+          + '</article>';
+      }),
+      ].join('');
+
+      const hasStarredItems = starredItems.length > 0 || starredPracticeTargets.length > 0;
+      emptyState.hidden = hasStarredItems;
+      if (randomStarredButton) {
+        randomStarredButton.disabled = !hasStarredItems;
+      }
+
+      starredGrid.querySelectorAll('[data-starred-examples]').forEach((section) => {
+        section.addEventListener('click', (event) => event.stopPropagation());
+      });
+
+      starredGrid.querySelectorAll('[data-starred-example-toggle]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const exampleList = button.parentElement?.querySelector('.review-example-list');
+          if (!exampleList) {
+            return;
+          }
+          const isExpanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+          button.setAttribute('aria-label', isExpanded ? button.dataset.showLabel : button.dataset.hideLabel);
+          button.classList.toggle('is-open', !isExpanded);
+          const icon = button.querySelector('.example-toggle__icon');
+          if (icon) {
+            icon.textContent = isExpanded ? '⌄' : '⌃';
+          }
+          exampleList.hidden = isExpanded;
+        });
+      });
+
+      starredGrid.querySelectorAll('[data-starred-remove]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const card = button.closest('[data-starred-card]');
+          const expression = expressions.find((item) => getExpressionStorageKey(item) === card?.dataset.expressionKey);
+          if (expression) {
+            unstarExpression(expression);
+          }
+        });
+      });
+
+      starredGrid.querySelectorAll('[data-starred-open-text]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          window.location.href = '/text/' + button.dataset.textId;
+        });
+      });
+
+      starredGrid.querySelectorAll('[data-starred-practice-remove]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const card = button.closest('[data-starred-practice-card]');
+          const target = starredPracticeTargets.find((item) => getPracticeTargetKey(item) === card?.dataset.practiceTargetKey);
+          if (target) {
+            unstarPracticeTarget(target);
+          }
+        });
+      });
+
+      starredGrid.querySelectorAll('[data-starred-open-target]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const target = starredPracticeTargets.find((item) => getPracticeTargetKey(item) === button.dataset.practiceTargetKey);
+          if (target) {
+            window.location.href = getPracticeTargetHref(target);
+          }
+        });
+      });
+    }
+
+    function randomItem(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    if (randomStarredButton) {
+      randomStarredButton.addEventListener('click', () => {
+        const starred = new Set(loadStarredExpressionKeys());
+        const starredItems = expressions.filter((expression) => starred.has(getExpressionStorageKey(expression)));
+        const targets = getAllStarredPracticeTargets(starredItems);
+        const target = targets.length ? randomItem(targets) : null;
+        if (target) {
+          window.location.href = getPracticeTargetHref(target);
+        }
+      });
+    }
+
+    const savedUiLanguage = getSavedUiLanguage();
+    renderUiText(savedUiLanguage);
+
+    uiLanguageSelect.addEventListener('change', (event) => {
+      const lang = event.target.value;
+      safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
+      renderUiText(lang);
+    });
+  });
+`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{uiText[defaultUiLang].starredPageTitle} · Read & Type</title>
+  </head>
+  <body>
+    <main class="page-shell text-page">
+      <section class="hero-card page-top">
+        <div>
+          <h1 class="text-title" id="starred-title" data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</h1>
+          <p data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
+        </div>
+        <div class="top-actions">
+          <a class="nav-link" href="/" data-i18n="title">{uiText[defaultUiLang].title}</a>
+          <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <div class="language-switcher">
+            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <select id="ui-language-select">
+              {uiLanguages.map((lang) => (
+                <option value={lang}>{uiLanguageNames[lang]}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="expressions-card">
+        <div class="review-toolbar">
+          <button id="practice-starred-randomly" class="primary-button" type="button" data-i18n="practiceStarredRandomly">
+            {uiText[defaultUiLang].practiceStarredRandomly}
+          </button>
+        </div>
+        <div id="starred-grid" class="expressions-grid"></div>
+        <p id="starred-empty-state" class="empty-state" data-i18n="noStarredItems">{uiText[defaultUiLang].noStarredItems}</p>
+      </section>
+    </main>
+
+    <script type="module" set:html={clientScript}></script>
+  </body>
+</html>
