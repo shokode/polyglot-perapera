@@ -116,8 +116,16 @@ export type UILabels = {
   typingPlaceholder: string;
   progress: string;
   accuracy: string;
+  mistakes: string;
   wpm: string;
   cpm: string;
+  completionMessage: string;
+  nextRecommended: string;
+  practiceAgain: string;
+  backHome: string;
+  addToReview: string;
+  addedToReview: string;
+  translationPracticeReviewUnavailable: string;
   japaneseTranslation: string;
   englishTranslation: string;
   norwegianTranslation: string;
@@ -194,8 +202,16 @@ export const uiText: Record<UILang, UILabels> = {
     typingPlaceholder: 'Begynn å skrive her...',
     progress: 'Fremgang',
     accuracy: 'Nøyaktighet',
+    mistakes: 'Feil',
     wpm: 'WPM',
     cpm: 'tegn/min',
+    completionMessage: 'Ferdig! Bra jobbet.',
+    nextRecommended: 'Neste anbefalte',
+    practiceAgain: 'Øv igjen',
+    backHome: 'Tilbake hjem',
+    addToReview: 'Legg til repetisjon',
+    addedToReview: 'Lagt til repetisjon',
+    translationPracticeReviewUnavailable: 'Uttrykkskort kan legges til fra vanlig tekstøving.',
     japaneseTranslation: 'Japansk oversettelse',
     englishTranslation: 'Engelsk oversettelse',
     norwegianTranslation: 'Norsk oversettelse',
@@ -270,8 +286,16 @@ export const uiText: Record<UILang, UILabels> = {
     typingPlaceholder: 'Start typing here...',
     progress: 'Progress',
     accuracy: 'Accuracy',
+    mistakes: 'Mistakes',
     wpm: 'WPM',
     cpm: 'CPM',
+    completionMessage: 'Complete! Nice work.',
+    nextRecommended: 'Next recommended',
+    practiceAgain: 'Practice again',
+    backHome: 'Back home',
+    addToReview: 'Add to review',
+    addedToReview: 'Added to review',
+    translationPracticeReviewUnavailable: 'Expression review is available from regular text practice.',
     japaneseTranslation: 'Japanese Translation',
     englishTranslation: 'English Translation',
     norwegianTranslation: 'Norwegian Translation',
@@ -346,8 +370,16 @@ export const uiText: Record<UILang, UILabels> = {
     typingPlaceholder: 'ここに入力してください...',
     progress: '進捗',
     accuracy: '正確さ',
+    mistakes: 'ミス',
     wpm: 'WPM',
     cpm: '文字/分',
+    completionMessage: '完了しました！おつかれさまです。',
+    nextRecommended: '次のおすすめへ',
+    practiceAgain: 'もう一度練習',
+    backHome: 'ホームへ戻る',
+    addToReview: '復習に追加',
+    addedToReview: '復習に追加しました',
+    translationPracticeReviewUnavailable: '表現カードの復習追加は通常の本文練習から使えます。',
     japaneseTranslation: '日本語訳',
     englishTranslation: '英語訳',
     norwegianTranslation: 'ノルウェー語訳',

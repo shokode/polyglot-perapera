@@ -517,6 +517,72 @@ textarea {
   word-break: break-word;
 }
 
+.completion-card {
+  display: grid;
+  gap: 22px;
+}
+
+.completion-summary {
+  display: grid;
+  gap: 16px;
+}
+
+.completion-summary h3 {
+  margin: 0;
+}
+
+.completion-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.completion-stat {
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.completion-stat strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.completion-stat p {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.completion-actions .primary-button,
+.completion-actions .secondary-button {
+  border-radius: 16px;
+  padding: 12px 16px;
+}
+
+.completion-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.completion-translations {
+  display: grid;
+  gap: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+}
+
 .learning-focus-row {
   display: grid;
   gap: 24px;
@@ -1287,6 +1353,9 @@ h3 {
     grid-template-columns: 1fr;
   }
   .stat-grid {
+    grid-template-columns: 1fr;
+  }
+  .completion-stat-grid {
     grid-template-columns: 1fr;
   }
   .review-controls {
