@@ -1,22 +1,24 @@
 ---
-import '../styles/global.scss';
-import SiteHeader from '../components/SiteHeader.astro';
-import texts from '../data/texts.json' assert { type: 'json' };
+import "../styles/global.scss";
+import SiteHeader from "../components/SiteHeader.astro";
+import texts from "../data/texts.json" assert { type: "json" };
 import {
-  categories as categoryKeys,
-  levels as levelKeys,
-  uiLanguages,
-  uiLanguageNames,
-  uiText,
-  categoryLabels,
-  levelLabels,
-  languageNames,
-  type UILang,
-} from '../i18n/ui';
+    categories as categoryKeys,
+    levels as levelKeys,
+    uiLanguages,
+    uiLanguageNames,
+    uiText,
+    categoryLabels,
+    levelLabels,
+    languageNames,
+    type UILang,
+} from "../i18n/ui";
 
-const defaultUiLang: UILang = 'en';
-const appBasePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, '')}`;
+const defaultUiLang: UILang = "en";
+const appBasePath = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, "")}`;
 const clientScript = `
   const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
   const texts = ${JSON.stringify(texts)};
@@ -994,215 +996,508 @@ const clientScript = `
   });
 `;
 ---
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Polyglotyping</title>
-  </head>
-  <body>
+</head>
+<body>
     <SiteHeader active="home" basePath={import.meta.env.BASE_URL} />
     <main class="page-shell page-layout">
-      <section class="dashboard-card progress-section" id="progress" aria-labelledby="dashboard-title">
-        <div class="dashboard-heading dashboard-heading--with-actions">
-          <div>
-            <span class="section-kicker">Progress</span>
-            <h2 id="dashboard-title">{uiText[defaultUiLang].todayPractice}</h2>
-            <p>Track practice volume, review load, and typing speed at a glance.</p>
-          </div>
-          <a class="secondary-button progress-details-link" href={appHref('progress')} data-i18n="viewDetails">
-            {uiText[defaultUiLang].viewDetails}
-          </a>
-          <div class="language-switcher">
-            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
-            <select id="ui-language-select">
-              {uiLanguages.map((lang) => (
-                <option value={lang}>{uiLanguageNames[lang]}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div class="dashboard-grid">
-          <article class="dashboard-stat">
-            <span id="total-sessions-label">{uiText[defaultUiLang].totalSessions}</span>
-            <strong id="total-sessions-value">0</strong>
-          </article>
-          <article class="dashboard-stat">
-            <span id="learned-expressions-label">{uiText[defaultUiLang].learnedExpressions}</span>
-            <strong id="learned-expressions-value">0</strong>
-          </article>
-          <article class="dashboard-stat">
-            <span id="reviewing-expressions-label">{uiText[defaultUiLang].reviewingExpressions}</span>
-            <strong id="reviewing-expressions-value">0</strong>
-          </article>
-          <article class="dashboard-stat">
-            <span id="new-expressions-label">{uiText[defaultUiLang].newExpressions}</span>
-            <strong id="new-expressions-value">0</strong>
-          </article>
-          <article class="dashboard-stat">
-            <span id="average-wpm-label">{uiText[defaultUiLang].averageWpm}</span>
-            <strong id="average-wpm-value">—</strong>
-          </article>
-          <article class="dashboard-stat">
-            <span id="average-cpm-label">{uiText[defaultUiLang].averageCpm}</span>
-            <strong id="average-cpm-value">—</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="filters-card">
-        <div class="filter-group">
-          <label for="text-language" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
-          <select id="text-language" class="native-filter-select" aria-hidden="true" tabindex="-1">
-            <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
-            {uiLanguages.map((lang) => (
-              <option value={lang} data-i18n-target-language={lang}>{lang.toUpperCase()}</option>
-            ))}
-          </select>
-          <div class="status-filter-dropdown">
-            <button
-              id="text-language-button"
-              class="status-filter-button"
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-labelledby="text-language-button-label"
-            >
-              <span id="text-language-button-label">{uiText[defaultUiLang].allLanguages}</span>
-            </button>
-            <div id="text-language-menu" class="status-filter-menu" role="listbox" hidden>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-target-language-option data-dropdown-value="all" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].allLanguages}</span>
-              </button>
-              {uiLanguages.map((lang) => (
-                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-target-language-option data-dropdown-value={lang} aria-selected="false">
-                  <span data-filter-option-label>{lang.toUpperCase()}</span>
-                </button>
-              ))}
+        <section
+            class="dashboard-card progress-section"
+            id="progress"
+            aria-labelledby="dashboard-title"
+        >
+            <div class="dashboard-heading dashboard-heading--with-actions">
+                <div>
+                    <span class="section-kicker">Progress</span>
+                    <h2 id="dashboard-title">
+                        {uiText[defaultUiLang].todayPractice}
+                    </h2>
+                    <p>
+                        Track practice volume, review load, and typing speed at
+                        a glance.
+                    </p>
+                </div>
+                <a
+                    class="secondary-button progress-details-link"
+                    href={appHref("progress")}
+                    data-i18n="viewDetails"
+                >
+                    {uiText[defaultUiLang].viewDetails}
+                </a>
+                <div class="language-switcher">
+                    <label for="ui-language-select" data-i18n="language"
+                        >{uiText[defaultUiLang].language}</label
+                    >
+                    <select id="ui-language-select">
+                        {
+                            uiLanguages.map((lang) => (
+                                <option value={lang}>
+                                    {uiLanguageNames[lang]}
+                                </option>
+                            ))
+                        }
+                    </select>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="filter-group">
-          <label for="text-category" data-i18n="category">{uiText[defaultUiLang].category}</label>
-          <select id="text-category" class="native-filter-select" aria-hidden="true" tabindex="-1">
-            <option value="all" data-i18n="allCategories">{uiText[defaultUiLang].allCategories}</option>
-            {categoryKeys.map((category) => (
-              <option value={category} data-i18n-category={category}>{categoryLabels[category][defaultUiLang]}</option>
-            ))}
-          </select>
-          <div class="status-filter-dropdown">
-            <button
-              id="text-category-button"
-              class="status-filter-button"
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-labelledby="text-category-button-label"
-            >
-              <span id="text-category-button-label">{uiText[defaultUiLang].allCategories}</span>
-            </button>
-            <div id="text-category-menu" class="status-filter-menu" role="listbox" hidden>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-category-option data-dropdown-value="all" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].allCategories}</span>
-              </button>
-              {categoryKeys.map((category) => (
-                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-category-option data-dropdown-value={category} aria-selected="false">
-                  <span data-filter-option-label>{categoryLabels[category][defaultUiLang]}</span>
-                </button>
-              ))}
+            <div class="dashboard-grid">
+                <article class="dashboard-stat">
+                    <span id="total-sessions-label"
+                        >{uiText[defaultUiLang].totalSessions}</span
+                    >
+                    <strong id="total-sessions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="learned-expressions-label"
+                        >{uiText[defaultUiLang].learnedExpressions}</span
+                    >
+                    <strong id="learned-expressions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="reviewing-expressions-label"
+                        >{uiText[defaultUiLang].reviewingExpressions}</span
+                    >
+                    <strong id="reviewing-expressions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="new-expressions-label"
+                        >{uiText[defaultUiLang].newExpressions}</span
+                    >
+                    <strong id="new-expressions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="average-wpm-label"
+                        >{uiText[defaultUiLang].averageWpm}</span
+                    >
+                    <strong id="average-wpm-value">—</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="average-cpm-label"
+                        >{uiText[defaultUiLang].averageCpm}</span
+                    >
+                    <strong id="average-cpm-value">—</strong>
+                </article>
             </div>
-          </div>
-        </div>
-        <div class="filter-group">
-          <label for="text-level" data-i18n="level">{uiText[defaultUiLang].level}</label>
-          <select id="text-level" class="native-filter-select" aria-hidden="true" tabindex="-1">
-            <option value="all" data-i18n="allLevels">{uiText[defaultUiLang].allLevels}</option>
-            {levelKeys.map((level) => (
-              <option value={level} data-i18n-level={level}>{levelLabels[level][defaultUiLang]}</option>
-            ))}
-          </select>
-          <div class="status-filter-dropdown">
-            <button
-              id="text-level-button"
-              class="status-filter-button"
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-labelledby="text-level-button-label"
-            >
-              <span id="text-level-button-label">{uiText[defaultUiLang].allLevels}</span>
-            </button>
-            <div id="text-level-menu" class="status-filter-menu" role="listbox" hidden>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-level-option data-dropdown-value="all" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].allLevels}</span>
-              </button>
-              {levelKeys.map((level) => (
-                <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-level-option data-dropdown-value={level} aria-selected="false">
-                  <span data-filter-option-label>{levelLabels[level][defaultUiLang]}</span>
-                </button>
-              ))}
+        </section>
+
+        <section class="filters-card">
+            <div class="filter-group">
+                <label for="text-language" data-i18n="practiceLanguage"
+                    >{uiText[defaultUiLang].practiceLanguage}</label
+                >
+                <select
+                    id="text-language"
+                    class="native-filter-select"
+                    aria-hidden="true"
+                    tabindex="-1"
+                >
+                    <option value="all" data-i18n-target-language="all"
+                        >{uiText[defaultUiLang].allLanguages}</option
+                    >
+                    {
+                        uiLanguages.map((lang) => (
+                            <option
+                                value={lang}
+                                data-i18n-target-language={lang}
+                            >
+                                {lang.toUpperCase()}
+                            </option>
+                        ))
+                    }
+                </select>
+                <div class="status-filter-dropdown">
+                    <button
+                        id="text-language-button"
+                        class="status-filter-button"
+                        type="button"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="text-language-button-label"
+                    >
+                        <span id="text-language-button-label"
+                            >{uiText[defaultUiLang].allLanguages}</span
+                        >
+                    </button>
+                    <div
+                        id="text-language-menu"
+                        class="status-filter-menu"
+                        role="listbox"
+                        hidden
+                    >
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-target-language-option
+                            data-dropdown-value="all"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].allLanguages}</span
+                            >
+                        </button>
+                        {
+                            uiLanguages.map((lang) => (
+                                <button
+                                    class="status-filter-option"
+                                    type="button"
+                                    role="option"
+                                    tabindex="-1"
+                                    data-home-target-language-option
+                                    data-dropdown-value={lang}
+                                    aria-selected="false"
+                                >
+                                    <span data-filter-option-label>
+                                        {lang.toUpperCase()}
+                                    </span>
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="filter-group">
-          <label for="text-sort" data-i18n="sortLabel">{uiText[defaultUiLang].sortLabel}</label>
-          <select id="text-sort" class="native-filter-select" aria-hidden="true" tabindex="-1">
-            <option value="default" data-i18n="sortNewestDefault">{uiText[defaultUiLang].sortNewestDefault}</option>
-            <option value="most-practiced" data-i18n="sortMostPracticed">{uiText[defaultUiLang].sortMostPracticed}</option>
-            <option value="least-practiced" data-i18n="sortLeastPracticed">{uiText[defaultUiLang].sortLeastPracticed}</option>
-            <option value="recently-practiced" data-i18n="sortRecentlyPracticed">{uiText[defaultUiLang].sortRecentlyPracticed}</option>
-            <option value="easiest" data-i18n="sortEasiestFirst">{uiText[defaultUiLang].sortEasiestFirst}</option>
-            <option value="hardest" data-i18n="sortHardestFirst">{uiText[defaultUiLang].sortHardestFirst}</option>
-            <option value="az" data-i18n="sortAlphabetical">{uiText[defaultUiLang].sortAlphabetical}</option>
-          </select>
-          <div class="status-filter-dropdown">
-            <button
-              id="text-sort-button"
-              class="status-filter-button"
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-labelledby="text-sort-button-label"
-            >
-              <span id="text-sort-button-label">{uiText[defaultUiLang].sortNewestDefault}</span>
-            </button>
-            <div id="text-sort-menu" class="status-filter-menu" role="listbox" hidden>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="default" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortNewestDefault}</span>
-              </button>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="most-practiced" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortMostPracticed}</span>
-              </button>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="least-practiced" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortLeastPracticed}</span>
-              </button>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="recently-practiced" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortRecentlyPracticed}</span>
-              </button>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="easiest" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortEasiestFirst}</span>
-              </button>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="hardest" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortHardestFirst}</span>
-              </button>
-              <button class="status-filter-option" type="button" role="option" tabindex="-1" data-home-sort-option data-dropdown-value="az" aria-selected="false">
-                <span data-filter-option-label>{uiText[defaultUiLang].sortAlphabetical}</span>
-              </button>
+            <div class="filter-group">
+                <label for="text-category" data-i18n="category"
+                    >{uiText[defaultUiLang].category}</label
+                >
+                <select
+                    id="text-category"
+                    class="native-filter-select"
+                    aria-hidden="true"
+                    tabindex="-1"
+                >
+                    <option value="all" data-i18n="allCategories"
+                        >{uiText[defaultUiLang].allCategories}</option
+                    >
+                    {
+                        categoryKeys.map((category) => (
+                            <option
+                                value={category}
+                                data-i18n-category={category}
+                            >
+                                {categoryLabels[category][defaultUiLang]}
+                            </option>
+                        ))
+                    }
+                </select>
+                <div class="status-filter-dropdown">
+                    <button
+                        id="text-category-button"
+                        class="status-filter-button"
+                        type="button"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="text-category-button-label"
+                    >
+                        <span id="text-category-button-label"
+                            >{uiText[defaultUiLang].allCategories}</span
+                        >
+                    </button>
+                    <div
+                        id="text-category-menu"
+                        class="status-filter-menu"
+                        role="listbox"
+                        hidden
+                    >
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-category-option
+                            data-dropdown-value="all"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].allCategories}</span
+                            >
+                        </button>
+                        {
+                            categoryKeys.map((category) => (
+                                <button
+                                    class="status-filter-option"
+                                    type="button"
+                                    role="option"
+                                    tabindex="-1"
+                                    data-home-category-option
+                                    data-dropdown-value={category}
+                                    aria-selected="false"
+                                >
+                                    <span data-filter-option-label>
+                                        {
+                                            categoryLabels[category][
+                                                defaultUiLang
+                                            ]
+                                        }
+                                    </span>
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
+            <div class="filter-group">
+                <label for="text-level" data-i18n="level"
+                    >{uiText[defaultUiLang].level}</label
+                >
+                <select
+                    id="text-level"
+                    class="native-filter-select"
+                    aria-hidden="true"
+                    tabindex="-1"
+                >
+                    <option value="all" data-i18n="allLevels"
+                        >{uiText[defaultUiLang].allLevels}</option
+                    >
+                    {
+                        levelKeys.map((level) => (
+                            <option value={level} data-i18n-level={level}>
+                                {levelLabels[level][defaultUiLang]}
+                            </option>
+                        ))
+                    }
+                </select>
+                <div class="status-filter-dropdown">
+                    <button
+                        id="text-level-button"
+                        class="status-filter-button"
+                        type="button"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="text-level-button-label"
+                    >
+                        <span id="text-level-button-label"
+                            >{uiText[defaultUiLang].allLevels}</span
+                        >
+                    </button>
+                    <div
+                        id="text-level-menu"
+                        class="status-filter-menu"
+                        role="listbox"
+                        hidden
+                    >
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-level-option
+                            data-dropdown-value="all"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].allLevels}</span
+                            >
+                        </button>
+                        {
+                            levelKeys.map((level) => (
+                                <button
+                                    class="status-filter-option"
+                                    type="button"
+                                    role="option"
+                                    tabindex="-1"
+                                    data-home-level-option
+                                    data-dropdown-value={level}
+                                    aria-selected="false"
+                                >
+                                    <span data-filter-option-label>
+                                        {levelLabels[level][defaultUiLang]}
+                                    </span>
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label for="text-sort" data-i18n="sortLabel"
+                    >{uiText[defaultUiLang].sortLabel}</label
+                >
+                <select
+                    id="text-sort"
+                    class="native-filter-select"
+                    aria-hidden="true"
+                    tabindex="-1"
+                >
+                    <option value="default" data-i18n="sortNewestDefault"
+                        >{uiText[defaultUiLang].sortNewestDefault}</option
+                    >
+                    <option value="most-practiced" data-i18n="sortMostPracticed"
+                        >{uiText[defaultUiLang].sortMostPracticed}</option
+                    >
+                    <option
+                        value="least-practiced"
+                        data-i18n="sortLeastPracticed"
+                        >{uiText[defaultUiLang].sortLeastPracticed}</option
+                    >
+                    <option
+                        value="recently-practiced"
+                        data-i18n="sortRecentlyPracticed"
+                        >{uiText[defaultUiLang].sortRecentlyPracticed}</option
+                    >
+                    <option value="easiest" data-i18n="sortEasiestFirst"
+                        >{uiText[defaultUiLang].sortEasiestFirst}</option
+                    >
+                    <option value="hardest" data-i18n="sortHardestFirst"
+                        >{uiText[defaultUiLang].sortHardestFirst}</option
+                    >
+                    <option value="az" data-i18n="sortAlphabetical"
+                        >{uiText[defaultUiLang].sortAlphabetical}</option
+                    >
+                </select>
+                <div class="status-filter-dropdown">
+                    <button
+                        id="text-sort-button"
+                        class="status-filter-button"
+                        type="button"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="text-sort-button-label"
+                    >
+                        <span id="text-sort-button-label"
+                            >{uiText[defaultUiLang].sortNewestDefault}</span
+                        >
+                    </button>
+                    <div
+                        id="text-sort-menu"
+                        class="status-filter-menu"
+                        role="listbox"
+                        hidden
+                    >
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="default"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].sortNewestDefault}</span
+                            >
+                        </button>
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="most-practiced"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].sortMostPracticed}</span
+                            >
+                        </button>
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="least-practiced"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{
+                                    uiText[defaultUiLang].sortLeastPracticed
+                                }</span
+                            >
+                        </button>
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="recently-practiced"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{
+                                    uiText[defaultUiLang].sortRecentlyPracticed
+                                }</span
+                            >
+                        </button>
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="easiest"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].sortEasiestFirst}</span
+                            >
+                        </button>
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="hardest"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].sortHardestFirst}</span
+                            >
+                        </button>
+                        <button
+                            class="status-filter-option"
+                            type="button"
+                            role="option"
+                            tabindex="-1"
+                            data-home-sort-option
+                            data-dropdown-value="az"
+                            aria-selected="false"
+                        >
+                            <span data-filter-option-label
+                                >{uiText[defaultUiLang].sortAlphabetical}</span
+                            >
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <section class="actions-row">
-        <button id="start-button" class="primary-button" data-i18n="startRecommended">{uiText[defaultUiLang].startRecommended}</button>
-        <button id="random-button" class="secondary-button" type="button" data-i18n="randomPractice">{uiText[defaultUiLang].randomPractice}</button>
-      </section>
+        <section class="actions-row">
+            <button
+                id="start-button"
+                class="primary-button"
+                data-i18n="startRecommended"
+                >{uiText[defaultUiLang].startRecommended}</button
+            >
+            <button
+                id="random-button"
+                class="secondary-button"
+                type="button"
+                data-i18n="randomPractice"
+                >{uiText[defaultUiLang].randomPractice}</button
+            >
+        </section>
 
-      <section id="today-recommendation-card" class="recommendation-card" role="button" tabindex="0" hidden></section>
+        <section
+            id="today-recommendation-card"
+            class="recommendation-card"
+            role="button"
+            tabindex="0"
+            hidden
+        >
+        </section>
 
-      <section id="results" class="results-grid"></section>
-      <p id="empty-state" class="empty-state" hidden data-i18n="noResults">{uiText[defaultUiLang].noResults}</p>
+        <section id="results" class="results-grid"></section>
+        <p id="empty-state" class="empty-state" hidden data-i18n="noResults">
+            {uiText[defaultUiLang].noResults}
+        </p>
     </main>
 
-    <script type="module" set:html={clientScript}></script>
-  </body>
-</html>
+    <script type="module" set:html={clientScript} />
+</body>
