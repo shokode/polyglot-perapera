@@ -923,6 +923,8 @@ const clientScript = `
     const accuracyValue = document.getElementById('accuracy-value');
     const wpmValue = document.getElementById('wpm-value');
     const completionPanel = document.getElementById('completion-panel');
+    const completionTitle = document.getElementById('completion-title');
+    const completionStatusNote = document.getElementById('completion-status-note');
     const completionAccuracyTitle = document.getElementById('completion-accuracy-title');
     const completionAccuracyValue = document.getElementById('completion-accuracy-value');
     const completionSpeedTitle = document.getElementById('completion-speed-title');
@@ -958,6 +960,9 @@ const clientScript = `
     const typingModeTitle = document.getElementById('typing-mode-title');
     const typingModeButtons = document.querySelectorAll('[data-typing-mode]');
     const typingModeDescription = document.getElementById('typing-mode-description');
+    const typingInputLabel = document.getElementById('typing-input-label');
+    const typingInputOverlay = document.getElementById('typing-input-overlay');
+    const typingInputOverlayText = document.getElementById('typing-input-overlay-text');
     const progressTitle = document.getElementById('progress-title');
     const accuracyTitle = document.getElementById('accuracy-title');
     const wpmTitle = document.getElementById('wpm-title');
@@ -969,15 +974,19 @@ const clientScript = `
     const textContent = document.querySelector('.text-content');
     let expressionHighlights = document.querySelectorAll('[data-expression-phrase]');
     const expressionMiniCard = document.getElementById('expression-mini-card');
+    const miniCardTitle = document.getElementById('mini-card-title');
     const miniCardPhrase = document.getElementById('mini-card-phrase');
     const miniCardMeaning = document.getElementById('mini-card-meaning');
     const miniCardFallback = document.getElementById('mini-card-fallback');
     const miniCardDetails = document.getElementById('mini-card-details');
     let activeMiniCardPhrase = null;
+    let miniCardPinned = false;
     let closeCompletionTimer = null;
     let currentTypingMode = loadTypingMode();
     let flowAcceptedValue = '';
     let flowMistakes = 0;
+    let currentCompletionState = null;
+    let currentCompositionText = '';
 
     function focusTypingInput() {
       if (!input) {
@@ -1073,17 +1082,39 @@ const clientScript = `
           focusTypingInput();
           const phrase = highlight.dataset.expressionPhrase;
           if (phrase) {
-            showExpressionMiniCard(phrase, event);
+            showExpressionMiniCard(phrase, true, highlight);
           }
         });
         const markerId = highlight.dataset.markerId;
         if (!markerId) {
           return;
         }
-        highlight.addEventListener('mouseenter', () => setMarkerHoverState(markerId, true));
-        highlight.addEventListener('mouseleave', () => setMarkerHoverState(markerId, false));
-        highlight.addEventListener('focusin', () => setMarkerHoverState(markerId, true));
-        highlight.addEventListener('focusout', () => setMarkerHoverState(markerId, false));
+        highlight.addEventListener('mouseenter', () => {
+          setMarkerHoverState(markerId, true);
+          const phrase = highlight.dataset.expressionPhrase;
+          if (phrase) {
+            showExpressionMiniCard(phrase, false, highlight);
+          }
+        });
+        highlight.addEventListener('mouseleave', () => {
+          setMarkerHoverState(markerId, false);
+          if (!miniCardPinned) {
+            closeExpressionMiniCard();
+          }
+        });
+        highlight.addEventListener('focusin', () => {
+          setMarkerHoverState(markerId, true);
+          const phrase = highlight.dataset.expressionPhrase;
+          if (phrase) {
+            showExpressionMiniCard(phrase, false, highlight);
+          }
+        });
+        highlight.addEventListener('focusout', () => {
+          setMarkerHoverState(markerId, false);
+          if (!miniCardPinned) {
+            closeExpressionMiniCard();
+          }
+        });
       });
     }
 
@@ -1232,6 +1263,7 @@ const clientScript = `
 
     function closeExpressionMiniCard() {
       activeMiniCardPhrase = null;
+      miniCardPinned = false;
       if (expressionMiniCard) {
         expressionMiniCard.hidden = true;
       }
@@ -1250,6 +1282,9 @@ const clientScript = `
       const explanations = getLocalizedExplanations(getExpressionExplanationMap(expression), uiLanguageSelect.value);
       const primary = explanations[0];
       const fallback = explanations.find((entry) => entry.language !== primary?.language);
+      if (miniCardTitle) {
+        miniCardTitle.textContent = labels.currentExpression;
+      }
       miniCardPhrase.textContent = expression.phrase;
       miniCardMeaning.textContent = primary?.value || '';
       miniCardFallback.textContent = fallback ? fallback.value : '';
@@ -1257,26 +1292,42 @@ const clientScript = `
       miniCardDetails.textContent = labels.expressionDetails;
     }
 
-    function positionExpressionMiniCard(event) {
-      if (!expressionMiniCard || !textContent) {
+    function isSmallScreen() {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    function positionExpressionMiniCard(anchor) {
+      if (!expressionMiniCard || !anchor || isSmallScreen()) {
+        if (expressionMiniCard) {
+          expressionMiniCard.style.left = '';
+          expressionMiniCard.style.top = '';
+        }
         return;
       }
-      const containerRect = textContent.getBoundingClientRect();
+      const anchorRect = anchor.getBoundingClientRect();
       const cardRect = expressionMiniCard.getBoundingClientRect();
-      const left = Math.max(12, Math.min(event.clientX - containerRect.left, containerRect.width - cardRect.width - 12));
-      const top = Math.max(12, event.clientY - containerRect.top + 22);
+      const viewportPadding = 12;
+      const left = Math.max(
+        viewportPadding,
+        Math.min(anchorRect.left, window.innerWidth - cardRect.width - viewportPadding),
+      );
+      const top = Math.max(
+        viewportPadding,
+        Math.min(anchorRect.bottom + 10, window.innerHeight - cardRect.height - viewportPadding),
+      );
       expressionMiniCard.style.left = left + 'px';
       expressionMiniCard.style.top = top + 'px';
     }
 
-    function showExpressionMiniCard(phrase, event) {
+    function showExpressionMiniCard(phrase, pinned = false, anchor = null) {
       if (!expressionMiniCard) {
         return;
       }
       activeMiniCardPhrase = phrase;
+      miniCardPinned = pinned;
       expressionMiniCard.hidden = false;
       updateExpressionMiniCardText();
-      requestAnimationFrame(() => positionExpressionMiniCard(event));
+      requestAnimationFrame(() => positionExpressionMiniCard(anchor));
     }
 
     function focusFullExpressionCard(phrase) {
@@ -1309,6 +1360,11 @@ const clientScript = `
         ? getTranslationPracticeLabel(activePracticeTranslationLang, labels)
         : labels.typingPractice;
       input.placeholder = labels.typingPlaceholder;
+      input.setAttribute('aria-label', getTypingInputLabel(labels));
+      if (typingInputLabel) {
+        typingInputLabel.textContent = getTypingInputLabel(labels);
+      }
+      updateTypingInputOverlay();
       if (typingModeTitle) {
         typingModeTitle.textContent = labels.typingMode;
       }
@@ -1330,6 +1386,15 @@ const clientScript = `
       }
       if (completionMistakesTitle) {
         completionMistakesTitle.textContent = labels.mistakes;
+      }
+      if (completionTitle && currentCompletionState) {
+        completionTitle.textContent = getCompletionTitle(labels, currentCompletionState);
+      }
+      if (completionStatusNote && currentCompletionState) {
+        completionStatusNote.textContent = currentCompletionState === 'finishedWithMistakes'
+          ? labels.completionFinishedNote
+          : '';
+        completionStatusNote.hidden = currentCompletionState !== 'finishedWithMistakes';
       }
       if (assessmentPrompt) {
         assessmentPrompt.textContent = labels.selfAssessmentPrompt;
@@ -1451,9 +1516,40 @@ const clientScript = `
       });
     }
 
-    function showCompletionPanel(accuracy, speed, mistakes) {
+    function getCompletionTitle(labels, completionState) {
+      return completionState === 'finishedWithMistakes'
+        ? labels.completionFinishedMessage
+        : labels.completionPerfectMessage;
+    }
+
+    function getTypingInputLabel(labels) {
+      return activeTypingTargetLanguage === 'ja'
+        ? labels.japaneseTypingInputLabel
+        : labels.typingInputLabel;
+    }
+
+    function updateTypingInputOverlay(compositionText = currentCompositionText) {
+      if (!typingInputOverlay || !typingInputOverlayText || activeTypingTargetLanguage !== 'ja') {
+        return;
+      }
+      const value = compositionText || '';
+      typingInputOverlayText.textContent = value;
+      typingInputOverlay.hidden = !value;
+    }
+
+    function showCompletionPanel(accuracy, speed, mistakes, completionState) {
       const labels = getUiText(uiLanguageSelect.value);
+      currentCompletionState = completionState;
       completionPanel.hidden = false;
+      if (completionTitle) {
+        completionTitle.textContent = getCompletionTitle(labels, completionState);
+      }
+      if (completionStatusNote) {
+        completionStatusNote.textContent = completionState === 'finishedWithMistakes'
+          ? labels.completionFinishedNote
+          : '';
+        completionStatusNote.hidden = completionState !== 'finishedWithMistakes';
+      }
       if (completionAccuracyValue) {
         completionAccuracyValue.textContent = accuracy + '%';
       }
@@ -1524,8 +1620,11 @@ const clientScript = `
       input.value = '';
       flowAcceptedValue = '';
       flowMistakes = 0;
+      currentCompositionText = '';
       startTime = null;
       hasRecordedCompletion = false;
+      hasShownCompletion = false;
+      currentCompletionState = null;
       completionPanel.hidden = true;
       if (!activeIsTranslationPractice) {
         expressionsPanel.hidden = true;
@@ -1552,6 +1651,7 @@ const clientScript = `
         section.hidden = true;
       });
       updateTargetTextProgress('');
+      updateTypingInputOverlay('');
       input.focus();
     }
 
@@ -1571,13 +1671,14 @@ const clientScript = `
     function saveSelfAssessment(level) {
       const now = new Date().toISOString();
       const assessments = loadProgress(SELF_ASSESSMENT_KEY);
+      const finishedWithMistakes = currentCompletionState === 'finishedWithMistakes';
       assessments[getCurrentAssessmentStorageKey()] = {
         textId: text.id,
         mode: activeIsTranslationPractice ? 'translation' : 'text',
         targetLanguage: activeTypingTargetLanguage,
         level,
         priority: getAssessmentPriority(level),
-        reviewTarget: level !== 'perfect',
+        reviewTarget: level !== 'perfect' || finishedWithMistakes,
         assessedAt: now,
       };
       saveProgress(SELF_ASSESSMENT_KEY, assessments);
@@ -1647,6 +1748,15 @@ const clientScript = `
       return { accuracy, correct, mistakes, progress, speed };
     }
 
+    function getTypingCompletionState(typed, accuracy, mistakes) {
+      if (typed.length < activeTypingTarget.length) {
+        return null;
+      }
+      return typingStringsMatch(typed, activeTypingTarget) && accuracy === 100 && mistakes === 0
+        ? 'perfectComplete'
+        : 'finishedWithMistakes';
+    }
+
     function updateMetrics() {
       const typed = input.value;
       const { accuracy, mistakes, progress, speed } = getTypingStats(typed);
@@ -1654,8 +1764,10 @@ const clientScript = `
       accuracyValue.textContent = accuracy + '%';
       wpmValue.textContent = '' + speed;
       updateTargetTextProgress(typed);
-      if (typingStringsMatch(typed, activeTypingTarget)) {
-        showCompletionPanel(accuracy, speed, mistakes);
+      const completionState = getTypingCompletionState(typed, accuracy, mistakes);
+      if (completionState && !hasShownCompletion) {
+        hasShownCompletion = true;
+        showCompletionPanel(accuracy, speed, mistakes, completionState);
         if (!activeIsTranslationPractice) {
           expressionsPanel.hidden = false;
           grammarPanel.hidden = false;
@@ -1669,6 +1781,7 @@ const clientScript = `
 
     let startTime = null;
     let hasRecordedCompletion = false;
+    let hasShownCompletion = false;
     let isComposing = false;
 
     function flashCurrentMistake(index) {
@@ -1712,6 +1825,7 @@ const clientScript = `
 
     input.addEventListener('input', (event) => {
       if (event.isComposing || isComposing) {
+        updateTypingInputOverlay(currentCompositionText);
         return;
       }
       if (!startTime) {
@@ -1721,14 +1835,23 @@ const clientScript = `
         processFlowInput();
       }
       updateMetrics();
+      updateTypingInputOverlay('');
     });
 
     input.addEventListener('compositionstart', () => {
       isComposing = true;
+      currentCompositionText = '';
+      updateTypingInputOverlay('');
+    });
+
+    input.addEventListener('compositionupdate', (event) => {
+      currentCompositionText = event.data || '';
+      updateTypingInputOverlay(currentCompositionText);
     });
 
     input.addEventListener('compositionend', () => {
       isComposing = false;
+      currentCompositionText = '';
       if (!startTime) {
         startTime = performance.now();
       }
@@ -1736,6 +1859,7 @@ const clientScript = `
         processFlowInput();
       }
       updateMetrics();
+      updateTypingInputOverlay('');
     });
 
     typingModeButtons.forEach((button) => {
@@ -2001,17 +2125,38 @@ if (!text) {
         aria-label={uiText[defaultUiLang].typingPractice}
       >
         <div id="target-text" set:html={highlightedTextHtml} />
-        <aside class="expression-mini-card" id="expression-mini-card" hidden>
-          <strong id="mini-card-phrase"></strong>
-          <p id="mini-card-meaning"></p>
-          <p class="mini-card-fallback" id="mini-card-fallback"></p>
-          <button class="mini-card-details" id="mini-card-details" type="button"
-            >{uiText[defaultUiLang].expressionDetails}</button
+        <div
+          class="typing-input-overlay"
+          id="typing-input-overlay"
+          hidden
+        >
+          <span
+            class="typing-input-overlay__text"
+            id="typing-input-overlay-text"
           >
-        </aside>
+          </span>
+        </div>
       </section>
+      <aside
+        class="expression-mini-card"
+        id="expression-mini-card"
+        hidden
+      >
+        <span class="mini-card-title" id="mini-card-title"
+          >{uiText[defaultUiLang].currentExpression}</span
+        >
+        <strong id="mini-card-phrase"></strong>
+        <p id="mini-card-meaning"></p>
+        <p class="mini-card-fallback" id="mini-card-fallback"></p>
+        <button class="mini-card-details" id="mini-card-details" type="button"
+          >{uiText[defaultUiLang].expressionDetails}</button
+        >
+      </aside>
 
-      <section class="note-card typing-practice-section">
+      <section
+        class="note-card typing-practice-section"
+        data-target-language={typingTargetLanguage}
+      >
         <h3 id="typing-heading" data-i18n="typingPractice">
           {
             practiceTranslationLang
@@ -2048,9 +2193,22 @@ if (!text) {
             {uiText[defaultUiLang].typingModeFlowDescription}
           </p>
         </div>
+        <label
+          class="typing-input-label"
+          id="typing-input-label"
+          for="typing-input"
+        >
+          {
+            typingTargetLanguage === "ja"
+              ? uiText[defaultUiLang].japaneseTypingInputLabel
+              : uiText[defaultUiLang].typingInputLabel
+          }
+        </label>
         <textarea
           id="typing-input"
           class="type-area"
+          data-target-language={typingTargetLanguage}
+          aria-label={typingTargetLanguage === "ja" ? uiText[defaultUiLang].japaneseTypingInputLabel : uiText[defaultUiLang].typingInputLabel}
           placeholder={uiText[defaultUiLang].typingPlaceholder}
           spellcheck="false"></textarea>
         <div class="stat-grid">
@@ -2135,6 +2293,12 @@ if (!text) {
                 <p id="completion-mistakes-value">0</p>
               </div>
             </div>
+            <p
+              class="completion-note"
+              id="completion-status-note"
+              hidden
+            >
+            </p>
             <div
               class="completion-modal__assessment self-assessment-panel"
               id="self-assessment-panel"

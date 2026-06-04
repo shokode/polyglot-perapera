@@ -128,12 +128,17 @@ export type UILabels = {
   typingModeStrict: string;
   typingModeFlow: string;
   typingModeFlowDescription: string;
+  typingInputLabel: string;
+  japaneseTypingInputLabel: string;
   progress: string;
   accuracy: string;
   mistakes: string;
   wpm: string;
   cpm: string;
   completionMessage: string;
+  completionPerfectMessage: string;
+  completionFinishedMessage: string;
+  completionFinishedNote: string;
   selfAssessmentPrompt: string;
   assessmentPerfect: string;
   assessmentMostly: string;
@@ -164,6 +169,7 @@ export type UILabels = {
   expressionStatusAction: string;
   expressionTextForm: string;
   expressionDetails: string;
+  currentExpression: string;
   expressionExample: string;
   showExpressionExample: string;
   hideExpressionExample: string;
@@ -240,12 +246,17 @@ export const uiText: Record<UILang, UILabels> = {
     typingModeStrict: 'Nøyaktig modus',
     typingModeFlow: 'Flytmodus',
     typingModeFlowDescription: 'Feil telles, men du trenger ikke slette dem. Markøren venter til du skriver riktig tegn.',
+    typingInputLabel: 'Inndata',
+    japaneseTypingInputLabel: 'Japansk inndata',
     progress: 'Fremgang',
     accuracy: 'Nøyaktighet',
     mistakes: 'Feil',
     wpm: 'WPM',
     cpm: 'tegn/min',
     completionMessage: 'Ferdig! Bra jobbet.',
+    completionPerfectMessage: 'Ferdig!',
+    completionFinishedMessage: 'Fullført',
+    completionFinishedNote: 'Det er noen feil. Du kan øve igjen eller velge hvor godt du forstod teksten.',
     selfAssessmentPrompt: 'Hvor godt forstod du denne teksten?',
     assessmentPerfect: 'Alt klart',
     assessmentMostly: 'Ganske klart',
@@ -276,6 +287,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusAction: 'Klikk for å endre status',
     expressionTextForm: 'Form i teksten',
     expressionDetails: 'Se mer',
+    currentExpression: 'Aktuelt uttrykk',
     expressionExample: 'Eksempel',
     showExpressionExample: 'Vis eksempel',
     hideExpressionExample: 'Skjul eksempel',
@@ -350,12 +362,17 @@ export const uiText: Record<UILang, UILabels> = {
     typingModeStrict: 'Strict mode',
     typingModeFlow: 'Flow mode',
     typingModeFlowDescription: 'Mistakes are counted, but you do not need to delete them. The cursor waits until you type the correct character.',
+    typingInputLabel: 'Input',
+    japaneseTypingInputLabel: 'Japanese input',
     progress: 'Progress',
     accuracy: 'Accuracy',
     mistakes: 'Mistakes',
     wpm: 'WPM',
     cpm: 'CPM',
     completionMessage: 'Complete! Nice work.',
+    completionPerfectMessage: 'Complete!',
+    completionFinishedMessage: 'Finished',
+    completionFinishedNote: 'There are some mistakes. You can practice again or choose your understanding level.',
     selfAssessmentPrompt: 'How well did you understand this text?',
     assessmentPerfect: 'All clear',
     assessmentMostly: 'Mostly clear',
@@ -386,6 +403,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusAction: 'Click to change status',
     expressionTextForm: 'Text form',
     expressionDetails: 'Details',
+    currentExpression: 'Current expression',
     expressionExample: 'Example',
     showExpressionExample: 'Show example',
     hideExpressionExample: 'Hide example',
@@ -460,12 +478,17 @@ export const uiText: Record<UILang, UILabels> = {
     typingModeStrict: '正確モード',
     typingModeFlow: 'フローモード',
     typingModeFlowDescription: '間違えても削除せず、正しい文字を打つまで進みません。',
+    typingInputLabel: '入力中',
+    japaneseTypingInputLabel: '変換入力',
     progress: '進捗',
     accuracy: '正確さ',
     mistakes: 'ミス',
     wpm: 'WPM',
     cpm: '文字/分',
     completionMessage: '完了しました！おつかれさまです。',
+    completionPerfectMessage: '完了しました！',
+    completionFinishedMessage: '最後まで打ちました',
+    completionFinishedNote: 'ミスがあります。もう一度練習するか、理解度を選んで復習に進めます。',
     selfAssessmentPrompt: 'この文、どれくらい理解できた？',
     assessmentPerfect: '完璧',
     assessmentMostly: 'だいたいOK',
@@ -496,6 +519,7 @@ export const uiText: Record<UILang, UILabels> = {
     expressionStatusAction: 'クリックしてステータスを変更',
     expressionTextForm: '本文の形',
     expressionDetails: '詳しく見る',
+    currentExpression: '現在の表現',
     expressionExample: '例文',
     showExpressionExample: '例文を表示',
     hideExpressionExample: '例文を隠す',
