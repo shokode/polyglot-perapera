@@ -1380,7 +1380,21 @@ textarea {
   background: #e6e8e3;
   border: 1px solid rgba(100, 116, 139, 0.24);
   color: #111827;
+  cursor: text;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 42px rgba(0, 0, 0, 0.14);
+  transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.text-content:hover,
+.text-content:focus-visible,
+.text-content.is-focused {
+  border-color: rgba(37, 99, 235, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 0 0 3px rgba(37, 99, 235, 0.12), 0 18px 42px rgba(0, 0, 0, 0.14);
+  outline: none;
+}
+
+.text-content.is-focused {
+  background: #eef0eb;
 }
 
 .text-content[data-target-language="ja"] {
@@ -1466,6 +1480,11 @@ textarea {
   box-shadow: inset 0 -0.16em 0 rgba(37, 99, 235, 0.78);
   text-decoration-line: underline;
   text-decoration-color: rgba(37, 99, 235, 0.86);
+}
+
+.text-content.is-focused .target-char.current {
+  background: rgba(37, 99, 235, 0.18);
+  box-shadow: inset 0 -0.18em 0 rgba(37, 99, 235, 0.92), 0 0 0 0.12em rgba(37, 99, 235, 0.12);
 }
 
 .target-char.learning-highlight.expression {
@@ -1671,11 +1690,11 @@ textarea {
   display: block;
   width: 100%;
   max-width: 100%;
-  min-height: 120px;
+  min-height: 72px;
   border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 18px;
-  padding: 14px 16px;
-  background: rgba(9, 11, 17, 0.82);
+  padding: 12px 14px;
+  background: rgba(9, 11, 17, 0.58);
   color: #cbd5e1;
   caret-color: #e5e7eb;
   resize: vertical;
@@ -1691,7 +1710,7 @@ textarea {
 
 .type-area:focus {
   border-color: rgba(96, 165, 250, 0.48);
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.88);
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
   outline: none;
 }
@@ -1798,6 +1817,14 @@ h3 {
   .post-completion-actions .secondary-button {
     width: 100%;
   }
+  .text-content {
+    padding: 20px;
+  }
+  .type-area {
+    min-height: 96px;
+    padding: 14px 16px;
+    background: rgba(9, 11, 17, 0.78);
+  }
   .review-controls {
     grid-template-columns: 1fr;
   }
@@ -1814,5 +1841,66 @@ h3 {
   .top-actions {
     justify-self: start;
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-page {
+    gap: 14px;
+  }
+
+  .text-content {
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    max-height: 45vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 16px;
+    border-radius: 20px;
+    font-size: 1.12rem;
+    line-height: 1.9;
+  }
+
+  .text-content[data-target-language="ja"] {
+    max-height: 48vh;
+    line-height: 2.35;
+    padding-top: 24px;
+  }
+
+  .typing-practice-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .typing-practice-section h3 {
+    order: 1;
+    margin-bottom: 0;
+  }
+
+  .typing-practice-section .type-area {
+    order: 2;
+    margin-top: 0;
+  }
+
+  .typing-practice-section .stat-grid {
+    order: 3;
+    gap: 10px;
+  }
+
+  .typing-practice-section .typing-mode-control {
+    order: 4;
+    margin: 2px 0 0;
+  }
+
+  .typing-mode-buttons {
+    gap: 6px;
+  }
+
+  .typing-mode-button {
+    padding: 7px 10px;
   }
 }

@@ -285,6 +285,46 @@ const clientScript = `
     ? getClientTranslationValue(activePracticeTranslationLang)
     : text.text;
   const activeTypingTargetLanguage = activePracticeTranslationLang || text.language;
+  const norwegianTypingPlaceholders = {
+    'æ': '\uE000',
+    'Æ': '\uE001',
+    'ø': '\uE002',
+    'Ø': '\uE003',
+    'å': '\uE004',
+    'Å': '\uE005',
+  };
+  const norwegianTypingPlaceholderPattern = /[æÆøØåÅ]/g;
+  const norwegianTypingPlaceholderRestorePattern = /[\uE000-\uE005]/g;
+
+  function normalizeForTyping(value, language) {
+    if (language !== 'no' || typeof value !== 'string') {
+      return value;
+    }
+    return value
+      .replace(norwegianTypingPlaceholderPattern, (char) => norwegianTypingPlaceholders[char])
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(norwegianTypingPlaceholderRestorePattern, (char) => (
+        Object.keys(norwegianTypingPlaceholders).find((key) => norwegianTypingPlaceholders[key] === char) || char
+      ));
+  }
+
+  function typingCharactersMatch(typedChar, targetChar) {
+    return normalizeForTyping(typedChar, activeTypingTargetLanguage)
+      === normalizeForTyping(targetChar, activeTypingTargetLanguage);
+  }
+
+  function typingStringsMatch(typedValue, targetValue) {
+    if (typedValue.length !== targetValue.length) {
+      return false;
+    }
+    for (let index = 0; index < targetValue.length; index += 1) {
+      if (!typingCharactersMatch(typedValue[index], targetValue[index])) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   function safeReadStorage(key) {
     try {
@@ -862,6 +902,13 @@ const clientScript = `
     let flowAcceptedValue = '';
     let flowMistakes = 0;
 
+    function focusTypingInput() {
+      if (!input) {
+        return;
+      }
+      input.focus({ preventScroll: true });
+    }
+
     function loadTypingMode() {
       try {
         const saved = localStorage.getItem(TYPING_MODE_KEY);
@@ -874,7 +921,7 @@ const clientScript = `
     function getCorrectPrefix(value) {
       let prefix = '';
       for (let index = 0; index < value.length && index < activeTypingTarget.length; index += 1) {
-        if (value[index] !== activeTypingTarget[index]) {
+        if (!typingCharactersMatch(value[index], activeTypingTarget[index])) {
           break;
         }
         prefix += value[index];
@@ -946,6 +993,7 @@ const clientScript = `
         highlight.dataset.expressionHighlightBound = 'true';
         highlight.addEventListener('click', (event) => {
           event.stopPropagation();
+          focusTypingInput();
           const phrase = highlight.dataset.expressionPhrase;
           if (phrase) {
             showExpressionMiniCard(phrase, event);
@@ -1319,7 +1367,7 @@ const clientScript = `
           return;
         }
         if (index < typed.length) {
-          char.classList.add(typed[index] === activeTypingTarget[index] ? 'correct' : 'incorrect');
+          char.classList.add(typingCharactersMatch(typed[index], activeTypingTarget[index]) ? 'correct' : 'incorrect');
         } else if (index === typed.length && typed.length < activeTypingTarget.length) {
           char.classList.add('current');
         }
@@ -1500,7 +1548,7 @@ const clientScript = `
       const target = activeTypingTarget;
       let correct = 0;
       for (let i = 0; i < typed.length; i += 1) {
-        if (typed[i] === target[i]) {
+        if (typingCharactersMatch(typed[i], target[i])) {
           correct += 1;
         }
       }
@@ -1529,7 +1577,7 @@ const clientScript = `
       accuracyValue.textContent = accuracy + '%';
       wpmValue.textContent = '' + speed;
       updateTargetTextProgress(typed);
-      if (typed === activeTypingTarget) {
+      if (typingStringsMatch(typed, activeTypingTarget)) {
         showCompletionPanel(accuracy, speed, mistakes);
         if (!activeIsTranslationPractice) {
           expressionsPanel.hidden = false;
@@ -1574,7 +1622,7 @@ const clientScript = `
         if (nextAccepted.length >= target.length) {
           break;
         }
-        if (char === target[nextAccepted.length]) {
+        if (typingCharactersMatch(char, target[nextAccepted.length])) {
           nextAccepted += char;
         } else {
           flowMistakes += 1;
@@ -1652,6 +1700,24 @@ const clientScript = `
     if (expressionMiniCard) {
       expressionMiniCard.addEventListener('click', (event) => {
         event.stopPropagation();
+      });
+    }
+
+    if (textContent && input) {
+      textContent.addEventListener('click', () => {
+        focusTypingInput();
+      });
+      textContent.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          focusTypingInput();
+        }
+      });
+      input.addEventListener('focus', () => {
+        textContent.classList.add('is-focused');
+      });
+      input.addEventListener('blur', () => {
+        textContent.classList.remove('is-focused');
       });
     }
 
@@ -1802,7 +1868,14 @@ if (!text) {
         </div>
       </section>
 
-      <section class="text-content" data-target-language={practiceTranslationLang ?? text.language} data-practice-mode={isTranslationPractice ? 'translation' : 'text'}>
+      <section
+        class="text-content"
+        data-target-language={practiceTranslationLang ?? text.language}
+        data-practice-mode={isTranslationPractice ? 'translation' : 'text'}
+        data-typing-display
+        tabindex="0"
+        aria-label={uiText[defaultUiLang].typingPractice}
+      >
         <div id="target-text" set:html={highlightedTextHtml}></div>
         <aside class="expression-mini-card" id="expression-mini-card" hidden>
           <strong id="mini-card-phrase"></strong>
@@ -1812,7 +1885,7 @@ if (!text) {
         </aside>
       </section>
 
-      <section class="note-card">
+      <section class="note-card typing-practice-section">
         <h3 id="typing-heading" data-i18n="typingPractice">
           {practiceTranslationLang
             ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
