@@ -51,7 +51,6 @@ const clientScript = `
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
-  const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   const translationFieldByLanguage = {
     ja: 'translationJa',
@@ -188,19 +187,6 @@ const clientScript = `
       return true;
     });
     safeWriteStorage(PINNED_PRACTICE_TARGETS_KEY, JSON.stringify(deduped));
-  }
-
-  function loadStarredExpressionKeys() {
-    try {
-      const parsed = JSON.parse(safeReadStorage(STARRED_EXPRESSIONS_KEY) || '[]');
-      return Array.isArray(parsed) ? parsed.filter((key) => typeof key === 'string') : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveStarredExpressionKeys(keys) {
-    safeWriteStorage(STARRED_EXPRESSIONS_KEY, JSON.stringify(Array.from(new Set(keys))));
   }
 
   function getExpressionStorageKey(expression) {
@@ -387,12 +373,6 @@ const clientScript = `
       renderStarredItems();
     }
 
-    function unstarExpression(expression) {
-      const key = getExpressionStorageKey(expression);
-      saveStarredExpressionKeys(loadStarredExpressionKeys().filter((item) => item !== key));
-      renderStarredItems();
-    }
-
     function unstarPracticeTarget(target) {
       const key = getPracticeTargetKey(target);
       savePinnedPracticeTargets(loadPinnedPracticeTargets().filter((item) => getPracticeTargetKey(item) !== key));
@@ -402,23 +382,8 @@ const clientScript = `
       renderStarredItems();
     }
 
-    function getStarredExpressionTargets(starredExpressionItems) {
-      const seen = new Set();
-      return starredExpressionItems.map((expression) => getOriginalPracticeTarget(expression.textId)).filter((target) => {
-        const key = getPracticeTargetKey(target);
-        if (seen.has(key)) {
-          return false;
-        }
-        seen.add(key);
-        return true;
-      });
-    }
-
-    function getAllStarredPracticeTargets(starredExpressionItems) {
-      const targets = [
-        ...loadPinnedPracticeTargets(),
-        ...getStarredExpressionTargets(starredExpressionItems),
-      ];
+    function getAllStarredPracticeTargets() {
+      const targets = loadPinnedPracticeTargets();
       const seen = new Set();
       return targets.filter((target) => {
         if (!isValidPracticeTarget(target)) {
@@ -459,47 +424,13 @@ const clientScript = `
 
     function renderStarredItems() {
       const labels = getUiText(uiLanguageSelect.value);
-      const starred = new Set(loadStarredExpressionKeys());
-      const starredItems = expressions.filter((expression) => starred.has(getExpressionStorageKey(expression)));
       const starredPracticeTargets = loadPinnedPracticeTargets().filter(isValidPracticeTarget);
 
-      starredGrid.innerHTML = [
-        ...starredPracticeTargets.map((target) => renderPracticeTargetCard(target, labels, uiLanguageSelect.value)),
-        ...starredItems.map((expression) => {
-        const status = getExpressionStatus(expression);
-        const label = getExpressionStatusLabel(status, labels);
-        const { practiceCount } = getExpressionPractice(expression);
-        const isHighRepetition = status === 'review' && practiceCount >= 10;
-        const expressionKey = getExpressionStorageKey(expression);
-        const meanings = getLocalizedExpressionMeanings(expression, uiLanguageSelect.value);
-        const examples = renderExampleSection(expression, labels, uiLanguageSelect.value);
-        return ''
-          + '<article class="expression-card review-expression-card review-card" data-starred-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
-          + '<div class="review-card__body">'
-          + '<div class="expression-header">'
-          + '<div class="expression-title-stack"><strong>' + escapeHtml(expression.phrase) + '</strong>' + getLanguageBadgeHtml(expression.language, uiLanguageSelect.value) + '</div>'
-          + '<div class="review-card__status-area">'
-          + '<button class="expression-star-button is-starred" type="button" data-starred-remove aria-pressed="true" title="' + escapeHtml(labels.starredPageTitle) + '">⭐</button>'
-          + '<span class="status-button status-pill review-card__status-badge" data-status="' + status + '">' + escapeHtml(label) + '</span>'
-          + '<span class="review-card__practice-count">' + escapeHtml(getPracticeLabel(practiceCount, labels)) + '</span>'
-          + '</div>'
-          + '</div>'
-          + '<div class="review-card-meta">'
-          + (expression.formInText && expression.formInText !== expression.phrase ? '<span class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</span>' : '')
-          + '</div>'
-          + '<div class="review-card-meaning">'
-          + meanings.map((entry) => '<p>' + getLanguageBadgeHtml(entry.language, uiLanguageSelect.value) + ' ' + escapeHtml(entry.value) + '</p>').join('')
-          + '</div>'
-          + examples
-          + '</div>'
-          + '<div class="review-card-actions review-card__actions">'
-          + '<button class="secondary-button" type="button" data-starred-open-text data-text-id="' + escapeHtml(expression.textId) + '">' + escapeHtml(labels.practiceThisText) + '</button>'
-          + '</div>'
-          + '</article>';
-      }),
-      ].join('');
+      starredGrid.innerHTML = starredPracticeTargets
+        .map((target) => renderPracticeTargetCard(target, labels, uiLanguageSelect.value))
+        .join('');
 
-      const hasStarredItems = starredItems.length > 0 || starredPracticeTargets.length > 0;
+      const hasStarredItems = starredPracticeTargets.length > 0;
       emptyState.hidden = hasStarredItems;
       if (randomStarredButton) {
         randomStarredButton.disabled = !hasStarredItems;
@@ -525,24 +456,6 @@ const clientScript = `
             icon.textContent = isExpanded ? '⌄' : '⌃';
           }
           exampleList.hidden = isExpanded;
-        });
-      });
-
-      starredGrid.querySelectorAll('[data-starred-remove]').forEach((button) => {
-        button.addEventListener('click', (event) => {
-          event.stopPropagation();
-          const card = button.closest('[data-starred-card]');
-          const expression = expressions.find((item) => getExpressionStorageKey(item) === card?.dataset.expressionKey);
-          if (expression) {
-            unstarExpression(expression);
-          }
-        });
-      });
-
-      starredGrid.querySelectorAll('[data-starred-open-text]').forEach((button) => {
-        button.addEventListener('click', (event) => {
-          event.stopPropagation();
-          window.location.href = '/text/' + button.dataset.textId;
         });
       });
 
@@ -574,9 +487,7 @@ const clientScript = `
 
     if (randomStarredButton) {
       randomStarredButton.addEventListener('click', () => {
-        const starred = new Set(loadStarredExpressionKeys());
-        const starredItems = expressions.filter((expression) => starred.has(getExpressionStorageKey(expression)));
-        const targets = getAllStarredPracticeTargets(starredItems);
+        const targets = getAllStarredPracticeTargets();
         const target = targets.length ? randomItem(targets) : null;
         if (target) {
           window.location.href = getPracticeTargetHref(target);

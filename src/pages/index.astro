@@ -49,7 +49,6 @@ const clientScript = `
   const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
-  const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
 
   function safeReadStorage(key) {
     try {
@@ -164,15 +163,6 @@ const clientScript = `
     try {
       const parsed = JSON.parse(safeReadStorage(PINNED_TEXTS_KEY) || '[]');
       return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function loadStarredExpressionKeys() {
-    try {
-      const parsed = JSON.parse(safeReadStorage(STARRED_EXPRESSIONS_KEY) || '[]');
-      return Array.isArray(parsed) ? parsed.filter((key) => typeof key === 'string') : [];
     } catch {
       return [];
     }
@@ -511,20 +501,6 @@ const clientScript = `
       && text.expressions.every((expression) => getExpressionStatus(expression, text.language, statuses) === 'learned');
   }
 
-  function getAssessmentPriorityForText(textId, targetLanguage) {
-    const assessments = loadSelfAssessments();
-    const entry = assessments[textId + '::text::' + targetLanguage] || {};
-    return Number.isFinite(entry.priority) ? entry.priority : 0;
-  }
-
-  function getAssessmentPriorityForPracticeTarget(target, textItem) {
-    const assessments = loadSelfAssessments();
-    const mode = target.practiceType === 'translation' ? 'translation' : 'text';
-    const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : textItem.language;
-    const entry = assessments[target.textId + '::' + mode + '::' + targetLanguage] || {};
-    return Number.isFinite(entry.priority) ? entry.priority : 0;
-  }
-
   function getTranslationLanguagesForText(textItem) {
     return uiLanguages.filter((lang) => {
       const field = lang === 'ja' ? 'translationJa' : lang === 'en' ? 'translationEn' : 'translationNo';
@@ -539,34 +515,17 @@ const clientScript = `
     return '/text/' + encodeURIComponent(target.textId);
   }
 
+  function getPracticeTargetLanguage(target, textItem) {
+    return target.practiceType === 'translation' && target.practiceTranslation ? target.practiceTranslation : textItem.language;
+  }
+
   function getTextForPracticeTarget(target) {
     return texts.find((item) => item.id === target.textId) || null;
   }
 
-  function getStarredExpressionPracticeTargets(filtered) {
+  function getPinnedPracticeTargets(filtered) {
     const filteredTextIds = new Set(filtered.map((item) => item.id));
-    const starredExpressionKeys = new Set(loadStarredExpressionKeys());
-    const targets = [];
-    texts.forEach((item) => {
-      if (!filteredTextIds.has(item.id)) {
-        return;
-      }
-      const hasStarredExpression = item.expressions.some((expression) => {
-        return starredExpressionKeys.has(getExpressionStorageKey(expression, item.language));
-      });
-      if (hasStarredExpression) {
-        targets.push(getOriginalPracticeTarget(item.id));
-      }
-    });
-    return targets;
-  }
-
-  function getStarredPracticeTargets(filtered) {
-    const filteredTextIds = new Set(filtered.map((item) => item.id));
-    const targets = [
-      ...loadPinnedPracticeTargets().filter((target) => filteredTextIds.has(target.textId)),
-      ...getStarredExpressionPracticeTargets(filtered),
-    ];
+    const targets = loadPinnedPracticeTargets().filter((target) => filteredTextIds.has(target.textId));
     const seen = new Set();
     return targets.filter((target) => {
       const item = getTextForPracticeTarget(target);
@@ -583,6 +542,114 @@ const clientScript = `
       seen.add(key);
       return true;
     });
+  }
+
+  function getAssessmentEntryForPracticeTarget(target, textItem) {
+    const assessments = loadSelfAssessments();
+    const mode = target.practiceType === 'translation' ? 'translation' : 'text';
+    const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : textItem.language;
+    return assessments[target.textId + '::' + mode + '::' + targetLanguage] || {};
+  }
+
+  function getRecommendationReasonLabel(reason, labels) {
+    if (reason === 'pinned') {
+      return labels.recommendationReasonPinned;
+    }
+    if (reason === 'again') {
+      return labels.recommendationReasonAgain;
+    }
+    if (reason === 'shaky') {
+      return labels.recommendationReasonShaky;
+    }
+    if (reason === 'review') {
+      return labels.recommendationReasonReview;
+    }
+    if (reason === 'low-practice') {
+      return labels.recommendationReasonLowPractice;
+    }
+    if (reason === 'learned') {
+      return labels.recommendationReasonLearned;
+    }
+    return labels.recommendationReasonUnpracticed;
+  }
+
+  function getRecommendationCandidates(filtered) {
+    const candidates = new Map();
+    const addCandidate = (item, target) => {
+      const normalized = normalizePracticeTarget(target);
+      if (!normalized) {
+        return;
+      }
+      if (normalized.practiceType === 'translation' && !getTranslationLanguagesForText(item).includes(normalized.practiceTranslation)) {
+        return;
+      }
+      candidates.set(getPracticeTargetKey(normalized), { item, target: normalized });
+    };
+
+    filtered.forEach((item) => {
+      addCandidate(item, getOriginalPracticeTarget(item.id));
+      getTranslationLanguagesForText(item).forEach((lang) => {
+        const target = { textId: item.id, practiceType: 'translation', practiceTranslation: lang };
+        const assessment = getAssessmentEntryForPracticeTarget(target, item);
+        if (assessment.level === 'again' || assessment.level === 'shaky') {
+          addCandidate(item, target);
+        }
+      });
+    });
+
+    getPinnedPracticeTargets(filtered).forEach((target) => {
+      const item = getTextForPracticeTarget(target);
+      if (item) {
+        addCandidate(item, target);
+      }
+    });
+
+    return Array.from(candidates.values());
+  }
+
+  function scoreRecommendationCandidate(item, target, expressionStatuses, pinnedKeys) {
+    const progress = getTextProgress(item.id);
+    const reviewCount = getReviewCountForText(item, expressionStatuses);
+    const assessment = getAssessmentEntryForPracticeTarget(target, item);
+    const learned = isTextLearned(item, expressionStatuses);
+    const pinned = pinnedKeys.has(getPracticeTargetKey(target));
+    let group = 7;
+    let reason = 'unpracticed';
+
+    if (pinned) {
+      group = 1;
+      reason = 'pinned';
+    } else if (assessment.level === 'again') {
+      group = 2;
+      reason = 'again';
+    } else if (assessment.level === 'shaky') {
+      group = 3;
+      reason = 'shaky';
+    } else if (reviewCount > 0) {
+      group = 4;
+      reason = 'review';
+    } else if (learned) {
+      group = 8;
+      reason = 'learned';
+    } else if (progress.completedCount > 0 && progress.completedCount < 3) {
+      group = 5;
+      reason = 'low-practice';
+    } else if (progress.completedCount === 0) {
+      group = 6;
+      reason = 'unpracticed';
+    }
+
+    return {
+      item,
+      target,
+      group,
+      reason,
+      assessmentPriority: Number.isFinite(assessment.priority) ? assessment.priority : 0,
+      assessedAt: Date.parse(assessment.assessedAt || '') || 0,
+      reviewCount,
+      practiceCount: progress.completedCount,
+      title: item.title + (target.practiceTranslation || ''),
+    };
   }
 
   function getPinButtonLabel(textId, labels) {
@@ -649,7 +716,7 @@ const clientScript = `
     });
   }
 
-  function renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState) {
+  function renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, onPinChange) {
     const uiLang = uiLanguageSelect.value;
     const labels = getUiText(uiLang);
     const expressionStatuses = loadExpressionStatuses();
@@ -693,7 +760,11 @@ const clientScript = `
       button.addEventListener('click', (event) => {
         event.stopPropagation();
         togglePinnedText(button.dataset.pinTextId);
-        renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState);
+        if (typeof onPinChange === 'function') {
+          onPinChange();
+        } else {
+          renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState);
+        }
       });
     });
     return filtered;
@@ -703,54 +774,18 @@ const clientScript = `
     return items[Math.floor(Math.random() * items.length)];
   }
 
-  function getRecommendedText(filtered) {
+  function getRecommendedEntry(filtered) {
     if (!filtered.length) {
       return null;
     }
     const expressionStatuses = loadExpressionStatuses();
-    const starredTargets = getStarredPracticeTargets(filtered);
-    if (starredTargets.length && Math.random() < 0.25) {
-      return randomItem(starredTargets);
-    }
-    const targets = filtered.flatMap((item) => {
-      const originalTarget = getOriginalPracticeTarget(item.id);
-      const translationTargets = getTranslationLanguagesForText(item)
-        .map((lang) => ({ textId: item.id, practiceType: 'translation', practiceTranslation: lang }))
-        .filter((target) => {
-          return getAssessmentPriorityForPracticeTarget(target, item) >= 2;
-        });
-      return [
-        { item, target: originalTarget },
-        ...translationTargets.map((target) => ({ item, target })),
-      ];
-    });
-    const scored = targets.map(({ item, target }) => {
-      const progress = getTextProgress(item.id);
-      const reviewCount = getReviewCountForText(item, expressionStatuses);
-      const assessmentPriority = getAssessmentPriorityForPracticeTarget(target, item);
-      const learned = isTextLearned(item, expressionStatuses);
-      let group = 4;
-      if (assessmentPriority >= 2) {
-        group = 2;
-      } else if (reviewCount > 0) {
-        group = 3;
-      } else if (learned) {
-        group = 6;
-      } else if (progress.completedCount === 0) {
-        group = 5;
-      }
-      return {
-        item,
-        target,
-        group,
-        assessmentPriority,
-        reviewCount,
-        practiceCount: progress.completedCount,
-        title: item.title + (target.practiceTranslation || ''),
-      };
+    const pinnedKeys = new Set(getPinnedPracticeTargets(filtered).map(getPracticeTargetKey));
+    const scored = getRecommendationCandidates(filtered).map(({ item, target }) => {
+      return scoreRecommendationCandidate(item, target, expressionStatuses, pinnedKeys);
     }).sort((a, b) => {
       return a.group - b.group
         || b.assessmentPriority - a.assessmentPriority
+        || b.assessedAt - a.assessedAt
         || b.reviewCount - a.reviewCount
         || a.practiceCount - b.practiceCount
         || a.title.localeCompare(b.title);
@@ -759,33 +794,68 @@ const clientScript = `
       const first = scored[0];
       return entry.group === first.group
         && entry.assessmentPriority === first.assessmentPriority
+        && entry.assessedAt === first.assessedAt
         && entry.reviewCount === first.reviewCount
         && entry.practiceCount === first.practiceCount;
     });
-    return randomItem(best).target;
+    return randomItem(best);
+  }
+
+  function renderTodayRecommendation(entry, uiLanguageSelect, recommendationCard) {
+    if (!recommendationCard) {
+      return;
+    }
+    if (!entry) {
+      recommendationCard.hidden = true;
+      recommendationCard.onclick = null;
+      recommendationCard.onkeydown = null;
+      return;
+    }
+    const labels = getUiText(uiLanguageSelect.value);
+    const targetLanguage = getPracticeTargetLanguage(entry.target, entry.item);
+    recommendationCard.hidden = false;
+    recommendationCard.innerHTML = ''
+      + '<span class="recommendation-card__eyebrow">' + escapeHtml(labels.todayRecommendation) + '</span>'
+      + '<div class="recommendation-card__main">'
+      + '<h2>' + escapeHtml(entry.item.title) + '</h2>'
+      + '<p>' + getLanguageBadgeHtml(targetLanguage, uiLanguageSelect.value) + '<span>' + escapeHtml(getRecommendationReasonLabel(entry.reason, labels)) + '</span></p>'
+      + '</div>';
+    recommendationCard.onclick = () => {
+      window.location.href = getRecommendedHref(entry.target);
+    };
+    recommendationCard.onkeydown = (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        window.location.href = getRecommendedHref(entry.target);
+      }
+    };
   }
 
   function getRandomPracticeTarget(filtered) {
     if (!filtered.length) {
       return null;
     }
-    const starredTargets = getStarredPracticeTargets(filtered);
-    if (starredTargets.length && Math.random() < 0.25) {
-      return randomItem(starredTargets);
+    const pinnedTargets = getPinnedPracticeTargets(filtered);
+    if (pinnedTargets.length && Math.random() < 0.25) {
+      return randomItem(pinnedTargets);
     }
     return getOriginalPracticeTarget(randomItem(filtered).id);
   }
 
-  function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton) {
+  function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard) {
     renderDashboard(uiLanguageSelect);
-    const filtered = renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState);
+    const filtered = renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, () => {
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
+    });
+    const recommendedEntry = getRecommendedEntry(filtered);
+    renderTodayRecommendation(recommendedEntry, uiLanguageSelect, recommendationCard);
     if (filtered.length > 0) {
       startButton.disabled = false;
       randomButton.disabled = false;
       startButton.onclick = () => {
-        const recommended = getRecommendedText(filtered);
+        const recommended = getRecommendedEntry(filtered);
         if (recommended) {
-          window.location.href = getRecommendedHref(recommended);
+          window.location.href = getRecommendedHref(recommended.target);
         }
       };
       randomButton.onclick = () => {
@@ -799,6 +869,7 @@ const clientScript = `
       randomButton.disabled = true;
       startButton.onclick = null;
       randomButton.onclick = null;
+      renderTodayRecommendation(null, uiLanguageSelect, recommendationCard);
     }
   }
 
@@ -812,6 +883,7 @@ const clientScript = `
     const emptyState = document.getElementById('empty-state');
     const startButton = document.getElementById('start-button');
     const randomButton = document.getElementById('random-button');
+    const recommendationCard = document.getElementById('today-recommendation-card');
     const targetLanguageButton = document.getElementById('text-language-button');
     const targetLanguageMenu = document.getElementById('text-language-menu');
     const targetLanguageOptions = Array.from(document.querySelectorAll('[data-home-target-language-option]'));
@@ -829,7 +901,7 @@ const clientScript = `
     const sortOptions = Array.from(document.querySelectorAll('[data-home-sort-option]'));
     const sortButtonLabel = document.getElementById('text-sort-button-label');
 
-    const updateFilters = () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
+    const updateFilters = () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
     const dropdowns = [];
 
     dropdowns.push(setupSelectDropdown({
@@ -874,7 +946,7 @@ const clientScript = `
       translateUiLabels(lang);
       uiLanguageSelect.value = lang;
       dropdowns.forEach((dropdown) => dropdown.update());
-      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
     }
 
     function applyTargetLanguage(lang) {
@@ -882,7 +954,7 @@ const clientScript = `
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, nextTargetLanguage);
       targetLanguageSelect.value = nextTargetLanguage;
       dropdowns.forEach((dropdown) => dropdown.update());
-      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
     }
 
     const savedUiLanguage = getSavedUiLanguage();
@@ -1116,6 +1188,8 @@ const clientScript = `
         <button id="start-button" class="primary-button" data-i18n="startRecommended">{uiText[defaultUiLang].startRecommended}</button>
         <button id="random-button" class="secondary-button" type="button" data-i18n="randomPractice">{uiText[defaultUiLang].randomPractice}</button>
       </section>
+
+      <section id="today-recommendation-card" class="recommendation-card" role="button" tabindex="0" hidden></section>
 
       <section id="results" class="results-grid"></section>
       <p id="empty-state" class="empty-state" hidden data-i18n="noResults">{uiText[defaultUiLang].noResults}</p>

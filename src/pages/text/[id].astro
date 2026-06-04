@@ -258,7 +258,6 @@ const clientScript = `
   const TYPING_MODE_KEY = 'typingMode';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
-  const STARRED_EXPRESSIONS_KEY = 'typingStarredExpressions';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   const translationFieldByLanguage = {
     ja: 'translationJa',
@@ -430,33 +429,6 @@ const clientScript = `
     safeWriteStorage(EXPRESSION_STATUS_KEY, JSON.stringify(data));
   }
 
-  function loadStarredExpressionKeys() {
-    try {
-      const parsed = JSON.parse(safeReadStorage(STARRED_EXPRESSIONS_KEY) || '[]');
-      return Array.isArray(parsed) ? parsed.filter((key) => typeof key === 'string') : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveStarredExpressionKeys(keys) {
-    safeWriteStorage(STARRED_EXPRESSIONS_KEY, JSON.stringify(Array.from(new Set(keys))));
-  }
-
-  function isExpressionStarred(phrase) {
-    return loadStarredExpressionKeys().includes(getExpressionStorageKey(phrase));
-  }
-
-  function toggleStarredExpression(phrase) {
-    const key = getExpressionStorageKey(phrase);
-    const starred = loadStarredExpressionKeys();
-    if (starred.includes(key)) {
-      saveStarredExpressionKeys(starred.filter((item) => item !== key));
-    } else {
-      saveStarredExpressionKeys([...starred, key]);
-    }
-  }
-
   function loadProgress(key) {
     try {
       const parsed = JSON.parse(safeReadStorage(key) || '{}');
@@ -572,13 +544,6 @@ const clientScript = `
     );
   }
 
-  function getAssessmentPriorityForText(textId, targetLanguage, mode = 'text') {
-    const assessments = loadProgress(SELF_ASSESSMENT_KEY);
-    const textAssessment = assessments[getAssessmentStorageKeyForText(textId, mode, targetLanguage)] || {};
-    const priority = Number.isFinite(textAssessment.priority) ? textAssessment.priority : 0;
-    return priority;
-  }
-
   function getReviewCountForText(item, statuses) {
     return item.expressions.reduce((count, expression) => {
       return count + (getExpressionStatusForItem(expression, item.language, statuses) === 'review' ? 1 : 0);
@@ -600,10 +565,11 @@ const clientScript = `
       && item.expressions.every((expression) => getExpressionStatusForItem(expression, item.language, statuses) === 'learned');
   }
 
-  function getAssessmentPriorityForPracticeTarget(target, item) {
+  function getAssessmentEntryForPracticeTarget(target, item) {
+    const assessments = loadProgress(SELF_ASSESSMENT_KEY);
     const mode = target.practiceType === 'translation' ? 'translation' : 'text';
     const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : item.language;
-    return getAssessmentPriorityForText(target.textId, targetLanguage, mode);
+    return assessments[getAssessmentStorageKeyForText(target.textId, mode, targetLanguage)] || {};
   }
 
   function getRecommendedHref(target) {
@@ -613,26 +579,9 @@ const clientScript = `
     return '/text/' + encodeURIComponent(target.textId);
   }
 
-  function getStarredExpressionPracticeTargets(items) {
-    const starredExpressionKeys = new Set(loadStarredExpressionKeys());
-    const targets = [];
-    items.forEach((item) => {
-      const hasStarredExpression = item.expressions.some((expression) => {
-        return starredExpressionKeys.has(getExpressionStorageKeyForItem(expression, item.language));
-      });
-      if (hasStarredExpression) {
-        targets.push(getOriginalPracticeTarget(item.id));
-      }
-    });
-    return targets;
-  }
-
-  function getStarredPracticeTargets(items) {
+  function getPinnedPracticeTargets(items) {
     const itemIds = new Set(items.map((item) => item.id));
-    const targets = [
-      ...loadPinnedPracticeTargets().filter((target) => itemIds.has(target.textId)),
-      ...getStarredExpressionPracticeTargets(items),
-    ];
+    const targets = loadPinnedPracticeTargets().filter((target) => itemIds.has(target.textId));
     const seen = new Set();
     return targets.filter((target) => {
       const item = allTexts.find((entry) => entry.id === target.textId);
@@ -651,6 +600,77 @@ const clientScript = `
     });
   }
 
+  function getRecommendationCandidates(items) {
+    const candidates = new Map();
+    const addCandidate = (item, target) => {
+      const normalized = normalizePracticeTarget(target);
+      if (!normalized) {
+        return;
+      }
+      if (normalized.practiceType === 'translation' && !getTranslationLanguagesForText(item).includes(normalized.practiceTranslation)) {
+        return;
+      }
+      candidates.set(getPracticeTargetKey(normalized), { item, target: normalized });
+    };
+
+    items.forEach((item) => {
+      addCandidate(item, getOriginalPracticeTarget(item.id));
+      getTranslationLanguagesForText(item).forEach((lang) => {
+        const target = { textId: item.id, practiceType: 'translation', practiceTranslation: lang };
+        const assessment = getAssessmentEntryForPracticeTarget(target, item);
+        if (assessment.level === 'again' || assessment.level === 'shaky') {
+          addCandidate(item, target);
+        }
+      });
+    });
+
+    getPinnedPracticeTargets(items).forEach((target) => {
+      const item = allTexts.find((entry) => entry.id === target.textId);
+      if (item) {
+        addCandidate(item, target);
+      }
+    });
+
+    return Array.from(candidates.values());
+  }
+
+  function scoreRecommendationCandidate(item, target, expressionStatuses, pinnedKeys) {
+    const progress = getTextProgress(item.id);
+    const reviewCount = getReviewCountForText(item, expressionStatuses);
+    const assessment = getAssessmentEntryForPracticeTarget(target, item);
+    const learned = isTextLearned(item, expressionStatuses);
+    const pinned = pinnedKeys.has(getPracticeTargetKey(target));
+    let group = 7;
+
+    if (pinned) {
+      group = 1;
+    } else if (assessment.level === 'again') {
+      group = 2;
+    } else if (assessment.level === 'shaky') {
+      group = 3;
+    } else if (reviewCount > 0) {
+      group = 4;
+    } else if (learned) {
+      group = 8;
+    } else if (progress.completedCount > 0 && progress.completedCount < 3) {
+      group = 5;
+    } else if (progress.completedCount === 0) {
+      group = 6;
+    }
+
+    return {
+      item,
+      target,
+      group,
+      assessmentPriority: Number.isFinite(assessment.priority) ? assessment.priority : 0,
+      assessedAt: Date.parse(assessment.assessedAt || '') || 0,
+      reviewCount,
+      practiceCount: progress.completedCount,
+      sameLanguage: (target.practiceType === 'translation' ? target.practiceTranslation : item.language) === activeTypingTargetLanguage,
+      title: (item.title || item.id) + (target.practiceTranslation || ''),
+    };
+  }
+
   function randomItem(items) {
     return items[Math.floor(Math.random() * items.length)];
   }
@@ -663,62 +683,23 @@ const clientScript = `
     }
 
     const expressionStatuses = loadExpressionStatuses();
-    const starredTargets = getStarredPracticeTargets(fallbackItems);
-    if (starredTargets.length && Math.random() < 0.25) {
-      return randomItem(starredTargets);
-    }
-    const practiceTargets = fallbackItems.flatMap((item) => {
-      const originalTarget = getOriginalPracticeTarget(item.id);
-      const translationTargets = getTranslationLanguagesForText(item)
-        .map((lang) => ({ textId: item.id, practiceType: 'translation', practiceTranslation: lang }))
-        .filter((target) => {
-          return getAssessmentPriorityForPracticeTarget(target, item) >= 2;
-        });
-      return [
-        { item, target: originalTarget },
-        ...translationTargets.map((target) => ({ item, target })),
-      ];
-    });
-    const sameLanguage = practiceTargets.filter(({ item, target }) => {
-      const targetLanguage = target.practiceType === 'translation' ? target.practiceTranslation : item.language;
-      return targetLanguage === activeTypingTargetLanguage;
-    });
-    const candidates = sameLanguage.length ? sameLanguage : practiceTargets;
-    const scored = candidates.map(({ item, target }) => {
-      const progress = getTextProgress(item.id);
-      const reviewCount = getReviewCountForText(item, expressionStatuses);
-      const assessmentPriority = getAssessmentPriorityForPracticeTarget(target, item);
-      const learned = isTextLearned(item, expressionStatuses);
-      let group = 4;
-      if (assessmentPriority >= 2) {
-        group = 2;
-      } else if (reviewCount > 0) {
-        group = 3;
-      } else if (learned) {
-        group = 6;
-      } else if (progress.completedCount === 0) {
-        group = 5;
-      }
-      return {
-        item,
-        target,
-        group,
-        assessmentPriority,
-        reviewCount,
-        practiceCount: progress.completedCount,
-        title: (item.title || item.id) + (target.practiceTranslation || ''),
-      };
+    const pinnedKeys = new Set(getPinnedPracticeTargets(fallbackItems).map(getPracticeTargetKey));
+    const scored = getRecommendationCandidates(fallbackItems).map(({ item, target }) => {
+      return scoreRecommendationCandidate(item, target, expressionStatuses, pinnedKeys);
     }).sort((a, b) => {
       return a.group - b.group
         || b.assessmentPriority - a.assessmentPriority
+        || b.assessedAt - a.assessedAt
         || b.reviewCount - a.reviewCount
         || a.practiceCount - b.practiceCount
+        || Number(b.sameLanguage) - Number(a.sameLanguage)
         || a.title.localeCompare(b.title);
     });
     const best = scored.filter((entry) => {
       const first = scored[0];
       return entry.group === first.group
         && entry.assessmentPriority === first.assessmentPriority
+        && entry.assessedAt === first.assessedAt
         && entry.reviewCount === first.reviewCount
         && entry.practiceCount === first.practiceCount;
     });
@@ -809,7 +790,6 @@ const clientScript = `
 
   document.addEventListener('DOMContentLoaded', () => {
     const statusButtons = document.querySelectorAll('[data-expression-status]');
-    const starButtons = document.querySelectorAll('[data-expression-star]');
     const expressionCards = document.querySelectorAll('[data-expression-card]');
     const input = document.getElementById('typing-input');
     const progressValue = document.getElementById('progress-value');
@@ -822,19 +802,20 @@ const clientScript = `
     const completionSpeedValue = document.getElementById('completion-speed-value');
     const completionMistakesTitle = document.getElementById('completion-mistakes-title');
     const completionMistakesValue = document.getElementById('completion-mistakes-value');
-    const completionTranslations = document.getElementById('completion-translations');
+    const completionTranslations = document.getElementById('translations-section');
     const assessmentPanel = document.getElementById('self-assessment-panel');
     const assessmentPrompt = document.getElementById('self-assessment-prompt');
     const assessmentActions = document.getElementById('self-assessment-actions');
     const assessmentFeedback = document.getElementById('self-assessment-feedback');
     const assessmentButtons = document.querySelectorAll('[data-assessment-level]');
     const postCompletionActions = document.getElementById('post-completion-actions');
-    const postCompletionPracticeAgain = document.getElementById('post-completion-practice-again');
-    const postCompletionNext = document.getElementById('post-completion-next');
-    const postCompletionHome = document.getElementById('post-completion-home');
+    const postCompletionActionSections = document.querySelectorAll('[data-post-completion-actions]');
+    const postCompletionPracticeAgainButtons = document.querySelectorAll('[data-post-completion-practice-again]');
+    const postCompletionNextButtons = document.querySelectorAll('[data-post-completion-next]');
+    const postCompletionHomeButtons = document.querySelectorAll('[data-post-completion-home]');
     const expressionsPanel = document.getElementById('expressions-panel');
     const grammarPanel = document.getElementById('grammar-panel');
-    const learningFocusCard = document.getElementById('learning-focus-card');
+    const learningFocusCard = document.getElementById('learning-section');
     const translationPracticeInfo = document.getElementById('translation-practice-info');
     const translationPracticeChip = document.getElementById('translation-practice-chip');
     const translationPracticeNote = document.getElementById('translation-practice-note');
@@ -1015,18 +996,6 @@ const clientScript = `
           card.dataset.status = status;
           card.title = labels.expressionStatusAction;
         }
-      });
-    }
-
-    function updateExpressionStarButtons() {
-      starButtons.forEach((button) => {
-        const phrase = button.dataset.expressionStar;
-        const starred = isExpressionStarred(phrase);
-        button.classList.toggle('is-starred', starred);
-        button.textContent = starred ? '⭐' : '☆';
-        button.title = starred ? getUiText(uiLanguageSelect.value).starredPageTitle : getUiText(uiLanguageSelect.value).starredPageTitle;
-        button.setAttribute('aria-label', phrase + ': ' + getUiText(uiLanguageSelect.value).starredPageTitle);
-        button.setAttribute('aria-pressed', starred ? 'true' : 'false');
       });
     }
 
@@ -1245,15 +1214,15 @@ const clientScript = `
       if (assessmentFeedback && assessmentFeedback.dataset.saved === 'true') {
         assessmentFeedback.textContent = labels.assessmentSaved;
       }
-      if (postCompletionPracticeAgain) {
-        postCompletionPracticeAgain.textContent = labels.practiceAgain;
-      }
-      if (postCompletionNext) {
-        postCompletionNext.textContent = labels.nextRecommended;
-      }
-      if (postCompletionHome) {
-        postCompletionHome.textContent = labels.backHome;
-      }
+      postCompletionPracticeAgainButtons.forEach((button) => {
+        button.textContent = labels.practiceAgain;
+      });
+      postCompletionNextButtons.forEach((button) => {
+        button.textContent = labels.nextRecommended;
+      });
+      postCompletionHomeButtons.forEach((button) => {
+        button.textContent = labels.backHome;
+      });
       document.querySelectorAll('[data-translation-title]').forEach((el) => {
         el.innerHTML = getLanguageBadgeHtml(el.dataset.translationTitle, lang);
       });
@@ -1285,7 +1254,6 @@ const clientScript = `
       categoryChip.textContent = categoryLabels[text.category]?.[lang] || text.category;
       levelChip.textContent = labels.levelLabel + ': ' + (levelLabels[normalizeLevelKey(text.level)]?.[lang] || text.level);
       updateExpressionStatusButtons();
-      updateExpressionStarButtons();
       updateExpressionPracticeLabels();
       renderLocalizedExplanations(lang);
       renderLocalizedExamples(lang);
@@ -1389,6 +1357,30 @@ const clientScript = `
       }
     }
 
+    function prefersReducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    function scrollToSection(section) {
+      if (!section) {
+        return;
+      }
+      section.scrollIntoView({
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
+
+    function getPostAssessmentScrollTarget(level) {
+      if (activeIsTranslationPractice) {
+        return (completionTranslations && !completionTranslations.hidden ? completionTranslations : null) || postCompletionActions;
+      }
+      if (level === 'good' || level === 'shaky') {
+        return document.getElementById('learning-section');
+      }
+      return (completionTranslations && !completionTranslations.hidden ? completionTranslations : null) || postCompletionActions;
+    }
+
     function resetPractice() {
       if (closeCompletionTimer) {
         window.clearTimeout(closeCompletionTimer);
@@ -1421,9 +1413,9 @@ const clientScript = `
       if (completionTranslations) {
         completionTranslations.hidden = true;
       }
-      if (postCompletionActions) {
-        postCompletionActions.hidden = true;
-      }
+      postCompletionActionSections.forEach((section) => {
+        section.hidden = true;
+      });
       updateTargetTextProgress('');
       input.focus();
     }
@@ -1465,20 +1457,25 @@ const clientScript = `
       if (assessmentActions) {
         assessmentActions.hidden = true;
       }
-      if (postCompletionActions) {
-        postCompletionActions.hidden = false;
-      }
+      postCompletionActionSections.forEach((section) => {
+        section.hidden = false;
+      });
       if (closeCompletionTimer) {
         window.clearTimeout(closeCompletionTimer);
+        closeCompletionTimer = null;
       }
-      closeCompletionTimer = window.setTimeout(closeCompletionModal, 800);
     }
 
     function handleSelfAssessment(level) {
       saveSelfAssessment(level);
       if (level === 'again') {
         resetPractice();
+        return;
       }
+      closeCompletionModal();
+      window.setTimeout(() => {
+        scrollToSection(getPostAssessmentScrollTarget(level));
+      }, 0);
     }
 
     function goToRecommendedText() {
@@ -1620,14 +1617,6 @@ const clientScript = `
       });
     });
 
-    starButtons.forEach((button) => {
-      button.addEventListener('click', (event) => {
-        event.stopPropagation();
-        toggleStarredExpression(button.dataset.expressionStar);
-        updateExpressionStarButtons();
-      });
-    });
-
     expressionCards.forEach((card) => {
       card.addEventListener('click', () => {
         const selectedText = window.getSelection()?.toString();
@@ -1662,19 +1651,19 @@ const clientScript = `
       });
     });
 
-    if (postCompletionPracticeAgain) {
-      postCompletionPracticeAgain.addEventListener('click', resetPractice);
-    }
+    postCompletionPracticeAgainButtons.forEach((button) => {
+      button.addEventListener('click', resetPractice);
+    });
 
-    if (postCompletionNext) {
-      postCompletionNext.addEventListener('click', goToRecommendedText);
-    }
+    postCompletionNextButtons.forEach((button) => {
+      button.addEventListener('click', goToRecommendedText);
+    });
 
-    if (postCompletionHome) {
-      postCompletionHome.addEventListener('click', () => {
+    postCompletionHomeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
         window.location.href = '/';
       });
-    }
+    });
 
     if (pinButton) {
       pinButton.addEventListener('click', () => {
@@ -1704,7 +1693,6 @@ const clientScript = `
     const savedUiLanguage = getSavedUiLanguage();
     renderUiText(savedUiLanguage);
     updateExpressionStatusButtons();
-    updateExpressionStarButtons();
     updateExpressionPracticeLabels();
     updatePinButton();
     updateTranslationPracticePinButtons();
@@ -1782,7 +1770,7 @@ if (!text) {
         <p class="translation-practice-note" id="translation-practice-note">{uiText[defaultUiLang].translationPracticeNoCards}</p>
       </section>
 
-      <section class="learning-focus-card" id="learning-focus-card" hidden={isTranslationPractice}>
+      <section class="learning-focus-card" id="learning-focus-summary" hidden={isTranslationPractice}>
         <h3>Learning Focus</h3>
         <div class="learning-focus-row">
           <div>
@@ -1836,10 +1824,10 @@ if (!text) {
         </div>
       </section>
 
-      <section class="post-completion-actions" id="post-completion-actions" hidden>
-        <button class="secondary-button" type="button" id="post-completion-practice-again">{uiText[defaultUiLang].practiceAgain}</button>
-        <button class="primary-button" type="button" id="post-completion-next">{uiText[defaultUiLang].nextRecommended}</button>
-        <button class="secondary-button" type="button" id="post-completion-home">{uiText[defaultUiLang].backHome}</button>
+      <section class="post-completion-actions" id="post-completion-actions" data-post-completion-actions hidden>
+        <button class="secondary-button" type="button" id="post-completion-practice-again" data-post-completion-practice-again>{uiText[defaultUiLang].practiceAgain}</button>
+        <button class="primary-button" type="button" id="post-completion-next" data-post-completion-next>{uiText[defaultUiLang].nextRecommended}</button>
+        <button class="secondary-button" type="button" id="post-completion-home" data-post-completion-home>{uiText[defaultUiLang].backHome}</button>
       </section>
 
       <section class="completion-overlay" id="completion-panel" hidden>
@@ -1874,7 +1862,7 @@ if (!text) {
         </div>
       </section>
 
-      <section class="translation-card completion-translations-card" id="completion-translations" hidden>
+      <section class="translation-card completion-translations-card" id="translations-section" hidden>
           {translationsToShow.map((translation) => (
             <div>
               <h3 data-translation-title={translation.lang}>
@@ -1911,87 +1899,94 @@ if (!text) {
           ))}
       </section>
 
-      <section class="expressions-card" id="expressions-panel" hidden>
-        <h3 id="expressions-title" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</h3>
-        <div class="expressions-grid">
-          {text.expressions.map((item) => (
-            <article class="expression-card" data-expression-card={item.phrase}>
-              <div class="expression-header">
-                <strong>{item.phrase}</strong>
-                <div class="expression-header-actions">
-                  <button class="expression-star-button" type="button" data-expression-star={item.phrase} aria-pressed="false" title={uiText[defaultUiLang].starredPageTitle}>☆</button>
-                  <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
-                </div>
-              </div>
-              {item.formInText && item.formInText !== item.phrase && (
-                <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>
-              )}
-              <p class="expression-practice"><span data-expression-practice>{uiText[defaultUiLang].expressionNotPracticed}</span><span class="high-repetition-label" data-high-repetition-label>{uiText[defaultUiLang].highRepetition}</span></p>
-              <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
-                {getOrderedExplanations(item, defaultUiLang).map((entry) => (
-                  <div class="localized-explanation">
-                    <span
-                      class={getLanguageBadgeClass(entry.lang as UILang)}
-                      data-target-language={entry.lang}
-                      title={languageNames[entry.lang as UILang][defaultUiLang]}
-                      aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
-                    >
-                      {targetLanguageBadges[entry.lang as UILang]}
-                    </span>
-                    <p>{entry.value}</p>
+      <div id="learning-section">
+        <section class="expressions-card" id="expressions-panel" hidden>
+          <h3 id="expressions-title" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</h3>
+          <div class="expressions-grid">
+            {text.expressions.map((item) => (
+              <article class="expression-card" data-expression-card={item.phrase}>
+                <div class="expression-header">
+                  <strong>{item.phrase}</strong>
+                  <div class="expression-header-actions">
+                    <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
                   </div>
-                ))}
-              </div>
-              {hasExample(item) && (
-                <div class="expression-example-list" data-example-map={JSON.stringify(getExampleMap(item))}>
-                  <span class="expression-example-label">{uiText[defaultUiLang].expressionExample}</span>
-                  {getOrderedExamples(item, defaultUiLang, text.language as UILang).map((entry) => (
-                    <p>
-                      {entry.lang !== 'default' && (
-                        <span
-                          class={getLanguageBadgeClass(entry.lang as UILang)}
-                          data-target-language={entry.lang}
-                          title={languageNames[entry.lang as UILang][defaultUiLang]}
-                          aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
-                        >
-                          {targetLanguageBadges[entry.lang as UILang]}
-                        </span>
-                      )}
-                      {entry.lang !== 'default' && ' '}
-                      {entry.value}
-                    </p>
+                </div>
+                {item.formInText && item.formInText !== item.phrase && (
+                  <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>
+                )}
+                <p class="expression-practice"><span data-expression-practice>{uiText[defaultUiLang].expressionNotPracticed}</span><span class="high-repetition-label" data-high-repetition-label>{uiText[defaultUiLang].highRepetition}</span></p>
+                <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
+                  {getOrderedExplanations(item, defaultUiLang).map((entry) => (
+                    <div class="localized-explanation">
+                      <span
+                        class={getLanguageBadgeClass(entry.lang as UILang)}
+                        data-target-language={entry.lang}
+                        title={languageNames[entry.lang as UILang][defaultUiLang]}
+                        aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                      >
+                        {targetLanguageBadges[entry.lang as UILang]}
+                      </span>
+                      <p>{entry.value}</p>
+                    </div>
                   ))}
                 </div>
-              )}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="grammar-card" id="grammar-panel" hidden>
-        <h3 id="grammar-title" data-i18n="grammarFromText">{uiText[defaultUiLang].grammarFromText}</h3>
-        <div class="grammar-grid">
-          {text.grammar.map((item) => (
-            <article class="grammar-card-item">
-              <strong>{item.title}</strong>
-              <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
-                {getOrderedExplanations(item, defaultUiLang).map((entry) => (
-                  <div class="localized-explanation">
-                    <span
-                      class={getLanguageBadgeClass(entry.lang as UILang)}
-                      data-target-language={entry.lang}
-                      title={languageNames[entry.lang as UILang][defaultUiLang]}
-                      aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
-                    >
-                      {targetLanguageBadges[entry.lang as UILang]}
-                    </span>
-                    <p>{entry.value}</p>
+                {hasExample(item) && (
+                  <div class="expression-example-list" data-example-map={JSON.stringify(getExampleMap(item))}>
+                    <span class="expression-example-label">{uiText[defaultUiLang].expressionExample}</span>
+                    {getOrderedExamples(item, defaultUiLang, text.language as UILang).map((entry) => (
+                      <p>
+                        {entry.lang !== 'default' && (
+                          <span
+                            class={getLanguageBadgeClass(entry.lang as UILang)}
+                            data-target-language={entry.lang}
+                            title={languageNames[entry.lang as UILang][defaultUiLang]}
+                            aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                          >
+                            {targetLanguageBadges[entry.lang as UILang]}
+                          </span>
+                        )}
+                        {entry.lang !== 'default' && ' '}
+                        {entry.value}
+                      </p>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section class="grammar-card" id="grammar-panel" hidden>
+          <h3 id="grammar-title" data-i18n="grammarFromText">{uiText[defaultUiLang].grammarFromText}</h3>
+          <div class="grammar-grid">
+            {text.grammar.map((item) => (
+              <article class="grammar-card-item">
+                <strong>{item.title}</strong>
+                <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
+                  {getOrderedExplanations(item, defaultUiLang).map((entry) => (
+                    <div class="localized-explanation">
+                      <span
+                        class={getLanguageBadgeClass(entry.lang as UILang)}
+                        data-target-language={entry.lang}
+                        title={languageNames[entry.lang as UILang][defaultUiLang]}
+                        aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                      >
+                        {targetLanguageBadges[entry.lang as UILang]}
+                      </span>
+                      <p>{entry.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <section class="post-completion-actions post-completion-actions--bottom" data-post-completion-actions hidden>
+        <button class="secondary-button" type="button" data-post-completion-practice-again>{uiText[defaultUiLang].practiceAgain}</button>
+        <button class="primary-button" type="button" data-post-completion-next>{uiText[defaultUiLang].nextRecommended}</button>
+        <button class="secondary-button" type="button" data-post-completion-home>{uiText[defaultUiLang].backHome}</button>
       </section>
     </main>
 

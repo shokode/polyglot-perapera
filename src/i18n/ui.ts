@@ -94,6 +94,14 @@ export type UILabels = {
   level: string;
   start: string;
   startRecommended: string;
+  todayRecommendation: string;
+  recommendationReasonPinned: string;
+  recommendationReasonAgain: string;
+  recommendationReasonShaky: string;
+  recommendationReasonReview: string;
+  recommendationReasonLowPractice: string;
+  recommendationReasonUnpracticed: string;
+  recommendationReasonLearned: string;
   randomPractice: string;
   view: string;
   allCategories: string;
@@ -198,6 +206,14 @@ export const uiText: Record<UILang, UILabels> = {
     level: 'Nivå',
     start: 'Start',
     startRecommended: 'Start anbefalt',
+    todayRecommendation: 'Dagens anbefaling',
+    recommendationReasonPinned: 'Festet',
+    recommendationReasonAgain: 'Øv igjen',
+    recommendationReasonShaky: 'Litt usikker',
+    recommendationReasonReview: 'Repeteres',
+    recommendationReasonLowPractice: 'Lite øvd',
+    recommendationReasonUnpracticed: 'Ikke øvd ennå',
+    recommendationReasonLearned: 'Lært',
     randomPractice: 'Tilfeldig øvelse',
     view: 'Åpne',
     allCategories: 'Alle kategorier',
@@ -300,6 +316,14 @@ export const uiText: Record<UILang, UILabels> = {
     level: 'Level',
     start: 'Start',
     startRecommended: 'Start recommended',
+    todayRecommendation: "Today's recommendation",
+    recommendationReasonPinned: 'Pinned',
+    recommendationReasonAgain: 'Practice again',
+    recommendationReasonShaky: 'A bit shaky',
+    recommendationReasonReview: 'In review',
+    recommendationReasonLowPractice: 'Lightly practiced',
+    recommendationReasonUnpracticed: 'Unpracticed',
+    recommendationReasonLearned: 'Learned',
     randomPractice: 'Random practice',
     view: 'Open',
     allCategories: 'All categories',
@@ -402,6 +426,14 @@ export const uiText: Record<UILang, UILabels> = {
     level: 'レベル',
     start: '開始',
     startRecommended: 'おすすめを開始',
+    todayRecommendation: '今日のおすすめ',
+    recommendationReasonPinned: 'ピン留め',
+    recommendationReasonAgain: 'もう一度',
+    recommendationReasonShaky: '少し怪しい',
+    recommendationReasonReview: '復習中',
+    recommendationReasonLowPractice: '練習少なめ',
+    recommendationReasonUnpracticed: '未練習',
+    recommendationReasonLearned: '学習済み',
     randomPractice: 'ランダムに練習',
     view: '開く',
     allCategories: 'すべてのカテゴリー',
