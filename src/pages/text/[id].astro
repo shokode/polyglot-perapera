@@ -1,6 +1,6 @@
 ---
-import texts from '../../data/texts.json' assert { type: 'json' };
-import '../../styles/global.scss';
+import texts from "../../data/texts.json" assert { type: "json" };
+import "../../styles/global.scss";
 import {
   levels as levelKeys,
   uiLanguages,
@@ -11,46 +11,57 @@ import {
   languageNames,
   normalizeLevelKey,
   type UILang,
-} from '../../i18n/ui';
+} from "../../i18n/ui";
 
 export function getStaticPaths() {
   return texts.map((item) => ({ params: { id: item.id } }));
 }
 
 const text = texts.find((item) => item.id === Astro.params.id);
-const defaultUiLang: UILang = 'en';
-const appBasePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, '')}`;
+const defaultUiLang: UILang = "en";
+const appBasePath = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, "")}`;
 const targetLanguageBadges: Record<UILang, string> = {
-  no: 'NO',
-  en: 'EN',
-  ja: 'JA',
+  no: "NO",
+  en: "EN",
+  ja: "JA",
 };
 
 function escapeHtml(value: string) {
   return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function getTextForm(expression: { phrase: string; formInText?: string }) {
   return expression.formInText || expression.phrase;
 }
 
-const learningFocusExpressions = text?.expressions.map((item) => item.phrase) ?? [];
+const learningFocusExpressions =
+  text?.expressions.map((item) => item.phrase) ?? [];
 const learningFocusGrammar = text?.grammar.map((item) => item.title) ?? [];
-const explanationLanguageOrder: UILang[] = ['ja', 'en', 'no'];
+const explanationLanguageOrder: UILang[] = ["ja", "en", "no"];
 
-type ExpressionRange = { start: number; end: number; phrase: string; markerId: string };
+type ExpressionRange = {
+  start: number;
+  end: number;
+  phrase: string;
+  markerId: string;
+};
 
-function getExpressionRanges(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>) {
+function getExpressionRanges(
+  value: string,
+  expressionsArray: Array<{ phrase: string; formInText?: string }>,
+) {
   return expressionsArray.flatMap((expression, expressionIndex) => {
     const textForm = getTextForm(expression);
     const ranges: ExpressionRange[] = [];
@@ -74,84 +85,118 @@ function getExpressionRangeAtIndex(index: number, ranges: ExpressionRange[]) {
   return ranges.find((range) => index >= range.start && index < range.end);
 }
 
-function renderCharacter(value: string, index: number, ranges: ExpressionRange[]) {
-  const classes = ['target-char'];
+function renderCharacter(
+  value: string,
+  index: number,
+  ranges: ExpressionRange[],
+) {
+  const classes = ["target-char"];
   const expressionRange = getExpressionRangeAtIndex(index, ranges);
   const expressionAttribute = expressionRange
     ? ` data-expression-phrase="${escapeHtml(expressionRange.phrase)}" data-marker-id="${escapeHtml(expressionRange.markerId)}"`
-    : '';
+    : "";
   if (expressionRange) {
-    classes.push('target-highlight', 'learning-highlight', 'expression');
+    classes.push("target-highlight", "learning-highlight", "expression");
   }
-  return `<span class="${classes.join(' ')}" data-char-index="${index}"${expressionAttribute}>${escapeHtml(value)}</span>`;
+  return `<span class="${classes.join(" ")}" data-char-index="${index}"${expressionAttribute}>${escapeHtml(value)}</span>`;
 }
 
-function renderCharacters(value: string, startIndex: number, ranges: ExpressionRange[]) {
-  return Array.from(value).map((char, offset) => renderCharacter(char, startIndex + offset, ranges)).join('');
+function renderCharacters(
+  value: string,
+  startIndex: number,
+  ranges: ExpressionRange[],
+) {
+  return Array.from(value)
+    .map((char, offset) => renderCharacter(char, startIndex + offset, ranges))
+    .join("");
 }
 
-function renderRubyProgressText(rubyText: Array<{ text: string; reading?: string }>, ranges: ExpressionRange[]) {
+function renderRubyProgressText(
+  rubyText: Array<{ text: string; reading?: string }>,
+  ranges: ExpressionRange[],
+) {
   let index = 0;
-  return `<p>${rubyText.map((part) => {
-    const rendered = renderCharacters(part.text, index, ranges);
-    index += Array.from(part.text).length;
-    return part.reading
-      ? `<ruby class="target-ruby">${rendered}<rt>${escapeHtml(part.reading)}</rt></ruby>`
-      : rendered;
-  }).join('')}</p>`;
+  return `<p>${rubyText
+    .map((part) => {
+      const rendered = renderCharacters(part.text, index, ranges);
+      index += Array.from(part.text).length;
+      return part.reading
+        ? `<ruby class="target-ruby">${rendered}<rt>${escapeHtml(part.reading)}</rt></ruby>`
+        : rendered;
+    })
+    .join("")}</p>`;
 }
 
-function renderProgressParagraph(paragraph: string, paragraphStartIndex: number, ranges: ExpressionRange[]) {
+function renderProgressParagraph(
+  paragraph: string,
+  paragraphStartIndex: number,
+  ranges: ExpressionRange[],
+) {
   let index = paragraphStartIndex;
-  return paragraph.split(/(\s+)/).map((part) => {
-    const startIndex = index;
-    index += part.length;
-    if (!part) {
-      return '';
-    }
-    if (/^\s+$/.test(part)) {
-      return `<span class="target-space">${renderCharacters(part, startIndex, ranges)}</span>`;
-    }
-    return `<span class="target-word">${renderCharacters(part, startIndex, ranges)}</span>`;
-  }).join('');
+  return paragraph
+    .split(/(\s+)/)
+    .map((part) => {
+      const startIndex = index;
+      index += part.length;
+      if (!part) {
+        return "";
+      }
+      if (/^\s+$/.test(part)) {
+        return `<span class="target-space">${renderCharacters(part, startIndex, ranges)}</span>`;
+      }
+      return `<span class="target-word">${renderCharacters(part, startIndex, ranges)}</span>`;
+    })
+    .join("");
 }
 
-function renderProgressText(value: string, expressionsArray: Array<{ phrase: string; formInText?: string }>, rubyText?: Array<{ text: string; reading?: string }>) {
+function renderProgressText(
+  value: string,
+  expressionsArray: Array<{ phrase: string; formInText?: string }>,
+  rubyText?: Array<{ text: string; reading?: string }>,
+) {
   const ranges = getExpressionRanges(value, expressionsArray);
   if (rubyText) {
     return renderRubyProgressText(rubyText, ranges);
   }
 
   let index = 0;
-  return value.split('\n\n').map((paragraph) => {
-    const rendered = renderProgressParagraph(paragraph, index, ranges);
-    index += paragraph.length + 2;
-    return `<p>${rendered}</p>`;
-  }).join('');
+  return value
+    .split("\n\n")
+    .map((paragraph) => {
+      const rendered = renderProgressParagraph(paragraph, index, ranges);
+      index += paragraph.length + 2;
+      return `<p>${rendered}</p>`;
+    })
+    .join("");
 }
 
 function getTranslationValue(item: Record<string, unknown>, lang: UILang) {
   const fieldByLanguage: Record<UILang, string> = {
-    ja: 'translationJa',
-    en: 'translationEn',
-    no: 'translationNo',
+    ja: "translationJa",
+    en: "translationEn",
+    no: "translationNo",
   };
   const value = item[fieldByLanguage[lang]];
-  return typeof value === 'string' && value.trim() ? value : null;
+  return typeof value === "string" && value.trim() ? value : null;
 }
 
 function getTranslationsToShow(item: Record<string, unknown>) {
   return explanationLanguageOrder
     .filter((lang) => lang !== item.language)
     .map((lang) => ({ lang, value: getTranslationValue(item, lang) }))
-    .filter((translation): translation is { lang: UILang; value: string } => Boolean(translation.value));
+    .filter((translation): translation is { lang: UILang; value: string } =>
+      Boolean(translation.value),
+    );
 }
 
-function getTranslationPracticeButtonLabel(lang: UILang, labels: (typeof uiText)[UILang]) {
-  if (lang === 'ja') {
+function getTranslationPracticeButtonLabel(
+  lang: UILang,
+  labels: (typeof uiText)[UILang],
+) {
+  if (lang === "ja") {
     return labels.typeThisInJapanese;
   }
-  if (lang === 'no') {
+  if (lang === "no") {
     return labels.typeThisInNorwegian;
   }
   return labels.typeThisInEnglish;
@@ -163,18 +208,33 @@ function getLanguageBadgeClass(lang: UILang) {
 
 function getExplanationMap(item: Record<string, unknown>) {
   return {
-    ja: typeof item.ja === 'string' ? item.ja : typeof item.descriptionJa === 'string' ? item.descriptionJa : '',
-    en: typeof item.en === 'string' ? item.en : typeof item.descriptionEn === 'string' ? item.descriptionEn : '',
-    no: typeof item.no === 'string' ? item.no : typeof item.descriptionNo === 'string' ? item.descriptionNo : '',
+    ja:
+      typeof item.ja === "string"
+        ? item.ja
+        : typeof item.descriptionJa === "string"
+          ? item.descriptionJa
+          : "",
+    en:
+      typeof item.en === "string"
+        ? item.en
+        : typeof item.descriptionEn === "string"
+          ? item.descriptionEn
+          : "",
+    no:
+      typeof item.no === "string"
+        ? item.no
+        : typeof item.descriptionNo === "string"
+          ? item.descriptionNo
+          : "",
   };
 }
 
 function getExampleMap(item: Record<string, unknown>) {
   return {
-    default: typeof item.example === 'string' ? item.example : '',
-    ja: typeof item.exampleJa === 'string' ? item.exampleJa : '',
-    en: typeof item.exampleEn === 'string' ? item.exampleEn : '',
-    no: typeof item.exampleNo === 'string' ? item.exampleNo : '',
+    default: typeof item.example === "string" ? item.example : "",
+    ja: typeof item.exampleJa === "string" ? item.exampleJa : "",
+    en: typeof item.exampleEn === "string" ? item.exampleEn : "",
+    no: typeof item.exampleNo === "string" ? item.exampleNo : "",
   };
 }
 
@@ -182,14 +242,22 @@ function hasExample(item: Record<string, unknown>) {
   return Object.values(getExampleMap(item)).some((value) => value.trim());
 }
 
-function getOrderedExamples(item: Record<string, unknown>, uiLang: UILang, targetLang: UILang) {
+function getOrderedExamples(
+  item: Record<string, unknown>,
+  uiLang: UILang,
+  targetLang: UILang,
+) {
   const examples = getExampleMap(item);
   return [
-    { lang: 'default', value: examples.default },
+    { lang: "default", value: examples.default },
     ...explanationLanguageOrder
       .filter((lang) => lang !== targetLang)
       .map((lang) => ({ lang, value: examples[lang] })),
-  ].filter((entry, index, array) => entry.value && array.findIndex((item) => item.value === entry.value) === index);
+  ].filter(
+    (entry, index, array) =>
+      entry.value &&
+      array.findIndex((item) => item.value === entry.value) === index,
+  );
 }
 
 function getOrderedExplanations(item: Record<string, unknown>, uiLang: UILang) {
@@ -201,29 +269,38 @@ function getOrderedExplanations(item: Record<string, unknown>, uiLang: UILang) {
 
 // TODO: Future Japanese typing mode can support exact kanji mode and kana reading mode.
 // For now, typing comparison intentionally uses the plain text field only.
-const requestedPracticeTranslation = Astro.url.searchParams.get('practiceTranslation');
-const practiceTranslationLang = text
-  && uiLanguages.includes(requestedPracticeTranslation as UILang)
-  && requestedPracticeTranslation !== text.language
-  && getTranslationValue(text, requestedPracticeTranslation as UILang)
-  ? requestedPracticeTranslation as UILang
-  : null;
+const requestedPracticeTranslation = Astro.url.searchParams.get(
+  "practiceTranslation",
+);
+const practiceTranslationLang =
+  text &&
+  uiLanguages.includes(requestedPracticeTranslation as UILang) &&
+  requestedPracticeTranslation !== text.language &&
+  getTranslationValue(text, requestedPracticeTranslation as UILang)
+    ? (requestedPracticeTranslation as UILang)
+    : null;
 const isTranslationPractice = Boolean(practiceTranslationLang);
 const typingTarget = text
   ? practiceTranslationLang
-    ? getTranslationValue(text, practiceTranslationLang) ?? text.text
+    ? (getTranslationValue(text, practiceTranslationLang) ?? text.text)
     : text.text
-  : '';
+  : "";
 const typingTargetLanguage = practiceTranslationLang ?? text?.language;
 const highlightedTextHtml = text
   ? renderProgressText(
-    typingTarget,
-    isTranslationPractice ? [] : text.expressions,
-    !isTranslationPractice && text.language === 'ja' && 'rubyText' in text && Array.isArray(text.rubyText) ? text.rubyText : undefined
-  )
-  : '';
-const translationsToShow = text && !isTranslationPractice ? getTranslationsToShow(text) : [];
-const translationPracticeHrefBase = text ? appHref(`text/${text.id}`) : '';
+      typingTarget,
+      isTranslationPractice ? [] : text.expressions,
+      !isTranslationPractice &&
+        text.language === "ja" &&
+        "rubyText" in text &&
+        Array.isArray(text.rubyText)
+        ? text.rubyText
+        : undefined,
+    )
+  : "";
+const translationsToShow =
+  text && !isTranslationPractice ? getTranslationsToShow(text) : [];
+const translationPracticeHrefBase = text ? appHref(`text/${text.id}`) : "";
 const recommendationTexts = texts.map((item) => ({
   id: item.id,
   language: item.language,
@@ -1783,11 +1860,11 @@ const clientScript = `
 `;
 
 if (!text) {
-  throw new Error('Text not found');
+  throw new Error("Text not found");
 }
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -1800,7 +1877,14 @@ if (!text) {
         <div>
           <div class="text-title-row">
             <h1 class="text-title">{text.title}</h1>
-            <button class="pin-button text-page__pin" type="button" id="text-pin-button" aria-label={uiText[defaultUiLang].pinText} title={uiText[defaultUiLang].pinText} aria-pressed="false">☆</button>
+            <button
+              class="pin-button text-page__pin"
+              type="button"
+              id="text-pin-button"
+              aria-label={uiText[defaultUiLang].pinText}
+              title={uiText[defaultUiLang].pinText}
+              aria-pressed="false">☆</button
+            >
           </div>
           <div class="meta-strip">
             <span
@@ -1812,57 +1896,97 @@ if (!text) {
             >
               {targetLanguageBadges[text.language as UILang]}
             </span>
-            <span class="meta-chip" id="category-chip">{categoryLabels[text.category as keyof typeof categoryLabels][defaultUiLang]}</span>
-            <span class="meta-chip" id="level-chip">{uiText[defaultUiLang].levelLabel}: {levelLabels[normalizeLevelKey(text.level)][defaultUiLang]}</span>
-            <span class="meta-chip" id="translation-practice-chip" hidden={!isTranslationPractice}>
-              {practiceTranslationLang
-                ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
-                : uiText[defaultUiLang].translationPracticePrefix}
+            <span class="meta-chip" id="category-chip"
+              >{
+                categoryLabels[text.category as keyof typeof categoryLabels][
+                  defaultUiLang
+                ]
+              }</span
+            >
+            <span class="meta-chip" id="level-chip"
+              >{uiText[defaultUiLang].levelLabel}: {
+                levelLabels[normalizeLevelKey(text.level)][defaultUiLang]
+              }</span
+            >
+            <span
+              class="meta-chip"
+              id="translation-practice-chip"
+              hidden={!isTranslationPractice}
+            >
+              {
+                practiceTranslationLang
+                  ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
+                  : uiText[defaultUiLang].translationPracticePrefix
+              }
             </span>
           </div>
         </div>
         <div class="top-actions">
-          <a class="nav-link" href={appHref('review')} data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
-          <a class="nav-link" href={appHref('starred')} data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
+          <a
+            class="nav-link"
+            href={appHref("review")}
+            data-i18n="reviewPageTitle"
+            >{uiText[defaultUiLang].reviewPageTitle}</a
+          >
+          <a
+            class="nav-link"
+            href={appHref("starred")}
+            data-i18n="starredPageTitle"
+            >{uiText[defaultUiLang].starredPageTitle}</a
+          >
           <div class="language-switcher">
-            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
+            <label for="ui-language-select" data-i18n="language"
+              >{uiText[defaultUiLang].language}</label
+            >
             <select id="ui-language-select">
-              {uiLanguages.map((lang) => (
-                <option value={lang}>{uiLanguageNames[lang]}</option>
-              ))}
+              {
+                uiLanguages.map((lang) => (
+                  <option value={lang}>{uiLanguageNames[lang]}</option>
+                ))
+              }
             </select>
           </div>
         </div>
       </section>
 
       <section class="note-card">
-        <h3 id="read-heading" data-i18n="readTypeUnderstand">{uiText[defaultUiLang].readTypeUnderstand}</h3>
-        <p id="read-description" data-i18n="focusNaturalMeaning">{uiText[defaultUiLang].focusNaturalMeaning}</p>
+        <h3 id="read-heading" data-i18n="readTypeUnderstand">
+          {uiText[defaultUiLang].readTypeUnderstand}
+        </h3>
+        <p id="read-description" data-i18n="focusNaturalMeaning">
+          {uiText[defaultUiLang].focusNaturalMeaning}
+        </p>
       </section>
 
-      <section class="learning-focus-card translation-practice-info-card" id="translation-practice-info" hidden={!isTranslationPractice}>
+      <section
+        class="learning-focus-card translation-practice-info-card"
+        id="translation-practice-info"
+        hidden={!isTranslationPractice}
+      >
         <h3 id="original-text-title">{uiText[defaultUiLang].originalText}</h3>
         <p class="translation-practice-original">{text.text}</p>
-        <p class="translation-practice-note" id="translation-practice-note">{uiText[defaultUiLang].translationPracticeNoCards}</p>
+        <p class="translation-practice-note" id="translation-practice-note">
+          {uiText[defaultUiLang].translationPracticeNoCards}
+        </p>
       </section>
 
-      <section class="learning-focus-card" id="learning-focus-summary" hidden={isTranslationPractice}>
+      <section
+        class="learning-focus-card"
+        id="learning-focus-summary"
+        hidden={isTranslationPractice}
+      >
         <h3>Learning Focus</h3>
         <div class="learning-focus-row">
           <div>
             <strong>Expressions</strong>
             <ul>
-              {learningFocusExpressions.map((phrase) => (
-                <li>{phrase}</li>
-              ))}
+              {learningFocusExpressions.map((phrase) => <li>{phrase}</li>)}
             </ul>
           </div>
           <div>
             <strong>Grammar</strong>
             <ul>
-              {learningFocusGrammar.map((title) => (
-                <li>{title}</li>
-              ))}
+              {learningFocusGrammar.map((title) => <li>{title}</li>)}
             </ul>
           </div>
         </div>
@@ -1871,82 +1995,199 @@ if (!text) {
       <section
         class="text-content"
         data-target-language={practiceTranslationLang ?? text.language}
-        data-practice-mode={isTranslationPractice ? 'translation' : 'text'}
+        data-practice-mode={isTranslationPractice ? "translation" : "text"}
         data-typing-display
         tabindex="0"
         aria-label={uiText[defaultUiLang].typingPractice}
       >
-        <div id="target-text" set:html={highlightedTextHtml}></div>
+        <div id="target-text" set:html={highlightedTextHtml} />
         <aside class="expression-mini-card" id="expression-mini-card" hidden>
           <strong id="mini-card-phrase"></strong>
           <p id="mini-card-meaning"></p>
           <p class="mini-card-fallback" id="mini-card-fallback"></p>
-          <button class="mini-card-details" id="mini-card-details" type="button">{uiText[defaultUiLang].expressionDetails}</button>
+          <button class="mini-card-details" id="mini-card-details" type="button"
+            >{uiText[defaultUiLang].expressionDetails}</button
+          >
         </aside>
       </section>
 
       <section class="note-card typing-practice-section">
         <h3 id="typing-heading" data-i18n="typingPractice">
-          {practiceTranslationLang
-            ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
-            : uiText[defaultUiLang].typingPractice}
+          {
+            practiceTranslationLang
+              ? `${uiText[defaultUiLang].translationPracticePrefix}${targetLanguageBadges[practiceTranslationLang]}`
+              : uiText[defaultUiLang].typingPractice
+          }
         </h3>
-        <div class="typing-mode-control" aria-label={uiText[defaultUiLang].typingMode}>
+        <div
+          class="typing-mode-control"
+          aria-label={uiText[defaultUiLang].typingMode}
+        >
           <span id="typing-mode-title">{uiText[defaultUiLang].typingMode}</span>
           <div class="typing-mode-buttons">
-            <button class="typing-mode-button active" type="button" data-typing-mode="strict" aria-pressed="true">{uiText[defaultUiLang].typingModeStrict}</button>
-            <button class="typing-mode-button" type="button" data-typing-mode="flow" aria-pressed="false">{uiText[defaultUiLang].typingModeFlow}</button>
+            <button
+              class="typing-mode-button active"
+              type="button"
+              data-typing-mode="strict"
+              aria-pressed="true"
+              >{uiText[defaultUiLang].typingModeStrict}</button
+            >
+            <button
+              class="typing-mode-button"
+              type="button"
+              data-typing-mode="flow"
+              aria-pressed="false"
+              >{uiText[defaultUiLang].typingModeFlow}</button
+            >
           </div>
-          <p class="typing-mode-description" id="typing-mode-description" hidden>{uiText[defaultUiLang].typingModeFlowDescription}</p>
+          <p
+            class="typing-mode-description"
+            id="typing-mode-description"
+            hidden
+          >
+            {uiText[defaultUiLang].typingModeFlowDescription}
+          </p>
         </div>
-        <textarea id="typing-input" class="type-area" placeholder={uiText[defaultUiLang].typingPlaceholder} spellcheck="false"></textarea>
+        <textarea
+          id="typing-input"
+          class="type-area"
+          placeholder={uiText[defaultUiLang].typingPlaceholder}
+          spellcheck="false"></textarea>
         <div class="stat-grid">
-          <div class="stat-card"><strong id="progress-title" data-i18n="progress">{uiText[defaultUiLang].progress}</strong><p id="progress-value">0%</p></div>
-          <div class="stat-card"><strong id="accuracy-title" data-i18n="accuracy">{uiText[defaultUiLang].accuracy}</strong><p id="accuracy-value">100%</p></div>
-          <div class="stat-card"><strong id="wpm-title" data-i18n="wpm">{uiText[defaultUiLang].wpm}</strong><p id="wpm-value">0</p></div>
+          <div class="stat-card">
+            <strong id="progress-title" data-i18n="progress"
+              >{uiText[defaultUiLang].progress}</strong
+            ><p id="progress-value">0%</p>
+          </div>
+          <div class="stat-card">
+            <strong id="accuracy-title" data-i18n="accuracy"
+              >{uiText[defaultUiLang].accuracy}</strong
+            ><p id="accuracy-value">100%</p>
+          </div>
+          <div class="stat-card">
+            <strong id="wpm-title" data-i18n="wpm"
+              >{uiText[defaultUiLang].wpm}</strong
+            ><p id="wpm-value">0</p>
+          </div>
         </div>
       </section>
 
-      <section class="post-completion-actions" id="post-completion-actions" data-post-completion-actions hidden>
-        <button class="secondary-button" type="button" id="post-completion-practice-again" data-post-completion-practice-again>{uiText[defaultUiLang].practiceAgain}</button>
-        <button class="primary-button" type="button" id="post-completion-next" data-post-completion-next>{uiText[defaultUiLang].nextRecommended}</button>
-        <button class="secondary-button" type="button" id="post-completion-home" data-post-completion-home>{uiText[defaultUiLang].backHome}</button>
+      <section
+        class="post-completion-actions"
+        id="post-completion-actions"
+        data-post-completion-actions
+        hidden
+      >
+        <button
+          class="secondary-button"
+          type="button"
+          id="post-completion-practice-again"
+          data-post-completion-practice-again
+          >{uiText[defaultUiLang].practiceAgain}</button
+        >
+        <button
+          class="primary-button"
+          type="button"
+          id="post-completion-next"
+          data-post-completion-next
+          >{uiText[defaultUiLang].nextRecommended}</button
+        >
+        <button
+          class="secondary-button"
+          type="button"
+          id="post-completion-home"
+          data-post-completion-home>{uiText[defaultUiLang].backHome}</button
+        >
       </section>
 
       <section class="completion-overlay" id="completion-panel" hidden>
-        <div class="completion-modal" role="dialog" aria-modal="true" aria-labelledby="completion-title">
-        <div class="completion-modal__summary">
-          <h3 id="completion-title" data-i18n="completionMessage">{uiText[defaultUiLang].completionMessage}</h3>
-          <div class="completion-stat-grid">
-            <div class="completion-stat">
-              <strong id="completion-accuracy-title">{uiText[defaultUiLang].accuracy}</strong>
-              <p id="completion-accuracy-value">100%</p>
+        <div
+          class="completion-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="completion-title"
+        >
+          <div class="completion-modal__summary">
+            <h3 id="completion-title" data-i18n="completionMessage">
+              {uiText[defaultUiLang].completionMessage}
+            </h3>
+            <div class="completion-stat-grid">
+              <div class="completion-stat">
+                <strong id="completion-accuracy-title"
+                  >{uiText[defaultUiLang].accuracy}</strong
+                >
+                <p id="completion-accuracy-value">100%</p>
+              </div>
+              <div class="completion-stat">
+                <strong id="completion-speed-title"
+                  >{
+                    typingTargetLanguage === "ja"
+                      ? uiText[defaultUiLang].cpm
+                      : uiText[defaultUiLang].wpm
+                  }</strong
+                >
+                <p id="completion-speed-value">0</p>
+              </div>
+              <div class="completion-stat">
+                <strong id="completion-mistakes-title"
+                  >{uiText[defaultUiLang].mistakes}</strong
+                >
+                <p id="completion-mistakes-value">0</p>
+              </div>
             </div>
-            <div class="completion-stat">
-              <strong id="completion-speed-title">{typingTargetLanguage === 'ja' ? uiText[defaultUiLang].cpm : uiText[defaultUiLang].wpm}</strong>
-              <p id="completion-speed-value">0</p>
-            </div>
-            <div class="completion-stat">
-              <strong id="completion-mistakes-title">{uiText[defaultUiLang].mistakes}</strong>
-              <p id="completion-mistakes-value">0</p>
+            <div
+              class="completion-modal__assessment self-assessment-panel"
+              id="self-assessment-panel"
+              hidden
+            >
+              <strong id="self-assessment-prompt"
+                >{uiText[defaultUiLang].selfAssessmentPrompt}</strong
+              >
+              <div class="assessment-actions" id="self-assessment-actions">
+                <button
+                  class="secondary-button"
+                  type="button"
+                  data-assessment-level="perfect"
+                  >{uiText[defaultUiLang].assessmentPerfect}</button
+                >
+                <button
+                  class="secondary-button"
+                  type="button"
+                  data-assessment-level="good"
+                  >{uiText[defaultUiLang].assessmentMostly}</button
+                >
+                <button
+                  class="secondary-button"
+                  type="button"
+                  data-assessment-level="shaky"
+                  >{uiText[defaultUiLang].assessmentUnsure}</button
+                >
+                <button
+                  class="secondary-button"
+                  type="button"
+                  data-assessment-level="again"
+                  >{uiText[defaultUiLang].assessmentAgain}</button
+                >
+              </div>
+              <p
+                class="completion-note"
+                id="self-assessment-feedback"
+                data-saved="false"
+                hidden
+              >
+              </p>
             </div>
           </div>
-          <div class="completion-modal__assessment self-assessment-panel" id="self-assessment-panel" hidden>
-            <strong id="self-assessment-prompt">{uiText[defaultUiLang].selfAssessmentPrompt}</strong>
-            <div class="assessment-actions" id="self-assessment-actions">
-              <button class="secondary-button" type="button" data-assessment-level="perfect">{uiText[defaultUiLang].assessmentPerfect}</button>
-              <button class="secondary-button" type="button" data-assessment-level="good">{uiText[defaultUiLang].assessmentMostly}</button>
-              <button class="secondary-button" type="button" data-assessment-level="shaky">{uiText[defaultUiLang].assessmentUnsure}</button>
-              <button class="secondary-button" type="button" data-assessment-level="again">{uiText[defaultUiLang].assessmentAgain}</button>
-            </div>
-            <p class="completion-note" id="self-assessment-feedback" data-saved="false" hidden></p>
-          </div>
-        </div>
         </div>
       </section>
 
-      <section class="translation-card completion-translations-card" id="translations-section" hidden>
-          {translationsToShow.map((translation) => (
+      <section
+        class="translation-card completion-translations-card"
+        id="translations-section"
+        hidden
+      >
+        {
+          translationsToShow.map((translation) => (
             <div>
               <h3 data-translation-title={translation.lang}>
                 <span
@@ -1965,7 +2206,10 @@ if (!text) {
                   href={`${translationPracticeHrefBase}?practiceTranslation=${translation.lang}`}
                   data-translation-practice-button={translation.lang}
                 >
-                  {getTranslationPracticeButtonLabel(translation.lang, uiText[defaultUiLang])}
+                  {getTranslationPracticeButtonLabel(
+                    translation.lang,
+                    uiText[defaultUiLang],
+                  )}
                 </a>
                 <button
                   class="pin-button translation-practice-pin"
@@ -1979,100 +2223,189 @@ if (!text) {
                 </button>
               </div>
             </div>
-          ))}
+          ))
+        }
       </section>
 
       <div id="learning-section">
         <section class="expressions-card" id="expressions-panel" hidden>
-          <h3 id="expressions-title" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</h3>
+          <h3 id="expressions-title" data-i18n="usefulExpressions">
+            {uiText[defaultUiLang].usefulExpressions}
+          </h3>
           <div class="expressions-grid">
-            {text.expressions.map((item) => (
-              <article class="expression-card" data-expression-card={item.phrase}>
-                <div class="expression-header">
-                  <strong>{item.phrase}</strong>
-                  <div class="expression-header-actions">
-                    <button class="status-button" type="button" data-expression-status={item.phrase}>{uiText[defaultUiLang].expressionStatusNew}</button>
-                  </div>
-                </div>
-                {item.formInText && item.formInText !== item.phrase && (
-                  <p class="expression-text-form"><span data-expression-form-label>{uiText[defaultUiLang].expressionTextForm}</span>: {item.formInText}</p>
-                )}
-                <p class="expression-practice"><span data-expression-practice>{uiText[defaultUiLang].expressionNotPracticed}</span><span class="high-repetition-label" data-high-repetition-label>{uiText[defaultUiLang].highRepetition}</span></p>
-                <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
-                  {getOrderedExplanations(item, defaultUiLang).map((entry) => (
-                    <div class="localized-explanation">
-                      <span
-                        class={getLanguageBadgeClass(entry.lang as UILang)}
-                        data-target-language={entry.lang}
-                        title={languageNames[entry.lang as UILang][defaultUiLang]}
-                        aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+            {
+              text.expressions.map((item) => (
+                <article
+                  class="expression-card"
+                  data-expression-card={item.phrase}
+                >
+                  <div class="expression-header">
+                    <strong>{item.phrase}</strong>
+                    <div class="expression-header-actions">
+                      <button
+                        class="status-button"
+                        type="button"
+                        data-expression-status={item.phrase}
                       >
-                        {targetLanguageBadges[entry.lang as UILang]}
-                      </span>
-                      <p>{entry.value}</p>
+                        {uiText[defaultUiLang].expressionStatusNew}
+                      </button>
                     </div>
-                  ))}
-                </div>
-                {hasExample(item) && (
-                  <div class="expression-example-list" data-example-map={JSON.stringify(getExampleMap(item))}>
-                    <span class="expression-example-label">{uiText[defaultUiLang].expressionExample}</span>
-                    {getOrderedExamples(item, defaultUiLang, text.language as UILang).map((entry) => (
-                      <p>
-                        {entry.lang !== 'default' && (
+                  </div>
+                  {item.formInText && item.formInText !== item.phrase && (
+                    <p class="expression-text-form">
+                      <span data-expression-form-label>
+                        {uiText[defaultUiLang].expressionTextForm}
+                      </span>
+                      : {item.formInText}
+                    </p>
+                  )}
+                  <p class="expression-practice">
+                    <>
+                      <span data-expression-practice>
+                        {uiText[defaultUiLang].expressionNotPracticed}
+                      </span>
+                      <span
+                        class="high-repetition-label"
+                        data-high-repetition-label
+                      >
+                        {uiText[defaultUiLang].highRepetition}
+                      </span>
+                    </>
+                  </p>
+                  <div
+                    class="explanation-list"
+                    data-explanation-map={JSON.stringify(
+                      getExplanationMap(item),
+                    )}
+                  >
+                    {getOrderedExplanations(item, defaultUiLang).map(
+                      (entry) => (
+                        <div class="localized-explanation">
                           <span
                             class={getLanguageBadgeClass(entry.lang as UILang)}
                             data-target-language={entry.lang}
-                            title={languageNames[entry.lang as UILang][defaultUiLang]}
-                            aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
+                            title={
+                              languageNames[entry.lang as UILang][defaultUiLang]
+                            }
+                            aria-label={
+                              languageNames[entry.lang as UILang][defaultUiLang]
+                            }
                           >
                             {targetLanguageBadges[entry.lang as UILang]}
                           </span>
-                        )}
-                        {entry.lang !== 'default' && ' '}
-                        {entry.value}
-                      </p>
-                    ))}
+                          <p>{entry.value}</p>
+                        </div>
+                      ),
+                    )}
                   </div>
-                )}
-              </article>
-            ))}
+                  {hasExample(item) && (
+                    <div
+                      class="expression-example-list"
+                      data-example-map={JSON.stringify(getExampleMap(item))}
+                    >
+                      <span class="expression-example-label">
+                        {uiText[defaultUiLang].expressionExample}
+                      </span>
+                      {getOrderedExamples(
+                        item,
+                        defaultUiLang,
+                        text.language as UILang,
+                      ).map((entry) => (
+                        <p>
+                          {entry.lang !== "default" && (
+                            <span
+                              class={getLanguageBadgeClass(
+                                entry.lang as UILang,
+                              )}
+                              data-target-language={entry.lang}
+                              title={
+                                languageNames[entry.lang as UILang][
+                                  defaultUiLang
+                                ]
+                              }
+                              aria-label={
+                                languageNames[entry.lang as UILang][
+                                  defaultUiLang
+                                ]
+                              }
+                            >
+                              {targetLanguageBadges[entry.lang as UILang]}
+                            </span>
+                          )}
+                          {entry.lang !== "default" && " "}
+                          {entry.value}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ))
+            }
           </div>
         </section>
 
         <section class="grammar-card" id="grammar-panel" hidden>
-          <h3 id="grammar-title" data-i18n="grammarFromText">{uiText[defaultUiLang].grammarFromText}</h3>
+          <h3 id="grammar-title" data-i18n="grammarFromText">
+            {uiText[defaultUiLang].grammarFromText}
+          </h3>
           <div class="grammar-grid">
-            {text.grammar.map((item) => (
-              <article class="grammar-card-item">
-                <strong>{item.title}</strong>
-                <div class="explanation-list" data-explanation-map={JSON.stringify(getExplanationMap(item))}>
-                  {getOrderedExplanations(item, defaultUiLang).map((entry) => (
-                    <div class="localized-explanation">
-                      <span
-                        class={getLanguageBadgeClass(entry.lang as UILang)}
-                        data-target-language={entry.lang}
-                        title={languageNames[entry.lang as UILang][defaultUiLang]}
-                        aria-label={languageNames[entry.lang as UILang][defaultUiLang]}
-                      >
-                        {targetLanguageBadges[entry.lang as UILang]}
-                      </span>
-                      <p>{entry.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </article>
-            ))}
+            {
+              text.grammar.map((item) => (
+                <article class="grammar-card-item">
+                  <strong>{item.title}</strong>
+                  <div
+                    class="explanation-list"
+                    data-explanation-map={JSON.stringify(
+                      getExplanationMap(item),
+                    )}
+                  >
+                    {getOrderedExplanations(item, defaultUiLang).map(
+                      (entry) => (
+                        <div class="localized-explanation">
+                          <span
+                            class={getLanguageBadgeClass(entry.lang as UILang)}
+                            data-target-language={entry.lang}
+                            title={
+                              languageNames[entry.lang as UILang][defaultUiLang]
+                            }
+                            aria-label={
+                              languageNames[entry.lang as UILang][defaultUiLang]
+                            }
+                          >
+                            {targetLanguageBadges[entry.lang as UILang]}
+                          </span>
+                          <p>{entry.value}</p>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </article>
+              ))
+            }
           </div>
         </section>
       </div>
 
-      <section class="post-completion-actions post-completion-actions--bottom" data-post-completion-actions hidden>
-        <button class="secondary-button" type="button" data-post-completion-practice-again>{uiText[defaultUiLang].practiceAgain}</button>
-        <button class="primary-button" type="button" data-post-completion-next>{uiText[defaultUiLang].nextRecommended}</button>
-        <button class="secondary-button" type="button" data-post-completion-home>{uiText[defaultUiLang].backHome}</button>
+      <section
+        class="post-completion-actions post-completion-actions--bottom"
+        data-post-completion-actions
+        hidden
+      >
+        <button
+          class="secondary-button"
+          type="button"
+          data-post-completion-practice-again
+          >{uiText[defaultUiLang].practiceAgain}</button
+        >
+        <button class="primary-button" type="button" data-post-completion-next
+          >{uiText[defaultUiLang].nextRecommended}</button
+        >
+        <button class="secondary-button" type="button" data-post-completion-home
+          >{uiText[defaultUiLang].backHome}</button
+        >
       </section>
     </main>
 
-    <script type="module" set:html={clientScript}></script>
+    <script type="module" set:html={clientScript} />
   </body>
 </html>

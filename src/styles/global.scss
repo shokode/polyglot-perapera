@@ -439,7 +439,7 @@ textarea {
   z-index: 1;
 }
 
-.text-card__pin + .text-card-body {
+.text-card__pin+.text-card-body {
   padding-right: 34px;
 }
 
@@ -582,7 +582,7 @@ textarea {
   margin-bottom: 40px;
 }
 
-.text-page > * {
+.text-page>* {
   min-width: 0;
 }
 
@@ -908,6 +908,7 @@ textarea {
 }
 
 @keyframes expression-focus-pulse {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1547,22 +1548,27 @@ textarea {
 }
 
 @keyframes typing-shake {
+
   0%,
   100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-3px);
   }
+
   50% {
     transform: translateX(3px);
   }
+
   75% {
     transform: translateX(-2px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .target-char.incorrect,
   .target-char.flow-mistake {
     animation: none;
@@ -1782,62 +1788,79 @@ h3 {
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .filters-card {
     grid-template-columns: 1fr;
   }
+
   .card {
     grid-template-columns: 1fr;
   }
+
   .stat-grid {
     grid-template-columns: 1fr;
   }
+
   .completion-stat-grid {
     grid-template-columns: 1fr;
   }
+
   .completion-overlay {
     padding: 12px;
   }
+
   .completion-modal {
     max-height: calc(100vh - 24px);
     padding: 18px;
     border-radius: 20px;
   }
+
   .assessment-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .assessment-actions .secondary-button {
     width: 100%;
     white-space: normal;
   }
+
   .post-completion-actions {
     display: grid;
     grid-template-columns: 1fr;
   }
+
   .post-completion-actions .primary-button,
   .post-completion-actions .secondary-button {
     width: 100%;
   }
+
   .text-content {
     padding: 20px;
   }
+
   .type-area {
     min-height: 96px;
     padding: 14px 16px;
     background: rgba(9, 11, 17, 0.78);
   }
+
   .review-controls {
     grid-template-columns: 1fr;
   }
+
   .review-card__status-area {
     justify-items: start;
     text-align: left;
   }
+
   .page-top {
     flex-direction: column;
   }
+
   .language-switcher {
     justify-self: start;
   }
+
   .top-actions {
     justify-self: start;
     flex-wrap: wrap;
