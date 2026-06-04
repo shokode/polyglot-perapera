@@ -1292,12 +1292,8 @@ const clientScript = `
       miniCardDetails.textContent = labels.expressionDetails;
     }
 
-    function isSmallScreen() {
-      return window.matchMedia('(max-width: 768px)').matches;
-    }
-
     function positionExpressionMiniCard(anchor) {
-      if (!expressionMiniCard || !anchor || isSmallScreen()) {
+      if (!expressionMiniCard || !anchor) {
         if (expressionMiniCard) {
           expressionMiniCard.style.left = '';
           expressionMiniCard.style.top = '';
@@ -2194,7 +2190,7 @@ if (!text) {
           </p>
         </div>
         <label
-          class="typing-input-label"
+          class="typing-input-label typing-hidden-input-label"
           id="typing-input-label"
           for="typing-input"
         >
@@ -2206,7 +2202,7 @@ if (!text) {
         </label>
         <textarea
           id="typing-input"
-          class="type-area"
+          class="type-area typing-hidden-input"
           data-target-language={typingTargetLanguage}
           aria-label={typingTargetLanguage === "ja" ? uiText[defaultUiLang].japaneseTypingInputLabel : uiText[defaultUiLang].typingInputLabel}
           placeholder={uiText[defaultUiLang].typingPlaceholder}
