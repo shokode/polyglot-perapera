@@ -1885,16 +1885,29 @@ const clientScript = `
     bindExpressionHighlights(expressionHighlights);
 
     if (miniCardDetails) {
-      miniCardDetails.addEventListener('click', (event) => {
+      const activateMiniCardDetails = (event) => {
+        event.preventDefault();
         event.stopPropagation();
         if (activeMiniCardPhrase) {
           focusFullExpressionCard(activeMiniCardPhrase);
           closeExpressionMiniCard();
         }
+      };
+      miniCardDetails.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse') {
+          return;
+        }
+        activateMiniCardDetails(event);
+      });
+      miniCardDetails.addEventListener('click', (event) => {
+        activateMiniCardDetails(event);
       });
     }
 
     if (expressionMiniCard) {
+      expressionMiniCard.addEventListener('pointerdown', (event) => {
+        event.stopPropagation();
+      });
       expressionMiniCard.addEventListener('click', (event) => {
         event.stopPropagation();
       });
