@@ -10,6 +10,8 @@ import {
 } from '../i18n/ui';
 
 const defaultUiLang: UILang = 'en';
+const appBasePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, '')}`;
 type ReviewExpression = {
   phrase: string;
   storageKey?: string;
@@ -40,6 +42,7 @@ const expressions = Array.from(
 );
 
 const clientScript = `
+  const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
   const expressions = ${JSON.stringify(expressions)};
   const ui = ${JSON.stringify(uiText)};
   const uiLanguages = ${JSON.stringify(uiLanguages)};
@@ -84,6 +87,13 @@ const clientScript = `
     } catch {
       // ignore
     }
+  }
+
+  function getAppHref(path) {
+    const base = BASE_PATH || '/';
+    const normalizedBase = base.endsWith('/') ? base : base + '/';
+    const normalizedPath = String(path).replace(/^\\//, '');
+    return normalizedBase + normalizedPath;
   }
 
   function loadExpressionStatuses() {
@@ -589,7 +599,7 @@ const clientScript = `
       reviewGrid.querySelectorAll('[data-review-open-text]').forEach((button) => {
         button.addEventListener('click', (event) => {
           event.stopPropagation();
-          window.location.href = '/text/' + button.dataset.textId;
+          window.location.href = getAppHref('text/' + encodeURIComponent(button.dataset.textId));
         });
       });
     }
@@ -701,8 +711,8 @@ const clientScript = `
           <p data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
         </div>
         <div class="top-actions">
-          <a class="nav-link" href="/" data-i18n="title">{uiText[defaultUiLang].title}</a>
-          <a class="nav-link" href="/starred" data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
+          <a class="nav-link" href={appHref('')} data-i18n="title">{uiText[defaultUiLang].title}</a>
+          <a class="nav-link" href={appHref('starred')} data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
           <div class="language-switcher">
             <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
             <select id="ui-language-select">

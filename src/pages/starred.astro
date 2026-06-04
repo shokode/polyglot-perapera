@@ -10,6 +10,8 @@ import {
 } from '../i18n/ui';
 
 const defaultUiLang: UILang = 'en';
+const appBasePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, '')}`;
 type StarredExpression = {
   phrase: string;
   storageKey?: string;
@@ -39,6 +41,7 @@ const expressions = Array.from(
 );
 
 const clientScript = `
+  const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
   const texts = ${JSON.stringify(texts)};
   const expressions = ${JSON.stringify(expressions)};
   const ui = ${JSON.stringify(uiText)};
@@ -72,6 +75,13 @@ const clientScript = `
     } catch {
       // ignore
     }
+  }
+
+  function getAppHref(path) {
+    const base = BASE_PATH || '/';
+    const normalizedBase = base.endsWith('/') ? base : base + '/';
+    const normalizedPath = String(path).replace(/^\\//, '');
+    return normalizedBase + normalizedPath;
   }
 
   function getSavedUiLanguage() {
@@ -220,9 +230,9 @@ const clientScript = `
 
   function getPracticeTargetHref(target) {
     if (target.practiceType === 'translation' && target.practiceTranslation) {
-      return '/text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation);
+      return getAppHref('text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation));
     }
-    return '/text/' + encodeURIComponent(target.textId);
+    return getAppHref('text/' + encodeURIComponent(target.textId));
   }
 
   function getPracticeTargetLanguage(target, textItem) {
@@ -522,8 +532,8 @@ const clientScript = `
           <p data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
         </div>
         <div class="top-actions">
-          <a class="nav-link" href="/" data-i18n="title">{uiText[defaultUiLang].title}</a>
-          <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <a class="nav-link" href={appHref('')} data-i18n="title">{uiText[defaultUiLang].title}</a>
+          <a class="nav-link" href={appHref('review')} data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
           <div class="language-switcher">
             <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
             <select id="ui-language-select">

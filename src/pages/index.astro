@@ -14,7 +14,10 @@ import {
 } from '../i18n/ui';
 
 const defaultUiLang: UILang = 'en';
+const appBasePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, '')}`;
 const clientScript = `
+  const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
   const texts = ${JSON.stringify(texts)};
   const ui = ${JSON.stringify(uiText)};
   const uiLanguages = ${JSON.stringify(uiLanguages)};
@@ -64,6 +67,13 @@ const clientScript = `
     } catch {
       // ignore
     }
+  }
+
+  function getAppHref(path) {
+    const base = BASE_PATH || '/';
+    const normalizedBase = base.endsWith('/') ? base : base + '/';
+    const normalizedPath = String(path).replace(/^\\//, '');
+    return normalizedBase + normalizedPath;
   }
 
   function getSavedUiLanguage() {
@@ -510,9 +520,9 @@ const clientScript = `
 
   function getRecommendedHref(target) {
     if (target.practiceType === 'translation' && target.practiceTranslation) {
-      return '/text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation);
+      return getAppHref('text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation));
     }
-    return '/text/' + encodeURIComponent(target.textId);
+    return getAppHref('text/' + encodeURIComponent(target.textId));
   }
 
   function getPracticeTargetLanguage(target, textItem) {
@@ -741,14 +751,14 @@ const clientScript = `
         + '<p class="text-card-progress">' + escapeHtml(getPracticeLabel(progress.completedCount, labels)) + (lastPracticed ? ' · ' + escapeHtml(lastPracticed) : '') + (reviewCount ? ' · ' + escapeHtml(labels.reviewingExpressions) + ': ' + reviewCount : '') + '</p>'
         + '<p class="snippet">' + escapeHtml(preview) + '…</p>'
         + '</div>'
-        + '<a class="card-link" href="/text/' + escapeHtml(item.id) + '">' + escapeHtml(labels.view) + '</a>'
+        + '<a class="card-link" href="' + escapeHtml(getAppHref('text/' + encodeURIComponent(item.id))) + '">' + escapeHtml(labels.view) + '</a>'
         + '</article>';
     }).join('');
 
     emptyState.hidden = filtered.length > 0;
     results.querySelectorAll('[data-text-id]').forEach((card) => {
       card.addEventListener('click', () => {
-        window.location.href = '/text/' + card.dataset.textId;
+        window.location.href = getAppHref('text/' + encodeURIComponent(card.dataset.textId));
       });
     });
     results.querySelectorAll('.card-link').forEach((link) => {
@@ -996,8 +1006,8 @@ const clientScript = `
           <p id="page-subtitle" data-i18n="subtitle">{uiText[defaultUiLang].subtitle}</p>
         </div>
         <div class="top-actions">
-          <a class="nav-link" href="/review" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
-          <a class="nav-link" href="/starred" data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
+          <a class="nav-link" href={appHref('review')} data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</a>
+          <a class="nav-link" href={appHref('starred')} data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</a>
           <div class="language-switcher">
             <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
             <select id="ui-language-select">
