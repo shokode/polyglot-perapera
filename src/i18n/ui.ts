@@ -104,6 +104,7 @@ export type UILabels = {
   recommendationReasonLearned: string;
   randomPractice: string;
   view: string;
+  viewDetails: string;
   allCategories: string;
   allLevels: string;
   allLanguages: string;
@@ -204,7 +205,7 @@ export type UILabels = {
 
 export const uiText: Record<UILang, UILabels> = {
   no: {
-    title: 'Les, skriv, lær',
+    title: 'Polyglotyping',
     subtitle: 'Multispråklig lesing og skriving med naturlige tekster.',
     language: 'Språk',
     practiceLanguage: 'Øvingsspråk',
@@ -222,6 +223,7 @@ export const uiText: Record<UILang, UILabels> = {
     recommendationReasonLearned: 'Lært',
     randomPractice: 'Tilfeldig øvelse',
     view: 'Åpne',
+    viewDetails: 'Se detaljer',
     allCategories: 'Alle kategorier',
     allLevels: 'Alle nivåer',
     allLanguages: 'Alle språk',
@@ -320,7 +322,7 @@ export const uiText: Record<UILang, UILabels> = {
     pinnedText: 'Festet',
   },
   en: {
-    title: 'Read & Type',
+    title: 'Polyglotyping',
     subtitle: 'Multilingual reading and typing with natural texts.',
     language: 'Language',
     practiceLanguage: 'Practice language',
@@ -338,6 +340,7 @@ export const uiText: Record<UILang, UILabels> = {
     recommendationReasonLearned: 'Learned',
     randomPractice: 'Random practice',
     view: 'Open',
+    viewDetails: 'View details',
     allCategories: 'All categories',
     allLevels: 'All levels',
     allLanguages: 'All languages',
@@ -436,7 +439,7 @@ export const uiText: Record<UILang, UILabels> = {
     pinnedText: 'Pinned',
   },
   ja: {
-    title: '読むと打つ',
+    title: 'Polyglotyping',
     subtitle: '自然なテキストで学ぶ多言語のリーディングとタイピング。',
     language: '言語',
     practiceLanguage: '練習する言語',
@@ -454,6 +457,7 @@ export const uiText: Record<UILang, UILabels> = {
     recommendationReasonLearned: '学習済み',
     randomPractice: 'ランダムに練習',
     view: '開く',
+    viewDetails: '詳しく見る',
     allCategories: 'すべてのカテゴリー',
     allLevels: 'すべてのレベル',
     allLanguages: 'すべての言語',

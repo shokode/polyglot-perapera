@@ -1,0 +1,40 @@
+---
+type ActivePage = "home" | "review" | "progress" | "text" | "none";
+
+interface Props {
+  active?: ActivePage;
+  basePath?: string;
+}
+
+const { active = "none", basePath = "/" } = Astro.props;
+const normalizedBase = basePath.endsWith("/") ? basePath : `${basePath}/`;
+const appHref = (path: string) => `${normalizedBase}${path.replace(/^\//, "")}`;
+const links = [
+  { key: "home", label: "Home", href: appHref("") },
+  { key: "review", label: "Review", href: appHref("review") },
+  { key: "progress", label: "Progress", href: appHref("progress") },
+];
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__brand" href={appHref("")} aria-label="Polyglotyping home">
+      <span class="site-header__mark">Pg</span>
+      <span class="site-header__brand-text">
+        <strong>Polyglotyping</strong>
+        <span>Language practice</span>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      {links.map((link) => (
+        <a
+          class:list={["site-nav__link", active === link.key && "is-active"]}
+          href={link.href}
+          aria-current={active === link.key ? "page" : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

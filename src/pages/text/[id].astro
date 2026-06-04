@@ -1,6 +1,7 @@
 ---
 import texts from "../../data/texts.json" assert { type: "json" };
 import "../../styles/global.scss";
+import SiteHeader from "../../components/SiteHeader.astro";
 import {
   levels as levelKeys,
   uiLanguages,
@@ -2002,14 +2003,16 @@ if (!text) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{text.title} · Read & Type</title>
+    <title>{text.title} · Polyglotyping</title>
   </head>
   <body>
-    <main class="page-shell text-page">
-      <section class="hero-card page-top">
+    <SiteHeader active="text" basePath={import.meta.env.BASE_URL} />
+    <main class="page-shell page-layout text-page">
+      <section class="hero-card page-top page-hero page-hero--typing">
         <div>
+          <span class="section-kicker">Typing practice</span>
           <div class="text-title-row">
-            <h1 class="text-title">{text.title}</h1>
+            <h1 class="text-title page-hero__title">{text.title}</h1>
             <button
               class="pin-button text-page__pin"
               type="button"
@@ -2055,18 +2058,6 @@ if (!text) {
           </div>
         </div>
         <div class="top-actions">
-          <a
-            class="nav-link"
-            href={appHref("review")}
-            data-i18n="reviewPageTitle"
-            >{uiText[defaultUiLang].reviewPageTitle}</a
-          >
-          <a
-            class="nav-link"
-            href={appHref("starred")}
-            data-i18n="starredPageTitle"
-            >{uiText[defaultUiLang].starredPageTitle}</a
-          >
           <div class="language-switcher">
             <label for="ui-language-select" data-i18n="language"
               >{uiText[defaultUiLang].language}</label

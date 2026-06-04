@@ -1,0 +1,552 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import texts from '../data/texts.json' assert { type: 'json' };
+import '../styles/global.scss';
+import { uiLanguages, uiText, languageNames, type UILang } from '../i18n/ui';
+
+const defaultUiLang: UILang = 'en';
+const targetLanguageBadges: Record<UILang, string> = {
+  no: 'NO',
+  en: 'EN',
+  ja: 'JA',
+};
+
+const progressLabels = {
+  no: {
+    title: 'Fremgang',
+    subtitle: 'Se øving, repetisjon, språkfordeling og festede øvinger samlet.',
+    overview: 'Oversikt',
+    practiceHistory: 'Øvingshistorikk',
+    byLanguage: 'Etter språk',
+    reviewStatus: 'Repetisjonsstatus',
+    pinnedPractice: 'Festet øving',
+    pinnedOriginal: 'Originaltekster',
+    pinnedTranslation: 'Oversettelsesøving',
+    pinnedTargets: 'Festede øvinger',
+    totalPractices: 'Totale øvinger',
+    learnedExpressions: 'Lært',
+    reviewingExpressions: 'Repeteres',
+    newExpressions: 'Nye',
+    averageWpm: 'Snitt WPM',
+    averageCpm: 'Snitt CPM',
+    averageAccuracy: 'Snitt nøyaktighet',
+    textsPracticed: 'Tekster øvd',
+    totalPracticeCount: 'Antall øvinger',
+    textTitle: 'Tekst',
+    language: 'Språk',
+    practiceType: 'Type',
+    accuracy: 'Nøyaktighet',
+    speed: 'Fart',
+    mistakes: 'Feil',
+    selfAssessment: 'Egenvurdering',
+    practicedAt: 'Øvd',
+    original: 'Original',
+    translation: 'Oversettelse',
+    practice: 'Øv',
+    emptyHistory: 'Ingen øvinger er lagret ennå.',
+    emptyPinned: 'Ingen festede øvinger ennå.',
+    unavailable: 'Ikke lagret',
+  },
+  en: {
+    title: 'Progress',
+    subtitle: 'Review practice volume, language balance, expression status, and pinned practice targets.',
+    overview: 'Overview',
+    practiceHistory: 'Practice history',
+    byLanguage: 'By language',
+    reviewStatus: 'Review status',
+    pinnedPractice: 'Pinned practice',
+    pinnedOriginal: 'Original texts',
+    pinnedTranslation: 'Translation practice',
+    pinnedTargets: 'Pinned targets',
+    totalPractices: 'Total practices',
+    learnedExpressions: 'Learned',
+    reviewingExpressions: 'In review',
+    newExpressions: 'New',
+    averageWpm: 'Average WPM',
+    averageCpm: 'Average CPM',
+    averageAccuracy: 'Average accuracy',
+    textsPracticed: 'Texts practiced',
+    totalPracticeCount: 'Practice count',
+    textTitle: 'Text',
+    language: 'Language',
+    practiceType: 'Type',
+    accuracy: 'Accuracy',
+    speed: 'Speed',
+    mistakes: 'Mistakes',
+    selfAssessment: 'Self-assessment',
+    practicedAt: 'Practiced',
+    original: 'Original',
+    translation: 'Translation',
+    practice: 'Practice',
+    emptyHistory: 'No practice has been saved yet.',
+    emptyPinned: 'No pinned practice targets yet.',
+    unavailable: 'Not saved',
+  },
+  ja: {
+    title: '学習状況',
+    subtitle: '練習量、言語別の進み具合、表現カードの状態、ピン留めした練習をまとめて確認できます。',
+    overview: '概要',
+    practiceHistory: '練習履歴',
+    byLanguage: '言語別',
+    reviewStatus: '復習ステータス',
+    pinnedPractice: 'ピン留めした練習',
+    pinnedOriginal: '原文の練習',
+    pinnedTranslation: '翻訳練習',
+    pinnedTargets: 'ピン留め',
+    totalPractices: '合計練習回数',
+    learnedExpressions: '学習済み',
+    reviewingExpressions: '復習中',
+    newExpressions: '新規',
+    averageWpm: '平均 WPM',
+    averageCpm: '平均 CPM',
+    averageAccuracy: '平均正確率',
+    textsPracticed: '練習したテキスト',
+    totalPracticeCount: '練習回数',
+    textTitle: 'テキスト',
+    language: '言語',
+    practiceType: '種類',
+    accuracy: '正確率',
+    speed: '速度',
+    mistakes: 'ミス',
+    selfAssessment: '自己評価',
+    practicedAt: '練習日時',
+    original: '原文',
+    translation: '翻訳',
+    practice: '練習する',
+    emptyHistory: 'まだ保存された練習がありません。',
+    emptyPinned: 'ピン留めされた練習はまだありません。',
+    unavailable: '未保存',
+  },
+};
+
+const clientScript = `
+  const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
+  const texts = ${JSON.stringify(texts)};
+  const uiLanguages = ${JSON.stringify(uiLanguages)};
+  const languageNames = ${JSON.stringify(languageNames)};
+  const targetLanguageBadges = ${JSON.stringify(targetLanguageBadges)};
+  const progressLabels = ${JSON.stringify(progressLabels)};
+  const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
+  const TEXT_PROGRESS_KEY = 'typingProgress';
+  const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
+  const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
+  const PINNED_TEXTS_KEY = 'typingPinnedTexts';
+  const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
+  const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
+
+  function safeReadStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  function readObject(key) {
+    try {
+      const parsed = JSON.parse(safeReadStorage(key) || '{}');
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function readArray(key) {
+    try {
+      const parsed = JSON.parse(safeReadStorage(key) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function getAppHref(path) {
+    const base = BASE_PATH || '/';
+    const normalizedBase = base.endsWith('/') ? base : base + '/';
+    return normalizedBase + String(path).replace(/^\\//, '');
+  }
+
+  function getSavedUiLanguage() {
+    const stored = safeReadStorage(UI_LANGUAGE_STORAGE_KEY);
+    return typeof stored === 'string' && uiLanguages.includes(stored) ? stored : 'en';
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatNumber(value) {
+    return Number.isFinite(value) ? String(Math.round(value)) : '—';
+  }
+
+  function formatPercent(value) {
+    return Number.isFinite(value) ? Math.round(value) + '%' : '—';
+  }
+
+  function formatDate(value, lang) {
+    const date = new Date(value || '');
+    if (Number.isNaN(date.getTime())) {
+      return '—';
+    }
+    return new Intl.DateTimeFormat(lang, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
+  }
+
+  function isValidSpeed(value, language) {
+    const speed = Number(value);
+    if (!Number.isFinite(speed) || speed <= 0) {
+      return false;
+    }
+    return language === 'ja' ? speed <= 1000 : speed <= 250;
+  }
+
+  function average(values) {
+    const valid = values.filter((value) => Number.isFinite(value));
+    return valid.length ? valid.reduce((sum, value) => sum + value, 0) / valid.length : null;
+  }
+
+  function getTextById(textId) {
+    return texts.find((item) => item.id === textId) || null;
+  }
+
+  function getExpressionStorageKey(expression, language) {
+    return language + '::' + (expression.storageKey || expression.phrase);
+  }
+
+  function getExpressionStatus(expression, language, statuses) {
+    const stored = statuses[getExpressionStorageKey(expression, language)]
+      || statuses[expression.storageKey]
+      || statuses[language + '::' + expression.phrase]
+      || statuses[expression.phrase];
+    return EXPRESSION_STATUSES.includes(stored) ? stored : 'new';
+  }
+
+  function getUniqueExpressions() {
+    const seen = new Set();
+    const expressions = [];
+    texts.forEach((text) => {
+      text.expressions.forEach((expression) => {
+        const key = getExpressionStorageKey(expression, text.language);
+        if (!seen.has(key)) {
+          seen.add(key);
+          expressions.push({ ...expression, language: text.language, textId: text.id });
+        }
+      });
+    });
+    return expressions;
+  }
+
+  function getExpressionCounts(statuses, language = null) {
+    return getUniqueExpressions().reduce((counts, expression) => {
+      if (language && expression.language !== language) {
+        return counts;
+      }
+      const status = getExpressionStatus(expression, expression.language, statuses);
+      counts[status] += 1;
+      return counts;
+    }, { new: 0, review: 0, learned: 0 });
+  }
+
+  function normalizePracticeTarget(target) {
+    if (!target || typeof target !== 'object' || typeof target.textId !== 'string') {
+      return null;
+    }
+    if (target.practiceType === 'translation' && uiLanguages.includes(target.practiceTranslation)) {
+      return { textId: target.textId, practiceType: 'translation', practiceTranslation: target.practiceTranslation };
+    }
+    return { textId: target.textId, practiceType: 'original', practiceTranslation: null };
+  }
+
+  function getPracticeTargetKey(target) {
+    return target.textId + '::' + target.practiceType + '::' + (target.practiceTranslation || '');
+  }
+
+  function getPinnedPracticeTargets() {
+    const targets = readArray(PINNED_TEXTS_KEY)
+      .filter((id) => typeof id === 'string')
+      .map((textId) => ({ textId, practiceType: 'original', practiceTranslation: null }));
+
+    readArray(PINNED_PRACTICE_TARGETS_KEY).forEach((item) => {
+      const target = normalizePracticeTarget(item);
+      if (target) {
+        targets.push(target);
+      }
+    });
+
+    const seen = new Set();
+    return targets.filter((target) => {
+      const text = getTextById(target.textId);
+      if (!text) {
+        return false;
+      }
+      if (target.practiceType === 'translation') {
+        const field = target.practiceTranslation === 'ja' ? 'translationJa' : target.practiceTranslation === 'en' ? 'translationEn' : 'translationNo';
+        if (!field || !text[field]) {
+          return false;
+        }
+      }
+      const key = getPracticeTargetKey(target);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function getPracticeHref(target) {
+    if (target.practiceType === 'translation' && target.practiceTranslation) {
+      return getAppHref('text/' + encodeURIComponent(target.textId) + '?practiceTranslation=' + encodeURIComponent(target.practiceTranslation));
+    }
+    return getAppHref('text/' + encodeURIComponent(target.textId));
+  }
+
+  function getProgressData() {
+    const textProgress = readObject(TEXT_PROGRESS_KEY);
+    const expressionStatuses = readObject(EXPRESSION_STATUS_KEY);
+    const selfAssessments = readObject(SELF_ASSESSMENT_KEY);
+    const expressionCounts = getExpressionCounts(expressionStatuses);
+    const practicedTexts = texts
+      .map((text) => ({ text, entry: textProgress[text.id] || null }))
+      .filter(({ entry }) => entry && Number.isFinite(entry.completedCount) && entry.completedCount > 0);
+    const totalPractices = practicedTexts.reduce((sum, { entry }) => sum + entry.completedCount, 0);
+    const validWpm = practicedTexts
+      .filter(({ text, entry }) => text.language !== 'ja' && isValidSpeed(entry.bestWpm, text.language))
+      .map(({ entry }) => Number(entry.bestWpm));
+    const validCpm = practicedTexts
+      .filter(({ text, entry }) => text.language === 'ja' && isValidSpeed(entry.bestWpm, text.language))
+      .map(({ entry }) => Number(entry.bestWpm));
+
+    return {
+      textProgress,
+      expressionStatuses,
+      selfAssessments,
+      expressionCounts,
+      practicedTexts,
+      totalPractices,
+      averageWpm: average(validWpm),
+      averageCpm: average(validCpm),
+      pinnedTargets: getPinnedPracticeTargets(),
+    };
+  }
+
+  function getHistoryRows(data) {
+    const rows = Object.values(data.selfAssessments)
+      .filter((entry) => entry && typeof entry === 'object' && typeof entry.textId === 'string')
+      .map((assessment) => {
+        const text = getTextById(assessment.textId);
+        const progress = data.textProgress[assessment.textId] || {};
+        const targetLanguage = assessment.targetLanguage || text?.language || 'no';
+        return {
+          text,
+          title: text?.title || assessment.textId,
+          language: targetLanguage,
+          practiceType: assessment.mode === 'translation' ? 'translation' : 'original',
+          accuracy: Number.isFinite(progress.bestAccuracy) ? progress.bestAccuracy : null,
+          speed: isValidSpeed(progress.bestWpm, targetLanguage) ? progress.bestWpm : null,
+          mistakes: null,
+          selfAssessment: assessment.level || '',
+          practicedAt: assessment.assessedAt || progress.lastPracticedAt || '',
+        };
+      });
+
+    const assessedTextIds = new Set(rows.map((row) => row.text?.id).filter(Boolean));
+    data.practicedTexts.forEach(({ text, entry }) => {
+      if (assessedTextIds.has(text.id)) {
+        return;
+      }
+      rows.push({
+        text,
+        title: text.title,
+        language: text.language,
+        practiceType: 'original',
+        accuracy: Number.isFinite(entry.bestAccuracy) ? entry.bestAccuracy : null,
+        speed: isValidSpeed(entry.bestWpm, text.language) ? entry.bestWpm : null,
+        mistakes: null,
+        selfAssessment: '',
+        practicedAt: entry.lastPracticedAt || '',
+      });
+    });
+
+    return rows.sort((a, b) => (Date.parse(b.practicedAt || '') || 0) - (Date.parse(a.practicedAt || '') || 0)).slice(0, 12);
+  }
+
+  function renderOverview(data, labels) {
+    const stats = [
+      [labels.totalPractices, data.totalPractices],
+      [labels.learnedExpressions, data.expressionCounts.learned],
+      [labels.reviewingExpressions, data.expressionCounts.review],
+      [labels.newExpressions, data.expressionCounts.new],
+      [labels.averageWpm, data.averageWpm],
+      [labels.averageCpm, data.averageCpm],
+      [labels.pinnedTargets, data.pinnedTargets.length],
+    ];
+    document.getElementById('progress-overview-grid').innerHTML = stats.map(([label, value]) => (
+      '<article class="progress-stat-card"><span>' + escapeHtml(label) + '</span><strong>' + formatNumber(value) + '</strong></article>'
+    )).join('');
+  }
+
+  function renderHistory(data, labels, lang) {
+    const rows = getHistoryRows(data);
+    const container = document.getElementById('progress-history');
+    if (!rows.length) {
+      container.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.emptyHistory) + '</p>';
+      return;
+    }
+    container.innerHTML = rows.map((row) => {
+      const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
+      return '<article class="progress-history-card">'
+        + '<div><strong>' + escapeHtml(row.title) + '</strong><span>' + escapeHtml(targetLanguageBadges[row.language] || row.language) + ' · ' + escapeHtml(row.practiceType === 'translation' ? labels.translation : labels.original) + '</span></div>'
+        + '<dl>'
+        + '<div><dt>' + escapeHtml(labels.accuracy) + '</dt><dd>' + formatPercent(row.accuracy) + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.speed) + '</dt><dd>' + (Number.isFinite(row.speed) ? Math.round(row.speed) + ' ' + speedUnit : '—') + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.mistakes) + '</dt><dd>' + escapeHtml(labels.unavailable) + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.selfAssessment) + '</dt><dd>' + escapeHtml(row.selfAssessment || '—') + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.practicedAt) + '</dt><dd>' + escapeHtml(formatDate(row.practicedAt, lang)) + '</dd></div>'
+        + '</dl>'
+        + '</article>';
+    }).join('');
+  }
+
+  function renderLanguageCards(data, labels) {
+    document.getElementById('progress-language-grid').innerHTML = uiLanguages.map((language) => {
+      const languageTexts = data.practicedTexts.filter(({ text }) => text.language === language);
+      const practiceCount = languageTexts.reduce((sum, { entry }) => sum + entry.completedCount, 0);
+      const averageAccuracy = average(languageTexts.map(({ entry }) => Number.isFinite(entry.bestAccuracy) && entry.bestAccuracy > 0 ? entry.bestAccuracy : null));
+      const speeds = languageTexts
+        .filter(({ entry }) => isValidSpeed(entry.bestWpm, language))
+        .map(({ entry }) => Number(entry.bestWpm));
+      const counts = getExpressionCounts(data.expressionStatuses, language);
+      return '<article class="progress-language-card">'
+        + '<div class="progress-language-card__header"><span class="language-badge language-badge--' + escapeHtml(language) + '">' + escapeHtml(targetLanguageBadges[language]) + '</span><strong>' + escapeHtml(languageNames[language]?.[language] || language) + '</strong></div>'
+        + '<dl>'
+        + '<div><dt>' + escapeHtml(labels.textsPracticed) + '</dt><dd>' + languageTexts.length + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.totalPracticeCount) + '</dt><dd>' + practiceCount + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.averageAccuracy) + '</dt><dd>' + formatPercent(averageAccuracy) + '</dd></div>'
+        + '<div><dt>' + escapeHtml(language === 'ja' ? labels.averageCpm : labels.averageWpm) + '</dt><dd>' + formatNumber(average(speeds)) + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.reviewingExpressions) + '</dt><dd>' + counts.review + '</dd></div>'
+        + '<div><dt>' + escapeHtml(labels.learnedExpressions) + '</dt><dd>' + counts.learned + '</dd></div>'
+        + '</dl>'
+        + '</article>';
+    }).join('');
+  }
+
+  function renderReviewStatus(data, labels) {
+    const counts = data.expressionCounts;
+    document.getElementById('progress-review-grid').innerHTML = [
+      [labels.newExpressions, counts.new],
+      [labels.reviewingExpressions, counts.review],
+      [labels.learnedExpressions, counts.learned],
+    ].map(([label, value]) => (
+      '<article class="progress-stat-card"><span>' + escapeHtml(label) + '</span><strong>' + value + '</strong></article>'
+    )).join('');
+  }
+
+  function renderPinned(data, labels) {
+    const container = document.getElementById('progress-pinned');
+    if (!data.pinnedTargets.length) {
+      container.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.emptyPinned) + '</p>';
+      return;
+    }
+    container.innerHTML = ['original', 'translation'].map((type) => {
+      const items = data.pinnedTargets.filter((target) => target.practiceType === type);
+      if (!items.length) {
+        return '';
+      }
+      return '<div class="progress-pinned-group"><h3>' + escapeHtml(type === 'translation' ? labels.pinnedTranslation : labels.pinnedOriginal) + '</h3>'
+        + '<div class="progress-pinned-list">'
+        + items.map((target) => {
+          const text = getTextById(target.textId);
+          const language = target.practiceType === 'translation' ? target.practiceTranslation : text.language;
+          return '<article class="progress-pinned-card"><div><strong>' + escapeHtml(text.title) + '</strong><span>' + escapeHtml(targetLanguageBadges[language] || language) + '</span></div><a class="secondary-button" href="' + escapeHtml(getPracticeHref(target)) + '">' + escapeHtml(labels.practice) + '</a></article>';
+        }).join('')
+        + '</div></div>';
+    }).join('');
+  }
+
+  function renderProgressPage() {
+    const lang = getSavedUiLanguage();
+    const labels = progressLabels[lang] || progressLabels.en;
+    const data = getProgressData();
+    document.documentElement.lang = lang;
+    document.title = labels.title + ' · Polyglotyping';
+    document.getElementById('progress-title').textContent = labels.title;
+    document.getElementById('progress-subtitle').textContent = labels.subtitle;
+    document.querySelectorAll('[data-progress-label]').forEach((element) => {
+      const value = labels[element.dataset.progressLabel];
+      if (value) {
+        element.textContent = value;
+      }
+    });
+    renderOverview(data, labels);
+    renderHistory(data, labels, lang);
+    renderLanguageCards(data, labels);
+    renderReviewStatus(data, labels);
+    renderPinned(data, labels);
+  }
+
+  document.addEventListener('DOMContentLoaded', renderProgressPage);
+`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{progressLabels[defaultUiLang].title} · Polyglotyping</title>
+  </head>
+  <body>
+    <SiteHeader active="progress" basePath={import.meta.env.BASE_URL} />
+    <main class="page-shell page-layout progress-page">
+      <section class="hero-card page-hero progress-hero">
+        <div>
+          <span class="section-kicker">Progress</span>
+          <h1 class="page-hero__title" id="progress-title">{progressLabels[defaultUiLang].title}</h1>
+          <p class="page-hero__subtitle" id="progress-subtitle">{progressLabels[defaultUiLang].subtitle}</p>
+        </div>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-overview-title">
+        <div class="progress-section__header">
+          <h2 id="progress-overview-title" data-progress-label="overview">{progressLabels[defaultUiLang].overview}</h2>
+        </div>
+        <div class="progress-grid" id="progress-overview-grid"></div>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-history-title">
+        <div class="progress-section__header">
+          <h2 id="progress-history-title" data-progress-label="practiceHistory">{progressLabels[defaultUiLang].practiceHistory}</h2>
+        </div>
+        <div class="progress-history" id="progress-history"></div>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-language-title">
+        <div class="progress-section__header">
+          <h2 id="progress-language-title" data-progress-label="byLanguage">{progressLabels[defaultUiLang].byLanguage}</h2>
+        </div>
+        <div class="progress-language-grid" id="progress-language-grid"></div>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-review-title">
+        <div class="progress-section__header">
+          <h2 id="progress-review-title" data-progress-label="reviewStatus">{progressLabels[defaultUiLang].reviewStatus}</h2>
+        </div>
+        <div class="progress-grid progress-grid--compact" id="progress-review-grid"></div>
+      </section>
+
+      <section class="progress-section" aria-labelledby="progress-pinned-title">
+        <div class="progress-section__header">
+          <h2 id="progress-pinned-title" data-progress-label="pinnedPractice">{progressLabels[defaultUiLang].pinnedPractice}</h2>
+        </div>
+        <div id="progress-pinned"></div>
+      </section>
+    </main>
+
+    <script type="module" set:html={clientScript}></script>
+  </body>
+</html>
