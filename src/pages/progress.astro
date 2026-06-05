@@ -123,6 +123,7 @@ const clientScript = `
   const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
   const texts = ${JSON.stringify(texts)};
   const uiLanguages = ${JSON.stringify(uiLanguages)};
+  const ui = ${JSON.stringify(uiText)};
   const languageNames = ${JSON.stringify(languageNames)};
   const targetLanguageBadges = ${JSON.stringify(targetLanguageBadges)};
   const progressLabels = ${JSON.stringify(progressLabels)};
@@ -139,6 +140,14 @@ const clientScript = `
       return localStorage.getItem(key);
     } catch {
       return null;
+    }
+  }
+
+  function safeWriteStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore
     }
   }
 
@@ -472,13 +481,23 @@ const clientScript = `
     const lang = getSavedUiLanguage();
     const labels = progressLabels[lang] || progressLabels.en;
     const data = getProgressData();
+    const uiLanguageSelect = document.getElementById('ui-language-select');
     document.documentElement.lang = lang;
     document.title = labels.title + ' · Polyglotyping';
+    if (uiLanguageSelect) {
+      uiLanguageSelect.value = lang;
+    }
     document.getElementById('progress-title').textContent = labels.title;
     document.getElementById('progress-subtitle').textContent = labels.subtitle;
     document.querySelectorAll('[data-progress-label]').forEach((element) => {
       const value = labels[element.dataset.progressLabel];
       if (value) {
+        element.textContent = value;
+      }
+    });
+    document.querySelectorAll('[data-i18n]').forEach((element) => {
+      const value = ui[lang]?.[element.dataset.i18n];
+      if (typeof value === 'string') {
         element.textContent = value;
       }
     });
@@ -489,7 +508,17 @@ const clientScript = `
     renderPinned(data, labels);
   }
 
-  document.addEventListener('DOMContentLoaded', renderProgressPage);
+  document.addEventListener('DOMContentLoaded', () => {
+    const uiLanguageSelect = document.getElementById('ui-language-select');
+    if (uiLanguageSelect) {
+      uiLanguageSelect.addEventListener('change', () => {
+        const nextLanguage = uiLanguages.includes(uiLanguageSelect.value) ? uiLanguageSelect.value : 'en';
+        safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, nextLanguage);
+        renderProgressPage();
+      });
+    }
+    renderProgressPage();
+  });
 `;
 ---
 

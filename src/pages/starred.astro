@@ -4,7 +4,6 @@ import SiteHeader from '../components/SiteHeader.astro';
 import texts from '../data/texts.json' assert { type: 'json' };
 import {
   uiLanguages,
-  uiLanguageNames,
   uiText,
   languageNames,
   type UILang,
@@ -533,16 +532,6 @@ const clientScript = `
           <span class="section-kicker">Pinned practice</span>
           <h1 class="text-title page-hero__title" id="starred-title" data-i18n="starredPageTitle">{uiText[defaultUiLang].starredPageTitle}</h1>
           <p class="page-hero__subtitle" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
-        </div>
-        <div class="top-actions">
-          <div class="language-switcher">
-            <label for="ui-language-select" data-i18n="language">{uiText[defaultUiLang].language}</label>
-            <select id="ui-language-select">
-              {uiLanguages.map((lang) => (
-                <option value={lang}>{uiLanguageNames[lang]}</option>
-              ))}
-            </select>
-          </div>
         </div>
       </section>
 

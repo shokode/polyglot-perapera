@@ -6,7 +6,6 @@ import {
     categories as categoryKeys,
     levels as levelKeys,
     uiLanguages,
-    uiLanguageNames,
     uiText,
     categoryLabels,
     levelLabels,
@@ -1021,26 +1020,14 @@ const clientScript = `
                         a glance.
                     </p>
                 </div>
-                <a
-                    class="secondary-button progress-details-link"
-                    href={appHref("progress")}
-                    data-i18n="viewDetails"
-                >
-                    {uiText[defaultUiLang].viewDetails}
-                </a>
-                <div class="language-switcher">
-                    <label for="ui-language-select" data-i18n="language"
-                        >{uiText[defaultUiLang].language}</label
+                <div class="dashboard-actions">
+                    <a
+                        class="secondary-button progress-details-link"
+                        href={appHref("progress")}
+                        data-i18n="viewDetails"
                     >
-                    <select id="ui-language-select">
-                        {
-                            uiLanguages.map((lang) => (
-                                <option value={lang}>
-                                    {uiLanguageNames[lang]}
-                                </option>
-                            ))
-                        }
-                    </select>
+                        {uiText[defaultUiLang].viewDetails}
+                    </a>
                 </div>
             </div>
             <div class="dashboard-grid">
@@ -1081,6 +1068,22 @@ const clientScript = `
                     <strong id="average-cpm-value">—</strong>
                 </article>
             </div>
+        </section>
+
+        <section class="actions-row home-start-actions">
+            <button
+                id="start-button"
+                class="primary-button"
+                data-i18n="startRecommended"
+                >{uiText[defaultUiLang].startRecommended}</button
+            >
+            <button
+                id="random-button"
+                class="secondary-button"
+                type="button"
+                data-i18n="randomPractice"
+                >{uiText[defaultUiLang].randomPractice}</button
+            >
         </section>
 
         <section class="filters-card">
@@ -1466,22 +1469,6 @@ const clientScript = `
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section class="actions-row">
-            <button
-                id="start-button"
-                class="primary-button"
-                data-i18n="startRecommended"
-                >{uiText[defaultUiLang].startRecommended}</button
-            >
-            <button
-                id="random-button"
-                class="secondary-button"
-                type="button"
-                data-i18n="randomPractice"
-                >{uiText[defaultUiLang].randomPractice}</button
-            >
         </section>
 
         <section

@@ -5,7 +5,6 @@ import SiteHeader from "../../components/SiteHeader.astro";
 import {
   levels as levelKeys,
   uiLanguages,
-  uiLanguageNames,
   uiText,
   categoryLabels,
   levelLabels,
@@ -318,7 +317,6 @@ const clientScript = `
   const allTexts = ${JSON.stringify(recommendationTexts)};
   const ui = ${JSON.stringify(uiText)};
   const uiLanguages = ${JSON.stringify(uiLanguages)};
-  const uiLanguageNames = ${JSON.stringify(uiLanguageNames)};
   const categoryLabels = ${JSON.stringify(categoryLabels)};
   const levelLabels = ${JSON.stringify(levelLabels)};
   const languageNames = ${JSON.stringify(languageNames)};
@@ -2008,19 +2006,10 @@ if (!text) {
   <body>
     <SiteHeader active="text" basePath={import.meta.env.BASE_URL} />
     <main class="page-shell page-layout text-page">
-      <section class="hero-card page-top page-hero page-hero--typing">
-        <div>
-          <span class="section-kicker">Typing practice</span>
+      <section class="text-practice-header">
+        <div class="text-practice-header__main">
           <div class="text-title-row">
             <h1 class="text-title page-hero__title">{text.title}</h1>
-            <button
-              class="pin-button text-page__pin"
-              type="button"
-              id="text-pin-button"
-              aria-label={uiText[defaultUiLang].pinText}
-              title={uiText[defaultUiLang].pinText}
-              aria-pressed="false">☆</button
-            >
           </div>
           <div class="meta-strip">
             <span
@@ -2057,64 +2046,60 @@ if (!text) {
             </span>
           </div>
         </div>
-        <div class="top-actions">
-          <div class="language-switcher">
-            <label for="ui-language-select" data-i18n="language"
-              >{uiText[defaultUiLang].language}</label
-            >
-            <select id="ui-language-select">
-              {
-                uiLanguages.map((lang) => (
-                  <option value={lang}>{uiLanguageNames[lang]}</option>
-                ))
-              }
-            </select>
-          </div>
-        </div>
+        <button
+          class="pin-button text-page__pin"
+          type="button"
+          id="text-pin-button"
+          aria-label={uiText[defaultUiLang].pinText}
+          title={uiText[defaultUiLang].pinText}
+          aria-pressed="false">☆</button
+        >
       </section>
 
-      <section class="note-card">
-        <h3 id="read-heading" data-i18n="readTypeUnderstand">
-          {uiText[defaultUiLang].readTypeUnderstand}
-        </h3>
-        <p id="read-description" data-i18n="focusNaturalMeaning">
-          {uiText[defaultUiLang].focusNaturalMeaning}
-        </p>
-      </section>
+      <div class="pre-practice-panels">
+        <section class="note-card pre-practice-panel">
+          <h3 id="read-heading" data-i18n="readTypeUnderstand">
+            {uiText[defaultUiLang].readTypeUnderstand}
+          </h3>
+          <p id="read-description" data-i18n="focusNaturalMeaning">
+            {uiText[defaultUiLang].focusNaturalMeaning}
+          </p>
+        </section>
 
-      <section
-        class="learning-focus-card translation-practice-info-card"
-        id="translation-practice-info"
-        hidden={!isTranslationPractice}
-      >
-        <h3 id="original-text-title">{uiText[defaultUiLang].originalText}</h3>
-        <p class="translation-practice-original">{text.text}</p>
-        <p class="translation-practice-note" id="translation-practice-note">
-          {uiText[defaultUiLang].translationPracticeNoCards}
-        </p>
-      </section>
+        <section
+          class="learning-focus-card translation-practice-info-card pre-practice-panel pre-practice-panel--wide"
+          id="translation-practice-info"
+          hidden={!isTranslationPractice}
+        >
+          <h3 id="original-text-title">{uiText[defaultUiLang].originalText}</h3>
+          <p class="translation-practice-original">{text.text}</p>
+          <p class="translation-practice-note" id="translation-practice-note">
+            {uiText[defaultUiLang].translationPracticeNoCards}
+          </p>
+        </section>
 
-      <section
-        class="learning-focus-card"
-        id="learning-focus-summary"
-        hidden={isTranslationPractice}
-      >
-        <h3>Learning Focus</h3>
-        <div class="learning-focus-row">
-          <div>
-            <strong>Expressions</strong>
-            <ul>
-              {learningFocusExpressions.map((phrase) => <li>{phrase}</li>)}
-            </ul>
+        <section
+          class="learning-focus-card pre-practice-panel pre-practice-panel--wide"
+          id="learning-focus-summary"
+          hidden={isTranslationPractice}
+        >
+          <h3>Learning Focus</h3>
+          <div class="learning-focus-row">
+            <div>
+              <strong>Expressions</strong>
+              <ul>
+                {learningFocusExpressions.map((phrase) => <li>{phrase}</li>)}
+              </ul>
+            </div>
+            <div>
+              <strong>Grammar</strong>
+              <ul>
+                {learningFocusGrammar.map((title) => <li>{title}</li>)}
+              </ul>
+            </div>
           </div>
-          <div>
-            <strong>Grammar</strong>
-            <ul>
-              {learningFocusGrammar.map((title) => <li>{title}</li>)}
-            </ul>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <section
         class="text-content"

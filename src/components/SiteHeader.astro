@@ -1,4 +1,6 @@
 ---
+import { uiLanguages, uiLanguageNames } from "../i18n/ui";
+
 type ActivePage = "home" | "review" | "progress" | "text" | "none";
 
 interface Props {
@@ -25,16 +27,26 @@ const links = [
         <span>Language practice</span>
       </span>
     </a>
-    <nav class="site-nav" aria-label="Main navigation">
-      {links.map((link) => (
-        <a
-          class:list={["site-nav__link", active === link.key && "is-active"]}
-          href={link.href}
-          aria-current={active === link.key ? "page" : undefined}
-        >
-          {link.label}
-        </a>
-      ))}
-    </nav>
+    <div class="site-header__actions">
+      <nav class="site-nav" aria-label="Main navigation">
+        {links.map((link) => (
+          <a
+            class:list={["site-nav__link", active === link.key && "is-active"]}
+            href={link.href}
+            aria-current={active === link.key ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+      <div class="language-switcher site-language-switcher">
+        <label for="ui-language-select" data-i18n="language">Language</label>
+        <select id="ui-language-select">
+          {uiLanguages.map((lang) => (
+            <option value={lang}>{uiLanguageNames[lang]}</option>
+          ))}
+        </select>
+      </div>
+    </div>
   </div>
 </header>
