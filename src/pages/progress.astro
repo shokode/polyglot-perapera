@@ -14,11 +14,15 @@ const targetLanguageBadges: Record<UILang, string> = {
 const progressLabels = {
   no: {
     title: 'Fremgang',
-    subtitle: 'Se øving, repetisjon, språkfordeling og festede øvinger samlet.',
+    subtitle: 'Se øving, repetisjon og språkfordeling samlet.',
     overview: 'Oversikt',
+    overviewSummary: 'Oversikt over øvingen din',
+    activity: 'Aktivitet',
+    activityDescription: 'Fargede dager betyr at du øvde. Sterkere farge betyr mer øving.',
+    recentTrend: 'Nylig trend',
+    needsAttention: 'Bør øves snart',
     practiceHistory: 'Øvingshistorikk',
     byLanguage: 'Etter språk',
-    reviewStatus: 'Repetisjonsstatus',
     pinnedPractice: 'Festet øving',
     pinnedOriginal: 'Originaltekster',
     pinnedTranslation: 'Oversettelsesøving',
@@ -32,28 +36,45 @@ const progressLabels = {
     averageAccuracy: 'Snitt nøyaktighet',
     textsPracticed: 'Tekster øvd',
     totalPracticeCount: 'Antall øvinger',
-    textTitle: 'Tekst',
     language: 'Språk',
-    practiceType: 'Type',
-    accuracy: 'Nøyaktighet',
     speed: 'Fart',
-    mistakes: 'Feil',
-    selfAssessment: 'Egenvurdering',
-    practicedAt: 'Øvd',
     original: 'Original',
     translation: 'Oversettelse',
     practice: 'Øv',
+    recentAverageAccuracy: 'Nylig nøyaktighet',
+    recentAverageWpm: 'Nylig WPM',
+    recentAverageCpm: 'Nylig CPM',
+    activeDays: 'Øvingsdager',
+    last30Days: 'Siste 30 dager',
+    less: 'Lite',
+    more: 'Mye',
+    lowAccuracy: 'Lav nøyaktighet',
+    highMistakes: 'Mange feil',
+    pinned: 'Festet',
+    reviewAgain: 'Øv igjen',
+    reviewShaky: 'Usikker',
+    perfect: 'Perfekt',
+    good: 'Bra',
+    shaky: 'Usikker',
+    again: 'Igjen',
+    showMore: 'Vis mer',
+    showLess: 'Vis mindre',
+    noAttention: 'Ingen tydelige øvinger trenger ekstra oppmerksomhet akkurat nå.',
     emptyHistory: 'Ingen øvinger er lagret ennå.',
-    emptyPinned: 'Ingen festede øvinger ennå.',
-    unavailable: 'Ikke lagret',
+    emptyActivity: 'Ingen aktivitet er lagret for denne perioden.',
+    emptyTrend: 'Ikke nok data til en trend ennå.',
   },
   en: {
     title: 'Progress',
-    subtitle: 'Review practice volume, language balance, expression status, and pinned practice targets.',
+    subtitle: 'Review practice volume, review load, and language progress.',
     overview: 'Overview',
+    overviewSummary: 'Your overall learning summary',
+    activity: 'Activity',
+    activityDescription: 'Colored days mean you practiced. Stronger color means more practice.',
+    recentTrend: 'Recent trend',
+    needsAttention: 'Needs attention',
     practiceHistory: 'Practice history',
     byLanguage: 'By language',
-    reviewStatus: 'Review status',
     pinnedPractice: 'Pinned practice',
     pinnedOriginal: 'Original texts',
     pinnedTranslation: 'Translation practice',
@@ -67,28 +88,45 @@ const progressLabels = {
     averageAccuracy: 'Average accuracy',
     textsPracticed: 'Texts practiced',
     totalPracticeCount: 'Practice count',
-    textTitle: 'Text',
     language: 'Language',
-    practiceType: 'Type',
-    accuracy: 'Accuracy',
     speed: 'Speed',
-    mistakes: 'Mistakes',
-    selfAssessment: 'Self-assessment',
-    practicedAt: 'Practiced',
     original: 'Original',
     translation: 'Translation',
     practice: 'Practice',
+    recentAverageAccuracy: 'Recent accuracy',
+    recentAverageWpm: 'Recent WPM',
+    recentAverageCpm: 'Recent CPM',
+    activeDays: 'Practice days',
+    last30Days: 'Last 30 days',
+    less: 'Less',
+    more: 'More',
+    lowAccuracy: 'Low accuracy',
+    highMistakes: 'High mistakes',
+    pinned: 'Pinned',
+    reviewAgain: 'Practice again',
+    reviewShaky: 'Shaky',
+    perfect: 'Perfect',
+    good: 'Good',
+    shaky: 'Shaky',
+    again: 'Again',
+    showMore: 'Show more',
+    showLess: 'Show less',
+    noAttention: 'No clear practice targets need extra attention right now.',
     emptyHistory: 'No practice has been saved yet.',
-    emptyPinned: 'No pinned practice targets yet.',
-    unavailable: 'Not saved',
+    emptyActivity: 'No activity has been saved for this period.',
+    emptyTrend: 'Not enough data for a trend yet.',
   },
   ja: {
     title: '学習状況',
-    subtitle: '練習量、言語別の進み具合、表現カードの状態、ピン留めした練習をまとめて確認できます。',
+    subtitle: '練習量、復習の負荷、言語別の進み具合をまとめて確認できます。',
     overview: '概要',
+    overviewSummary: 'これまでの練習のまとめ',
+    activity: 'アクティビティ',
+    activityDescription: '色がついている日は練習した日です。色が濃いほど練習回数が多いです。',
+    recentTrend: '最近の傾向',
+    needsAttention: 'そろそろ復習',
     practiceHistory: '練習履歴',
     byLanguage: '言語別',
-    reviewStatus: '復習ステータス',
     pinnedPractice: 'ピン留めした練習',
     pinnedOriginal: '原文の練習',
     pinnedTranslation: '翻訳練習',
@@ -102,20 +140,33 @@ const progressLabels = {
     averageAccuracy: '平均正確率',
     textsPracticed: '練習したテキスト',
     totalPracticeCount: '練習回数',
-    textTitle: 'テキスト',
     language: '言語',
-    practiceType: '種類',
-    accuracy: '正確率',
     speed: '速度',
-    mistakes: 'ミス',
-    selfAssessment: '自己評価',
-    practicedAt: '練習日時',
     original: '原文',
     translation: '翻訳',
     practice: '練習する',
+    recentAverageAccuracy: '最近の正確率',
+    recentAverageWpm: '最近の WPM',
+    recentAverageCpm: '最近の CPM',
+    activeDays: '練習した日',
+    last30Days: '直近30日',
+    less: '少ない',
+    more: '多い',
+    lowAccuracy: '正確率が低め',
+    highMistakes: 'ミス多め',
+    pinned: 'ピン留め',
+    reviewAgain: 'もう一度',
+    reviewShaky: '不安あり',
+    perfect: '完璧',
+    good: 'よい',
+    shaky: '不安あり',
+    again: 'もう一度',
+    showMore: 'もっと見る',
+    showLess: '閉じる',
+    noAttention: '今すぐ重点的に戻る練習はありません。',
     emptyHistory: 'まだ保存された練習がありません。',
-    emptyPinned: 'ピン留めされた練習はまだありません。',
-    unavailable: '未保存',
+    emptyActivity: 'この期間のアクティビティはまだありません。',
+    emptyTrend: '傾向を出すにはまだデータが足りません。',
   },
 };
 
@@ -134,6 +185,7 @@ const clientScript = `
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
+  let historyExpanded = false;
 
   function safeReadStorage(key) {
     try {
@@ -203,6 +255,24 @@ const clientScript = `
       return '—';
     }
     return new Intl.DateTimeFormat(lang, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
+  }
+
+  function formatShortDate(value, lang) {
+    const date = new Date(value || '');
+    if (Number.isNaN(date.getTime())) {
+      return '—';
+    }
+    return new Intl.DateTimeFormat(lang, { month: 'short', day: 'numeric' }).format(date);
+  }
+
+  function getDateKey(value) {
+    const date = new Date(value || '');
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    return date.getFullYear() + '-'
+      + String(date.getMonth() + 1).padStart(2, '0') + '-'
+      + String(date.getDate()).padStart(2, '0');
   }
 
   function isValidSpeed(value, language) {
@@ -343,7 +413,7 @@ const clientScript = `
     };
   }
 
-  function getHistoryRows(data) {
+  function getAllPracticeRows(data) {
     const rows = Object.values(data.selfAssessments)
       .filter((entry) => entry && typeof entry === 'object' && typeof entry.textId === 'string')
       .map((assessment) => {
@@ -359,6 +429,7 @@ const clientScript = `
           speed: isValidSpeed(progress.bestWpm, targetLanguage) ? progress.bestWpm : null,
           mistakes: null,
           selfAssessment: assessment.level || '',
+          reviewTarget: Boolean(assessment.reviewTarget),
           practicedAt: assessment.assessedAt || progress.lastPracticedAt || '',
         };
       });
@@ -377,11 +448,25 @@ const clientScript = `
         speed: isValidSpeed(entry.bestWpm, text.language) ? entry.bestWpm : null,
         mistakes: null,
         selfAssessment: '',
+        reviewTarget: false,
         practicedAt: entry.lastPracticedAt || '',
       });
     });
 
-    return rows.sort((a, b) => (Date.parse(b.practicedAt || '') || 0) - (Date.parse(a.practicedAt || '') || 0)).slice(0, 12);
+    return rows.sort((a, b) => (Date.parse(b.practicedAt || '') || 0) - (Date.parse(a.practicedAt || '') || 0));
+  }
+
+  function renderMetricBar(value, maxValue = 100) {
+    const safeValue = Number.isFinite(value) ? Math.max(0, Math.min(value, maxValue)) : 0;
+    const width = maxValue > 0 ? Math.round((safeValue / maxValue) * 100) : 0;
+    return '<span class="progress-mini-bar" aria-hidden="true"><span style="width: ' + width + '%"></span></span>';
+  }
+
+  function formatSelfAssessment(level, labels) {
+    if (!['perfect', 'good', 'shaky', 'again'].includes(level)) {
+      return '<span class="progress-assessment-badge progress-assessment-badge--empty">—</span>';
+    }
+    return '<span class="progress-assessment-badge progress-assessment-badge--' + escapeHtml(level) + '">' + escapeHtml(labels[level] || level) + '</span>';
   }
 
   function renderOverview(data, labels) {
@@ -399,29 +484,188 @@ const clientScript = `
     )).join('');
   }
 
-  function renderHistory(data, labels, lang) {
-    const rows = getHistoryRows(data);
-    const container = document.getElementById('progress-history');
-    if (!rows.length) {
-      container.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.emptyHistory) + '</p>';
+  function renderActivityCalendar(data, labels, lang) {
+    const rows = getAllPracticeRows(data);
+    const counts = new Map();
+    rows.forEach((row) => {
+      const key = getDateKey(row.practicedAt);
+      if (key) {
+        counts.set(key, (counts.get(key) || 0) + 1);
+      }
+    });
+
+    const today = new Date();
+    const days = [];
+    for (let offset = 29; offset >= 0; offset -= 1) {
+      const date = new Date(today);
+      date.setHours(12, 0, 0, 0);
+      date.setDate(today.getDate() - offset);
+      const key = getDateKey(date.toISOString());
+      const count = counts.get(key) || 0;
+      days.push({
+        date,
+        count,
+        intensity: count >= 4 ? 4 : count,
+      });
+    }
+
+    const activeDays = days.filter((day) => day.count > 0).length;
+    const totalRecentPractices = days.reduce((sum, day) => sum + day.count, 0);
+    const maxCount = Math.max(...days.map((day) => day.count), 0);
+    const calendar = document.getElementById('progress-calendar');
+    const summary = document.getElementById('progress-calendar-summary');
+    const emptyState = document.getElementById('progress-calendar-empty');
+    const description = document.getElementById('progress-calendar-description');
+    const legendLess = document.getElementById('progress-calendar-legend-less');
+    const legendMore = document.getElementById('progress-calendar-legend-more');
+    description.textContent = labels.activityDescription;
+    legendLess.textContent = labels.less;
+    legendMore.textContent = labels.more;
+    summary.innerHTML = '<span>' + escapeHtml(labels.last30Days) + '</span><strong>' + activeDays + '</strong><span>' + escapeHtml(labels.activeDays) + '</span><strong>' + totalRecentPractices + '</strong><span>' + escapeHtml(labels.totalPractices) + '</span>';
+    calendar.innerHTML = days.map((day) => {
+      const label = formatShortDate(day.date.toISOString(), lang) + ': ' + day.count;
+      return '<span class="progress-calendar__day" data-intensity="' + day.intensity + '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '"></span>';
+    }).join('');
+    emptyState.textContent = labels.emptyActivity;
+    emptyState.hidden = maxCount > 0;
+  }
+
+  function renderTrend(data, labels) {
+    const rows = getAllPracticeRows(data).slice(0, 8);
+    const recentAccuracy = average(rows.map((row) => Number.isFinite(row.accuracy) ? row.accuracy : null));
+    const recentWpm = average(rows.filter((row) => row.language !== 'ja').map((row) => Number.isFinite(row.speed) ? row.speed : null));
+    const recentCpm = average(rows.filter((row) => row.language === 'ja').map((row) => Number.isFinite(row.speed) ? row.speed : null));
+    const trend = document.getElementById('progress-trend');
+    const hasData = Number.isFinite(recentAccuracy) || Number.isFinite(recentWpm) || Number.isFinite(recentCpm);
+    if (!hasData) {
+      trend.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.emptyTrend) + '</p>';
       return;
     }
-    container.innerHTML = rows.map((row) => {
+    trend.innerHTML = [
+      [labels.recentAverageAccuracy, formatPercent(recentAccuracy), renderMetricBar(recentAccuracy, 100)],
+      [labels.recentAverageWpm, formatNumber(recentWpm), renderMetricBar(recentWpm, 120)],
+      [labels.recentAverageCpm, formatNumber(recentCpm), renderMetricBar(recentCpm, 600)],
+    ].map(([label, value, bar]) => (
+      '<article class="progress-trend-card"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong>' + bar + '</article>'
+    )).join('');
+  }
+
+  function getAttentionItems(data, labels) {
+    const rows = getAllPracticeRows(data);
+    const pinnedKeys = new Set(data.pinnedTargets.map(getPracticeTargetKey));
+    const items = [];
+    rows.forEach((row) => {
+      if (!row.text) {
+        return;
+      }
+      const target = {
+        textId: row.text.id,
+        practiceType: row.practiceType,
+        practiceTranslation: row.practiceType === 'translation' ? row.language : null,
+      };
+      const reasons = [];
+      if (row.selfAssessment === 'again') {
+        reasons.push(labels.reviewAgain);
+      } else if (row.selfAssessment === 'shaky') {
+        reasons.push(labels.reviewShaky);
+      }
+      if (Number.isFinite(row.accuracy) && row.accuracy < 90) {
+        reasons.push(labels.lowAccuracy);
+      }
+      if (Number.isFinite(row.mistakes) && row.mistakes >= 5) {
+        reasons.push(labels.highMistakes);
+      }
+      if (pinnedKeys.has(getPracticeTargetKey(target))) {
+        reasons.push(labels.pinned);
+      }
+      if (reasons.length) {
+        items.push({ row, target, reasons });
+      }
+    });
+
+    data.pinnedTargets.forEach((target) => {
+      const key = getPracticeTargetKey(target);
+      if (items.some((item) => getPracticeTargetKey(item.target) === key)) {
+        return;
+      }
+      const text = getTextById(target.textId);
+      if (!text) {
+        return;
+      }
+      items.push({
+        target,
+        reasons: [labels.pinned],
+        row: {
+          text,
+          title: text.title,
+          language: target.practiceType === 'translation' ? target.practiceTranslation : text.language,
+          practiceType: target.practiceType,
+          accuracy: null,
+          speed: null,
+          selfAssessment: '',
+          practicedAt: '',
+        },
+      });
+    });
+    return items.slice(0, 8);
+  }
+
+  function renderAttention(data, labels, lang) {
+    const container = document.getElementById('progress-attention-list');
+    const items = getAttentionItems(data, labels);
+    if (!items.length) {
+      container.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.noAttention) + '</p>';
+      return;
+    }
+    container.innerHTML = items.map(({ row, target, reasons }) => {
       const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
-      return '<article class="progress-history-card">'
-        + '<div><strong>' + escapeHtml(row.title) + '</strong><span>' + escapeHtml(targetLanguageBadges[row.language] || row.language) + ' · ' + escapeHtml(row.practiceType === 'translation' ? labels.translation : labels.original) + '</span></div>'
-        + '<dl>'
-        + '<div><dt>' + escapeHtml(labels.accuracy) + '</dt><dd>' + formatPercent(row.accuracy) + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.speed) + '</dt><dd>' + (Number.isFinite(row.speed) ? Math.round(row.speed) + ' ' + speedUnit : '—') + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.mistakes) + '</dt><dd>' + escapeHtml(labels.unavailable) + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.selfAssessment) + '</dt><dd>' + escapeHtml(row.selfAssessment || '—') + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.practicedAt) + '</dt><dd>' + escapeHtml(formatDate(row.practicedAt, lang)) + '</dd></div>'
-        + '</dl>'
+      return '<article class="progress-attention-card">'
+        + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
+        + '<div class="progress-attention-card__main">'
+        + '<strong>' + escapeHtml(row.title) + '</strong>'
+        + '<div class="progress-attention-card__meta">'
+        + '<span>' + escapeHtml(row.practiceType === 'translation' ? labels.translation : labels.original) + '</span>'
+        + '<span>' + reasons.map(escapeHtml).join(' / ') + '</span>'
+        + '<span>' + formatPercent(row.accuracy) + '</span>'
+        + '<span>' + (Number.isFinite(row.speed) ? Math.round(row.speed) + ' ' + speedUnit : '—') + '</span>'
+        + '<time>' + escapeHtml(formatDate(row.practicedAt, lang)) + '</time>'
+        + '</div>'
+        + '</div>'
+        + '<a class="secondary-button" href="' + escapeHtml(getPracticeHref(target)) + '">' + escapeHtml(labels.practice) + '</a>'
         + '</article>';
     }).join('');
   }
 
-  function renderLanguageCards(data, labels) {
+  function renderHistory(data, labels, lang) {
+    const rows = getAllPracticeRows(data);
+    const container = document.getElementById('progress-history');
+    const toggle = document.getElementById('progress-history-toggle');
+    if (!rows.length) {
+      container.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.emptyHistory) + '</p>';
+      toggle.hidden = true;
+      return;
+    }
+    const visibleRows = historyExpanded ? rows : rows.slice(0, 3);
+    container.innerHTML = visibleRows.map((row) => {
+      const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
+      return '<article class="progress-history-row">'
+        + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
+        + '<strong>' + escapeHtml(row.title) + '</strong>'
+        + '<div class="progress-history-row__meta">'
+        + '<span>' + escapeHtml(row.practiceType === 'translation' ? labels.translation : labels.original) + '</span>'
+        + '<span>' + formatPercent(row.accuracy) + '</span>'
+        + '<span>' + (Number.isFinite(row.speed) ? Math.round(row.speed) + ' ' + speedUnit : '—') + '</span>'
+        + formatSelfAssessment(row.selfAssessment, labels)
+        + '<time>' + escapeHtml(formatDate(row.practicedAt, lang)) + '</time>'
+        + '</div>'
+        + '</article>';
+    }).join('');
+    toggle.hidden = rows.length <= 3;
+    toggle.textContent = historyExpanded ? labels.showLess : labels.showMore;
+    toggle.setAttribute('aria-expanded', historyExpanded ? 'true' : 'false');
+  }
+
+  function renderLanguageTable(data, labels) {
     document.getElementById('progress-language-grid').innerHTML = uiLanguages.map((language) => {
       const languageTexts = data.practicedTexts.filter(({ text }) => text.language === language);
       const practiceCount = languageTexts.reduce((sum, { entry }) => sum + entry.completedCount, 0);
@@ -430,37 +674,29 @@ const clientScript = `
         .filter(({ entry }) => isValidSpeed(entry.bestWpm, language))
         .map(({ entry }) => Number(entry.bestWpm));
       const counts = getExpressionCounts(data.expressionStatuses, language);
-      return '<article class="progress-language-card">'
-        + '<div class="progress-language-card__header"><span class="language-badge language-badge--' + escapeHtml(language) + '">' + escapeHtml(targetLanguageBadges[language]) + '</span><strong>' + escapeHtml(languageNames[language]?.[language] || language) + '</strong></div>'
-        + '<dl>'
-        + '<div><dt>' + escapeHtml(labels.textsPracticed) + '</dt><dd>' + languageTexts.length + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.totalPracticeCount) + '</dt><dd>' + practiceCount + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.averageAccuracy) + '</dt><dd>' + formatPercent(averageAccuracy) + '</dd></div>'
-        + '<div><dt>' + escapeHtml(language === 'ja' ? labels.averageCpm : labels.averageWpm) + '</dt><dd>' + formatNumber(average(speeds)) + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.reviewingExpressions) + '</dt><dd>' + counts.review + '</dd></div>'
-        + '<div><dt>' + escapeHtml(labels.learnedExpressions) + '</dt><dd>' + counts.learned + '</dd></div>'
-        + '</dl>'
-        + '</article>';
+      const averageSpeed = average(speeds);
+      const speedUnit = language === 'ja' ? 'CPM' : 'WPM';
+      return '<tr class="language-progress-row">'
+        + '<th scope="row" class="language-progress-cell language-progress-cell--name"><span class="language-badge language-badge--' + escapeHtml(language) + '">' + escapeHtml(targetLanguageBadges[language]) + '</span><span>' + escapeHtml(languageNames[language]?.[language] || language) + '</span></th>'
+        + '<td class="language-progress-cell" data-label="' + escapeHtml(labels.textsPracticed) + '">' + languageTexts.length + '</td>'
+        + '<td class="language-progress-cell" data-label="' + escapeHtml(labels.totalPracticeCount) + '">' + practiceCount + '</td>'
+        + '<td class="language-progress-cell" data-label="' + escapeHtml(labels.averageAccuracy) + '">' + formatPercent(averageAccuracy) + '</td>'
+        + '<td class="language-progress-cell" data-label="' + escapeHtml(labels.speed) + '">' + (Number.isFinite(averageSpeed) ? Math.round(averageSpeed) + ' ' + speedUnit : '—') + '</td>'
+        + '<td class="language-progress-cell" data-label="' + escapeHtml(labels.reviewingExpressions) + '">' + counts.review + '</td>'
+        + '<td class="language-progress-cell" data-label="' + escapeHtml(labels.learnedExpressions) + '">' + counts.learned + '</td>'
+        + '</tr>';
     }).join('');
   }
 
-  function renderReviewStatus(data, labels) {
-    const counts = data.expressionCounts;
-    document.getElementById('progress-review-grid').innerHTML = [
-      [labels.newExpressions, counts.new],
-      [labels.reviewingExpressions, counts.review],
-      [labels.learnedExpressions, counts.learned],
-    ].map(([label, value]) => (
-      '<article class="progress-stat-card"><span>' + escapeHtml(label) + '</span><strong>' + value + '</strong></article>'
-    )).join('');
-  }
-
   function renderPinned(data, labels) {
+    const section = document.getElementById('progress-pinned-section');
     const container = document.getElementById('progress-pinned');
     if (!data.pinnedTargets.length) {
-      container.innerHTML = '<p class="progress-empty-state">' + escapeHtml(labels.emptyPinned) + '</p>';
+      section.hidden = true;
+      container.innerHTML = '';
       return;
     }
+    section.hidden = false;
     container.innerHTML = ['original', 'translation'].map((type) => {
       const items = data.pinnedTargets.filter((target) => target.practiceType === type);
       if (!items.length) {
@@ -502,18 +738,27 @@ const clientScript = `
       }
     });
     renderOverview(data, labels);
+    renderActivityCalendar(data, labels, lang);
+    renderTrend(data, labels);
+    renderAttention(data, labels, lang);
     renderHistory(data, labels, lang);
-    renderLanguageCards(data, labels);
-    renderReviewStatus(data, labels);
+    renderLanguageTable(data, labels);
     renderPinned(data, labels);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     const uiLanguageSelect = document.getElementById('ui-language-select');
+    const historyToggle = document.getElementById('progress-history-toggle');
     if (uiLanguageSelect) {
       uiLanguageSelect.addEventListener('change', () => {
         const nextLanguage = uiLanguages.includes(uiLanguageSelect.value) ? uiLanguageSelect.value : 'en';
         safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, nextLanguage);
+        renderProgressPage();
+      });
+    }
+    if (historyToggle) {
+      historyToggle.addEventListener('click', () => {
+        historyExpanded = !historyExpanded;
         renderProgressPage();
       });
     }
@@ -542,9 +787,49 @@ const clientScript = `
 
       <section class="progress-section" aria-labelledby="progress-overview-title">
         <div class="progress-section__header">
-          <h2 id="progress-overview-title" data-progress-label="overview">{progressLabels[defaultUiLang].overview}</h2>
+          <div>
+            <h2 id="progress-overview-title" data-progress-label="overview">{progressLabels[defaultUiLang].overview}</h2>
+            <p class="progress-section__description" data-progress-label="overviewSummary">{progressLabels[defaultUiLang].overviewSummary}</p>
+          </div>
         </div>
-        <div class="progress-grid" id="progress-overview-grid"></div>
+        <div class="progress-grid progress-overview" id="progress-overview-grid"></div>
+      </section>
+
+      <div class="progress-insight-grid">
+        <section class="progress-section progress-calendar-section" aria-labelledby="progress-activity-title">
+          <div class="progress-section__header">
+            <div>
+              <h2 id="progress-activity-title" data-progress-label="activity">{progressLabels[defaultUiLang].activity}</h2>
+              <p class="progress-section__description" id="progress-calendar-description">{progressLabels[defaultUiLang].activityDescription}</p>
+            </div>
+            <div class="progress-calendar-summary" id="progress-calendar-summary"></div>
+          </div>
+          <div class="progress-calendar" id="progress-calendar" aria-label="Practice activity"></div>
+          <div class="progress-calendar-legend" aria-hidden="true">
+            <span id="progress-calendar-legend-less">{progressLabels[defaultUiLang].less}</span>
+            <span class="progress-calendar__day" data-intensity="0"></span>
+            <span class="progress-calendar__day" data-intensity="1"></span>
+            <span class="progress-calendar__day" data-intensity="2"></span>
+            <span class="progress-calendar__day" data-intensity="3"></span>
+            <span class="progress-calendar__day" data-intensity="4"></span>
+            <span id="progress-calendar-legend-more">{progressLabels[defaultUiLang].more}</span>
+          </div>
+          <p class="progress-empty-state" id="progress-calendar-empty" hidden>{progressLabels[defaultUiLang].emptyActivity}</p>
+        </section>
+
+        <section class="progress-section progress-trend-section" aria-labelledby="progress-trend-title">
+          <div class="progress-section__header">
+            <h2 id="progress-trend-title" data-progress-label="recentTrend">{progressLabels[defaultUiLang].recentTrend}</h2>
+          </div>
+          <div class="progress-trend" id="progress-trend"></div>
+        </section>
+      </div>
+
+      <section class="progress-section" aria-labelledby="progress-attention-title">
+        <div class="progress-section__header">
+          <h2 id="progress-attention-title" data-progress-label="needsAttention">{progressLabels[defaultUiLang].needsAttention}</h2>
+        </div>
+        <div class="progress-attention-list" id="progress-attention-list"></div>
       </section>
 
       <section class="progress-section" aria-labelledby="progress-history-title">
@@ -552,23 +837,45 @@ const clientScript = `
           <h2 id="progress-history-title" data-progress-label="practiceHistory">{progressLabels[defaultUiLang].practiceHistory}</h2>
         </div>
         <div class="progress-history" id="progress-history"></div>
+        <button
+          class="secondary-button progress-history-toggle"
+          id="progress-history-toggle"
+          type="button"
+          aria-expanded="false"
+          hidden
+        >
+          {progressLabels[defaultUiLang].showMore}
+        </button>
       </section>
 
       <section class="progress-section" aria-labelledby="progress-language-title">
         <div class="progress-section__header">
           <h2 id="progress-language-title" data-progress-label="byLanguage">{progressLabels[defaultUiLang].byLanguage}</h2>
         </div>
-        <div class="progress-language-grid" id="progress-language-grid"></div>
-      </section>
-
-      <section class="progress-section" aria-labelledby="progress-review-title">
-        <div class="progress-section__header">
-          <h2 id="progress-review-title" data-progress-label="reviewStatus">{progressLabels[defaultUiLang].reviewStatus}</h2>
+        <div class="language-progress-table-wrap">
+          <table class="language-progress-table">
+            <thead>
+              <tr>
+                <th scope="col" data-progress-label="language">{progressLabels[defaultUiLang].language}</th>
+                <th scope="col" data-progress-label="textsPracticed">{progressLabels[defaultUiLang].textsPracticed}</th>
+                <th scope="col" data-progress-label="totalPracticeCount">{progressLabels[defaultUiLang].totalPracticeCount}</th>
+                <th scope="col" data-progress-label="averageAccuracy">{progressLabels[defaultUiLang].averageAccuracy}</th>
+                <th scope="col" data-progress-label="speed">{progressLabels[defaultUiLang].speed}</th>
+                <th scope="col" data-progress-label="reviewingExpressions">{progressLabels[defaultUiLang].reviewingExpressions}</th>
+                <th scope="col" data-progress-label="learnedExpressions">{progressLabels[defaultUiLang].learnedExpressions}</th>
+              </tr>
+            </thead>
+            <tbody id="progress-language-grid"></tbody>
+          </table>
         </div>
-        <div class="progress-grid progress-grid--compact" id="progress-review-grid"></div>
       </section>
 
-      <section class="progress-section" aria-labelledby="progress-pinned-title">
+      <section
+        class="progress-section"
+        id="progress-pinned-section"
+        aria-labelledby="progress-pinned-title"
+        hidden
+      >
         <div class="progress-section__header">
           <h2 id="progress-pinned-title" data-progress-label="pinnedPractice">{progressLabels[defaultUiLang].pinnedPractice}</h2>
         </div>
