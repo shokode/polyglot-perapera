@@ -282,6 +282,9 @@ const clientScript = `
     const sortMenu = document.getElementById('review-sort-menu');
     const sortOptions = Array.from(document.querySelectorAll('[data-sort-option]'));
     const sortButtonLabel = document.getElementById('review-sort-button-label');
+    const reviewSummaryTotalValue = document.getElementById('review-summary-total-value');
+    const reviewSummaryStatusValue = document.getElementById('review-summary-status-value');
+    const reviewSummarySortValue = document.getElementById('review-summary-sort-value');
     let selectedFilter = 'review';
 
     function getTargetLanguageLabel(value, lang) {
@@ -456,6 +459,15 @@ const clientScript = `
       });
       statusFilterButtonLabel.textContent = getStatusFilterLabel(selectedFilter, labels);
       statusFilterButtonCount.textContent = counts[selectedFilter] || 0;
+      if (reviewSummaryTotalValue) {
+        reviewSummaryTotalValue.textContent = counts.all || 0;
+      }
+      if (reviewSummaryStatusValue) {
+        reviewSummaryStatusValue.textContent = getStatusFilterLabel(selectedFilter, labels);
+      }
+      if (reviewSummarySortValue) {
+        reviewSummarySortValue.textContent = getSortLabel(sortSelect.value, labels);
+      }
     }
 
     function setStatusFilter(status) {
@@ -712,6 +724,20 @@ const clientScript = `
           <h1 class="text-title page-hero__title" id="review-title" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</h1>
           <p class="page-hero__subtitle" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
         </div>
+        <dl class="page-hero-meta review-hero-meta" aria-label="Review summary">
+          <div>
+            <dt data-i18n="reviewSummaryTotal">{uiText[defaultUiLang].reviewSummaryTotal}</dt>
+            <dd id="review-summary-total-value">0</dd>
+          </div>
+          <div>
+            <dt data-i18n="reviewSummaryStatus">{uiText[defaultUiLang].reviewSummaryStatus}</dt>
+            <dd id="review-summary-status-value">{uiText[defaultUiLang].expressionStatusReview}</dd>
+          </div>
+          <div>
+            <dt data-i18n="reviewSummarySort">{uiText[defaultUiLang].reviewSummarySort}</dt>
+            <dd id="review-summary-sort-value">{uiText[defaultUiLang].sortMostPracticed}</dd>
+          </div>
+        </dl>
       </section>
 
       <section class="expressions-card">

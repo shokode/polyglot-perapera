@@ -826,6 +826,7 @@ const clientScript = `
     const labels = getUiText(uiLanguageSelect.value);
     const targetLanguage = getPracticeTargetLanguage(entry.target, entry.item);
     recommendationCard.hidden = false;
+    recommendationCard.dataset.targetLanguage = targetLanguage;
     recommendationCard.innerHTML = ''
       + '<span class="recommendation-card__eyebrow">' + escapeHtml(labels.todayRecommendation) + '</span>'
       + '<div class="recommendation-card__main">'

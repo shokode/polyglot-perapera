@@ -16,7 +16,9 @@ const progressLabels = {
     title: 'Fremgang',
     subtitle: 'Se øving, repetisjon og språkfordeling samlet.',
     overview: 'Oversikt',
-    overviewSummary: 'Oversikt over øvingen din',
+    overviewSummary: 'Kort oppsummering',
+    overviewAllTime: 'Totalt',
+    overviewRecent: 'Siste 7 dager',
     activity: 'Aktivitet',
     activityDescription: 'Fargede dager betyr at du øvde. Sterkere farge betyr mer øving.',
     recentTrend: 'Nylig trend',
@@ -68,7 +70,9 @@ const progressLabels = {
     title: 'Progress',
     subtitle: 'Review practice volume, review load, and language progress.',
     overview: 'Overview',
-    overviewSummary: 'Your overall learning summary',
+    overviewSummary: 'Quick learning summary',
+    overviewAllTime: 'All time',
+    overviewRecent: 'Last 7 days',
     activity: 'Activity',
     activityDescription: 'Colored days mean you practiced. Stronger color means more practice.',
     recentTrend: 'Recent trend',
@@ -120,7 +124,9 @@ const progressLabels = {
     title: '学習状況',
     subtitle: '練習量、復習の負荷、言語別の進み具合をまとめて確認できます。',
     overview: '概要',
-    overviewSummary: 'これまでの練習のまとめ',
+    overviewSummary: '練習のクイックまとめ',
+    overviewAllTime: '全期間',
+    overviewRecent: '直近7日',
     activity: 'アクティビティ',
     activityDescription: '色がついている日は練習した日です。色が濃いほど練習回数が多いです。',
     recentTrend: '最近の傾向',
@@ -470,17 +476,55 @@ const clientScript = `
   }
 
   function renderOverview(data, labels) {
-    const stats = [
-      [labels.totalPractices, data.totalPractices],
-      [labels.learnedExpressions, data.expressionCounts.learned],
-      [labels.reviewingExpressions, data.expressionCounts.review],
-      [labels.newExpressions, data.expressionCounts.new],
-      [labels.averageWpm, data.averageWpm],
-      [labels.averageCpm, data.averageCpm],
-      [labels.pinnedTargets, data.pinnedTargets.length],
+    const rows = getAllPracticeRows(data);
+    const cutoff = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const recentRows = rows.filter((row) => {
+      const time = Date.parse(row.practicedAt || '');
+      return Number.isFinite(time) && time >= cutoff;
+    });
+    const recentWpm = recentRows
+      .filter((row) => row.language !== 'ja' && isValidSpeed(row.speed, row.language))
+      .map((row) => Number(row.speed));
+    const recentCpm = recentRows
+      .filter((row) => row.language === 'ja' && isValidSpeed(row.speed, row.language))
+      .map((row) => Number(row.speed));
+    const recentAccuracy = recentRows
+      .map((row) => Number(row.accuracy))
+      .filter((value) => Number.isFinite(value));
+    const groups = [
+      {
+        title: labels.overviewAllTime,
+        stats: [
+          [labels.totalPractices, data.totalPractices, 'number'],
+          [labels.averageAccuracy, average(rows.map((row) => Number(row.accuracy)).filter((value) => Number.isFinite(value))), 'percent'],
+          [labels.averageWpm, data.averageWpm, 'number'],
+          [labels.averageCpm, data.averageCpm, 'number'],
+          [labels.reviewingExpressions, data.expressionCounts.review, 'number'],
+          [labels.learnedExpressions, data.expressionCounts.learned, 'number'],
+        ],
+      },
+      {
+        title: labels.overviewRecent,
+        stats: [
+          [labels.totalPractices, recentRows.length, 'number'],
+          [labels.averageAccuracy, average(recentAccuracy), 'percent'],
+          [labels.averageWpm, average(recentWpm), 'number'],
+          [labels.averageCpm, average(recentCpm), 'number'],
+          [labels.reviewingExpressions, data.expressionCounts.review, 'number'],
+          [labels.learnedExpressions, data.expressionCounts.learned, 'number'],
+        ],
+      },
     ];
-    document.getElementById('progress-overview-grid').innerHTML = stats.map(([label, value]) => (
-      '<article class="progress-stat-card"><span>' + escapeHtml(label) + '</span><strong>' + formatNumber(value) + '</strong></article>'
+    const renderValue = (value, format) => format === 'percent' ? formatPercent(value) : formatNumber(value);
+    document.getElementById('progress-overview-grid').innerHTML = groups.map((group) => (
+      '<section class="progress-stat-group">'
+      + '<h3>' + escapeHtml(group.title) + '</h3>'
+      + '<div class="progress-stat-list">'
+      + group.stats.map(([label, value, format]) => (
+        '<article class="progress-stat-card"><span>' + escapeHtml(label) + '</span><strong>' + renderValue(value, format) + '</strong></article>'
+      )).join('')
+      + '</div>'
+      + '</section>'
     )).join('');
   }
 
@@ -619,7 +663,7 @@ const clientScript = `
     }
     container.innerHTML = items.map(({ row, target, reasons }) => {
       const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
-      return '<article class="progress-attention-card">'
+      return '<article class="progress-attention-card" data-target-language="' + escapeHtml(row.language) + '">'
         + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
         + '<div class="progress-attention-card__main">'
         + '<strong>' + escapeHtml(row.title) + '</strong>'
@@ -648,7 +692,7 @@ const clientScript = `
     const visibleRows = historyExpanded ? rows : rows.slice(0, 3);
     container.innerHTML = visibleRows.map((row) => {
       const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
-      return '<article class="progress-history-row">'
+      return '<article class="progress-history-row" data-target-language="' + escapeHtml(row.language) + '">'
         + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
         + '<strong>' + escapeHtml(row.title) + '</strong>'
         + '<div class="progress-history-row__meta">'
@@ -707,7 +751,7 @@ const clientScript = `
         + items.map((target) => {
           const text = getTextById(target.textId);
           const language = target.practiceType === 'translation' ? target.practiceTranslation : text.language;
-          return '<article class="progress-pinned-card"><div><strong>' + escapeHtml(text.title) + '</strong><span>' + escapeHtml(targetLanguageBadges[language] || language) + '</span></div><a class="secondary-button" href="' + escapeHtml(getPracticeHref(target)) + '">' + escapeHtml(labels.practice) + '</a></article>';
+          return '<article class="progress-pinned-card" data-target-language="' + escapeHtml(language) + '"><div><p class="progress-pinned-card__meta"><span class="language-badge language-badge--' + escapeHtml(language) + '">' + escapeHtml(targetLanguageBadges[language] || language) + '</span><span>' + escapeHtml(target.practiceType === 'translation' ? labels.translation : labels.original) + '</span></p><strong>' + escapeHtml(text.title) + '</strong></div><a class="secondary-button" href="' + escapeHtml(getPracticeHref(target)) + '">' + escapeHtml(labels.practice) + '</a></article>';
         }).join('')
         + '</div></div>';
     }).join('');
@@ -723,8 +767,6 @@ const clientScript = `
     if (uiLanguageSelect) {
       uiLanguageSelect.value = lang;
     }
-    document.getElementById('progress-title').textContent = labels.title;
-    document.getElementById('progress-subtitle').textContent = labels.subtitle;
     document.querySelectorAll('[data-progress-label]').forEach((element) => {
       const value = labels[element.dataset.progressLabel];
       if (value) {
@@ -777,15 +819,7 @@ const clientScript = `
   <body>
     <SiteHeader active="progress" basePath={import.meta.env.BASE_URL} />
     <main class="page-shell page-layout progress-page">
-      <section class="hero-card page-hero progress-hero">
-        <div>
-          <span class="section-kicker">Progress</span>
-          <h1 class="page-hero__title" id="progress-title">{progressLabels[defaultUiLang].title}</h1>
-          <p class="page-hero__subtitle" id="progress-subtitle">{progressLabels[defaultUiLang].subtitle}</p>
-        </div>
-      </section>
-
-      <section class="progress-section" aria-labelledby="progress-overview-title">
+      <section class="progress-section progress-section--overview" aria-labelledby="progress-overview-title">
         <div class="progress-section__header">
           <div>
             <h2 id="progress-overview-title" data-progress-label="overview">{progressLabels[defaultUiLang].overview}</h2>

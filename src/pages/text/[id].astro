@@ -931,6 +931,7 @@ const clientScript = `
     const completionMistakesTitle = document.getElementById('completion-mistakes-title');
     const completionMistakesValue = document.getElementById('completion-mistakes-value');
     const completionTranslations = document.getElementById('translations-section');
+    const translationHint = document.getElementById('translation-hint');
     const assessmentPanel = document.getElementById('self-assessment-panel');
     const assessmentPrompt = document.getElementById('self-assessment-prompt');
     const assessmentActions = document.getElementById('self-assessment-actions');
@@ -1560,6 +1561,10 @@ const clientScript = `
       if (completionTranslations) {
         completionTranslations.hidden = activeIsTranslationPractice;
       }
+      if (translationHint) {
+        translationHint.hidden = true;
+        translationHint.open = false;
+      }
       if (assessmentPanel) {
         assessmentPanel.hidden = false;
       }
@@ -1641,6 +1646,10 @@ const clientScript = `
       }
       if (completionTranslations) {
         completionTranslations.hidden = true;
+      }
+      if (translationHint) {
+        translationHint.hidden = false;
+        translationHint.open = false;
       }
       postCompletionActionSections.forEach((section) => {
         section.hidden = true;
@@ -2137,6 +2146,36 @@ if (!text) {
           >{uiText[defaultUiLang].expressionDetails}</button
         >
       </aside>
+
+      {
+        translationsToShow.length > 0 && (
+          <details class="translation-hint" id="translation-hint">
+            <summary>
+              <span data-i18n="translationHintTitle">
+                {uiText[defaultUiLang].translationHintTitle}
+              </span>
+              <span class="translation-hint__action" data-i18n="translationHintAction">
+                {uiText[defaultUiLang].translationHintAction}
+              </span>
+            </summary>
+            <div class="translation-hint__content">
+              {translationsToShow.map((translation) => (
+                <div class="translation-hint__item">
+                  <span
+                    class={getLanguageBadgeClass(translation.lang)}
+                    data-target-language={translation.lang}
+                    title={languageNames[translation.lang][defaultUiLang]}
+                    aria-label={languageNames[translation.lang][defaultUiLang]}
+                  >
+                    {targetLanguageBadges[translation.lang]}
+                  </span>
+                  <p>{translation.value}</p>
+                </div>
+              ))}
+            </div>
+          </details>
+        )
+      }
 
       <section
         class="note-card typing-practice-section"

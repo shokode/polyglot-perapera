@@ -131,6 +131,8 @@ export type UILabels = {
   typingModeFlowDescription: string;
   typingInputLabel: string;
   japaneseTypingInputLabel: string;
+  translationHintTitle: string;
+  translationHintAction: string;
   progress: string;
   accuracy: string;
   mistakes: string;
@@ -175,6 +177,9 @@ export type UILabels = {
   showExpressionExample: string;
   hideExpressionExample: string;
   reviewPageTitle: string;
+  reviewSummaryTotal: string;
+  reviewSummaryStatus: string;
+  reviewSummarySort: string;
   starredPageTitle: string;
   noReviewItems: string;
   noStarredItems: string;
@@ -250,6 +255,8 @@ export const uiText: Record<UILang, UILabels> = {
     typingModeFlowDescription: 'Feil telles, men du trenger ikke slette dem. Markøren venter til du skriver riktig tegn.',
     typingInputLabel: 'Inndata',
     japaneseTypingInputLabel: 'Japansk inndata',
+    translationHintTitle: 'Forståelseshint',
+    translationHintAction: 'Vis oversettelse',
     progress: 'Fremgang',
     accuracy: 'Nøyaktighet',
     mistakes: 'Feil',
@@ -294,6 +301,9 @@ export const uiText: Record<UILang, UILabels> = {
     showExpressionExample: 'Vis eksempel',
     hideExpressionExample: 'Skjul eksempel',
     reviewPageTitle: 'Repeter',
+    reviewSummaryTotal: 'Totalt',
+    reviewSummaryStatus: 'Status',
+    reviewSummarySort: 'Sortering',
     starredPageTitle: 'Stjernemerket',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
     noStarredItems: 'Ingen stjernemerkede elementer ennå',
@@ -367,6 +377,8 @@ export const uiText: Record<UILang, UILabels> = {
     typingModeFlowDescription: 'Mistakes are counted, but you do not need to delete them. The cursor waits until you type the correct character.',
     typingInputLabel: 'Input',
     japaneseTypingInputLabel: 'Japanese input',
+    translationHintTitle: 'Meaning hint',
+    translationHintAction: 'Show translation',
     progress: 'Progress',
     accuracy: 'Accuracy',
     mistakes: 'Mistakes',
@@ -411,6 +423,9 @@ export const uiText: Record<UILang, UILabels> = {
     showExpressionExample: 'Show example',
     hideExpressionExample: 'Hide example',
     reviewPageTitle: 'Review',
+    reviewSummaryTotal: 'Total',
+    reviewSummaryStatus: 'Status',
+    reviewSummarySort: 'Sort',
     starredPageTitle: 'Starred',
     noReviewItems: 'No review items yet',
     noStarredItems: 'No starred items yet',
@@ -484,6 +499,8 @@ export const uiText: Record<UILang, UILabels> = {
     typingModeFlowDescription: '間違えても削除せず、正しい文字を打つまで進みません。',
     typingInputLabel: '入力中',
     japaneseTypingInputLabel: '変換入力',
+    translationHintTitle: '理解のヒント',
+    translationHintAction: '翻訳を見る',
     progress: '進捗',
     accuracy: '正確さ',
     mistakes: 'ミス',
@@ -528,6 +545,9 @@ export const uiText: Record<UILang, UILabels> = {
     showExpressionExample: '例文を表示',
     hideExpressionExample: '例文を隠す',
     reviewPageTitle: '復習',
+    reviewSummaryTotal: '合計',
+    reviewSummaryStatus: 'ステータス',
+    reviewSummarySort: '並び替え',
     starredPageTitle: 'お気に入り',
     noReviewItems: '復習する表現はまだありません',
     noStarredItems: 'スター付きの項目はまだありません',
