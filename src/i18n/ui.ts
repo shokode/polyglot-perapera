@@ -201,6 +201,7 @@ export type UILabels = {
   flashcardResultCorrect: string;
   flashcardResultWrong: string;
   flashcardResultLearned: string;
+  flashcardBaseForm: string;
   starredPageTitle: string;
   noReviewItems: string;
   noStarredItems: string;
@@ -339,13 +340,14 @@ export const uiText: Record<UILang, UILabels> = {
     flashcardContinueSession: 'Neste 5 kort',
     flashcardExitSession: 'Avslutt',
     flashcardSourceText: 'Kildetekst',
-    flashcardChooseMeaning: 'Velg betydningen',
+    flashcardChooseMeaning: 'Velg betydningen av:',
     flashcardCorrect: 'Riktig',
     flashcardWrong: 'Feil',
     flashcardNext: 'Neste',
     flashcardResultCorrect: 'Riktig',
     flashcardResultWrong: 'Feil',
     flashcardResultLearned: 'Flyttet til Lært',
+    flashcardBaseForm: 'Grunnform',
     starredPageTitle: 'Stjernemerket',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
     noStarredItems: 'Ingen stjernemerkede elementer ennå',
@@ -482,13 +484,14 @@ export const uiText: Record<UILang, UILabels> = {
     flashcardContinueSession: 'Next 5 cards',
     flashcardExitSession: 'Exit',
     flashcardSourceText: 'Source text',
-    flashcardChooseMeaning: 'Choose the meaning',
+    flashcardChooseMeaning: 'Choose the meaning of:',
     flashcardCorrect: 'Correct',
     flashcardWrong: 'Wrong',
     flashcardNext: 'Next',
     flashcardResultCorrect: 'Correct',
     flashcardResultWrong: 'Wrong',
     flashcardResultLearned: 'Moved to Learned',
+    flashcardBaseForm: 'Base form',
     starredPageTitle: 'Starred',
     noReviewItems: 'No review items yet',
     noStarredItems: 'No starred items yet',
@@ -625,13 +628,14 @@ export const uiText: Record<UILang, UILabels> = {
     flashcardContinueSession: '次の5枚へ',
     flashcardExitSession: '終了',
     flashcardSourceText: '出典テキスト',
-    flashcardChooseMeaning: '意味を選んでください',
+    flashcardChooseMeaning: '意味を選んでください：',
     flashcardCorrect: '正解',
     flashcardWrong: '不正解',
     flashcardNext: '次へ',
     flashcardResultCorrect: '正解',
     flashcardResultWrong: '不正解',
     flashcardResultLearned: '覚えたに移動',
+    flashcardBaseForm: '基本形',
     starredPageTitle: 'お気に入り',
     noReviewItems: '復習する表現はまだありません',
     noStarredItems: 'スター付きの項目はまだありません',

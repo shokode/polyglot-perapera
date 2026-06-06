@@ -938,6 +938,7 @@ const clientScript = `
       const hasEnoughChoices = flashcardCurrentChoices.length >= 2;
       const currentPosition = Math.min(flashcardIndex + 1, Math.min(FLASHCARD_SESSION_SIZE, sessionItems.length));
       const sessionTotal = Math.min(FLASHCARD_SESSION_SIZE, Math.max(sessionItems.length, 1));
+      const sentenceFormDiffers = Boolean(expression.formInText && expression.formInText !== expression.phrase);
       if (flashcardEmptyState) {
         flashcardEmptyState.hidden = true;
       }
@@ -951,7 +952,10 @@ const clientScript = `
         + '<div class="flashcard-card">'
         + '<div class="flashcard-meta">' + getLanguageBadgeHtml(expression.language, uiLanguageSelect.value) + '</div>'
         + '<p class="flashcard-context">' + contextHtml + '</p>'
-        + '<p class="flashcard-question">' + escapeHtml(labels.flashcardChooseMeaning) + '</p>'
+        + '<div class="flashcard-question">'
+        + '<span>' + escapeHtml(labels.flashcardChooseMeaning) + '</span>'
+        + '<strong>' + escapeHtml(expression.phrase) + '</strong>'
+        + '</div>'
         + '<div class="flashcard-choice-grid">'
         + flashcardCurrentChoices.map((choice, index) => {
           const isSelected = flashcardSelectedAnswer === choice.text;
@@ -972,7 +976,8 @@ const clientScript = `
             + '<strong>' + escapeHtml(flashcardResult ? labels.flashcardCorrect : labels.flashcardWrong) + '</strong>'
             + '<p>' + escapeHtml(labels.flashcardCorrect) + ': ' + escapeHtml(correctChoice?.text || '') + '</p>'
             + (!flashcardResult && flashcardSelectedAnswer ? '<p>' + escapeHtml(labels.flashcardWrong) + ': ' + escapeHtml(flashcardSelectedAnswer) + '</p>' : '')
-            + (expression.formInText && expression.formInText !== expression.phrase
+            + '<p class="flashcard-detail"><span>' + escapeHtml(labels.flashcardBaseForm) + '</span> ' + escapeHtml(expression.phrase) + '</p>'
+            + (sentenceFormDiffers
               ? '<p class="flashcard-detail"><span>' + escapeHtml(labels.expressionTextForm) + '</span> ' + escapeHtml(expression.formInText) + '</p>'
               : '')
             + '</div>'
