@@ -181,6 +181,26 @@ export type UILabels = {
   reviewSummaryTotal: string;
   reviewSummaryStatus: string;
   reviewSummarySort: string;
+  reviewModeCardList: string;
+  reviewModeFlashcards: string;
+  flashcardShowAnswer: string;
+  flashcardHideAnswer: string;
+  flashcardAgain: string;
+  flashcardUnsure: string;
+  flashcardGood: string;
+  flashcardLearned: string;
+  flashcardClose: string;
+  flashcardSessionComplete: string;
+  flashcardContinueSession: string;
+  flashcardExitSession: string;
+  flashcardSourceText: string;
+  flashcardChooseMeaning: string;
+  flashcardCorrect: string;
+  flashcardWrong: string;
+  flashcardNext: string;
+  flashcardResultCorrect: string;
+  flashcardResultWrong: string;
+  flashcardResultLearned: string;
   starredPageTitle: string;
   noReviewItems: string;
   noStarredItems: string;
@@ -306,6 +326,26 @@ export const uiText: Record<UILang, UILabels> = {
     reviewSummaryTotal: 'Totalt',
     reviewSummaryStatus: 'Status',
     reviewSummarySort: 'Sortering',
+    reviewModeCardList: 'Kortliste',
+    reviewModeFlashcards: 'Flashkort',
+    flashcardShowAnswer: 'Vis svar',
+    flashcardHideAnswer: 'Skjul svar',
+    flashcardAgain: 'Øv igjen',
+    flashcardUnsure: 'Litt usikker',
+    flashcardGood: 'Ganske bra',
+    flashcardLearned: 'Lært',
+    flashcardClose: 'Lukk',
+    flashcardSessionComplete: 'Økten er ferdig',
+    flashcardContinueSession: 'Neste 5 kort',
+    flashcardExitSession: 'Avslutt',
+    flashcardSourceText: 'Kildetekst',
+    flashcardChooseMeaning: 'Velg betydningen',
+    flashcardCorrect: 'Riktig',
+    flashcardWrong: 'Feil',
+    flashcardNext: 'Neste',
+    flashcardResultCorrect: 'Riktig',
+    flashcardResultWrong: 'Feil',
+    flashcardResultLearned: 'Flyttet til Lært',
     starredPageTitle: 'Stjernemerket',
     noReviewItems: 'Ingen uttrykk å repetere ennå',
     noStarredItems: 'Ingen stjernemerkede elementer ennå',
@@ -429,6 +469,26 @@ export const uiText: Record<UILang, UILabels> = {
     reviewSummaryTotal: 'Total',
     reviewSummaryStatus: 'Status',
     reviewSummarySort: 'Sort',
+    reviewModeCardList: 'Card list',
+    reviewModeFlashcards: 'Flashcards',
+    flashcardShowAnswer: 'Show answer',
+    flashcardHideAnswer: 'Hide answer',
+    flashcardAgain: 'Again',
+    flashcardUnsure: 'Unsure',
+    flashcardGood: 'Good',
+    flashcardLearned: 'Learned',
+    flashcardClose: 'Close',
+    flashcardSessionComplete: 'Session complete',
+    flashcardContinueSession: 'Next 5 cards',
+    flashcardExitSession: 'Exit',
+    flashcardSourceText: 'Source text',
+    flashcardChooseMeaning: 'Choose the meaning',
+    flashcardCorrect: 'Correct',
+    flashcardWrong: 'Wrong',
+    flashcardNext: 'Next',
+    flashcardResultCorrect: 'Correct',
+    flashcardResultWrong: 'Wrong',
+    flashcardResultLearned: 'Moved to Learned',
     starredPageTitle: 'Starred',
     noReviewItems: 'No review items yet',
     noStarredItems: 'No starred items yet',
@@ -552,6 +612,26 @@ export const uiText: Record<UILang, UILabels> = {
     reviewSummaryTotal: '合計',
     reviewSummaryStatus: 'ステータス',
     reviewSummarySort: '並び替え',
+    reviewModeCardList: 'カード一覧',
+    reviewModeFlashcards: 'フラッシュカード',
+    flashcardShowAnswer: '答えを見る',
+    flashcardHideAnswer: '答えを隠す',
+    flashcardAgain: 'もう一度',
+    flashcardUnsure: '少し怪しい',
+    flashcardGood: 'だいたいOK',
+    flashcardLearned: '覚えた',
+    flashcardClose: '閉じる',
+    flashcardSessionComplete: 'セッション完了',
+    flashcardContinueSession: '次の5枚へ',
+    flashcardExitSession: '終了',
+    flashcardSourceText: '出典テキスト',
+    flashcardChooseMeaning: '意味を選んでください',
+    flashcardCorrect: '正解',
+    flashcardWrong: '不正解',
+    flashcardNext: '次へ',
+    flashcardResultCorrect: '正解',
+    flashcardResultWrong: '不正解',
+    flashcardResultLearned: '覚えたに移動',
     starredPageTitle: 'お気に入り',
     noReviewItems: '復習する表現はまだありません',
     noStarredItems: 'スター付きの項目はまだありません',

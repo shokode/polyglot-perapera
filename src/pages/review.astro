@@ -25,6 +25,8 @@ type ReviewExpression = {
   exampleNo?: string;
   language: string;
   textId: string;
+  textTitle: string;
+  text: string;
   level: string;
 };
 
@@ -33,7 +35,14 @@ const expressions = Array.from(
     item.expressions.forEach((expression) => {
       const expressionKey = `${item.language}::${expression.phrase}`;
       if (!map.has(expressionKey)) {
-        map.set(expressionKey, { ...expression, language: item.language, textId: item.id, level: item.level });
+        map.set(expressionKey, {
+          ...expression,
+          language: item.language,
+          textId: item.id,
+          textTitle: item.title,
+          text: item.text,
+          level: item.level,
+        });
       }
     });
     return map;
@@ -44,6 +53,7 @@ const expressions = Array.from(
 const clientScript = `
   const BASE_PATH = ${JSON.stringify(import.meta.env.BASE_URL)};
   const expressions = ${JSON.stringify(expressions)};
+  const sourceTexts = ${JSON.stringify(texts.map((item) => ({ id: item.id, title: item.title })))};
   const ui = ${JSON.stringify(uiText)};
   const uiLanguages = ${JSON.stringify(uiLanguages)};
   const languageNames = ${JSON.stringify(languageNames)};
@@ -56,6 +66,7 @@ const clientScript = `
   const TARGET_LANGUAGE_STORAGE_KEY = 'typingSiteTargetLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
+  const EXPRESSION_QUIZ_STATS_KEY = 'expressionQuizStats';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   const levelSortRank = {
     a1: 0,
@@ -65,6 +76,7 @@ const clientScript = `
     c1: 4,
     natural: 5,
   };
+  const sourceTextTitles = Object.fromEntries(sourceTexts.map((item) => [item.id, item.title]));
   const legacyLevelMap = {
     basic: 'a1',
     useful: 'a2',
@@ -116,6 +128,19 @@ const clientScript = `
     } catch {
       return {};
     }
+  }
+
+  function loadExpressionQuizStats() {
+    try {
+      const parsed = JSON.parse(safeReadStorage(EXPRESSION_QUIZ_STATS_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveExpressionQuizStats(data) {
+    safeWriteStorage(EXPRESSION_QUIZ_STATS_KEY, JSON.stringify(data));
   }
 
   function getSavedUiLanguage() {
@@ -266,6 +291,12 @@ const clientScript = `
     const uiLanguageSelect = document.getElementById('ui-language-select');
     const reviewTitle = document.getElementById('review-title');
     const reviewGrid = document.getElementById('review-grid');
+    const reviewModeButtons = Array.from(document.querySelectorAll('[data-review-mode]'));
+    const flashcardOverlay = document.getElementById('flashcard-overlay');
+    const flashcardStage = document.getElementById('flashcard-stage');
+    const flashcardEmptyState = document.getElementById('flashcard-empty-state');
+    const flashcardProgress = document.getElementById('flashcard-progress');
+    const flashcardClose = document.getElementById('flashcard-close');
     const emptyState = document.getElementById('review-empty-state');
     const sortSelect = document.getElementById('review-sort');
     const statusFilterButton = document.getElementById('review-filter-button');
@@ -286,6 +317,18 @@ const clientScript = `
     const reviewSummaryStatusValue = document.getElementById('review-summary-status-value');
     const reviewSummarySortValue = document.getElementById('review-summary-sort-value');
     let selectedFilter = 'review';
+    let reviewMode = 'list';
+    let flashcardIndex = 0;
+    let flashcardSessionStart = 0;
+    let flashcardSessionQueue = [];
+    let flashcardRetryKeys = new Set();
+    let flashcardCurrentChoices = [];
+    let flashcardCurrentKey = '';
+    let flashcardSelectedAnswer = '';
+    let flashcardResult = null;
+    let flashcardSessionStats = { correct: 0, wrong: 0, learned: 0 };
+    let flashcardSessionComplete = false;
+    const FLASHCARD_SESSION_SIZE = 5;
 
     function getTargetLanguageLabel(value, lang) {
       const labels = getUiText(lang);
@@ -406,9 +449,21 @@ const clientScript = `
 
       uiLanguageSelect.value = lang;
       reviewTitle.textContent = labels.reviewPageTitle;
+      reviewModeButtons.forEach((button) => {
+        if (button.dataset.reviewMode === 'flashcards') {
+          button.textContent = labels.reviewModeFlashcards;
+        } else {
+          button.textContent = labels.reviewModeCardList;
+        }
+      });
+      if (flashcardClose) {
+        flashcardClose.setAttribute('aria-label', labels.flashcardClose);
+        flashcardClose.title = labels.flashcardClose;
+      }
       targetLanguageDropdown.update();
       sortDropdown.update();
       renderReviewItems();
+      updateReviewModeUi();
     }
 
     function getStatusFilterLabel(status, labels) {
@@ -473,6 +528,9 @@ const clientScript = `
     function setStatusFilter(status) {
       selectedFilter = ['review', 'learned', 'new', 'all'].includes(status) ? status : 'review';
       closeStatusFilter();
+      if (isFlashcardOpen()) {
+        resetFlashcardSession(0);
+      }
       renderReviewItems();
     }
 
@@ -480,6 +538,21 @@ const clientScript = `
       const all = loadExpressionStatuses();
       all[getExpressionStorageKey(expression)] = status;
       saveExpressionStatuses(all);
+    }
+
+    function setExpressionStatus(expression, status) {
+      if (!EXPRESSION_STATUSES.includes(status)) {
+        return;
+      }
+      saveExpressionStatus(expression, status);
+      const expressionKey = getExpressionStorageKey(expression);
+      const card = Array.from(reviewGrid.querySelectorAll('[data-review-card]'))
+        .find((item) => item.dataset.expressionKey === expressionKey);
+      if (card) {
+        updateReviewCardStatus(card, expression, status);
+      } else {
+        updateStatusFilterUi();
+      }
     }
 
     function getNextExpressionStatus(status) {
@@ -511,14 +584,20 @@ const clientScript = `
       updateReviewCardStatus(card, expression, nextStatus);
     }
 
-    function renderReviewItems() {
-      const labels = getUiText(uiLanguageSelect.value);
+    function getFilteredReviewItems(statusMode = selectedFilter) {
       const selectedSort = sortSelect.value;
       const selectedTargetLanguage = targetLanguageSelect.value;
-      updateStatusFilterUi();
-      const reviewItems = expressions
+      return expressions
         .filter((expression) => selectedTargetLanguage === 'all' || expression.language === selectedTargetLanguage)
-        .filter((expression) => selectedFilter === 'all' || getExpressionStatus(expression) === selectedFilter)
+        .filter((expression) => {
+          if (statusMode === 'all') {
+            return true;
+          }
+          if (['new', 'review', 'learned'].includes(statusMode)) {
+            return getExpressionStatus(expression) === statusMode;
+          }
+          return getExpressionStatus(expression) !== 'learned';
+        })
         .sort((a, b) => {
           const aPractice = getExpressionPractice(a);
           const bPractice = getExpressionPractice(b);
@@ -539,6 +618,16 @@ const clientScript = `
           }
           return bPractice.practiceCount - aPractice.practiceCount || a.phrase.localeCompare(b.phrase);
         });
+    }
+
+    function getFlashcardCandidateItems() {
+      return getFilteredReviewItems(selectedFilter);
+    }
+
+    function renderReviewItems() {
+      const labels = getUiText(uiLanguageSelect.value);
+      updateStatusFilterUi();
+      const reviewItems = getFilteredReviewItems();
 
       reviewGrid.innerHTML = reviewItems.map((expression) => {
         const status = getExpressionStatus(expression);
@@ -614,6 +703,341 @@ const clientScript = `
           window.location.href = getAppHref('text/' + encodeURIComponent(button.dataset.textId));
         });
       });
+
+      if (isFlashcardOpen()) {
+        renderFlashcard();
+      }
+    }
+
+    function getExpressionContextNeedle(expression) {
+      const candidates = [
+        expression.formInText,
+        expression.phrase,
+        expression.storageKey,
+      ];
+      return candidates.find((value) => typeof value === 'string' && value.trim() && expression.text.includes(value)) || '';
+    }
+
+    function getExpressionContextText(expression) {
+      const source = typeof expression.text === 'string' && expression.text.trim()
+        ? expression.text
+        : expression.example || expression.formInText || expression.phrase;
+      const needle = getExpressionContextNeedle(expression);
+      if (!needle) {
+        return source.length > 150 ? source.slice(0, 147).trimEnd() + '...' : source;
+      }
+      const sentences = source.match(/[^.!?。！？]+[.!?。！？]?/g) || [source];
+      const sentence = sentences.find((item) => item.includes(needle)) || source;
+      if (sentence.length <= 150) {
+        return sentence.trim();
+      }
+      const index = sentence.indexOf(needle);
+      const start = Math.max(0, index - 46);
+      const end = Math.min(sentence.length, index + needle.length + 70);
+      return (start > 0 ? '...' : '') + sentence.slice(start, end).trim() + (end < sentence.length ? '...' : '');
+    }
+
+    function getExpressionContextHtml(expression) {
+      const context = getExpressionContextText(expression);
+      const needle = getExpressionContextNeedle(expression);
+      if (!needle) {
+        return escapeHtml(context);
+      }
+      const index = context.indexOf(needle);
+      if (index < 0) {
+        return escapeHtml(context);
+      }
+      return escapeHtml(context.slice(0, index))
+        + '<mark class="flashcard-context-highlight">' + escapeHtml(context.slice(index, index + needle.length)) + '</mark>'
+        + escapeHtml(context.slice(index + needle.length));
+    }
+
+    function getQuizMeaningLanguageOrder(uiLang) {
+      return [uiLang, 'ja', 'en', 'no']
+        .filter((value, index, array) => value && array.indexOf(value) === index);
+    }
+
+    function getMeaningForQuiz(expression, uiLang) {
+      for (const lang of getQuizMeaningLanguageOrder(uiLang)) {
+        const value = expression[lang];
+        if (typeof value === 'string' && value.trim()) {
+          return value.trim();
+        }
+      }
+      const fallback = Object.entries(expression)
+        .find(([key, value]) => ['ja', 'en', 'no'].includes(key) && typeof value === 'string' && value.trim());
+      return fallback ? fallback[1].trim() : expression.phrase;
+    }
+
+    function shuffleItems(items) {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+      }
+      return copy;
+    }
+
+    function getFlashcardChoices(expression, uiLang, pool) {
+      const correct = getMeaningForQuiz(expression, uiLang);
+      const expressionKey = getExpressionStorageKey(expression);
+      const preferredPool = pool.filter((item) => getExpressionStorageKey(item) !== expressionKey);
+      const fallbackPool = expressions.filter((item) => getExpressionStorageKey(item) !== expressionKey);
+      const wrongChoices = [];
+
+      [...preferredPool, ...fallbackPool].forEach((item) => {
+        const meaning = getMeaningForQuiz(item, uiLang);
+        if (meaning && meaning !== correct && !wrongChoices.includes(meaning)) {
+          wrongChoices.push(meaning);
+        }
+      });
+
+      const choices = [
+        { text: correct, isCorrect: true },
+        ...wrongChoices.slice(0, 3).map((text) => ({ text, isCorrect: false })),
+      ];
+
+      return shuffleItems(choices);
+    }
+
+    function updateExpressionQuizStats(expression, isCorrect) {
+      const allStats = loadExpressionQuizStats();
+      const key = getExpressionStorageKey(expression);
+      const previous = allStats[key] && typeof allStats[key] === 'object' ? allStats[key] : {};
+      const next = {
+        correctStreak: isCorrect ? Number(previous.correctStreak || 0) + 1 : 0,
+        totalCorrect: Number(previous.totalCorrect || 0) + (isCorrect ? 1 : 0),
+        totalWrong: Number(previous.totalWrong || 0) + (isCorrect ? 0 : 1),
+        lastAnsweredAt: new Date().toISOString(),
+      };
+      allStats[key] = next;
+      saveExpressionQuizStats(allStats);
+      return next;
+    }
+
+    function resetFlashcardAnswerState() {
+      flashcardCurrentChoices = [];
+      flashcardCurrentKey = '';
+      flashcardSelectedAnswer = '';
+      flashcardResult = null;
+    }
+
+    function resetFlashcardSession(start = flashcardSessionStart) {
+      const reviewItems = getFlashcardCandidateItems();
+      flashcardSessionStart = reviewItems.length ? start % reviewItems.length : 0;
+      const sessionSize = Math.min(FLASHCARD_SESSION_SIZE, reviewItems.length);
+      flashcardSessionQueue = reviewItems.slice(flashcardSessionStart, flashcardSessionStart + sessionSize);
+      flashcardIndex = 0;
+      flashcardRetryKeys = new Set();
+      flashcardSessionStats = { correct: 0, wrong: 0, learned: 0 };
+      flashcardSessionComplete = false;
+      resetFlashcardAnswerState();
+    }
+
+    function getFlashcardSessionItems() {
+      const reviewItems = getFlashcardCandidateItems();
+      if (flashcardSessionStart >= reviewItems.length) {
+        flashcardSessionStart = 0;
+      }
+      if (!flashcardSessionQueue.length && reviewItems.length) {
+        resetFlashcardSession(flashcardSessionStart);
+      }
+      return flashcardSessionQueue;
+    }
+
+    function isFlashcardOpen() {
+      return flashcardOverlay && !flashcardOverlay.hidden;
+    }
+
+    function closeFlashcards() {
+      reviewMode = 'list';
+      resetFlashcardAnswerState();
+      flashcardSessionComplete = false;
+      if (flashcardOverlay) {
+        flashcardOverlay.hidden = true;
+      }
+      updateReviewModeUi();
+    }
+
+    function openFlashcards() {
+      reviewMode = 'flashcards';
+      resetFlashcardSession(0);
+      if (flashcardOverlay) {
+        flashcardOverlay.hidden = false;
+      }
+      updateReviewModeUi();
+      renderFlashcard();
+    }
+
+    function renderFlashcardCompletion(labels, reviewItems) {
+      if (flashcardProgress) {
+        const sessionTotal = Math.min(FLASHCARD_SESSION_SIZE, Math.max(flashcardSessionQueue.length, 1));
+        flashcardProgress.textContent = sessionTotal + ' / ' + sessionTotal;
+      }
+      flashcardStage.hidden = false;
+      flashcardStage.innerHTML = ''
+        + '<div class="flashcard-session-complete">'
+        + '<strong>' + escapeHtml(labels.flashcardSessionComplete) + '</strong>'
+        + '<div class="flashcard-result-summary">'
+        + '<span>' + escapeHtml(labels.flashcardResultCorrect) + ': <strong>' + flashcardSessionStats.correct + '</strong></span>'
+        + '<span>' + escapeHtml(labels.flashcardResultWrong) + ': <strong>' + flashcardSessionStats.wrong + '</strong></span>'
+        + (flashcardSessionStats.learned > 0 ? '<span>' + escapeHtml(labels.flashcardResultLearned) + ': <strong>' + flashcardSessionStats.learned + '</strong></span>' : '')
+        + '</div>'
+        + '<div class="flashcard-complete-actions">'
+        + '<button class="primary-button" type="button" data-flashcard-continue>' + escapeHtml(labels.flashcardContinueSession) + '</button>'
+        + '<button class="secondary-button" type="button" data-flashcard-exit>' + escapeHtml(labels.flashcardExitSession) + '</button>'
+        + '</div>'
+        + '</div>';
+      flashcardStage.querySelector('[data-flashcard-continue]')?.addEventListener('click', () => {
+        resetFlashcardSession((flashcardSessionStart + FLASHCARD_SESSION_SIZE) % Math.max(reviewItems.length, 1));
+        renderFlashcard();
+      });
+      flashcardStage.querySelector('[data-flashcard-exit]')?.addEventListener('click', closeFlashcards);
+    }
+
+    function renderFlashcard() {
+      const labels = getUiText(uiLanguageSelect.value);
+      const reviewItems = getFlashcardCandidateItems();
+      const sessionItems = getFlashcardSessionItems();
+      if (!sessionItems.length) {
+        resetFlashcardSession(0);
+        if (flashcardStage) {
+          flashcardStage.innerHTML = '';
+          flashcardStage.hidden = true;
+        }
+        if (flashcardEmptyState) {
+          flashcardEmptyState.hidden = false;
+        }
+        if (flashcardProgress) {
+          flashcardProgress.textContent = '0 / 0';
+        }
+        return;
+      }
+
+      if (flashcardSessionComplete) {
+        if (flashcardEmptyState) {
+          flashcardEmptyState.hidden = true;
+        }
+        renderFlashcardCompletion(labels, reviewItems);
+        return;
+      }
+
+      flashcardIndex = Math.max(0, Math.min(flashcardIndex, sessionItems.length - 1));
+      const expression = sessionItems[flashcardIndex];
+      const status = getExpressionStatus(expression);
+      const contextHtml = getExpressionContextHtml(expression);
+      const expressionKey = getExpressionStorageKey(expression);
+      const quizChoiceKey = expressionKey + '::' + uiLanguageSelect.value;
+      if (flashcardCurrentKey !== quizChoiceKey || !flashcardCurrentChoices.length) {
+        flashcardCurrentKey = quizChoiceKey;
+        flashcardCurrentChoices = getFlashcardChoices(expression, uiLanguageSelect.value, reviewItems);
+        flashcardSelectedAnswer = '';
+        flashcardResult = null;
+      }
+      const correctChoice = flashcardCurrentChoices.find((choice) => choice.isCorrect);
+      const hasEnoughChoices = flashcardCurrentChoices.length >= 2;
+      const currentPosition = Math.min(flashcardIndex + 1, Math.min(FLASHCARD_SESSION_SIZE, sessionItems.length));
+      const sessionTotal = Math.min(FLASHCARD_SESSION_SIZE, Math.max(sessionItems.length, 1));
+      if (flashcardEmptyState) {
+        flashcardEmptyState.hidden = true;
+      }
+      if (flashcardProgress) {
+        flashcardProgress.textContent = currentPosition + ' / ' + sessionTotal;
+      }
+
+      flashcardStage.hidden = false;
+      flashcardStage.innerHTML = ''
+        + '<article class="flashcard" data-expression-key="' + escapeHtml(getExpressionStorageKey(expression)) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + escapeHtml(status) + '">'
+        + '<div class="flashcard-card">'
+        + '<div class="flashcard-meta">' + getLanguageBadgeHtml(expression.language, uiLanguageSelect.value) + '</div>'
+        + '<p class="flashcard-context">' + contextHtml + '</p>'
+        + '<p class="flashcard-question">' + escapeHtml(labels.flashcardChooseMeaning) + '</p>'
+        + '<div class="flashcard-choice-grid">'
+        + flashcardCurrentChoices.map((choice, index) => {
+          const isSelected = flashcardSelectedAnswer === choice.text;
+          const resultClass = flashcardResult === null
+            ? ''
+            : choice.isCorrect
+              ? ' is-correct'
+              : isSelected
+                ? ' is-wrong'
+                : '';
+          return '<button class="flashcard-choice' + resultClass + '" type="button" data-flashcard-choice="' + index + '"' + (flashcardResult !== null || !hasEnoughChoices ? ' disabled' : '') + '>'
+            + escapeHtml(choice.text)
+            + '</button>';
+        }).join('')
+        + '</div>'
+        + (flashcardResult !== null
+          ? '<div class="flashcard-answer-result" data-result="' + (flashcardResult ? 'correct' : 'wrong') + '">'
+            + '<strong>' + escapeHtml(flashcardResult ? labels.flashcardCorrect : labels.flashcardWrong) + '</strong>'
+            + '<p>' + escapeHtml(labels.flashcardCorrect) + ': ' + escapeHtml(correctChoice?.text || '') + '</p>'
+            + (!flashcardResult && flashcardSelectedAnswer ? '<p>' + escapeHtml(labels.flashcardWrong) + ': ' + escapeHtml(flashcardSelectedAnswer) + '</p>' : '')
+            + (expression.formInText && expression.formInText !== expression.phrase
+              ? '<p class="flashcard-detail"><span>' + escapeHtml(labels.expressionTextForm) + '</span> ' + escapeHtml(expression.formInText) + '</p>'
+              : '')
+            + '</div>'
+          : '')
+        + '<div class="flashcard-controls">'
+        + (flashcardResult !== null
+          ? '<button class="primary-button" type="button" data-flashcard-next>' + escapeHtml(labels.flashcardNext) + '</button>'
+          : '')
+        + '</div>'
+        + (hasEnoughChoices ? '' : '<p class="empty-state">' + escapeHtml(labels.noReviewItems) + '</p>')
+        + '</article>';
+
+      flashcardStage.querySelectorAll('[data-flashcard-choice]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const choice = flashcardCurrentChoices[Number(button.dataset.flashcardChoice)];
+          if (!choice || flashcardResult !== null) {
+            return;
+          }
+          const currentStatus = getExpressionStatus(expression);
+          const quizStats = updateExpressionQuizStats(expression, choice.isCorrect);
+          flashcardSelectedAnswer = choice.text;
+          flashcardResult = choice.isCorrect;
+          if (choice.isCorrect) {
+            flashcardSessionStats.correct += 1;
+            const nextStatus = quizStats.correctStreak >= 3
+              ? 'learned'
+              : currentStatus === 'new'
+                ? 'review'
+                : currentStatus;
+            if (nextStatus === 'learned' && currentStatus !== 'learned') {
+              flashcardSessionStats.learned += 1;
+            }
+            setExpressionStatus(expression, nextStatus);
+          } else {
+            flashcardSessionStats.wrong += 1;
+            setExpressionStatus(expression, 'review');
+            if (!flashcardRetryKeys.has(expressionKey)) {
+              flashcardRetryKeys.add(expressionKey);
+              flashcardSessionQueue.push(expression);
+            }
+          }
+          renderFlashcard();
+      });
+      });
+
+      flashcardStage.querySelector('[data-flashcard-next]')?.addEventListener('click', () => {
+        resetFlashcardAnswerState();
+        if (flashcardIndex >= flashcardSessionQueue.length - 1) {
+          flashcardSessionComplete = true;
+        } else {
+          flashcardIndex += 1;
+        }
+        renderReviewItems();
+      });
+    }
+
+    function updateReviewModeUi() {
+      reviewModeButtons.forEach((button) => {
+        const isActive = button.dataset.reviewMode === reviewMode;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      if (isFlashcardOpen()) {
+        renderFlashcard();
+      }
     }
 
     const savedUiLanguage = getSavedUiLanguage();
@@ -631,6 +1055,9 @@ const clientScript = `
         safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
         targetLanguageSelect.value = lang;
         targetLanguageDropdown.update();
+        if (isFlashcardOpen()) {
+          resetFlashcardSession(0);
+        }
         renderReviewItems();
       },
     });
@@ -641,12 +1068,43 @@ const clientScript = `
       options: sortOptions,
       buttonLabel: sortButtonLabel,
       getLabel: (value) => getSortLabel(value, getUiText(uiLanguageSelect.value)),
-      onChange: renderReviewItems,
+      onChange: () => {
+        if (isFlashcardOpen()) {
+          resetFlashcardSession(0);
+        }
+        renderReviewItems();
+      },
     });
     renderUiText(savedUiLanguage);
+    updateReviewModeUi();
+
+    reviewModeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.reviewMode === 'flashcards') {
+          openFlashcards();
+        } else {
+          closeFlashcards();
+        }
+      });
+    });
+
+    flashcardClose?.addEventListener('click', closeFlashcards);
+    flashcardOverlay?.addEventListener('click', (event) => {
+      if (event.target === flashcardOverlay) {
+        closeFlashcards();
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isFlashcardOpen()) {
+        closeFlashcards();
+      }
+    });
 
     sortSelect.addEventListener('change', () => {
       sortDropdown.update();
+      if (isFlashcardOpen()) {
+        resetFlashcardSession(0);
+      }
       renderReviewItems();
     });
     statusFilterButton.addEventListener('click', () => {
@@ -696,6 +1154,9 @@ const clientScript = `
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
       targetLanguageSelect.value = lang;
       targetLanguageDropdown.update();
+      if (isFlashcardOpen()) {
+        resetFlashcardSession(0);
+      }
       renderReviewItems();
     });
 
@@ -741,6 +1202,24 @@ const clientScript = `
       </section>
 
       <section class="expressions-card">
+        <div class="review-mode-switch" role="group" aria-label="Review mode">
+          <button
+            class="typing-mode-button active"
+            type="button"
+            data-review-mode="list"
+            aria-pressed="true"
+          >
+            {uiText[defaultUiLang].reviewModeCardList}
+          </button>
+          <button
+            class="typing-mode-button"
+            type="button"
+            data-review-mode="flashcards"
+            aria-pressed="false"
+          >
+            {uiText[defaultUiLang].reviewModeFlashcards}
+          </button>
+        </div>
         <div class="review-controls">
           <div class="filter-group">
             <label id="review-target-language-label" for="review-target-language-button" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
@@ -851,10 +1330,35 @@ const clientScript = `
             </div>
           </div>
         </div>
-        <div id="review-grid" class="expressions-grid"></div>
-        <p id="review-empty-state" class="empty-state" data-i18n="noReviewItems">{uiText[defaultUiLang].noReviewItems}</p>
+        <div id="review-list-panel">
+          <div id="review-grid" class="expressions-grid"></div>
+          <p id="review-empty-state" class="empty-state" data-i18n="noReviewItems">{uiText[defaultUiLang].noReviewItems}</p>
+        </div>
       </section>
     </main>
+    <div class="flashcard-overlay" id="flashcard-overlay" hidden>
+      <section
+        class="review-flashcard-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={uiText[defaultUiLang].reviewModeFlashcards}
+      >
+        <div class="flashcard-toolbar">
+          <span class="flashcard-progress" id="flashcard-progress">0 / 0</span>
+          <button
+            class="flashcard-close"
+            type="button"
+            id="flashcard-close"
+            aria-label={uiText[defaultUiLang].flashcardClose}
+            title={uiText[defaultUiLang].flashcardClose}
+          >
+            ×
+          </button>
+        </div>
+        <div id="flashcard-stage" class="flashcard-stage"></div>
+        <p id="flashcard-empty-state" class="empty-state" data-i18n="noReviewItems" hidden>{uiText[defaultUiLang].noReviewItems}</p>
+      </section>
+    </div>
 
     <script type="module" set:html={clientScript}></script>
   </body>
