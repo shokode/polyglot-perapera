@@ -2045,13 +2045,15 @@ a:active {
   list-style: disc;
 }
 
-.learning-focus-list--expressions.is-long {
-  column-count: 2;
-  column-gap: 1.35rem;
+.learning-focus-list--expressions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(12rem, 1fr));
+  column-gap: 2rem;
+  row-gap: 0.42rem;
 }
 
 .learning-focus-card li {
-  margin-bottom: 0.34rem;
+  margin-bottom: 0;
   font-size: 0.84rem;
   line-height: 1.45;
   break-inside: avoid;
@@ -3949,10 +3951,6 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .learning-focus-list--expressions.is-long {
-    column-count: 1;
-  }
-
   .progress-page .progress-section {
     padding: 16px;
     border-radius: 20px;
@@ -4210,5 +4208,11 @@ h3 {
 
   .typing-mode-button {
     padding: 7px 10px;
+  }
+}
+
+@media (max-width: 639px) {
+  .learning-focus-list--expressions {
+    grid-template-columns: 1fr;
   }
 }
