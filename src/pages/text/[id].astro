@@ -924,6 +924,7 @@ const clientScript = `
     const completionPanel = document.getElementById('completion-panel');
     const completionTitle = document.getElementById('completion-title');
     const completionStatusNote = document.getElementById('completion-status-note');
+    const expressionAutoReviewNote = document.getElementById('expression-auto-review-note');
     const completionAccuracyTitle = document.getElementById('completion-accuracy-title');
     const completionAccuracyValue = document.getElementById('completion-accuracy-value');
     const completionSpeedTitle = document.getElementById('completion-speed-title');
@@ -1184,6 +1185,40 @@ const clientScript = `
       });
     }
 
+    function moveRelatedNewExpressionsToReview() {
+      if (activeIsTranslationPractice) {
+        return 0;
+      }
+      const all = loadExpressionStatuses();
+      let movedCount = 0;
+      const phrases = Array.from(new Set(text.expressions.map((expression) => expression.phrase)));
+      phrases.forEach((phrase) => {
+        if (getExpressionStatus(phrase) !== 'new') {
+          return;
+        }
+        all[getExpressionStorageKey(phrase)] = 'review';
+        movedCount += 1;
+      });
+      if (movedCount > 0) {
+        saveExpressionStatuses(all);
+        updateExpressionStatusButtons();
+      }
+      return movedCount;
+    }
+
+    function showExpressionAutoReviewNotice(movedCount) {
+      if (!expressionAutoReviewNote) {
+        return;
+      }
+      if (movedCount <= 0) {
+        expressionAutoReviewNote.textContent = '';
+        expressionAutoReviewNote.hidden = true;
+        return;
+      }
+      expressionAutoReviewNote.textContent = getUiText(uiLanguageSelect.value).expressionAutoReviewNotice;
+      expressionAutoReviewNote.hidden = false;
+    }
+
     function recordCompletion(accuracy, wpm) {
       const now = new Date().toISOString();
       const textProgress = loadProgress(TEXT_PROGRESS_KEY);
@@ -1208,6 +1243,7 @@ const clientScript = `
       });
       saveProgress(EXPRESSION_PROGRESS_KEY, expressionProgress);
       updateExpressionPracticeLabels();
+      return moveRelatedNewExpressionsToReview();
     }
 
     function cycleExpressionStatus(phrase) {
@@ -1350,8 +1386,12 @@ const clientScript = `
       });
 
       uiLanguageSelect.value = lang;
-      readHeading.textContent = labels.readTypeUnderstand;
-      readDescription.textContent = labels.focusNaturalMeaning;
+      if (readHeading) {
+        readHeading.textContent = labels.readTypeUnderstand;
+      }
+      if (readDescription) {
+        readDescription.textContent = labels.focusNaturalMeaning;
+      }
       typingHeading.textContent = activeIsTranslationPractice && activePracticeTranslationLang
         ? getTranslationPracticeLabel(activePracticeTranslationLang, labels)
         : labels.typingPractice;
@@ -1391,6 +1431,9 @@ const clientScript = `
           ? labels.completionFinishedNote
           : '';
         completionStatusNote.hidden = currentCompletionState !== 'finishedWithMistakes';
+      }
+      if (expressionAutoReviewNote && !expressionAutoReviewNote.hidden) {
+        expressionAutoReviewNote.textContent = labels.expressionAutoReviewNotice;
       }
       if (assessmentPrompt) {
         assessmentPrompt.textContent = labels.selfAssessmentPrompt;
@@ -1558,6 +1601,7 @@ const clientScript = `
       if (completionMistakesValue) {
         completionMistakesValue.textContent = '' + mistakes;
       }
+      showExpressionAutoReviewNotice(0);
       if (completionTranslations) {
         completionTranslations.hidden = activeIsTranslationPractice;
       }
@@ -1647,6 +1691,7 @@ const clientScript = `
       if (completionTranslations) {
         completionTranslations.hidden = true;
       }
+      showExpressionAutoReviewNotice(0);
       if (translationHint) {
         translationHint.hidden = false;
         translationHint.open = false;
@@ -1778,7 +1823,8 @@ const clientScript = `
         }
         if (!activeIsTranslationPractice && !hasRecordedCompletion) {
           hasRecordedCompletion = true;
-          recordCompletion(accuracy, speed);
+          const movedCount = recordCompletion(accuracy, speed);
+          showExpressionAutoReviewNotice(movedCount);
         }
       }
     }
@@ -2066,15 +2112,6 @@ if (!text) {
       </section>
 
       <div class="pre-practice-panels">
-        <section class="note-card pre-practice-panel">
-          <h3 id="read-heading" data-i18n="readTypeUnderstand">
-            {uiText[defaultUiLang].readTypeUnderstand}
-          </h3>
-          <p id="read-description" data-i18n="focusNaturalMeaning">
-            {uiText[defaultUiLang].focusNaturalMeaning}
-          </p>
-        </section>
-
         <section
           class="learning-focus-card translation-practice-info-card pre-practice-panel pre-practice-panel--wide"
           id="translation-practice-info"
@@ -2096,13 +2133,17 @@ if (!text) {
           <div class="learning-focus-row">
             <div>
               <strong>Expressions</strong>
-              <ul>
+              <ul class:list={[
+                "learning-focus-list",
+                "learning-focus-list--expressions",
+                learningFocusExpressions.length >= 6 && "is-long",
+              ]}>
                 {learningFocusExpressions.map((phrase) => <li>{phrase}</li>)}
               </ul>
             </div>
             <div>
               <strong>Grammar</strong>
-              <ul>
+              <ul class="learning-focus-list learning-focus-list--grammar">
                 {learningFocusGrammar.map((title) => <li>{title}</li>)}
               </ul>
             </div>
@@ -2320,6 +2361,12 @@ if (!text) {
             <p
               class="completion-note"
               id="completion-status-note"
+              hidden
+            >
+            </p>
+            <p
+              class="completion-note completion-note--subtle"
+              id="expression-auto-review-note"
               hidden
             >
             </p>

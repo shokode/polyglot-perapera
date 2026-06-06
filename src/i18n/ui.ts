@@ -148,6 +148,7 @@ export type UILabels = {
   assessmentUnsure: string;
   assessmentAgain: string;
   assessmentSaved: string;
+  expressionAutoReviewNotice: string;
   nextRecommended: string;
   practiceAgain: string;
   backHome: string;
@@ -272,6 +273,7 @@ export const uiText: Record<UILang, UILabels> = {
     assessmentUnsure: 'Litt usikker',
     assessmentAgain: 'Øv igjen',
     assessmentSaved: 'Lagret',
+    expressionAutoReviewNotice: 'Nye relaterte uttrykk ble lagt til repetisjon.',
     nextRecommended: 'Neste anbefalte',
     practiceAgain: 'Øv igjen',
     backHome: 'Tilbake hjem',
@@ -394,6 +396,7 @@ export const uiText: Record<UILang, UILabels> = {
     assessmentUnsure: 'A bit unsure',
     assessmentAgain: 'Practice again',
     assessmentSaved: 'Saved',
+    expressionAutoReviewNotice: 'New related expressions were added to Review.',
     nextRecommended: 'Next recommended',
     practiceAgain: 'Practice again',
     backHome: 'Back home',
@@ -516,6 +519,7 @@ export const uiText: Record<UILang, UILabels> = {
     assessmentUnsure: '少し怪しい',
     assessmentAgain: 'もう一度',
     assessmentSaved: '保存しました',
+    expressionAutoReviewNotice: '関連する新規表現を復習に追加しました。',
     nextRecommended: '次のおすすめへ',
     practiceAgain: 'もう一度練習',
     backHome: 'ホームへ戻る',
