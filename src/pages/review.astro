@@ -310,6 +310,7 @@ const clientScript = `
   document.addEventListener('DOMContentLoaded', () => {
     const uiLanguageSelect = document.getElementById('ui-language-select');
     const reviewTitle = document.getElementById('review-title');
+    const reviewListPanel = document.getElementById('review-list-panel');
     const reviewGrid = document.getElementById('review-grid');
     const reviewModeButtons = Array.from(document.querySelectorAll('[data-review-mode]'));
     const flashcardOverlay = document.getElementById('flashcard-overlay');
@@ -349,6 +350,10 @@ const clientScript = `
     let flashcardSessionStats = { correct: 0, wrong: 0, learned: 0 };
     let flashcardSessionComplete = false;
     const FLASHCARD_SESSION_SIZE = 5;
+    const CARDS_PER_PAGE = 24;
+    let visibleCardCount = CARDS_PER_PAGE;
+    let allFilteredItems = [];
+    let reviewLoadMoreButton = null;
 
     function getTargetLanguageLabel(value, lang) {
       const labels = getUiText(lang);
@@ -563,6 +568,7 @@ const clientScript = `
     function setStatusFilter(status) {
       selectedFilter = ['review', 'learned', 'new', 'all'].includes(status) ? status : 'review';
       closeStatusFilter();
+      visibleCardCount = CARDS_PER_PAGE;
       if (isFlashcardOpen()) {
         resetFlashcardSession(0);
       }
@@ -662,9 +668,10 @@ const clientScript = `
     function renderReviewItems() {
       const labels = getUiText(uiLanguageSelect.value);
       updateStatusFilterUi();
-      const reviewItems = getFilteredReviewItems();
+      allFilteredItems = getFilteredReviewItems();
+      const visibleItems = allFilteredItems.slice(0, visibleCardCount);
 
-      reviewGrid.innerHTML = reviewItems.map((expression) => {
+      reviewGrid.innerHTML = visibleItems.map((expression) => {
         const status = getExpressionStatus(expression);
         const label = getExpressionStatusLabel(status, labels);
         const { practiceCount } = getExpressionPractice(expression);
@@ -696,7 +703,23 @@ const clientScript = `
           + '</article>';
       }).join('');
 
-      emptyState.hidden = reviewItems.length > 0;
+      emptyState.hidden = allFilteredItems.length > 0;
+
+      // Create "Load More" button if it doesn't exist
+      if (!reviewLoadMoreButton) {
+        reviewLoadMoreButton = document.createElement('button');
+        reviewLoadMoreButton.className = 'secondary-button review-load-more';
+        reviewLoadMoreButton.type = 'button';
+        reviewLoadMoreButton.addEventListener('click', () => {
+          visibleCardCount += CARDS_PER_PAGE;
+          renderReviewItems();
+        });
+        reviewListPanel?.appendChild(reviewLoadMoreButton);
+      }
+
+      // Update button text and visibility
+      reviewLoadMoreButton.textContent = labels.showMore;
+      reviewLoadMoreButton.hidden = visibleCardCount >= allFilteredItems.length || allFilteredItems.length === 0;
 
       reviewGrid.querySelectorAll('[data-review-card]').forEach((card) => {
         card.addEventListener('click', () => {
@@ -1192,6 +1215,7 @@ const clientScript = `
         safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, lang);
         targetLanguageSelect.value = lang;
         targetLanguageDropdown.update();
+        visibleCardCount = CARDS_PER_PAGE;
         if (isFlashcardOpen()) {
           resetFlashcardSession(0);
         }
@@ -1206,6 +1230,7 @@ const clientScript = `
       buttonLabel: sortButtonLabel,
       getLabel: (value) => getSortLabel(value, getUiText(uiLanguageSelect.value)),
       onChange: () => {
+        visibleCardCount = CARDS_PER_PAGE;
         if (isFlashcardOpen()) {
           resetFlashcardSession(0);
         }
