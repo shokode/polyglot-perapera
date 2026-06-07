@@ -311,6 +311,7 @@ const clientScript = `
     const uiLanguageSelect = document.getElementById('ui-language-select');
     const reviewTitle = document.getElementById('review-title');
     const reviewListPanel = document.getElementById('review-list-panel');
+    const reviewCardCount = document.getElementById('review-card-count');
     const reviewGrid = document.getElementById('review-grid');
     const reviewModeButtons = Array.from(document.querySelectorAll('[data-review-mode]'));
     const flashcardOverlay = document.getElementById('flashcard-overlay');
@@ -358,6 +359,14 @@ const clientScript = `
     function getTargetLanguageLabel(value, lang) {
       const labels = getUiText(lang);
       return value === 'all' ? labels.allLanguages : targetLanguageOptionLabels[value] || value;
+    }
+
+    function formatTemplateString(template, values) {
+      let result = template;
+      Object.keys(values).forEach((key) => {
+        result = result.replace(new RegExp('{' + key + '}', 'g'), values[key]);
+      });
+      return result;
     }
 
     function getSortLabel(value, labels) {
@@ -717,9 +726,27 @@ const clientScript = `
         reviewListPanel?.appendChild(reviewLoadMoreButton);
       }
 
+      // Update card count display
+      if (reviewCardCount) {
+        const countDisplayText = formatTemplateString(labels.cardCountDisplay, {
+          visible: visibleCardCount,
+          total: allFilteredItems.length,
+        });
+        reviewCardCount.textContent = countDisplayText;
+        reviewCardCount.hidden = allFilteredItems.length === 0;
+      }
+
       // Update button text and visibility
-      reviewLoadMoreButton.textContent = labels.showMore;
-      reviewLoadMoreButton.hidden = visibleCardCount >= allFilteredItems.length || allFilteredItems.length === 0;
+      const remaining = allFilteredItems.length - visibleCardCount;
+      const isAllVisible = visibleCardCount >= allFilteredItems.length;
+      if (remaining > 0) {
+        reviewLoadMoreButton.textContent = formatTemplateString(labels.cardCountRemaining, {
+          remaining: remaining,
+        });
+      } else {
+        reviewLoadMoreButton.textContent = labels.showMore;
+      }
+      reviewLoadMoreButton.hidden = isAllVisible || allFilteredItems.length === 0;
 
       reviewGrid.querySelectorAll('[data-review-card]').forEach((card) => {
         card.addEventListener('click', () => {
@@ -1497,6 +1524,7 @@ const clientScript = `
           </button>
         </div>
         <div id="review-list-panel">
+          <p id="review-card-count" class="review-card-count"></p>
           <div id="review-grid" class="expressions-grid"></div>
           <p id="review-empty-state" class="empty-state" data-i18n="noReviewItems">{uiText[defaultUiLang].noReviewItems}</p>
         </div>

@@ -232,6 +232,8 @@ export type UILabels = {
   unpinText: string;
   pinnedText: string;
   showMore: string;
+  cardCountDisplay: string;
+  cardCountRemaining: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -382,6 +384,8 @@ export const uiText: Record<UILang, UILabels> = {
     unpinText: 'Fjern festing',
     pinnedText: 'Festet',
     showMore: 'Vis mer',
+    cardCountDisplay: 'Viser {visible} av {total}',
+    cardCountRemaining: 'Vis mer ({remaining} igjen)',
   },
   en: {
     title: 'Polyglotyping',
@@ -530,6 +534,8 @@ export const uiText: Record<UILang, UILabels> = {
     unpinText: 'Unpin',
     pinnedText: 'Pinned',
     showMore: 'Show more',
+    cardCountDisplay: 'Showing {visible} of {total}',
+    cardCountRemaining: 'Show more ({remaining} remaining)',
   },
   ja: {
     title: 'Polyglotyping',
@@ -678,5 +684,7 @@ export const uiText: Record<UILang, UILabels> = {
     unpinText: 'ピンを外す',
     pinnedText: 'ピン留め済み',
     showMore: 'もっと見る',
+    cardCountDisplay: '{total}件中 {visible}件表示',
+    cardCountRemaining: 'もっと見る（残り{remaining}件）',
   },
 };
