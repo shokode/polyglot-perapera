@@ -231,6 +231,7 @@ export type UILabels = {
   pinText: string;
   unpinText: string;
   pinnedText: string;
+  showMore: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -380,6 +381,7 @@ export const uiText: Record<UILang, UILabels> = {
     pinText: 'Fest',
     unpinText: 'Fjern festing',
     pinnedText: 'Festet',
+    showMore: 'Vis mer',
   },
   en: {
     title: 'Polyglotyping',
@@ -527,6 +529,7 @@ export const uiText: Record<UILang, UILabels> = {
     pinText: 'Pin',
     unpinText: 'Unpin',
     pinnedText: 'Pinned',
+    showMore: 'Show more',
   },
   ja: {
     title: 'Polyglotyping',
@@ -674,5 +677,6 @@ export const uiText: Record<UILang, UILabels> = {
     pinText: 'ピン留め',
     unpinText: 'ピンを外す',
     pinnedText: 'ピン留め済み',
+    showMore: 'もっと見る',
   },
 };
