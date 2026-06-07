@@ -21,6 +21,7 @@ const progressLabels = {
     overviewRecent: 'Siste 7 dager',
     activity: 'Aktivitet',
     activityDescription: 'Fargede dager betyr at du øvde. Sterkere farge betyr mer øving.',
+    activityDescriptionCompact: 'Øvingsdager er fargelagt. Mørkere betyr mer øving.',
     recentTrend: 'Nylig trend',
     needsAttention: 'Bør øves snart',
     practiceHistory: 'Øvingshistorikk',
@@ -75,6 +76,7 @@ const progressLabels = {
     overviewRecent: 'Last 7 days',
     activity: 'Activity',
     activityDescription: 'Colored days mean you practiced. Stronger color means more practice.',
+    activityDescriptionCompact: 'Practice days are colored. Darker means more practice.',
     recentTrend: 'Recent trend',
     needsAttention: 'Needs attention',
     practiceHistory: 'Practice history',
@@ -129,6 +131,7 @@ const progressLabels = {
     overviewRecent: '直近7日',
     activity: 'アクティビティ',
     activityDescription: '色がついている日は練習した日です。色が濃いほど練習回数が多いです。',
+    activityDescriptionCompact: '練習した日に色がつきます。濃いほど回数が多いです。',
     recentTrend: '最近の傾向',
     needsAttention: 'そろそろ復習',
     practiceHistory: '練習履歴',
@@ -192,6 +195,9 @@ const clientScript = `
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
   let historyExpanded = false;
+  let overviewSelected = 'all-time';
+  let currentProgressLanguage = 'en';
+  let currentProgressLabels = progressLabels.en;
 
   function safeReadStorage(key) {
     try {
@@ -390,6 +396,41 @@ const clientScript = `
     return getAppHref('text/' + encodeURIComponent(target.textId));
   }
 
+  function isMobileProgressLayout() {
+    return window.matchMedia('(max-width: 768px)').matches;
+  }
+
+  function getActivityDescription(labels) {
+    return isMobileProgressLayout()
+      ? (labels.activityDescriptionCompact || labels.activityDescription)
+      : labels.activityDescription;
+  }
+
+  function updateOverviewVisibility() {
+    const tabs = Array.from(document.querySelectorAll('[data-progress-overview-tab]'));
+    const groups = Array.from(document.querySelectorAll('[data-progress-overview-group]'));
+    const mobile = isMobileProgressLayout();
+
+    tabs.forEach((button) => {
+      const selected = button.dataset.progressOverviewTab === overviewSelected;
+      button.setAttribute('aria-selected', selected ? 'true' : 'false');
+      button.classList.toggle('is-active', selected);
+    });
+
+    groups.forEach((group) => {
+      const isActive = group.dataset.progressOverviewGroup === overviewSelected;
+      group.classList.toggle('is-active', isActive);
+      group.hidden = mobile ? !isActive : false;
+    });
+  }
+
+  function updateActivityDescription() {
+    const description = document.getElementById('progress-calendar-description');
+    if (description && currentProgressLabels) {
+      description.textContent = getActivityDescription(currentProgressLabels);
+    }
+  }
+
   function getProgressData() {
     const textProgress = readObject(TEXT_PROGRESS_KEY);
     const expressionStatuses = readObject(EXPRESSION_STATUS_KEY);
@@ -516,16 +557,19 @@ const clientScript = `
       },
     ];
     const renderValue = (value, format) => format === 'percent' ? formatPercent(value) : formatNumber(value);
-    document.getElementById('progress-overview-grid').innerHTML = groups.map((group) => (
-      '<section class="progress-stat-group">'
-      + '<h3>' + escapeHtml(group.title) + '</h3>'
+    const getStatKind = (label) => label === labels.learnedExpressions ? 'learned' : '';
+    const isEmptyValue = (value) => !Number.isFinite(value);
+    document.getElementById('progress-overview-grid').innerHTML = groups.map((group, index) => (
+      '<section class="progress-stat-group" data-progress-overview-group="' + (index === 0 ? 'all-time' : 'recent') + '">'
+      + '<h3 class="progress-overview-group__title">' + escapeHtml(group.title) + '</h3>'
       + '<div class="progress-stat-list">'
       + group.stats.map(([label, value, format]) => (
-        '<article class="progress-stat-card"><span>' + escapeHtml(label) + '</span><strong>' + renderValue(value, format) + '</strong></article>'
+        '<article class="progress-stat-card"' + (getStatKind(label) ? ' data-stat-kind="' + getStatKind(label) + '"' : '') + (isEmptyValue(value) ? ' data-empty="true"' : '') + '><span>' + escapeHtml(label) + '</span><strong>' + renderValue(value, format) + '</strong></article>'
       )).join('')
       + '</div>'
       + '</section>'
     )).join('');
+    updateOverviewVisibility();
   }
 
   function renderActivityCalendar(data, labels, lang) {
@@ -539,8 +583,14 @@ const clientScript = `
     });
 
     const today = new Date();
+    today.setHours(12, 0, 0, 0);
+
+    // Get 52 weeks of data (364 days)
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 364);
+
     const days = [];
-    for (let offset = 29; offset >= 0; offset -= 1) {
+    for (let offset = 364; offset >= 0; offset -= 1) {
       const date = new Date(today);
       date.setHours(12, 0, 0, 0);
       date.setDate(today.getDate() - offset);
@@ -553,23 +603,100 @@ const clientScript = `
       });
     }
 
+    // Build weeks grid (52 weeks × 7 days)
+    const weeks = [];
+    for (let w = 0; w < 52; w++) {
+      const week = [];
+      for (let d = 0; d < 7; d++) {
+        const dayIndex = w * 7 + d;
+        week.push(days[dayIndex] || { date: null, count: 0, intensity: 0 });
+      }
+      weeks.push(week);
+    }
+
     const activeDays = days.filter((day) => day.count > 0).length;
     const totalRecentPractices = days.reduce((sum, day) => sum + day.count, 0);
     const maxCount = Math.max(...days.map((day) => day.count), 0);
+
     const calendar = document.getElementById('progress-calendar');
     const summary = document.getElementById('progress-calendar-summary');
     const emptyState = document.getElementById('progress-calendar-empty');
     const description = document.getElementById('progress-calendar-description');
     const legendLess = document.getElementById('progress-calendar-legend-less');
     const legendMore = document.getElementById('progress-calendar-legend-more');
-    description.textContent = labels.activityDescription;
+
+    description.textContent = getActivityDescription(labels);
     legendLess.textContent = labels.less;
     legendMore.textContent = labels.more;
     summary.innerHTML = '<span>' + escapeHtml(labels.last30Days) + '</span><strong>' + activeDays + '</strong><span>' + escapeHtml(labels.activeDays) + '</span><strong>' + totalRecentPractices + '</strong><span>' + escapeHtml(labels.totalPractices) + '</span>';
-    calendar.innerHTML = days.map((day) => {
-      const label = formatShortDate(day.date.toISOString(), lang) + ': ' + day.count;
-      return '<span class="progress-calendar__day" data-intensity="' + day.intensity + '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '"></span>';
-    }).join('');
+
+    // Build month labels by iterating weeks in chronological order
+    const monthLabels = [];
+    let prevMonth = null;
+    let labelStart = -1;
+    let labelCount = 0;
+
+    for (let w = 0; w < 52; w++) {
+      const weekFirstDay = weeks[w][0];
+      if (!weekFirstDay || !weekFirstDay.date) {
+        continue;
+      }
+
+      const currentMonth = weekFirstDay.date.getFullYear() + '-' + String(weekFirstDay.date.getMonth()).padStart(2, '0');
+
+      // New month detected
+      if (currentMonth !== prevMonth) {
+        // Save previous month label if one exists
+        if (prevMonth !== null && labelStart !== -1) {
+          const month = new Intl.DateTimeFormat(lang, { month: 'short' }).format(new Date(prevMonth + '-01'));
+          monthLabels.push({ weekIdx: labelStart, month, span: labelCount });
+        }
+        // Start new month label
+        labelStart = w;
+        labelCount = 1;
+        prevMonth = currentMonth;
+      } else {
+        // Same month, increment span
+        labelCount += 1;
+      }
+    }
+
+    // Add the last month label
+    if (prevMonth !== null && labelStart !== -1) {
+      const month = new Intl.DateTimeFormat(lang, { month: 'short' }).format(new Date(prevMonth + '-01'));
+      monthLabels.push({ weekIdx: labelStart, month, span: labelCount });
+    }
+
+    // Build day labels (weekday abbreviations)
+    const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+    // Render heatmap grid
+    let gridHtml = '<div class="progress-calendar__grid">';
+
+    // Month labels row with spanning
+    gridHtml += '<div class="progress-calendar__months">';
+    gridHtml += '<div class="progress-calendar__corner"></div>';
+    monthLabels.forEach((label) => {
+      const col = label.weekIdx + 2;
+      const span = label.span;
+      gridHtml += '<div class="progress-calendar__month" style="grid-column: ' + col + ' / span ' + span + ';">' + escapeHtml(label.month) + '</div>';
+    });
+    gridHtml += '</div>';
+
+    // Weekday rows
+    for (let d = 0; d < 7; d++) {
+      gridHtml += '<div class="progress-calendar__row">';
+      gridHtml += '<div class="progress-calendar__weekday">' + escapeHtml(dayLabels[d]) + '</div>';
+      for (let w = 0; w < 52; w++) {
+        const day = weeks[w][d];
+        const label = day.date ? formatShortDate(day.date.toISOString(), lang) + ': ' + day.count : '';
+        gridHtml += '<span class="progress-calendar__day" data-intensity="' + day.intensity + '" title="' + escapeHtml(label) + '" aria-label="' + escapeHtml(label) + '"></span>';
+      }
+      gridHtml += '</div>';
+    }
+
+    gridHtml += '</div>';
+    calendar.innerHTML = gridHtml;
     emptyState.textContent = labels.emptyActivity;
     emptyState.hidden = maxCount > 0;
   }
@@ -760,6 +887,8 @@ const clientScript = `
   function renderProgressPage() {
     const lang = getSavedUiLanguage();
     const labels = progressLabels[lang] || progressLabels.en;
+    currentProgressLanguage = lang;
+    currentProgressLabels = labels;
     const data = getProgressData();
     const uiLanguageSelect = document.getElementById('ui-language-select');
     document.documentElement.lang = lang;
@@ -786,6 +915,8 @@ const clientScript = `
     renderHistory(data, labels, lang);
     renderLanguageTable(data, labels);
     renderPinned(data, labels);
+    updateOverviewVisibility();
+    updateActivityDescription();
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -804,6 +935,16 @@ const clientScript = `
         renderProgressPage();
       });
     }
+    document.querySelectorAll('[data-progress-overview-tab]').forEach((button) => {
+      button.addEventListener('click', () => {
+        overviewSelected = button.dataset.progressOverviewTab === 'recent' ? 'recent' : 'all-time';
+        updateOverviewVisibility();
+      });
+    });
+    window.addEventListener('resize', () => {
+      updateOverviewVisibility();
+      updateActivityDescription();
+    });
     renderProgressPage();
   });
 `;
@@ -825,6 +966,14 @@ const clientScript = `
             <h2 id="progress-overview-title" data-progress-label="overview">{progressLabels[defaultUiLang].overview}</h2>
             <p class="progress-section__description" data-progress-label="overviewSummary">{progressLabels[defaultUiLang].overviewSummary}</p>
           </div>
+        </div>
+        <div class="progress-overview-tabs" id="progress-overview-tabs" aria-label="Overview range">
+          <button class="progress-overview-tab is-active" type="button" data-progress-overview-tab="all-time" aria-selected="true">
+            <span data-progress-label="overviewAllTime">{progressLabels[defaultUiLang].overviewAllTime}</span>
+          </button>
+          <button class="progress-overview-tab" type="button" data-progress-overview-tab="recent" aria-selected="false">
+            <span data-progress-label="overviewRecent">{progressLabels[defaultUiLang].overviewRecent}</span>
+          </button>
         </div>
         <div class="progress-grid progress-overview" id="progress-overview-grid"></div>
       </section>
