@@ -31,6 +31,11 @@ const clientScript = `
     en: 'EN',
     ja: 'JA',
   };
+  const targetLanguageOptionLabels = {
+    no: 'Norsk',
+    en: 'English',
+    ja: '日本語',
+  };
   const levelKeys = ${JSON.stringify(levelKeys)};
   const levelSortRank = {
     a1: 0,
@@ -93,7 +98,7 @@ const clientScript = `
   }
 
   function getLanguageLabel(value, lang) {
-    return value === 'all' ? getUiText(lang).allLanguages : targetLanguageBadges[value] || value;
+    return value === 'all' ? getUiText(lang).allLanguages : targetLanguageOptionLabels[value] || value;
   }
 
   function getCategoryLabel(value, lang) {
@@ -1107,7 +1112,11 @@ const clientScript = `
                                 value={lang}
                                 data-i18n-target-language={lang}
                             >
-                                {lang.toUpperCase()}
+                                {lang === 'no'
+                                    ? 'Norsk'
+                                    : lang === 'en'
+                                        ? 'English'
+                                        : '日本語'}
                             </option>
                         ))
                     }
@@ -1156,7 +1165,11 @@ const clientScript = `
                                     aria-selected="false"
                                 >
                                     <span data-filter-option-label>
-                                        {lang.toUpperCase()}
+                                        {lang === 'no'
+                                            ? 'Norsk'
+                                            : lang === 'en'
+                                                ? 'English'
+                                                : '日本語'}
                                     </span>
                                 </button>
                             ))

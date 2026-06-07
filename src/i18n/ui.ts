@@ -192,7 +192,10 @@ export type UILabels = {
   flashcardClose: string;
   flashcardSessionComplete: string;
   flashcardContinueSession: string;
-  flashcardExitSession: string;
+  flashcardBackToReview: string;
+  flashcardSessionSubtitle: string;
+  flashcardSessionPerfect: string;
+  flashcardSessionRetryNotice: string;
   flashcardSourceText: string;
   flashcardChooseMeaning: string;
   flashcardCorrect: string;
@@ -338,7 +341,10 @@ export const uiText: Record<UILang, UILabels> = {
     flashcardClose: 'Lukk',
     flashcardSessionComplete: 'Økten er ferdig',
     flashcardContinueSession: 'Neste 5 kort',
-    flashcardExitSession: 'Avslutt',
+    flashcardBackToReview: 'Tilbake til repetisjon',
+    flashcardSessionSubtitle: '5 spørsmål unnagjort. Her er resultatet.',
+    flashcardSessionPerfect: 'Alle riktige',
+    flashcardSessionRetryNotice: 'Kortene du bommet på kommer tilbake i neste økt.',
     flashcardSourceText: 'Kildetekst',
     flashcardChooseMeaning: 'Velg betydningen av:',
     flashcardCorrect: 'Riktig',
@@ -482,7 +488,10 @@ export const uiText: Record<UILang, UILabels> = {
     flashcardClose: 'Close',
     flashcardSessionComplete: 'Session complete',
     flashcardContinueSession: 'Next 5 cards',
-    flashcardExitSession: 'Exit',
+    flashcardBackToReview: 'Back to review',
+    flashcardSessionSubtitle: 'Nice work on the 5 questions. Here is the result.',
+    flashcardSessionPerfect: 'All correct',
+    flashcardSessionRetryNotice: 'Cards you missed will come back in the next session.',
     flashcardSourceText: 'Source text',
     flashcardChooseMeaning: 'Choose the meaning of:',
     flashcardCorrect: 'Correct',
@@ -626,7 +635,10 @@ export const uiText: Record<UILang, UILabels> = {
     flashcardClose: '閉じる',
     flashcardSessionComplete: 'セッション完了',
     flashcardContinueSession: '次の5枚へ',
-    flashcardExitSession: '終了',
+    flashcardBackToReview: 'レビューに戻る',
+    flashcardSessionSubtitle: '5問おつかれさま。今回の結果です。',
+    flashcardSessionPerfect: '全問正解でした',
+    flashcardSessionRetryNotice: '間違えたカードは次のセッションでもう一度出ます',
     flashcardSourceText: '出典テキスト',
     flashcardChooseMeaning: '意味を選んでください：',
     flashcardCorrect: '正解',
