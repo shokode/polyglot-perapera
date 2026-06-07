@@ -783,7 +783,7 @@
     "level": "b2",
     "title": "Å forklare en mening",
     "text": "På møtet i går prøvde jeg å forklare hvorfor jeg var litt skeptisk til den nye planen. På den ene siden liker jeg at vi vil prøve noe nytt, men på den andre siden må vi ta hensyn til tiden vi faktisk har. Jeg sa ikke nei til ideen, men jeg foreslo at vi skulle teste den i mindre skala først. Etter diskusjonen kom vi fram til en løsning alle kunne leve med.",
-    "translationJa": "昨日の会議では、新しい計画に少し慎重な理由を説明しようとしました。一方で、新しいことに挑戦しようとしている点は良いと思いますが、もう一方で、実際に使える時間も考慮しなければなりません。私はその案に反対したわけではなく、まずは小さな規模で試してみることを提案しました。話し合いの後、全員が納得できる解決策にたどり着きました。",
+    "translationJa": "昨日の会議では、新しい計画に少し慎重な理由を説明しようとしました。一方で、新しいことに挑戦しようとしている点は良いと思いますが、その一方で、実際に使える時間も考慮しなければなりません。私はその案に反対したわけではなく、まずは小さな規模で試してみることを提案しました。話し合いの後、全員が納得できる解決策にたどり着きました。",
     "translationEn": "At yesterday's meeting, I tried to explain why I was a little skeptical about the new plan. On the one hand, I like that we want to try something new, but on the other hand, we have to take into account the time we actually have. I did not say no to the idea, but I suggested that we test it on a smaller scale first. After the discussion, we arrived at a solution everyone could live with.",
     "expressions": [
       {
@@ -801,7 +801,7 @@
       },
       {
         "phrase": "på den andre siden",
-        "ja": "他方では",
+        "ja": "その一方で",
         "en": "on the other hand"
       },
       {
