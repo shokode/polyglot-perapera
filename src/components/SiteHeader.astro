@@ -47,6 +47,187 @@ const links = [
           ))}
         </select>
       </div>
+      <div class="site-auth" data-auth-root hidden>
+        <button type="button" class="site-auth__button" data-auth-open data-i18n="authSignIn">
+          Sign in
+        </button>
+        <div class="site-auth__user" data-auth-user hidden>
+          <span class="site-auth__email" data-auth-email></span>
+          <button type="button" class="site-auth__button site-auth__button--ghost" data-auth-signout data-i18n="authSignOut">
+            Sign out
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
+
+<div class="auth-modal" data-auth-modal hidden>
+  <div class="auth-modal__backdrop" data-auth-close></div>
+  <div class="auth-modal__panel" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <button type="button" class="auth-modal__close" data-auth-close aria-label="Close">×</button>
+    <h2 class="auth-modal__title" id="auth-modal-title" data-i18n="authModalTitle">Sign in</h2>
+    <form class="auth-modal__form" data-auth-form>
+      <label class="auth-modal__field">
+        <span data-i18n="authEmail">Email</span>
+        <input type="email" name="email" autocomplete="email" required />
+      </label>
+      <label class="auth-modal__field">
+        <span data-i18n="authPassword">Password</span>
+        <input type="password" name="password" autocomplete="current-password" minlength="6" required />
+      </label>
+      <p class="auth-modal__message" data-auth-message hidden></p>
+      <button type="submit" class="auth-modal__submit" data-auth-submit data-i18n="authSignIn">Sign in</button>
+      <button type="button" class="auth-modal__signup" data-auth-signup data-i18n="authSignUp">Sign up</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  import { getSupabase, isSupabaseConfigured } from '../lib/supabase';
+  import { syncOnSignIn, flushProgress, startAutoSync } from '../lib/progress-sync';
+  import { uiText, type UILang } from '../i18n/ui';
+
+  const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
+
+  function currentLang(): UILang {
+    try {
+      const stored = localStorage.getItem(UI_LANGUAGE_STORAGE_KEY);
+      if (stored && stored in uiText) return stored as UILang;
+    } catch {}
+    return 'en';
+  }
+
+  function t(key: keyof (typeof uiText)['en']): string {
+    return uiText[currentLang()][key];
+  }
+
+  const supabase = getSupabase();
+  const root = document.querySelector<HTMLElement>('[data-auth-root]');
+
+  if (root && supabase && isSupabaseConfigured) {
+    const client = supabase;
+    root.hidden = false;
+
+    const openButton = root.querySelector<HTMLButtonElement>('[data-auth-open]')!;
+    const userBox = root.querySelector<HTMLElement>('[data-auth-user]')!;
+    const emailLabel = root.querySelector<HTMLElement>('[data-auth-email]')!;
+    const signOutButton = root.querySelector<HTMLButtonElement>('[data-auth-signout]')!;
+
+    const modal = document.querySelector<HTMLElement>('[data-auth-modal]')!;
+    const form = modal.querySelector<HTMLFormElement>('[data-auth-form]')!;
+    const message = modal.querySelector<HTMLElement>('[data-auth-message]')!;
+    const submitButton = modal.querySelector<HTMLButtonElement>('[data-auth-submit]')!;
+    const signUpButton = modal.querySelector<HTMLButtonElement>('[data-auth-signup]')!;
+    const closeEls = modal.querySelectorAll<HTMLElement>('[data-auth-close]');
+
+    function openModal() {
+      message.hidden = true;
+      modal.hidden = false;
+      form.querySelector<HTMLInputElement>('input[name="email"]')?.focus();
+    }
+    function closeModal() {
+      modal.hidden = true;
+    }
+    function showMessage(text: string, isError = false) {
+      message.textContent = text;
+      message.hidden = false;
+      message.classList.toggle('is-error', isError);
+    }
+
+    function renderSession(email: string | null) {
+      if (email) {
+        openButton.hidden = true;
+        userBox.hidden = false;
+        emailLabel.textContent = email;
+      } else {
+        openButton.hidden = false;
+        userBox.hidden = true;
+        emailLabel.textContent = '';
+      }
+    }
+
+    openButton.addEventListener('click', openModal);
+    closeEls.forEach((el) => el.addEventListener('click', closeModal));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    async function authenticate(mode: 'signIn' | 'signUp') {
+      const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+      const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+      submitButton.disabled = true;
+      signUpButton.disabled = true;
+      showMessage(t('authProcessing'));
+
+      const result =
+        mode === 'signIn'
+          ? await client.auth.signInWithPassword({ email, password })
+          : await client.auth.signUp({ email, password });
+
+      submitButton.disabled = false;
+      signUpButton.disabled = false;
+
+      if (result.error) {
+        showMessage(result.error.message, true);
+        return;
+      }
+      if (mode === 'signUp' && !result.data.session) {
+        showMessage(t('authCheckEmail'));
+        return;
+      }
+      closeModal();
+      form.reset();
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      authenticate('signIn');
+    });
+    signUpButton.addEventListener('click', () => authenticate('signUp'));
+    signOutButton.addEventListener('click', () => client.auth.signOut());
+
+    let currentUserId: string | null = null;
+    let lastSession: import('@supabase/supabase-js').Session | null = null;
+
+    function flushIfSignedIn() {
+      const user = lastSession?.user;
+      if (user) flushProgress(client, user);
+    }
+
+    // Push local progress to the cloud after a change (debounced), regardless
+    // of which page made it. Idle time costs nothing — uploads happen only
+    // when the progress actually changes, at most once per `minIntervalMs`.
+    startAutoSync(client, () => lastSession?.user ?? null, {
+      pollMs: 1000,
+      minIntervalMs: 2000,
+    });
+
+    // Backstop: also flush when the user leaves or hides the tab.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flushIfSignedIn();
+    });
+    window.addEventListener('pagehide', flushIfSignedIn);
+
+    client.auth.getSession().then(({ data }) => {
+      lastSession = data.session;
+      renderSession(data.session?.user?.email ?? null);
+      if (data.session?.user) {
+        currentUserId = data.session.user.id;
+        syncOnSignIn(client, data.session.user);
+      }
+    });
+    client.auth.onAuthStateChange((event, session) => {
+      lastSession = session;
+      renderSession(session?.user?.email ?? null);
+      const user = session?.user;
+      if (user && event === 'SIGNED_IN' && user.id !== currentUserId) {
+        currentUserId = user.id;
+        syncOnSignIn(client, user);
+      }
+      if (!user) {
+        currentUserId = null;
+      }
+    });
+  }
+</script>

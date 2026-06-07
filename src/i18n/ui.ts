@@ -234,6 +234,16 @@ export type UILabels = {
   showMore: string;
   cardCountDisplay: string;
   cardCountRemaining: string;
+  authSignIn: string;
+  authSignUp: string;
+  authSignOut: string;
+  authEmail: string;
+  authPassword: string;
+  authModalTitle: string;
+  authSignUpHint: string;
+  authProcessing: string;
+  authCheckEmail: string;
+  authClose: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -386,6 +396,16 @@ export const uiText: Record<UILang, UILabels> = {
     showMore: 'Vis mer',
     cardCountDisplay: 'Viser {visible} av {total}',
     cardCountRemaining: 'Vis mer ({remaining} igjen)',
+    authSignIn: 'Logg inn',
+    authSignUp: 'Registrer deg',
+    authSignOut: 'Logg ut',
+    authEmail: 'E-post',
+    authPassword: 'Passord',
+    authModalTitle: 'Logg inn',
+    authSignUpHint: 'Har du ikke konto?',
+    authProcessing: 'Vent litt …',
+    authCheckEmail: 'Sjekk e-posten din for å bekrefte kontoen.',
+    authClose: 'Lukk',
   },
   en: {
     title: 'Polyglotyping',
@@ -536,6 +556,16 @@ export const uiText: Record<UILang, UILabels> = {
     showMore: 'Show more',
     cardCountDisplay: 'Showing {visible} of {total}',
     cardCountRemaining: 'Show more ({remaining} remaining)',
+    authSignIn: 'Sign in',
+    authSignUp: 'Sign up',
+    authSignOut: 'Sign out',
+    authEmail: 'Email',
+    authPassword: 'Password',
+    authModalTitle: 'Sign in',
+    authSignUpHint: "Don't have an account?",
+    authProcessing: 'Please wait …',
+    authCheckEmail: 'Check your email to confirm your account.',
+    authClose: 'Close',
   },
   ja: {
     title: 'Polyglotyping',
@@ -686,5 +716,15 @@ export const uiText: Record<UILang, UILabels> = {
     showMore: 'もっと見る',
     cardCountDisplay: '{total}件中 {visible}件表示',
     cardCountRemaining: 'もっと見る（残り{remaining}件）',
+    authSignIn: 'ログイン',
+    authSignUp: '新規登録',
+    authSignOut: 'ログアウト',
+    authEmail: 'メールアドレス',
+    authPassword: 'パスワード',
+    authModalTitle: 'ログイン',
+    authSignUpHint: 'アカウントをお持ちでない方',
+    authProcessing: '処理中 …',
+    authCheckEmail: '確認メールを送信しました。メールをご確認ください。',
+    authClose: '閉じる',
   },
 };
