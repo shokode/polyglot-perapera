@@ -2355,6 +2355,15 @@ a:active {
   margin-top: 18px;
 }
 
+.review-load-more {
+  display: block;
+  margin: 28px auto 0;
+  width: fit-content;
+  min-height: 38px;
+  padding: 9px 20px;
+  border-radius: 999px;
+}
+
 .expression-card,
 .grammar-card-item {
   position: relative;
