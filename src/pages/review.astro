@@ -12,6 +12,20 @@ import {
 const defaultUiLang: UILang = 'en';
 const appBasePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const appHref = (path: string) => `${appBasePath}${path.replace(/^\//, '')}`;
+const reviewModeDescriptions = {
+  no: {
+    cardList: 'Se kortene i dette utvalget',
+    flashcards: 'Ta en 5-spørsmålskviss med dette utvalget',
+  },
+  en: {
+    cardList: 'See the cards in this set',
+    flashcards: 'Take a 5-question quiz with this set',
+  },
+  ja: {
+    cardList: 'カードを見て管理する',
+    flashcards: 'この条件で5問クイズする',
+  },
+} as const;
 type ReviewExpression = {
   phrase: string;
   storageKey?: string;
@@ -62,6 +76,12 @@ const clientScript = `
     en: 'EN',
     ja: 'JA',
   };
+  const targetLanguageOptionLabels = {
+    no: 'Norsk',
+    en: 'English',
+    ja: '日本語',
+  };
+  const reviewModeDescriptions = ${JSON.stringify(reviewModeDescriptions)};
   const UI_LANGUAGE_STORAGE_KEY = 'typingSiteUiLanguage';
   const TARGET_LANGUAGE_STORAGE_KEY = 'typingSiteTargetLanguage';
   const EXPRESSION_STATUS_KEY = 'typingSiteExpressionStatus';
@@ -332,7 +352,7 @@ const clientScript = `
 
     function getTargetLanguageLabel(value, lang) {
       const labels = getUiText(lang);
-      return value === 'all' ? labels.allLanguages : targetLanguageBadges[value] || value;
+      return value === 'all' ? labels.allLanguages : targetLanguageOptionLabels[value] || value;
     }
 
     function getSortLabel(value, labels) {
@@ -450,10 +470,25 @@ const clientScript = `
       uiLanguageSelect.value = lang;
       reviewTitle.textContent = labels.reviewPageTitle;
       reviewModeButtons.forEach((button) => {
+        const description = reviewModeDescriptions[lang] || reviewModeDescriptions.en;
         if (button.dataset.reviewMode === 'flashcards') {
-          button.textContent = labels.reviewModeFlashcards;
+          const titleNode = button.querySelector('[data-review-mode-label]');
+          const hintNode = button.querySelector('[data-review-mode-hint]');
+          if (titleNode) {
+            titleNode.textContent = labels.reviewModeFlashcards;
+          }
+          if (hintNode) {
+            hintNode.textContent = description.flashcards;
+          }
         } else {
-          button.textContent = labels.reviewModeCardList;
+          const titleNode = button.querySelector('[data-review-mode-label]');
+          const hintNode = button.querySelector('[data-review-mode-hint]');
+          if (titleNode) {
+            titleNode.textContent = labels.reviewModeCardList;
+          }
+          if (hintNode) {
+            hintNode.textContent = description.cardList;
+          }
         }
       });
       if (flashcardClose) {
@@ -757,16 +792,48 @@ const clientScript = `
         .filter((value, index, array) => value && array.indexOf(value) === index);
     }
 
-    function getMeaningForQuiz(expression, uiLang) {
-      for (const lang of getQuizMeaningLanguageOrder(uiLang)) {
-        const value = expression[lang];
-        if (typeof value === 'string' && value.trim()) {
-          return value.trim();
+    function getMeaningInLanguage(expression, lang) {
+      const value = expression[lang];
+      return typeof value === 'string' && value.trim() ? value.trim() : '';
+    }
+
+    function getAvailableMeaningLanguages(pool, requiredCount = 4) {
+      return ['ja', 'en', 'no'].filter((lang) => {
+        const meanings = new Set();
+        pool.forEach((expression) => {
+          const meaning = getMeaningInLanguage(expression, lang);
+          if (meaning) {
+            meanings.add(meaning);
+          }
+        });
+        return meanings.size >= requiredCount;
+      });
+    }
+
+    function getQuizChoiceLanguage(expression, uiLang, pool) {
+      const candidatePool = [...pool, ...expressions]
+        .filter((item, index, array) => array.findIndex((candidate) => getExpressionStorageKey(candidate) === getExpressionStorageKey(item)) === index);
+      const languageOrder = [
+        ...getQuizMeaningLanguageOrder(uiLang),
+        ...getAvailableMeaningLanguages(candidatePool),
+      ].filter((value, index, array) => value && array.indexOf(value) === index);
+      return languageOrder.find((lang) => {
+        const correct = getMeaningInLanguage(expression, lang);
+        if (!correct) {
+          return false;
         }
-      }
-      const fallback = Object.entries(expression)
-        .find(([key, value]) => ['ja', 'en', 'no'].includes(key) && typeof value === 'string' && value.trim());
-      return fallback ? fallback[1].trim() : expression.phrase;
+        const wrongChoices = new Set();
+        candidatePool.forEach((item) => {
+          if (getExpressionStorageKey(item) === getExpressionStorageKey(expression)) {
+            return;
+          }
+          const meaning = getMeaningInLanguage(item, lang);
+          if (meaning && meaning !== correct) {
+            wrongChoices.add(meaning);
+          }
+        });
+        return wrongChoices.size >= 3;
+      }) || '';
     }
 
     function shuffleItems(items) {
@@ -779,14 +846,18 @@ const clientScript = `
     }
 
     function getFlashcardChoices(expression, uiLang, pool) {
-      const correct = getMeaningForQuiz(expression, uiLang);
+      const choiceLanguage = getQuizChoiceLanguage(expression, uiLang, pool);
+      if (!choiceLanguage) {
+        return [];
+      }
+      const correct = getMeaningInLanguage(expression, choiceLanguage);
       const expressionKey = getExpressionStorageKey(expression);
       const preferredPool = pool.filter((item) => getExpressionStorageKey(item) !== expressionKey);
       const fallbackPool = expressions.filter((item) => getExpressionStorageKey(item) !== expressionKey);
       const wrongChoices = [];
 
       [...preferredPool, ...fallbackPool].forEach((item) => {
-        const meaning = getMeaningForQuiz(item, uiLang);
+        const meaning = getMeaningInLanguage(item, choiceLanguage);
         if (meaning && meaning !== correct && !wrongChoices.includes(meaning)) {
           wrongChoices.push(meaning);
         }
@@ -808,11 +879,58 @@ const clientScript = `
         correctStreak: isCorrect ? Number(previous.correctStreak || 0) + 1 : 0,
         totalCorrect: Number(previous.totalCorrect || 0) + (isCorrect ? 1 : 0),
         totalWrong: Number(previous.totalWrong || 0) + (isCorrect ? 0 : 1),
+        lastResult: isCorrect ? 'correct' : 'wrong',
         lastAnsweredAt: new Date().toISOString(),
       };
       allStats[key] = next;
       saveExpressionQuizStats(allStats);
       return next;
+    }
+
+    function getFlashcardPriorityWeight(expression, quizStats) {
+      const key = getExpressionStorageKey(expression);
+      const stats = quizStats[key] && typeof quizStats[key] === 'object' ? quizStats[key] : {};
+      const status = getExpressionStatus(expression);
+      const lastAnsweredTime = Date.parse(stats.lastAnsweredAt || '');
+      const answeredRecently = Number.isFinite(lastAnsweredTime) && Date.now() - lastAnsweredTime <= 7 * 24 * 60 * 60 * 1000;
+      let weight = 1;
+      if (answeredRecently && stats.lastResult === 'wrong') {
+        weight += 5;
+      }
+      if (Number(stats.correctStreak || 0) === 2) {
+        weight += 4;
+      }
+      if (status === 'new') {
+        weight += 3;
+      } else if (status === 'review') {
+        weight += 2;
+      }
+      return weight;
+    }
+
+    function takeWeightedRandomItems(items, count) {
+      const quizStats = loadExpressionQuizStats();
+      const remaining = [...items];
+      const selected = [];
+      while (remaining.length && selected.length < count) {
+        const weightedItems = remaining.map((item) => ({
+          item,
+          weight: getFlashcardPriorityWeight(item, quizStats),
+        }));
+        const totalWeight = weightedItems.reduce((sum, entry) => sum + entry.weight, 0);
+        let randomWeight = Math.random() * totalWeight;
+        let selectedIndex = 0;
+        for (let index = 0; index < weightedItems.length; index += 1) {
+          randomWeight -= weightedItems[index].weight;
+          if (randomWeight <= 0) {
+            selectedIndex = index;
+            break;
+          }
+        }
+        selected.push(remaining[selectedIndex]);
+        remaining.splice(selectedIndex, 1);
+      }
+      return selected;
     }
 
     function resetFlashcardAnswerState() {
@@ -824,9 +942,10 @@ const clientScript = `
 
     function resetFlashcardSession(start = flashcardSessionStart) {
       const reviewItems = getFlashcardCandidateItems();
-      flashcardSessionStart = reviewItems.length ? start % reviewItems.length : 0;
-      const sessionSize = Math.min(FLASHCARD_SESSION_SIZE, reviewItems.length);
-      flashcardSessionQueue = reviewItems.slice(flashcardSessionStart, flashcardSessionStart + sessionSize);
+      const eligibleItems = reviewItems.filter((expression) => getQuizChoiceLanguage(expression, uiLanguageSelect.value, reviewItems));
+      flashcardSessionStart = eligibleItems.length ? start % eligibleItems.length : 0;
+      const sessionSize = Math.min(FLASHCARD_SESSION_SIZE, eligibleItems.length);
+      flashcardSessionQueue = takeWeightedRandomItems(eligibleItems, sessionSize);
       flashcardIndex = 0;
       flashcardRetryKeys = new Set();
       flashcardSessionStats = { correct: 0, wrong: 0, learned: 0 };
@@ -871,21 +990,33 @@ const clientScript = `
 
     function renderFlashcardCompletion(labels, reviewItems) {
       if (flashcardProgress) {
-        const sessionTotal = Math.min(FLASHCARD_SESSION_SIZE, Math.max(flashcardSessionQueue.length, 1));
-        flashcardProgress.textContent = sessionTotal + ' / ' + sessionTotal;
+        flashcardProgress.hidden = true;
       }
       flashcardStage.hidden = false;
+      const learnedCount = flashcardSessionStats.learned;
+      const hasMistakes = flashcardSessionStats.wrong > 0;
       flashcardStage.innerHTML = ''
         + '<div class="flashcard-session-complete">'
         + '<strong>' + escapeHtml(labels.flashcardSessionComplete) + '</strong>'
-        + '<div class="flashcard-result-summary">'
-        + '<span>' + escapeHtml(labels.flashcardResultCorrect) + ': <strong>' + flashcardSessionStats.correct + '</strong></span>'
-        + '<span>' + escapeHtml(labels.flashcardResultWrong) + ': <strong>' + flashcardSessionStats.wrong + '</strong></span>'
-        + (flashcardSessionStats.learned > 0 ? '<span>' + escapeHtml(labels.flashcardResultLearned) + ': <strong>' + flashcardSessionStats.learned + '</strong></span>' : '')
+        + '<p class="flashcard-session-subtitle">' + escapeHtml(labels.flashcardSessionSubtitle) + '</p>'
+        + '<div class="flashcard-session-stats">'
+        + '<article class="flashcard-session-stat">'
+        + '<span>' + escapeHtml(labels.flashcardResultCorrect) + '</span>'
+        + '<strong>' + flashcardSessionStats.correct + '</strong>'
+        + '</article>'
+        + '<article class="flashcard-session-stat">'
+        + '<span>' + escapeHtml(labels.flashcardResultWrong) + '</span>'
+        + '<strong>' + flashcardSessionStats.wrong + '</strong>'
+        + '</article>'
+        + '<article class="flashcard-session-stat' + (learnedCount > 0 ? ' is-learned' : '') + '">'
+        + '<span>' + escapeHtml(labels.flashcardResultLearned) + '</span>'
+        + '<strong>' + learnedCount + '</strong>'
+        + '</article>'
         + '</div>'
+        + '<p class="flashcard-session-message">' + escapeHtml(hasMistakes ? labels.flashcardSessionRetryNotice : labels.flashcardSessionPerfect) + '</p>'
         + '<div class="flashcard-complete-actions">'
         + '<button class="primary-button" type="button" data-flashcard-continue>' + escapeHtml(labels.flashcardContinueSession) + '</button>'
-        + '<button class="secondary-button" type="button" data-flashcard-exit>' + escapeHtml(labels.flashcardExitSession) + '</button>'
+        + '<button class="secondary-button" type="button" data-flashcard-exit>' + escapeHtml(labels.flashcardBackToReview) + '</button>'
         + '</div>'
         + '</div>';
       flashcardStage.querySelector('[data-flashcard-continue]')?.addEventListener('click', () => {
@@ -935,14 +1066,15 @@ const clientScript = `
         flashcardResult = null;
       }
       const correctChoice = flashcardCurrentChoices.find((choice) => choice.isCorrect);
-      const hasEnoughChoices = flashcardCurrentChoices.length >= 2;
-      const currentPosition = Math.min(flashcardIndex + 1, Math.min(FLASHCARD_SESSION_SIZE, sessionItems.length));
-      const sessionTotal = Math.min(FLASHCARD_SESSION_SIZE, Math.max(sessionItems.length, 1));
+      const hasEnoughChoices = flashcardCurrentChoices.length === 4;
+      const currentPosition = Math.min(flashcardIndex + 1, sessionItems.length);
+      const sessionTotal = Math.max(sessionItems.length, 1);
       const sentenceFormDiffers = Boolean(expression.formInText && expression.formInText !== expression.phrase);
       if (flashcardEmptyState) {
         flashcardEmptyState.hidden = true;
       }
       if (flashcardProgress) {
+        flashcardProgress.hidden = false;
         flashcardProgress.textContent = currentPosition + ' / ' + sessionTotal;
       }
 
@@ -1207,31 +1339,15 @@ const clientScript = `
       </section>
 
       <section class="expressions-card">
-        <div class="review-mode-switch" role="group" aria-label="Review mode">
-          <button
-            class="typing-mode-button active"
-            type="button"
-            data-review-mode="list"
-            aria-pressed="true"
-          >
-            {uiText[defaultUiLang].reviewModeCardList}
-          </button>
-          <button
-            class="typing-mode-button"
-            type="button"
-            data-review-mode="flashcards"
-            aria-pressed="false"
-          >
-            {uiText[defaultUiLang].reviewModeFlashcards}
-          </button>
-        </div>
         <div class="review-controls">
           <div class="filter-group">
             <label id="review-target-language-label" for="review-target-language-button" data-i18n="practiceLanguage">{uiText[defaultUiLang].practiceLanguage}</label>
             <select id="review-target-language" class="native-filter-select" aria-hidden="true" tabindex="-1">
               <option value="all" data-i18n-target-language="all">{uiText[defaultUiLang].allLanguages}</option>
               {uiLanguages.map((lang) => (
-                <option value={lang} data-i18n-target-language={lang}>{lang.toUpperCase()}</option>
+                <option value={lang} data-i18n-target-language={lang}>
+                  {lang === 'no' ? 'Norsk' : lang === 'en' ? 'English' : '日本語'}
+                </option>
               ))}
             </select>
             <div class="status-filter-dropdown">
@@ -1251,7 +1367,7 @@ const clientScript = `
                 </button>
                 {uiLanguages.map((lang) => (
                   <button class="status-filter-option" type="button" role="option" tabindex="-1" data-target-language-option data-dropdown-value={lang} aria-selected="false">
-                    <span data-filter-option-label>{lang.toUpperCase()}</span>
+                    <span data-filter-option-label>{lang === 'no' ? 'Norsk' : lang === 'en' ? 'English' : '日本語'}</span>
                   </button>
                 ))}
               </div>
@@ -1334,6 +1450,26 @@ const clientScript = `
               </div>
             </div>
           </div>
+        </div>
+        <div class="review-mode-switch" role="group" aria-label="Review mode">
+          <button
+            class="typing-mode-button active"
+            type="button"
+            data-review-mode="list"
+            aria-pressed="true"
+          >
+            <span class="review-mode-switch__label" data-review-mode-label>{uiText[defaultUiLang].reviewModeCardList}</span>
+            <span class="review-mode-switch__hint" data-review-mode-hint>{reviewModeDescriptions[defaultUiLang].cardList}</span>
+          </button>
+          <button
+            class="typing-mode-button"
+            type="button"
+            data-review-mode="flashcards"
+            aria-pressed="false"
+          >
+            <span class="review-mode-switch__label" data-review-mode-label>{uiText[defaultUiLang].reviewModeFlashcards}</span>
+            <span class="review-mode-switch__hint" data-review-mode-hint>{reviewModeDescriptions[defaultUiLang].flashcards}</span>
+          </button>
         </div>
         <div id="review-list-panel">
           <div id="review-grid" class="expressions-grid"></div>
