@@ -879,7 +879,7 @@ const clientScript = `
       if (!items.length) {
         return '';
       }
-      return '<div class="progress-pinned-group"><h3>' + escapeHtml(type === 'translation' ? labels.pinnedTranslation : labels.pinnedOriginal) + '</h3>'
+      return '<div class="progress-pinned-group"><h3><span class="pinned-star-icon">★</span> ' + escapeHtml(type === 'translation' ? labels.pinnedTranslation : labels.pinnedOriginal) + '</h3>'
         + '<div class="progress-pinned-list">'
         + items.map((target) => {
           const text = getTextById(target.textId);
@@ -1066,7 +1066,7 @@ const clientScript = `
         hidden
       >
         <div class="progress-section__header">
-          <h2 id="progress-pinned-title" data-progress-label="pinnedPractice">{progressLabels[defaultUiLang].pinnedPractice}</h2>
+          <h2 id="progress-pinned-title" data-progress-label="pinnedPractice"><span class="pinned-star-icon">★</span> {progressLabels[defaultUiLang].pinnedPractice}</h2>
         </div>
         <div id="progress-pinned"></div>
       </section>
