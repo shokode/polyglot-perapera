@@ -1017,7 +1017,6 @@ const clientScript = `
         >
             <div class="dashboard-heading dashboard-heading--with-actions">
                 <div>
-                    <span class="section-kicker">Progress</span>
                     <h2 id="dashboard-title">
                         {uiText[defaultUiLang].todayPractice}
                     </h2>
@@ -1043,7 +1042,7 @@ const clientScript = `
                     >
                     <strong id="total-sessions-value">0</strong>
                 </article>
-                <article class="dashboard-stat">
+                <article class="dashboard-stat" data-stat-kind="learned">
                     <span id="learned-expressions-label"
                         >{uiText[defaultUiLang].learnedExpressions}</span
                     >

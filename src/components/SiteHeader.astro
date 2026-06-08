@@ -40,6 +40,7 @@ const links = [
             class:list={["site-nav__link", active === link.key && "is-active"]}
             href={link.href}
             aria-current={active === link.key ? "page" : undefined}
+            data-i18n={link.key}
           >
             {link.label}
           </a>

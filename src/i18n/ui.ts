@@ -86,6 +86,8 @@ export const levelLabels: Record<LevelKey, Record<UILang, string>> = {
 };
 
 export type UILabels = {
+  home: string;
+  review: string;
   title: string;
   subtitle: string;
   language: string;
@@ -248,6 +250,8 @@ export type UILabels = {
 
 export const uiText: Record<UILang, UILabels> = {
   no: {
+    home: 'Hjem',
+    review: 'Repeter',
     title: 'Polyglotyping',
     subtitle: 'Multispråklig lesing og skriving med naturlige tekster.',
     language: 'Språk',
@@ -408,6 +412,8 @@ export const uiText: Record<UILang, UILabels> = {
     authClose: 'Lukk',
   },
   en: {
+    home: 'Home',
+    review: 'Review',
     title: 'Polyglotyping',
     subtitle: 'Multilingual reading and typing with natural texts.',
     language: 'Language',
@@ -568,6 +574,8 @@ export const uiText: Record<UILang, UILabels> = {
     authClose: 'Close',
   },
   ja: {
+    home: 'ホーム',
+    review: '復習',
     title: 'Polyglotyping',
     subtitle: '自然なテキストで学ぶ多言語のリーディングとタイピング。',
     language: '言語',

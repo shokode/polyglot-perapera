@@ -697,6 +697,7 @@ const clientScript = `
 
     gridHtml += '</div>';
     calendar.innerHTML = gridHtml;
+    calendar.scrollLeft = calendar.scrollWidth;
     emptyState.textContent = labels.emptyActivity;
     emptyState.hidden = maxCount > 0;
   }
@@ -778,7 +779,7 @@ const clientScript = `
         },
       });
     });
-    return items.slice(0, 8);
+    return items.slice(0, 3);
   }
 
   function renderAttention(data, labels, lang) {
@@ -790,20 +791,19 @@ const clientScript = `
     }
     container.innerHTML = items.map(({ row, target, reasons }) => {
       const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
-      return '<article class="progress-attention-card" data-target-language="' + escapeHtml(row.language) + '">'
-        + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
+      return '<a href="' + escapeHtml(getPracticeHref(target)) + '" class="progress-attention-card" data-target-language="' + escapeHtml(row.language) + '">'
         + '<div class="progress-attention-card__main">'
-        + '<strong>' + escapeHtml(row.title) + '</strong>'
-        + '<div class="progress-attention-card__meta">'
+        + '<p class="progress-attention-card__meta">'
+        + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
         + '<span>' + escapeHtml(row.practiceType === 'translation' ? labels.translation : labels.original) + '</span>'
         + '<span>' + reasons.map(escapeHtml).join(' / ') + '</span>'
         + '<span>' + formatPercent(row.accuracy) + '</span>'
         + '<span>' + (Number.isFinite(row.speed) ? Math.round(row.speed) + ' ' + speedUnit : '—') + '</span>'
         + '<time>' + escapeHtml(formatDate(row.practicedAt, lang)) + '</time>'
+        + '</p>'
+        + '<strong>' + escapeHtml(row.title) + '</strong>'
         + '</div>'
-        + '</div>'
-        + '<a class="secondary-button" href="' + escapeHtml(getPracticeHref(target)) + '">' + escapeHtml(labels.practice) + '</a>'
-        + '</article>';
+        + '</a>';
     }).join('');
   }
 
@@ -816,10 +816,16 @@ const clientScript = `
       toggle.hidden = true;
       return;
     }
-    const visibleRows = historyExpanded ? rows : rows.slice(0, 3);
+    const cutoff = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const recentRows = rows.filter((row) => {
+      const time = Date.parse(row.practicedAt || '');
+      return Number.isFinite(time) && time >= cutoff;
+    });
+    const visibleRows = historyExpanded ? recentRows : rows.slice(0, 3);
     container.innerHTML = visibleRows.map((row) => {
       const speedUnit = row.language === 'ja' ? 'CPM' : 'WPM';
-      return '<article class="progress-history-row" data-target-language="' + escapeHtml(row.language) + '">'
+      const target = { textId: row.text.id, practiceType: row.practiceType, practiceTranslation: row.practiceType === 'translation' ? row.language : null };
+      return '<a href="' + escapeHtml(getPracticeHref(target)) + '" class="progress-history-row" data-target-language="' + escapeHtml(row.language) + '">'
         + '<span class="language-badge language-badge--' + escapeHtml(row.language) + '">' + escapeHtml(targetLanguageBadges[row.language] || row.language) + '</span>'
         + '<strong>' + escapeHtml(row.title) + '</strong>'
         + '<div class="progress-history-row__meta">'
@@ -829,7 +835,7 @@ const clientScript = `
         + formatSelfAssessment(row.selfAssessment, labels)
         + '<time>' + escapeHtml(formatDate(row.practicedAt, lang)) + '</time>'
         + '</div>'
-        + '</article>';
+        + '</a>';
     }).join('');
     toggle.hidden = rows.length <= 3;
     toggle.textContent = historyExpanded ? labels.showLess : labels.showMore;
@@ -878,7 +884,7 @@ const clientScript = `
         + items.map((target) => {
           const text = getTextById(target.textId);
           const language = target.practiceType === 'translation' ? target.practiceTranslation : text.language;
-          return '<article class="progress-pinned-card" data-target-language="' + escapeHtml(language) + '"><div><p class="progress-pinned-card__meta"><span class="language-badge language-badge--' + escapeHtml(language) + '">' + escapeHtml(targetLanguageBadges[language] || language) + '</span><span>' + escapeHtml(target.practiceType === 'translation' ? labels.translation : labels.original) + '</span></p><strong>' + escapeHtml(text.title) + '</strong></div><a class="secondary-button" href="' + escapeHtml(getPracticeHref(target)) + '">' + escapeHtml(labels.practice) + '</a></article>';
+          return '<a href="' + escapeHtml(getPracticeHref(target)) + '" class="progress-pinned-card" data-target-language="' + escapeHtml(language) + '"><div><p class="progress-pinned-card__meta"><span class="language-badge language-badge--' + escapeHtml(language) + '">' + escapeHtml(targetLanguageBadges[language] || language) + '</span><span>' + escapeHtml(target.practiceType === 'translation' ? labels.translation : labels.original) + '</span></p><strong>' + escapeHtml(text.title) + '</strong></div></a>';
         }).join('')
         + '</div></div>';
     }).join('');
@@ -1008,6 +1014,28 @@ const clientScript = `
         </section>
       </div>
 
+      <section class="progress-section" aria-labelledby="progress-language-title">
+        <div class="progress-section__header">
+          <h2 id="progress-language-title" data-progress-label="byLanguage">{progressLabels[defaultUiLang].byLanguage}</h2>
+        </div>
+        <div class="language-progress-table-wrap">
+          <table class="language-progress-table">
+            <thead>
+              <tr>
+                <th scope="col" data-progress-label="language">{progressLabels[defaultUiLang].language}</th>
+                <th scope="col" data-progress-label="textsPracticed">{progressLabels[defaultUiLang].textsPracticed}</th>
+                <th scope="col" data-progress-label="totalPracticeCount">{progressLabels[defaultUiLang].totalPracticeCount}</th>
+                <th scope="col" data-progress-label="averageAccuracy">{progressLabels[defaultUiLang].averageAccuracy}</th>
+                <th scope="col" data-progress-label="speed">{progressLabels[defaultUiLang].speed}</th>
+                <th scope="col" data-progress-label="reviewingExpressions">{progressLabels[defaultUiLang].reviewingExpressions}</th>
+                <th scope="col" data-progress-label="learnedExpressions">{progressLabels[defaultUiLang].learnedExpressions}</th>
+              </tr>
+            </thead>
+            <tbody id="progress-language-grid"></tbody>
+          </table>
+        </div>
+      </section>
+
       <section class="progress-section" aria-labelledby="progress-attention-title">
         <div class="progress-section__header">
           <h2 id="progress-attention-title" data-progress-label="needsAttention">{progressLabels[defaultUiLang].needsAttention}</h2>
@@ -1029,28 +1057,6 @@ const clientScript = `
         >
           {progressLabels[defaultUiLang].showMore}
         </button>
-      </section>
-
-      <section class="progress-section" aria-labelledby="progress-language-title">
-        <div class="progress-section__header">
-          <h2 id="progress-language-title" data-progress-label="byLanguage">{progressLabels[defaultUiLang].byLanguage}</h2>
-        </div>
-        <div class="language-progress-table-wrap">
-          <table class="language-progress-table">
-            <thead>
-              <tr>
-                <th scope="col" data-progress-label="language">{progressLabels[defaultUiLang].language}</th>
-                <th scope="col" data-progress-label="textsPracticed">{progressLabels[defaultUiLang].textsPracticed}</th>
-                <th scope="col" data-progress-label="totalPracticeCount">{progressLabels[defaultUiLang].totalPracticeCount}</th>
-                <th scope="col" data-progress-label="averageAccuracy">{progressLabels[defaultUiLang].averageAccuracy}</th>
-                <th scope="col" data-progress-label="speed">{progressLabels[defaultUiLang].speed}</th>
-                <th scope="col" data-progress-label="reviewingExpressions">{progressLabels[defaultUiLang].reviewingExpressions}</th>
-                <th scope="col" data-progress-label="learnedExpressions">{progressLabels[defaultUiLang].learnedExpressions}</th>
-              </tr>
-            </thead>
-            <tbody id="progress-language-grid"></tbody>
-          </table>
-        </div>
       </section>
 
       <section

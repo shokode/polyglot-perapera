@@ -919,6 +919,20 @@ a:active {
   font-variant-numeric: tabular-nums;
 }
 
+.dashboard-stat[data-stat-kind="learned"] {
+  position: relative;
+  border-color: rgba(190, 242, 100, 0.22);
+  background:
+    linear-gradient(90deg, rgba(190, 242, 100, 0.09), transparent 42%),
+    rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 0 0 1px rgba(190, 242, 100, 0.035);
+}
+
+
+.dashboard-stat[data-stat-kind="learned"] strong {
+  color: #bef264;
+}
+
 .language-switcher {
   align-self: start;
   justify-self: end;
@@ -1912,19 +1926,6 @@ a:active {
   box-shadow: inset 0 0 0 1px rgba(190, 242, 100, 0.035);
 }
 
-.progress-stat-card[data-stat-kind="learned"]::before {
-  content: "";
-  position: absolute;
-  inset: 8px auto 8px 7px;
-  width: 3px;
-  border-radius: 999px;
-  background: rgba(190, 242, 100, 0.72);
-}
-
-.progress-stat-card[data-stat-kind="learned"] span,
-.progress-stat-card[data-stat-kind="learned"] strong {
-  padding-left: 8px;
-}
 
 .progress-stat-card[data-stat-kind="learned"] strong {
   color: #bef264;
@@ -2117,7 +2118,12 @@ a:active {
   color: var(--text-muted);
   font-size: 0.8rem;
   line-height: 1.3;
-  cursor: default;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.progress-history-row:hover {
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .progress-history-row strong {
@@ -2277,19 +2283,24 @@ a:active {
 
 .progress-attention-card {
   position: relative;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 14px;
   overflow: hidden;
+  padding: 14px 14px 14px 18px;
   border-color: rgba(130, 199, 255, 0.14);
   background: rgba(82, 175, 255, 0.045);
-  padding: 14px 15px 14px 18px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.progress-attention-card:hover {
+  background: rgba(82, 175, 255, 0.08);
 }
 
 .progress-attention-card__main {
   display: grid;
-  gap: 7px;
+  gap: 6px;
   min-width: 0;
 }
 
@@ -2301,10 +2312,15 @@ a:active {
 .progress-attention-card__meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 7px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
-.progress-attention-card__meta span,
+.progress-attention-card__meta span:not(.language-badge),
 .progress-attention-card__meta time {
   color: var(--text-muted);
   font-size: 0.8rem;
@@ -2312,7 +2328,7 @@ a:active {
   white-space: nowrap;
 }
 
-.progress-attention-card__meta span::after,
+.progress-attention-card__meta span:not(.language-badge)::after,
 .progress-attention-card__meta time::after {
   content: "·";
   margin-left: 7px;
@@ -2430,6 +2446,12 @@ a:active {
   gap: 14px;
   overflow: hidden;
   padding: 14px 14px 14px 18px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.progress-pinned-card:hover {
+  background: rgba(82, 175, 255, 0.08);
 }
 
 .progress-pinned-card>div {
@@ -4458,6 +4480,10 @@ h3 {
 
   .progress-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .progress-overview {
+    grid-template-columns: 1fr;
   }
 
   .progress-insight-grid {
