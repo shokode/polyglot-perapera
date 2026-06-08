@@ -27,7 +27,13 @@ const links = [
         <span>Language practice</span>
       </span>
     </a>
-    <div class="site-header__actions">
+    <button type="button" class="site-header__menu-toggle" data-menu-toggle aria-label="Menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="site-header__menu" data-menu>
+      <div class="site-header__actions">
       <nav class="site-nav" aria-label="Main navigation">
         {links.map((link) => (
           <a
@@ -52,11 +58,28 @@ const links = [
           Sign in
         </button>
         <div class="site-auth__user" data-auth-user hidden>
-          <span class="site-auth__email" data-auth-email></span>
-          <button type="button" class="site-auth__button site-auth__button--ghost" data-auth-signout data-i18n="authSignOut">
-            Sign out
+          <!-- Mobile inline account section (CSS-hidden on desktop, shown in hamburger menu) -->
+          <div class="site-auth__inline">
+            <div class="site-auth__inline-identity">
+              <span class="site-auth__inline-avatar" data-auth-inline-initial></span>
+              <span class="site-auth__inline-email" data-auth-inline-email></span>
+            </div>
+            <button type="button" class="site-auth__inline-signout" data-auth-inline-signout data-i18n="authSignOut">
+              Sign out
+            </button>
+          </div>
+          <!-- Desktop avatar + dropdown (CSS-hidden on mobile) -->
+          <button type="button" class="site-auth__avatar" data-auth-avatar-toggle aria-label="Account menu" aria-expanded="false" aria-haspopup="menu">
+            <span class="site-auth__avatar-initial" data-auth-initial>C</span>
           </button>
+          <div class="site-auth__menu" data-auth-avatar-menu hidden role="menu">
+            <div class="site-auth__menu-email" data-auth-email></div>
+            <button type="button" class="site-auth__menu-signout" data-auth-signout role="menuitem" data-i18n="authSignOut">
+              Sign out
+            </button>
+          </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -82,6 +105,27 @@ const links = [
     </form>
   </div>
 </div>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  if (toggle && menu) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('is-open');
+    });
+
+    const links = menu.querySelectorAll('a, button');
+    links.forEach((link) => {
+      link.addEventListener('click', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        menu.classList.remove('is-open');
+      });
+    });
+  }
+</script>
 
 <script>
   import { getSupabase, isSupabaseConfigured } from '../lib/supabase';
@@ -112,7 +156,13 @@ const links = [
     const openButton = root.querySelector<HTMLButtonElement>('[data-auth-open]')!;
     const userBox = root.querySelector<HTMLElement>('[data-auth-user]')!;
     const emailLabel = root.querySelector<HTMLElement>('[data-auth-email]')!;
+    const avatarToggle = root.querySelector<HTMLButtonElement>('[data-auth-avatar-toggle]')!;
+    const avatarMenu = root.querySelector<HTMLElement>('[data-auth-avatar-menu]')!;
+    const avatarInitial = root.querySelector<HTMLElement>('[data-auth-initial]')!;
     const signOutButton = root.querySelector<HTMLButtonElement>('[data-auth-signout]')!;
+    const inlineInitial = root.querySelector<HTMLElement>('[data-auth-inline-initial]')!;
+    const inlineEmail = root.querySelector<HTMLElement>('[data-auth-inline-email]')!;
+    const inlineSignOut = root.querySelector<HTMLButtonElement>('[data-auth-inline-signout]')!;
 
     const modal = document.querySelector<HTMLElement>('[data-auth-modal]')!;
     const form = modal.querySelector<HTMLFormElement>('[data-auth-form]')!;
@@ -139,13 +189,36 @@ const links = [
       if (email) {
         openButton.hidden = true;
         userBox.hidden = false;
+        const initial = email.charAt(0).toUpperCase();
         emailLabel.textContent = email;
+        avatarInitial.textContent = initial;
+        inlineInitial.textContent = initial;
+        inlineEmail.textContent = email;
+        avatarMenu.hidden = true;
       } else {
         openButton.hidden = false;
         userBox.hidden = true;
         emailLabel.textContent = '';
+        inlineEmail.textContent = '';
+        avatarMenu.hidden = true;
       }
     }
+
+    inlineSignOut.addEventListener('click', () => client.auth.signOut());
+
+    avatarToggle.addEventListener('click', () => {
+      const expanded = avatarToggle.getAttribute('aria-expanded') === 'true';
+      avatarToggle.setAttribute('aria-expanded', String(!expanded));
+      avatarMenu.hidden = expanded;
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (!userBox.contains(target) && avatarToggle.getAttribute('aria-expanded') === 'true') {
+        avatarToggle.setAttribute('aria-expanded', 'false');
+        avatarMenu.hidden = true;
+      }
+    });
 
     openButton.addEventListener('click', openModal);
     closeEls.forEach((el) => el.addEventListener('click', closeModal));
