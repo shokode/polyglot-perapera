@@ -10,6 +10,9 @@
   font-size: 1rem;
   scroll-padding-top: 72px;
 
+  /* ── Layout ── */
+  --navbar-height: 72px;
+
   /* ── Fonts ── */
   --font-body: "Zen Kaku Gothic New", "Nunito Sans", Inter, sans-serif;
   --font-heading: "Nunito Sans", "Zen Kaku Gothic New", sans-serif;
@@ -130,10 +133,6 @@
   --review-btn-active-end-rgb: 20, 28, 42;
   --review-btn-shadow-rgb: 2, 6, 23;
 
-  /* ── Body background glows ── */
-  --glow-blue-rgb: 75, 114, 255;
-  --glow-cyan-rgb: 0, 215, 255;
-
   /* ── Component-specific ── */
   --flashcard-choice-text: #e2e8f0;
   --flashcard-choice-correct-text: #dcfce7;
@@ -154,9 +153,7 @@ body {
   min-height: 100vh;
   font-family: var(--font-body);
   font-weight: 400;
-  background: radial-gradient(circle at top left, rgba(var(--glow-blue-rgb), 0.18), transparent 26%),
-    radial-gradient(circle at bottom right, rgba(var(--glow-cyan-rgb), 0.1), transparent 18%),
-    var(--surface);
+  background: var(--surface);
 }
 
 h1,
@@ -889,7 +886,7 @@ a:active {
 .page-shell {
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 28px 0 80px;
+  padding: calc(var(--navbar-height) + 28px) 0 80px;
 }
 
 .page-layout {
@@ -1305,114 +1302,55 @@ a:active {
 }
 
 .review-mode-switch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 4px;
   margin: 0 0 16px;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  border: 1px solid rgba(var(--border-rgb), 0.18);
+  border-radius: 999px;
+  background: var(--surface-muted);
   position: relative;
   z-index: 1;
 }
 
-.review-mode-switch .typing-mode-button {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+.review-mode-switch__segment {
+  display: flex;
   align-items: center;
-  justify-items: start;
-  gap: 12px;
-  min-width: 0;
-  min-height: 92px;
-  padding: 15px 16px;
-  border: 1px solid rgba(var(--border-rgb), 0.14);
-  border-radius: 18px;
-  background:
-    linear-gradient(180deg, rgba(var(--review-btn-bg-start-rgb), 0.96), rgba(var(--review-btn-bg-end-rgb), 0.94));
-  color: var(--text-bright);
-  text-align: left;
-  box-shadow:
-    0 10px 22px rgba(var(--review-btn-shadow-rgb), 0.12),
-    inset 0 1px 0 rgba(var(--white-rgb), 0.02);
-  transform: translateY(0);
-  transition:
-    transform 160ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease,
-    box-shadow 160ms ease,
-    color 160ms ease,
-    opacity 160ms ease;
-}
-
-.review-mode-switch .typing-mode-button::before {
-  content: "";
-  grid-row: 1 / span 2;
-  width: 32px;
-  height: 32px;
-  border-radius: 11px;
-  background:
-    linear-gradient(135deg, rgba(var(--accent-rgb), 0.18), rgba(var(--purple-rgb), 0.12));
-  border: 1px solid rgba(var(--accent-rgb), 0.14);
-  box-shadow: inset 0 1px 0 rgba(var(--white-rgb), 0.06);
-}
-
-.review-mode-switch .typing-mode-button[data-review-mode="flashcards"]::before {
-  background:
-    linear-gradient(135deg, rgba(var(--success-rgb), 0.16), rgba(var(--accent-rgb), 0.12));
-  border-color: rgba(var(--success-rgb), 0.16);
-}
-
-.review-mode-switch .typing-mode-button .review-mode-switch__label {
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: 0;
-}
-
-.review-mode-switch .typing-mode-button .review-mode-switch__hint {
+  justify-content: center;
+  flex: 1;
+  min-width: 100px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
   color: var(--text-muted);
-  font-size: 0.74rem;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
 }
 
-.review-mode-switch .typing-mode-button:not(.active) {
-  opacity: 0.9;
+.review-mode-switch__segment:hover:not(.active) {
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
-.review-mode-switch .typing-mode-button:not(.active):hover,
-.review-mode-switch .typing-mode-button:not(.active):focus-visible {
-  border-color: rgba(var(--accent-rgb), 0.26);
-  background:
-    linear-gradient(180deg, rgba(var(--review-btn-hover-start-rgb), 0.96), rgba(var(--review-btn-hover-end-rgb), 0.94));
-  color: var(--text-hover);
-  opacity: 1;
-  transform: translateY(0);
-  box-shadow:
-    0 12px 24px rgba(var(--review-btn-shadow-rgb), 0.18),
-    inset 0 1px 0 rgba(var(--white-rgb), 0.03);
+.review-mode-switch__segment:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.review-mode-switch .typing-mode-button.active {
-  border-color: rgba(var(--accent-rgb), 0.34);
-  background:
-    linear-gradient(180deg, rgba(var(--review-btn-active-start-rgb), 0.98), rgba(var(--review-btn-active-end-rgb), 0.98));
-  color: var(--text-active);
-  opacity: 1;
-  transform: translateY(-1px);
-  box-shadow:
-    0 14px 28px rgba(var(--review-btn-shadow-rgb), 0.2),
-    inset 0 1px 0 rgba(var(--white-rgb), 0.05);
+.review-mode-switch__segment.active {
+  background: rgba(var(--accent-rgb), 0.15);
+  color: var(--accent);
 }
 
-.review-mode-switch .typing-mode-button.active .review-mode-switch__label {
-  color: var(--text-active-strong);
-}
-
-.review-mode-switch .typing-mode-button.active .review-mode-switch__hint {
-  color: var(--text-subtle);
+.review-mode-switch__text {
+  display: block;
 }
 
 .actions-row {
@@ -4182,7 +4120,7 @@ a:active {
 @media (min-width: 769px) {
   .text-page .text-content {
     position: sticky;
-    top: 12px;
+    top: calc(var(--navbar-height) + 12px);
     z-index: 18;
     max-height: min(38vh, 430px);
     overflow-y: auto;
@@ -4778,29 +4716,12 @@ h3 {
 
   .review-mode-switch {
     width: 100%;
-    gap: 8px;
     margin-bottom: 10px;
   }
 
-  .review-mode-switch .typing-mode-button {
-    min-height: 64px;
-    padding: 10px 11px;
-    gap: 8px;
-  }
-
-  .review-mode-switch .typing-mode-button::before {
-    width: 22px;
-    height: 22px;
-    border-radius: 8px;
-  }
-
-  .review-mode-switch .typing-mode-button .review-mode-switch__label {
+  .review-mode-switch__segment {
+    padding: 8px 14px;
     font-size: 0.86rem;
-  }
-
-  .review-mode-switch .typing-mode-button .review-mode-switch__hint {
-    font-size: 0.62rem;
-    line-height: 1.2;
   }
 
   .review-expression-card {
@@ -4866,26 +4787,16 @@ h3 {
 
 @media (max-width: 560px) {
   .review-mode-switch {
-    grid-template-columns: 1fr;
+    width: 100%;
   }
 
-  .review-mode-switch .typing-mode-button {
-    min-height: 58px;
-    padding: 9px 11px;
+  .review-mode-switch__segment {
+    min-width: auto;
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.88rem;
   }
 
-  .review-mode-switch .typing-mode-button::before {
-    width: 20px;
-    height: 20px;
-  }
-
-  .review-mode-switch .typing-mode-button .review-mode-switch__label {
-    font-size: 0.84rem;
-  }
-
-  .review-mode-switch .typing-mode-button .review-mode-switch__hint {
-    font-size: 0.6rem;
-  }
 
   .flashcard-overlay {
     padding: 12px;
@@ -5299,7 +5210,7 @@ h3 {
 
   .text-content {
     position: sticky;
-    top: 8px;
+    top: calc(var(--navbar-height) + 8px);
     z-index: 20;
     max-height: 32vh;
     overflow-y: auto;
@@ -5531,10 +5442,6 @@ h3 {
   --review-btn-active-end-rgb: 54, 58, 76;
   --review-btn-shadow-rgb: 10, 10, 20;
 
-  /* Body background glows */
-  --glow-blue-rgb: 189, 147, 249;
-  --glow-cyan-rgb: 139, 233, 253;
-
   /* Component-specific */
   --flashcard-choice-text: #e8e4f8;
   --flashcard-choice-correct-text: #d0f8e0;
@@ -5662,10 +5569,6 @@ h3 {
   --review-btn-active-end-rgb: 52, 58, 84;
   --review-btn-shadow-rgb: 15, 18, 32;
 
-  /* Body background glows */
-  --glow-blue-rgb: 80, 120, 255;
-  --glow-cyan-rgb: 100, 205, 255;
-
   /* Component-specific */
   --flashcard-choice-text: #d0d8ff;
   --flashcard-choice-correct-text: #d8f5c8;
@@ -5674,132 +5577,188 @@ h3 {
 }
 
 /* ── Pastel ──────────────────────────────────────────────────────────────
-   Anchors: bg #f2efe8 (warm cream) · accent #4aab88 (punchy mint)
-            terracotta #c36e4b · amber #c49020 · coral #be4640
+   Anchors: bg #f4f0e6 (warm straw/washi paper) · accent #28a87e (vivid mint)
+            terracotta #c8643a · amber #c39a20 · coral #c34038
    ─────────────────────────────────────────────────────────────────────── */
 [data-theme="pastel"] {
   color-scheme: light;
 
   /* Backgrounds */
-  --bg: #f2efe8;
-  --bg-rgb: 242, 239, 232;
-  --navbar-bg: rgba(242, 239, 232, 0.95);
-  --dropdown-bg: #fdfaf4;
-  --input-bg: #fdfaf4;
-  --menu-bg: #fdfaf4;
-  --filter-bg: #fdfaf4;
+  --bg: #f4f0e6;
+  --bg-rgb: 244, 240, 230;
+  --navbar-bg: rgba(244, 240, 230, 0.95);
+  --dropdown-bg: #fdfaf3;
+  --input-bg: #fdfaf3;
+  --menu-bg: #fdfaf3;
+  --filter-bg: #fdfaf3;
 
   /* Surfaces */
-  --surface: #fdfaf4;
-  --surface-strong: #edeae0;
-  --surface-strong-rgb: 237, 234, 224;
-  --surface-muted: #f7f4ec;
-  --surface-alt-rgb: 248, 245, 238;
+  --surface: #fdfaf3;
+  --surface-strong: #ede9de;
+  --surface-strong-rgb: 237, 233, 222;
+  --surface-muted: #f8f5ec;
+  --surface-alt-rgb: 250, 247, 238;
 
   /* Text */
-  --text: #2d3028;
-  --text-muted: #6e7a64;
-  --text-bright: #1a1e18;
-  --text-bright-rgb: 26, 30, 24;
-  --text-soft: #8a9680;
-  --text-faint: #a8b49c;
-  --text-dim: #96a489;
-  --text-subtle: #b0bc90;
-  --text-hover: #3d4a38;
-  --text-active: #2d4030;
-  --text-active-strong: #1a2e1e;
-  --text-on-light: #2d3028;
+  --text: #2a2620;
+  --text-muted: #3a3028;
+  --text-bright: #1a1610;
+  --text-bright-rgb: 26, 22, 16;
+  --text-soft: #4a4238;
+  --text-faint: #5a5048;
+  --text-dim: #3a3228;
+  --text-subtle: #4a4238;
+  --text-hover: #3a3028;
+  --text-active: #2a2218;
+  --text-active-strong: #1a1410;
+  --text-on-light: #2a2620;
   --color-on-primary: #ffffff;
   --color-on-accent: #ffffff;
 
-  /* Accent (punchy mint) */
-  --accent: #4aab88;
-  --accent-rgb: 74, 171, 136;
-  --accent-strong: #38967a;
-  --accent-2-rgb: 60, 155, 120;
-  --accent-3-rgb: 80, 185, 145;
-  --accent-context-text: #2d7a5e;
+  /* Accent (warm gold) */
+  --accent: #c8902a;
+  --accent-rgb: 200, 144, 42;
+  --accent-strong: #aa7820;
+  --accent-2-rgb: 215, 162, 60;
+  --accent-3-rgb: 180, 122, 30;
+  --accent-context-text: #8a5e10;
 
   /* Borders */
-  --border: rgba(160, 175, 150, 0.3);
-  --border-rgb: 160, 175, 150;
-  --border-soft: rgba(160, 175, 150, 0.15);
-  --border-interactive: rgba(74, 171, 136, 0.35);
+  --border: rgba(170, 150, 125, 0.45);
+  --border-rgb: 170, 150, 125;
+  --border-soft: rgba(170, 150, 125, 0.25);
+  --border-interactive: rgba(200, 144, 42, 0.35);
 
   /* Shadows */
-  --shadow: 0 4px 24px rgba(60, 80, 60, 0.10);
+  --shadow: 0 2px 12px rgba(80, 65, 45, 0.10), 0 1px 3px rgba(80, 65, 45, 0.08);
 
-  /* Secondary (warm terracotta) */
-  --purple-rgb: 195, 110, 75;
-  --purple-light-rgb: 215, 145, 110;
-  --highlight-expression-rgb: 180, 95, 65;
-  --color-purple-label: #c36e4b;
-  --color-purple-text: #b05e3c;
-  --color-purple-text-hover: #8a4530;
-  --color-purple-text-strong: #7a3a25;
+  /* Secondary (slate blue — 藍) */
+  --purple-rgb: 100, 125, 155;
+  --purple-light-rgb: 130, 155, 185;
+  --highlight-expression-rgb: 80, 105, 140;
+  --color-purple-label: #647d9b;
+  --color-purple-text: #506a88;
+  --color-purple-text-hover: #3d5570;
+  --color-purple-text-strong: #2d4560;
 
   /* Language accent colors */
-  --lang-no-rgb: 60, 150, 110;
-  --lang-en-rgb: 170, 130, 60;
-  --lang-ja-rgb: 190, 100, 80;
+  --lang-no-rgb: 200, 144, 42;
+  --lang-en-rgb: 80, 185, 130;
+  --lang-ja-rgb: 220, 105, 140;
 
   /* Status / semantic */
-  --success-rgb: 60, 150, 100;
-  --success-2-rgb: 50, 135, 88;
-  --learned-rgb: 60, 150, 100;
-  --lime-rgb: 80, 170, 100;
-  --warning-rgb: 190, 140, 40;
-  --warning-2-rgb: 175, 125, 30;
-  --danger-rgb: 190, 70, 60;
-  --color-error: #be4640;
-  --color-error-text: #962020;
-  --color-learned: #3c9664;
-  --color-learned-subtle: #5caa80;
-  --color-pinned: #c49020;
-  --color-shaky: #b07a18;
+  --success-rgb: 46, 158, 100;
+  --success-2-rgb: 35, 145, 90;
+  --learned-rgb: 46, 158, 100;
+  --lime-rgb: 80, 185, 110;
+  --warning-rgb: 195, 140, 30;
+  --warning-2-rgb: 210, 160, 50;
+  --danger-rgb: 195, 65, 55;
+  --color-error: #c34038;
+  --color-error-text: #9a2a20;
+  --color-learned: #c8902a;
+  --color-learned-subtle: rgba(200, 144, 42, 0.12);
+  --color-pinned: #c8902a;
+  --color-shaky: #c8a030;
 
   /* Primary button */
-  --btn-primary-start: #4aab88;
-  --btn-primary-end: #38967a;
-  --btn-primary-shadow-rgb: 40, 120, 90;
+  --btn-primary-start: #c8902a;
+  --btn-primary-end: #aa7820;
+  --btn-primary-shadow-rgb: 200, 144, 42;
 
-  /* Typing area (slightly darker than bg for contrast) */
-  --typing-area-bg: #e8e4d8;
-  --typing-area-bg-focused: #e0dcd0;
-  --typing-area-text: #2d3028;
-  --typing-area-ruby: #4a6040;
-  --typing-caret: #4aab88;
-  --typing-placeholder: #a0a894;
-  --typing-border-rgb: 150, 165, 140;
-  --typing-correct-rgb: 50, 155, 100;
-  --typing-incorrect-rgb: 190, 70, 60;
-  --typing-incorrect-2-rgb: 165, 52, 44;
-  --typing-current-rgb: 40, 130, 90;
-  --highlight-grammar-rgb: 74, 171, 136;
+  /* Typing area — DARK island on light page */
+  --typing-area-bg: #262420;
+  --typing-area-bg-focused: #2d2b24;
+  --typing-area-text: #f0ede4;
+  --typing-area-ruby: #a8b898;
+  --typing-caret: #c8902a;
+  --typing-placeholder: #5a6a50;
+  --typing-border-rgb: 80, 100, 70;
+  --typing-correct-rgb: 60, 160, 100;
+  --typing-incorrect-rgb: 210, 80, 65;
+  --typing-incorrect-2-rgb: 230, 100, 85;
+  --typing-current-rgb: 200, 144, 42;
+  --highlight-grammar-rgb: 200, 144, 42;
 
   /* Overlays / modals */
-  --overlay-rgb: 60, 70, 55;
-  --overlay-panel-rgb: 245, 242, 235;
-  --auth-backdrop-rgb: 50, 60, 45;
-  --type-overlay-rgb: 55, 65, 50;
-  --type-area-rgb: 235, 232, 224;
+  --overlay-rgb: 50, 45, 35;
+  --overlay-panel-rgb: 248, 244, 236;
+  --auth-backdrop-rgb: 50, 45, 35;
+  --type-overlay-rgb: 20, 22, 16;
+  --type-area-rgb: 30, 32, 24;
 
   /* Review mode card gradients */
-  --review-btn-bg-start-rgb: 237, 234, 224;
-  --review-btn-bg-end-rgb: 230, 227, 216;
-  --review-btn-hover-start-rgb: 225, 222, 210;
-  --review-btn-hover-end-rgb: 218, 215, 202;
-  --review-btn-active-start-rgb: 210, 207, 194;
-  --review-btn-active-end-rgb: 200, 197, 184;
-  --review-btn-shadow-rgb: 100, 110, 90;
+  --review-btn-bg-start-rgb: 210, 195, 175;
+  --review-btn-bg-end-rgb: 200, 183, 162;
+  --review-btn-hover-start-rgb: 220, 205, 185;
+  --review-btn-hover-end-rgb: 210, 195, 175;
+  --review-btn-active-start-rgb: 196, 114, 72;
+  --review-btn-active-end-rgb: 168, 94, 56;
+  --review-btn-shadow-rgb: 180, 140, 100;
 
   /* Body background glows */
-  --glow-blue-rgb: 74, 171, 136;
-  --glow-cyan-rgb: 100, 195, 160;
+  --glow-blue-rgb: 200, 144, 42;
+  --glow-cyan-rgb: 215, 168, 70;
 
   /* Component-specific */
-  --flashcard-choice-text: #3a4435;
-  --flashcard-choice-correct-text: #1a5235;
-  --flashcard-choice-wrong-text: #6a1e1e;
-  --text-mode-active: #2d7a5e;
+  --flashcard-choice-text: #2a2620;
+  --flashcard-choice-correct-text: #2d6a4a;
+  --flashcard-choice-wrong-text: #9a2a20;
+  --text-mode-active: #8a4828;
+
+  /* Heatmap activity levels — warm 4-color progression */
+  --progress-calendar__day-intensity-1-bg: #edd5b0;
+  --progress-calendar__day-intensity-2-bg: #d4a06a;
+  --progress-calendar__day-intensity-3-bg: #c47248;
+  --progress-calendar__day-intensity-4-bg: #8a3c20;
+}
+
+/* Pastel theme: heatmap activity level colors */
+[data-theme="pastel"] .progress-calendar__day[data-intensity="1"] {
+  border-color: rgba(237, 213, 176, 0.4);
+  background: #edd5b0;
+}
+
+[data-theme="pastel"] .progress-calendar__day[data-intensity="2"] {
+  border-color: rgba(212, 160, 106, 0.5);
+  background: #d4a06a;
+}
+
+[data-theme="pastel"] .progress-calendar__day[data-intensity="3"] {
+  border-color: rgba(196, 114, 72, 0.6);
+  background: #c47248;
+}
+
+[data-theme="pastel"] .progress-calendar__day[data-intensity="4"] {
+  border-color: rgba(138, 60, 32, 0.8);
+  background: #8a3c20;
+}
+
+/* Pastel theme: card hover backgrounds — unified soft gold tint */
+[data-theme="pastel"] .text-list-card:hover {
+  background: rgba(var(--accent-rgb), 0.07);
+}
+
+[data-theme="pastel"] .expression-card:hover,
+[data-theme="pastel"] .expression-card:focus-within {
+  background: rgba(var(--accent-rgb), 0.07);
+}
+
+[data-theme="pastel"] .expression-card.expression-card-focus {
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* Pastel theme: review button active colors (warm gold) */
+[data-theme="pastel"] {
+  --review-btn-active-start-rgb: 200, 144, 42;
+  --review-btn-active-end-rgb: 180, 122, 30;
+}
+
+/* Pastel theme: badge text colors */
+[data-theme="pastel"] .progress-assessment-badge {
+  color: #2a2620;
+}
+
+[data-theme="pastel"] .progress-assessment-badge--perfect {
+  color: #1a7a5a;
 }

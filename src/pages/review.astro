@@ -485,24 +485,17 @@ const clientScript = `
       reviewTitle.textContent = labels.reviewPageTitle;
       reviewModeButtons.forEach((button) => {
         const description = reviewModeDescriptions[lang] || reviewModeDescriptions.en;
+        const textNode = button.querySelector('[data-review-mode-label]');
         if (button.dataset.reviewMode === 'flashcards') {
-          const titleNode = button.querySelector('[data-review-mode-label]');
-          const hintNode = button.querySelector('[data-review-mode-hint]');
-          if (titleNode) {
-            titleNode.textContent = labels.reviewModeFlashcards;
+          if (textNode) {
+            textNode.textContent = labels.reviewModeFlashcards;
           }
-          if (hintNode) {
-            hintNode.textContent = description.flashcards;
-          }
+          button.title = description.flashcards;
         } else {
-          const titleNode = button.querySelector('[data-review-mode-label]');
-          const hintNode = button.querySelector('[data-review-mode-hint]');
-          if (titleNode) {
-            titleNode.textContent = labels.reviewModeCardList;
+          if (textNode) {
+            textNode.textContent = labels.reviewModeCardList;
           }
-          if (hintNode) {
-            hintNode.textContent = description.cardList;
-          }
+          button.title = description.cardList;
         }
       });
       if (flashcardClose) {
@@ -1506,22 +1499,22 @@ const clientScript = `
         </div>
         <div class="review-mode-switch" role="group" aria-label="Review mode">
           <button
-            class="typing-mode-button active"
+            class="review-mode-switch__segment active"
             type="button"
             data-review-mode="list"
             aria-pressed="true"
+            title={reviewModeDescriptions[defaultUiLang].cardList}
           >
-            <span class="review-mode-switch__label" data-review-mode-label>{uiText[defaultUiLang].reviewModeCardList}</span>
-            <span class="review-mode-switch__hint" data-review-mode-hint>{reviewModeDescriptions[defaultUiLang].cardList}</span>
+            <span class="review-mode-switch__text" data-review-mode-label>{uiText[defaultUiLang].reviewModeCardList}</span>
           </button>
           <button
-            class="typing-mode-button"
+            class="review-mode-switch__segment"
             type="button"
             data-review-mode="flashcards"
             aria-pressed="false"
+            title={reviewModeDescriptions[defaultUiLang].flashcards}
           >
-            <span class="review-mode-switch__label" data-review-mode-label>{uiText[defaultUiLang].reviewModeFlashcards}</span>
-            <span class="review-mode-switch__hint" data-review-mode-hint>{reviewModeDescriptions[defaultUiLang].flashcards}</span>
+            <span class="review-mode-switch__text" data-review-mode-label>{uiText[defaultUiLang].reviewModeFlashcards}</span>
           </button>
         </div>
         <div id="review-list-panel">
