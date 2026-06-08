@@ -5337,3 +5337,402 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME OVERRIDES
+   Apply by setting data-theme on <html>:  <html data-theme="dracula">
+   Absence of the attribute = default ocean theme (:root values).
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Dracula ─────────────────────────────────────────────────────────────
+   Anchors: bg #282a36 · accent #bd93f9 · pink #ff79c6 · green #50fa7b
+            yellow #f1fa8c · red #ff5555 · cyan #8be9fd
+   ─────────────────────────────────────────────────────────────────────── */
+[data-theme="dracula"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --bg: #282a36;
+  --bg-rgb: 40, 42, 54;
+  --navbar-bg: rgba(40, 42, 54, 0.92);
+  --dropdown-bg: #21222c;
+  --input-bg: #191a23;
+  --menu-bg: #21222c;
+  --filter-bg: #232535;
+
+  /* Surfaces */
+  --surface: #343746;
+  --surface-strong: #44475a;
+  --surface-strong-rgb: 68, 71, 90;
+  --surface-muted: #2e303e;
+  --surface-alt-rgb: 50, 52, 68;
+
+  /* Text */
+  --text: #f8f8f2;
+  --text-muted: #8b91b8;
+  --text-bright: #c5c9de;
+  --text-bright-rgb: 197, 201, 222;
+  --text-soft: #cfd3e8;
+  --text-faint: #bdc2d6;
+  --text-dim: #9ea4c0;
+  --text-subtle: #b5bad0;
+  --text-hover: #e4dcfe;
+  --text-active: #f0e8ff;
+  --text-active-strong: #f8f4ff;
+  --text-on-light: #f8f8f2;
+  --color-on-primary: #1e1f2e;
+  --color-on-accent: #1e1f2e;
+
+  /* Accent (purple) */
+  --accent: #bd93f9;
+  --accent-rgb: 189, 147, 249;
+  --accent-strong: #a57bf7;
+  --accent-2-rgb: 165, 115, 240;
+  --accent-3-rgb: 139, 233, 253;
+  --accent-context-text: #e8ddfe;
+
+  /* Borders */
+  --border: rgba(98, 114, 164, 0.22);
+  --border-rgb: 98, 114, 164;
+  --border-soft: rgba(98, 114, 164, 0.12);
+  --border-interactive: rgba(189, 147, 249, 0.3);
+
+  /* Shadows */
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+
+  /* Purple / violet (secondary = Dracula pink) */
+  --purple-rgb: 255, 121, 198;
+  --purple-light-rgb: 255, 168, 222;
+  --highlight-expression-rgb: 188, 134, 252;
+  --color-purple-label: #ff79c6;
+  --color-purple-text: #ffb0df;
+  --color-purple-text-hover: #ffd4ef;
+  --color-purple-text-strong: #ffe8f6;
+
+  /* Language accent colors */
+  --lang-no-rgb: 139, 233, 253;
+  --lang-en-rgb: 80, 250, 123;
+  --lang-ja-rgb: 255, 121, 198;
+
+  /* Status / semantic */
+  --success-rgb: 80, 250, 123;
+  --success-2-rgb: 68, 230, 108;
+  --learned-rgb: 72, 210, 110;
+  --lime-rgb: 80, 250, 123;
+  --warning-rgb: 241, 250, 140;
+  --warning-2-rgb: 235, 240, 100;
+  --danger-rgb: 255, 85, 85;
+  --color-error: #ff8585;
+  --color-error-text: #ff5555;
+  --color-learned: #50fa7b;
+  --color-learned-subtle: #7de8a8;
+  --color-pinned: #f1fa8c;
+  --color-shaky: #e5e878;
+
+  /* Primary button */
+  --btn-primary-start: #bd93f9;
+  --btn-primary-end: #9b7be8;
+  --btn-primary-shadow-rgb: 130, 85, 220;
+
+  /* Typing area (light surface) */
+  --typing-area-bg: #f0eefc;
+  --typing-area-bg-focused: #e8e4fa;
+  --typing-area-text: #282a36;
+  --typing-area-ruby: #6272a4;
+  --typing-caret: #44475a;
+  --typing-placeholder: #6272a4;
+  --typing-border-rgb: 98, 114, 164;
+  --typing-correct-rgb: 70, 190, 100;
+  --typing-incorrect-rgb: 230, 75, 75;
+  --typing-incorrect-2-rgb: 205, 50, 50;
+  --typing-current-rgb: 130, 90, 210;
+  --highlight-grammar-rgb: 180, 83, 9;
+
+  /* Overlays / modals */
+  --overlay-rgb: 22, 20, 34;
+  --overlay-panel-rgb: 32, 34, 46;
+  --auth-backdrop-rgb: 18, 16, 28;
+  --type-overlay-rgb: 30, 28, 48;
+  --type-area-rgb: 22, 20, 36;
+
+  /* Review mode card gradients */
+  --review-btn-bg-start-rgb: 45, 48, 62;
+  --review-btn-bg-end-rgb: 38, 40, 54;
+  --review-btn-hover-start-rgb: 54, 57, 74;
+  --review-btn-hover-end-rgb: 46, 50, 66;
+  --review-btn-active-start-rgb: 65, 68, 88;
+  --review-btn-active-end-rgb: 54, 58, 76;
+  --review-btn-shadow-rgb: 10, 10, 20;
+
+  /* Body background glows */
+  --glow-blue-rgb: 100, 80, 200;
+  --glow-cyan-rgb: 80, 200, 240;
+
+  /* Component-specific */
+  --flashcard-choice-text: #e8e4f8;
+  --flashcard-choice-correct-text: #d0f8e0;
+  --flashcard-choice-wrong-text: #ffd8d8;
+  --text-mode-active: #c0f0f8;
+}
+
+/* ── Palenight ───────────────────────────────────────────────────────────
+   Anchors: bg #292d3e · accent #82aaff · purple #c792ea · green #c3e88d
+            yellow #ffcb6b · coral #f07178 · cyan #89ddff
+   ─────────────────────────────────────────────────────────────────────── */
+[data-theme="palenight"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --bg: #292d3e;
+  --bg-rgb: 41, 45, 62;
+  --navbar-bg: rgba(41, 45, 62, 0.92);
+  --dropdown-bg: #23263a;
+  --input-bg: #1d2030;
+  --menu-bg: #232638;
+  --filter-bg: #252840;
+
+  /* Surfaces */
+  --surface: #323751;
+  --surface-strong: #3a3f58;
+  --surface-strong-rgb: 58, 63, 88;
+  --surface-muted: #2b2f43;
+  --surface-alt-rgb: 47, 52, 78;
+
+  /* Text */
+  --text: #e6e9ff;
+  --text-muted: #a6accd;
+  --text-bright: #c0c6e4;
+  --text-bright-rgb: 192, 198, 228;
+  --text-soft: #cdd2ea;
+  --text-faint: #bcc2d8;
+  --text-dim: #9fa6c5;
+  --text-subtle: #b4bad4;
+  --text-hover: #dce4ff;
+  --text-active: #e8eeff;
+  --text-active-strong: #f0f4ff;
+  --text-on-light: #f0f4ff;
+  --color-on-primary: #1a2040;
+  --color-on-accent: #1a2040;
+
+  /* Accent (blue) */
+  --accent: #82aaff;
+  --accent-rgb: 130, 170, 255;
+  --accent-strong: #6b9eff;
+  --accent-2-rgb: 100, 148, 248;
+  --accent-3-rgb: 137, 221, 255;
+  --accent-context-text: #d0e4ff;
+
+  /* Borders */
+  --border: rgba(130, 170, 255, 0.18);
+  --border-rgb: 130, 170, 255;
+  --border-soft: rgba(130, 170, 255, 0.1);
+  --border-interactive: rgba(130, 170, 255, 0.3);
+
+  /* Shadows */
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+
+  /* Purple / violet (secondary = Palenight purple) */
+  --purple-rgb: 199, 146, 234;
+  --purple-light-rgb: 220, 180, 245;
+  --highlight-expression-rgb: 190, 130, 240;
+  --color-purple-label: #c792ea;
+  --color-purple-text: #dbb8f5;
+  --color-purple-text-hover: #ecdbfc;
+  --color-purple-text-strong: #f4eeff;
+
+  /* Language accent colors */
+  --lang-no-rgb: 137, 221, 255;
+  --lang-en-rgb: 195, 232, 141;
+  --lang-ja-rgb: 199, 146, 234;
+
+  /* Status / semantic */
+  --success-rgb: 195, 232, 141;
+  --success-2-rgb: 180, 215, 120;
+  --learned-rgb: 165, 210, 110;
+  --lime-rgb: 195, 232, 141;
+  --warning-rgb: 255, 203, 107;
+  --warning-2-rgb: 245, 190, 90;
+  --danger-rgb: 240, 113, 120;
+  --color-error: #f07178;
+  --color-error-text: #e8636c;
+  --color-learned: #c3e88d;
+  --color-learned-subtle: #a8ddb0;
+  --color-pinned: #ffcb6b;
+  --color-shaky: #f5be50;
+
+  /* Primary button */
+  --btn-primary-start: #82aaff;
+  --btn-primary-end: #5f8cf7;
+  --btn-primary-shadow-rgb: 80, 130, 240;
+
+  /* Typing area (light surface) */
+  --typing-area-bg: #edf0ff;
+  --typing-area-bg-focused: #e8ecff;
+  --typing-area-text: #292d3e;
+  --typing-area-ruby: #7a82c0;
+  --typing-caret: #3a3f58;
+  --typing-placeholder: #8890c0;
+  --typing-border-rgb: 110, 125, 185;
+  --typing-correct-rgb: 145, 195, 95;
+  --typing-incorrect-rgb: 220, 85, 90;
+  --typing-incorrect-2-rgb: 200, 68, 72;
+  --typing-current-rgb: 90, 140, 220;
+  --highlight-grammar-rgb: 180, 83, 9;
+
+  /* Overlays / modals */
+  --overlay-rgb: 22, 25, 38;
+  --overlay-panel-rgb: 34, 37, 56;
+  --auth-backdrop-rgb: 18, 20, 32;
+  --type-overlay-rgb: 28, 36, 65;
+  --type-area-rgb: 22, 28, 52;
+
+  /* Review mode card gradients */
+  --review-btn-bg-start-rgb: 46, 51, 72;
+  --review-btn-bg-end-rgb: 40, 44, 64;
+  --review-btn-hover-start-rgb: 53, 58, 82;
+  --review-btn-hover-end-rgb: 48, 53, 75;
+  --review-btn-active-start-rgb: 62, 68, 96;
+  --review-btn-active-end-rgb: 52, 58, 84;
+  --review-btn-shadow-rgb: 15, 18, 32;
+
+  /* Body background glows */
+  --glow-blue-rgb: 80, 120, 255;
+  --glow-cyan-rgb: 100, 205, 255;
+
+  /* Component-specific */
+  --flashcard-choice-text: #d0d8ff;
+  --flashcard-choice-correct-text: #d8f5c8;
+  --flashcard-choice-wrong-text: #ffd5d8;
+  --text-mode-active: #c8e8ff;
+}
+
+/* ── Pastel ──────────────────────────────────────────────────────────────
+   Anchors: bg #2b2733 · accent #b8a4e0 (soft purple) · teal #8fd0c4
+            green #9fd6a8 · yellow #e8d49a · red #e6a3a3
+   ─────────────────────────────────────────────────────────────────────── */
+[data-theme="pastel"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --bg: #2b2733;
+  --bg-rgb: 43, 39, 51;
+  --navbar-bg: rgba(43, 39, 51, 0.92);
+  --dropdown-bg: #231f2c;
+  --input-bg: #1c1924;
+  --menu-bg: #221e2b;
+  --filter-bg: #252030;
+
+  /* Surfaces */
+  --surface: #353040;
+  --surface-strong: #3f3a4c;
+  --surface-strong-rgb: 63, 58, 76;
+  --surface-muted: #312c3b;
+  --surface-alt-rgb: 51, 46, 62;
+
+  /* Text */
+  --text: #f0ecf4;
+  --text-muted: #b3aabf;
+  --text-bright: #ccc4d6;
+  --text-bright-rgb: 204, 196, 214;
+  --text-soft: #d5cfdc;
+  --text-faint: #c8c2d0;
+  --text-dim: #a89fb5;
+  --text-subtle: #bcb5c7;
+  --text-hover: #e8e2f4;
+  --text-active: #ede8f6;
+  --text-active-strong: #f4f0fa;
+  --text-on-light: #f4f0fa;
+  --color-on-primary: #1e1a28;
+  --color-on-accent: #1a1624;
+
+  /* Accent (soft purple) */
+  --accent: #b8a4e0;
+  --accent-rgb: 184, 164, 224;
+  --accent-strong: #a592d8;
+  --accent-2-rgb: 160, 140, 210;
+  --accent-3-rgb: 143, 208, 196;
+  --accent-context-text: #e8e0f4;
+
+  /* Borders */
+  --border: rgba(184, 164, 224, 0.18);
+  --border-rgb: 184, 164, 224;
+  --border-soft: rgba(184, 164, 224, 0.1);
+  --border-interactive: rgba(184, 164, 224, 0.28);
+
+  /* Shadows */
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+
+  /* Purple / violet (secondary = teal in pastel) */
+  --purple-rgb: 143, 208, 196;
+  --purple-light-rgb: 172, 222, 214;
+  --highlight-expression-rgb: 165, 140, 215;
+  --color-purple-label: #b8a4e0;
+  --color-purple-text: #d0c2e8;
+  --color-purple-text-hover: #e4dcf2;
+  --color-purple-text-strong: #ede8f6;
+
+  /* Language accent colors */
+  --lang-no-rgb: 100, 180, 240;
+  --lang-en-rgb: 140, 200, 150;
+  --lang-ja-rgb: 210, 150, 175;
+
+  /* Status / semantic */
+  --success-rgb: 159, 214, 168;
+  --success-2-rgb: 145, 195, 150;
+  --learned-rgb: 140, 200, 145;
+  --lime-rgb: 180, 220, 140;
+  --warning-rgb: 232, 212, 154;
+  --warning-2-rgb: 220, 198, 135;
+  --danger-rgb: 215, 140, 140;
+  --color-error: #e6a3a3;
+  --color-error-text: #d88888;
+  --color-learned: #9fd6a8;
+  --color-learned-subtle: #a8d8b8;
+  --color-pinned: #e8d49a;
+  --color-shaky: #dcc885;
+
+  /* Primary button */
+  --btn-primary-start: #c4b0e6;
+  --btn-primary-end: #a892d4;
+  --btn-primary-shadow-rgb: 150, 130, 200;
+
+  /* Typing area (light surface) */
+  --typing-area-bg: #f2eef8;
+  --typing-area-bg-focused: #ece6f4;
+  --typing-area-text: #2b2733;
+  --typing-area-ruby: #9090a8;
+  --typing-caret: #3f3a4c;
+  --typing-placeholder: #9890a8;
+  --typing-border-rgb: 168, 155, 185;
+  --typing-correct-rgb: 110, 175, 120;
+  --typing-incorrect-rgb: 210, 110, 110;
+  --typing-incorrect-2-rgb: 185, 88, 88;
+  --typing-current-rgb: 155, 130, 200;
+  --highlight-grammar-rgb: 190, 130, 75;
+
+  /* Overlays / modals */
+  --overlay-rgb: 22, 18, 28;
+  --overlay-panel-rgb: 38, 34, 46;
+  --auth-backdrop-rgb: 18, 14, 22;
+  --type-overlay-rgb: 34, 28, 46;
+  --type-area-rgb: 28, 22, 36;
+
+  /* Review mode card gradients */
+  --review-btn-bg-start-rgb: 48, 44, 58;
+  --review-btn-bg-end-rgb: 42, 38, 52;
+  --review-btn-hover-start-rgb: 55, 51, 66;
+  --review-btn-hover-end-rgb: 49, 45, 60;
+  --review-btn-active-start-rgb: 64, 60, 76;
+  --review-btn-active-end-rgb: 55, 51, 68;
+  --review-btn-shadow-rgb: 15, 12, 22;
+
+  /* Body background glows */
+  --glow-blue-rgb: 160, 130, 220;
+  --glow-cyan-rgb: 120, 195, 185;
+
+  /* Component-specific */
+  --flashcard-choice-text: #e0d8ec;
+  --flashcard-choice-correct-text: #d4eeda;
+  --flashcard-choice-wrong-text: #f8d8d8;
+  --text-mode-active: #c4e8e4;
+}
