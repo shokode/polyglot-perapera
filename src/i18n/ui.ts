@@ -246,6 +246,7 @@ export type UILabels = {
   authProcessing: string;
   authCheckEmail: string;
   authClose: string;
+  themeLabel: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -410,6 +411,7 @@ export const uiText: Record<UILang, UILabels> = {
     authProcessing: 'Vent litt …',
     authCheckEmail: 'Sjekk e-posten din for å bekrefte kontoen.',
     authClose: 'Lukk',
+    themeLabel: 'Tema',
   },
   en: {
     home: 'Home',
@@ -572,6 +574,7 @@ export const uiText: Record<UILang, UILabels> = {
     authProcessing: 'Please wait …',
     authCheckEmail: 'Check your email to confirm your account.',
     authClose: 'Close',
+    themeLabel: 'Theme',
   },
   ja: {
     home: 'ホーム',
@@ -734,5 +737,6 @@ export const uiText: Record<UILang, UILabels> = {
     authProcessing: '処理中 …',
     authCheckEmail: '確認メールを送信しました。メールをご確認ください。',
     authClose: '閉じる',
+    themeLabel: 'テーマ',
   },
 };

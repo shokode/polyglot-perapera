@@ -54,6 +54,16 @@ const links = [
           ))}
         </select>
       </div>
+      <div class="site-theme-switcher">
+        <label for="ui-theme-select" data-i18n="themeLabel">Theme</label>
+        <span class="theme-dot" data-theme-dot aria-hidden="true"></span>
+        <select id="ui-theme-select" data-theme-select>
+          <option value="">Ocean</option>
+          <option value="dracula">Dracula</option>
+          <option value="palenight">Palenight</option>
+          <option value="pastel">Pastel</option>
+        </select>
+      </div>
       <div class="site-auth" data-auth-root hidden>
         <button type="button" class="site-auth__button" data-auth-open data-i18n="authSignIn">
           Sign in
@@ -106,6 +116,42 @@ const links = [
     </form>
   </div>
 </div>
+
+<script>
+  const THEME_KEY = 'theme';
+  const THEME_COLORS: Record<string, string> = {
+    '': '#82c7ff',
+    'dracula': '#bd93f9',
+    'palenight': '#82aaff',
+    'pastel': '#b8a4e0',
+  };
+
+  const themeSelect = document.querySelector<HTMLSelectElement>('[data-theme-select]');
+  const themeDot = document.querySelector<HTMLElement>('[data-theme-dot]');
+
+  function applyTheme(theme: string) {
+    if (theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    if (themeDot) {
+      themeDot.style.backgroundColor = THEME_COLORS[theme] ?? THEME_COLORS[''];
+    }
+    try { localStorage.setItem(THEME_KEY, theme); } catch {}
+  }
+
+  const savedTheme = (() => {
+    try { return localStorage.getItem(THEME_KEY) ?? ''; } catch { return ''; }
+  })();
+
+  if (themeSelect) themeSelect.value = savedTheme;
+  applyTheme(savedTheme);
+
+  themeSelect?.addEventListener('change', () => {
+    applyTheme(themeSelect.value);
+  });
+</script>
 
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
