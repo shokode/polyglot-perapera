@@ -5682,13 +5682,20 @@ h3 {
 }
 
 /* Pastel theme: card hover — lift with shadow, no tint */
+[data-theme="pastel"] .card:hover {
+  background: var(--surface-strong);
+  box-shadow: 0 4px 16px rgba(60, 42, 30, 0.10), 0 1px 4px rgba(60, 42, 30, 0.06);
+}
+
 [data-theme="pastel"] .text-list-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+  background: var(--surface);
+  box-shadow: 0 4px 16px rgba(60, 42, 30, 0.10), 0 1px 4px rgba(60, 42, 30, 0.06);
 }
 
 [data-theme="pastel"] .expression-card:hover,
 [data-theme="pastel"] .expression-card:focus-within {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+  background: var(--surface);
+  box-shadow: 0 4px 16px rgba(60, 42, 30, 0.10), 0 1px 4px rgba(60, 42, 30, 0.06);
 }
 
 /* Pastel theme: badge text colors */
