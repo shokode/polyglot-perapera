@@ -5900,8 +5900,8 @@ h3 {
   --danger-rgb: 239, 107, 115;
   --color-error: #ef6b73;
   --color-error-text: #ff9099;
-  --color-learned: #8abe3e;
-  --color-learned-subtle: rgba(186, 230, 126, 0.15);
+  --color-learned: #bae67e;
+  --color-learned-subtle: rgba(186, 230, 126, 0.18);
   --color-pinned: #ffcc66;
   --color-shaky: #ffae57;
 
@@ -5944,4 +5944,16 @@ h3 {
   /* Review button active colors */
   --review-btn-active-start-rgb: 255, 204, 102;
   --review-btn-active-end-rgb: 255, 174, 87;
+}
+
+/* Mirage theme: learned badge visibility override */
+[data-theme="mirage"] .status-button[data-status="learned"] {
+  color: var(--color-learned);
+  border-color: rgba(var(--learned-rgb), 0.54);
+  background: rgba(var(--learned-rgb), 0.18);
+}
+
+[data-theme="mirage"] .status-button[data-status="learned"]:hover {
+  border-color: rgba(var(--learned-rgb), 0.68);
+  background: rgba(var(--learned-rgb), 0.25);
 }
