@@ -59,10 +59,10 @@ const links = [
         <span class="theme-dot" data-theme-dot aria-hidden="true"></span>
         <select id="ui-theme-select" data-theme-select>
           <option value="" data-i18n="themeOcean">{uiText.en.themeOcean}</option>
-          <option value="dracula" data-i18n="themePastelNight">{uiText.en.themePastelNight}</option>
-          <option value="palenight" data-i18n="themeMidnightHaze">{uiText.en.themeMidnightHaze}</option>
-          <option value="pastel" data-i18n="themeRetro">{uiText.en.themeRetro}</option>
           <option value="mirage" data-i18n="themeMirage">{uiText.en.themeMirage}</option>
+          <option value="dracula" data-i18n="themePastelNight">{uiText.en.themePastelNight}</option>
+          <option value="pastel" data-i18n="themeRetro">{uiText.en.themeRetro}</option>
+          <option value="prism" data-i18n="themePrism">{uiText.en.themePrism}</option>
         </select>
       </div>
       <div class="site-auth" data-auth-root hidden>
@@ -122,9 +122,10 @@ const links = [
   const THEME_KEY = 'theme';
   const THEME_COLORS: Record<string, string> = {
     '': '#82c7ff',
+    'mirage': '#ffcc66',
     'dracula': '#bd93f9',
-    'palenight': '#82aaff',
     'pastel': '#b8a4e0',
+    'prism': '#0fa3b1',
   };
 
   const themeSelect = document.querySelector<HTMLSelectElement>('[data-theme-select]');
@@ -143,7 +144,10 @@ const links = [
   }
 
   const savedTheme = (() => {
-    try { return localStorage.getItem(THEME_KEY) ?? ''; } catch { return ''; }
+    try {
+      const t = localStorage.getItem(THEME_KEY) ?? '';
+      return t === 'palenight' ? '' : t;
+    } catch { return ''; }
   })();
 
   if (themeSelect) themeSelect.value = savedTheme;

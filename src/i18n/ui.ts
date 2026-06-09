@@ -248,10 +248,10 @@ export type UILabels = {
   authClose: string;
   themeLabel: string;
   themeOcean: string;
-  themeMidnightHaze: string;
+  themeMirage: string;
   themePastelNight: string;
   themeRetro: string;
-  themeMirage: string;
+  themePrism: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -418,10 +418,10 @@ export const uiText: Record<UILang, UILabels> = {
     authClose: 'Lukk',
     themeLabel: 'Tema',
     themeOcean: 'Ocean',
-    themeMidnightHaze: 'Midnight Haze',
+    themeMirage: 'Mirage',
     themePastelNight: 'Pastel Night',
     themeRetro: 'Retro',
-    themeMirage: 'Mirage',
+    themePrism: 'Prism',
   },
   en: {
     home: 'Home',
@@ -586,10 +586,10 @@ export const uiText: Record<UILang, UILabels> = {
     authClose: 'Close',
     themeLabel: 'Theme',
     themeOcean: 'Ocean',
-    themeMidnightHaze: 'Midnight Haze',
+    themeMirage: 'Mirage',
     themePastelNight: 'Pastel Night',
     themeRetro: 'Retro',
-    themeMirage: 'Mirage',
+    themePrism: 'Prism',
   },
   ja: {
     home: 'ホーム',
@@ -754,9 +754,9 @@ export const uiText: Record<UILang, UILabels> = {
     authClose: '閉じる',
     themeLabel: 'テーマ',
     themeOcean: 'オーシャン',
-    themeMidnightHaze: 'ミッドナイトヘイズ',
+    themeMirage: 'ミラージュ',
     themePastelNight: 'パステルナイト',
     themeRetro: 'レトロ',
-    themeMirage: 'ミラージュ',
+    themePrism: 'プリズム',
   },
 };

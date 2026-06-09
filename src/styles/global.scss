@@ -886,7 +886,7 @@ a:active {
 .page-shell {
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: calc(var(--navbar-height) + 28px) 0 80px;
+  padding: var(--navbar-height) 0 80px;
 }
 
 .page-layout {
@@ -908,9 +908,7 @@ a:active {
   padding: 28px;
   border: 1px solid var(--border);
   border-radius: 28px;
-  background:
-    linear-gradient(135deg, rgba(var(--accent-rgb), 0.08), rgba(var(--purple-rgb), 0.05)),
-    rgba(var(--surface-alt-rgb), 0.88);
+  background: var(--surface);
   box-shadow: var(--shadow);
 }
 
@@ -958,9 +956,7 @@ a:active {
 }
 
 .page-hero--review {
-  background:
-    linear-gradient(135deg, rgba(var(--accent-rgb), 0.07), rgba(var(--purple-rgb), 0.035)),
-    rgba(var(--surface-alt-rgb), 0.84);
+  background: var(--surface);
 }
 
 .page-hero-meta {
@@ -979,7 +975,7 @@ a:active {
   border: 1px solid rgba(var(--border-rgb), 0.1);
   border-radius: 14px;
   padding: 8px 10px;
-  background: rgba(var(--white-rgb), 0.028);
+  background: var(--surface);
 }
 
 .page-hero-meta dt {
@@ -1080,7 +1076,7 @@ a:active {
   border: 1px solid var(--border-soft);
   border-radius: 16px;
   padding: 12px;
-  background: rgba(var(--white-rgb), 0.04);
+  background: var(--surface);
   cursor: default;
 }
 
@@ -1513,7 +1509,7 @@ a:active {
   padding: 18px 18px 18px 20px;
   border: 1px solid rgba(var(--border-rgb), 0.12);
   border-left-width: 1px;
-  background: rgba(var(--white-rgb), 0.026);
+  background: var(--surface);
   cursor: pointer;
   transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
@@ -2017,7 +2013,7 @@ a:active {
   min-width: 0;
   border: 1px solid var(--border-soft);
   border-radius: 18px;
-  background: rgba(var(--white-rgb), 0.03);
+  background: var(--surface);
   cursor: default;
 }
 
@@ -2027,7 +2023,7 @@ a:active {
   padding: 8px 9px;
   border-color: rgba(var(--border-rgb), 0.065);
   border-radius: 12px;
-  background: rgba(var(--white-rgb), 0.018);
+  background: var(--surface);
 }
 
 .progress-stat-card span {
@@ -2241,7 +2237,7 @@ a:active {
   border: 1px solid rgba(var(--border-rgb), 0.07);
   border-radius: 12px;
   padding: 8px 10px 8px 14px;
-  background: rgba(var(--white-rgb), 0.018);
+  background: var(--surface);
   color: var(--text-muted);
   font-size: 0.8rem;
   line-height: 1.3;
@@ -2493,7 +2489,7 @@ a:active {
   overflow-x: auto;
   border: 1px solid rgba(var(--border-rgb), 0.12);
   border-radius: 18px;
-  background: rgba(var(--white-rgb), 0.028);
+  background: var(--surface);
 }
 
 .language-progress-table {
@@ -2603,7 +2599,7 @@ a:active {
   border: 1px solid rgba(var(--border-rgb), 0.08);
   border-radius: 14px;
   padding: 10px 12px;
-  background: rgba(var(--white-rgb), 0.025);
+  background: var(--surface);
   color: var(--text-muted);
   font-size: 0.86rem;
   line-height: 1.45;
@@ -2755,7 +2751,7 @@ a:active {
   padding: 14px 16px;
   border: 1px solid rgba(var(--border-rgb), 0.1);
   border-radius: 18px;
-  background: rgba(var(--white-rgb), 0.035);
+  background: var(--surface);
 }
 
 .completion-stat strong {
@@ -2778,7 +2774,7 @@ a:active {
   padding: 16px;
   border: 1px solid rgba(var(--border-rgb), 0.1);
   border-radius: 18px;
-  background: rgba(var(--white-rgb), 0.03);
+  background: var(--surface);
 }
 
 .self-assessment-panel strong {
@@ -2876,7 +2872,7 @@ a:active {
   padding: 10px 11px;
   border: 1px solid rgba(var(--border-rgb), 0.08);
   border-radius: 14px;
-  background: rgba(var(--white-rgb), 0.025);
+  background: var(--surface);
 }
 
 .learning-focus-card ul {
@@ -2991,7 +2987,7 @@ a:active {
   overflow: hidden;
   padding: 18px 20px;
   border-radius: 22px;
-  background: rgba(var(--white-rgb), 0.046);
+  background: var(--surface);
   border: 1px solid rgba(var(--border-rgb), 0.16);
   box-shadow: inset 0 0 0 1px rgba(var(--white-rgb), 0.018);
 }
@@ -3078,7 +3074,7 @@ a:active {
 }
 
 .review-expression-card[data-status="review"] {
-  background: rgba(var(--white-rgb), 0.04);
+  background: var(--surface);
   cursor: pointer;
 }
 
@@ -3583,7 +3579,7 @@ a:active {
   border: 1px solid rgba(var(--border-rgb), 0.12);
   border-radius: 14px;
   padding: 9px 10px;
-  background: rgba(var(--white-rgb), 0.028);
+  background: var(--surface);
 }
 
 .flashcard-answer-result[data-result="correct"] {
@@ -3634,12 +3630,34 @@ a:active {
   line-height: 1.55;
 }
 
-.flashcard-detail span,
+.flashcard-detail span {
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .flashcard-source span {
   color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+/* Secondary info section inside quiz answer result */
+.flashcard-answer-result .flashcard-detail {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 3px 8px;
+  background: var(--surface-muted);
+  border-radius: 6px;
+}
+
+.flashcard-answer-result p:not(.flashcard-detail) + .flashcard-detail {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 8px;
+  margin-top: 2px;
 }
 
 .flashcard-examples {
@@ -3648,7 +3666,7 @@ a:active {
   padding: 12px;
   border: 1px solid rgba(var(--border-rgb), 0.1);
   border-radius: 14px;
-  background: rgba(var(--white-rgb), 0.03);
+  background: var(--surface);
 }
 
 .flashcard-source-link {
@@ -3727,7 +3745,7 @@ a:active {
   border: 1px solid rgba(var(--border-rgb), 0.12);
   border-radius: 16px;
   padding: 12px 10px;
-  background: rgba(var(--white-rgb), 0.03);
+  background: var(--surface);
 }
 
 .flashcard-session-stat span {
@@ -4532,7 +4550,7 @@ a:active {
 .stat-card {
   padding: 12px 14px;
   border-radius: 16px;
-  background: rgba(var(--white-rgb), 0.04);
+  background: var(--surface);
   border: 1px solid rgba(var(--border-rgb), 0.08);
 }
 
@@ -5506,262 +5524,134 @@ h3 {
   --text-mode-active: #c0f0f8;
 }
 
-/* ── Palenight ───────────────────────────────────────────────────────────
-   Anchors: bg #292d3e · accent #82aaff · purple #c792ea · green #c3e88d
-            yellow #ffcb6b · coral #f07178 · cyan #89ddff
-   ─────────────────────────────────────────────────────────────────────── */
-[data-theme="palenight"] {
-  color-scheme: dark;
-
-  /* Backgrounds */
-  --bg: #292d3e;
-  --bg-rgb: 41, 45, 62;
-  --navbar-bg: rgba(41, 45, 62, 0.92);
-  --dropdown-bg: #23263a;
-  --input-bg: #1d2030;
-  --menu-bg: #232638;
-  --filter-bg: #252840;
-
-  /* Surfaces */
-  --surface: #323751;
-  --surface-strong: #3a3f58;
-  --surface-strong-rgb: 58, 63, 88;
-  --surface-muted: #2b2f43;
-  --surface-alt-rgb: 47, 52, 78;
-
-  /* Text */
-  --text: #f0f2ff;
-  --text-muted: #bac0dd;
-  --text-bright: #d2d8f2;
-  --text-bright-rgb: 210, 216, 242;
-  --text-soft: #dde2f5;
-  --text-faint: #cdd3e8;
-  --text-dim: #b5bcd8;
-  --text-subtle: #c5cbe4;
-  --text-hover: #e6eeff;
-  --text-active: #f0f5ff;
-  --text-active-strong: #f5f8ff;
-  --text-on-light: #f5f8ff;
-  --color-on-primary: #1a2040;
-  --color-on-accent: #1a2040;
-
-  /* Accent (blue) */
-  --accent: #82aaff;
-  --accent-rgb: 130, 170, 255;
-  --accent-strong: #6b9eff;
-  --accent-2-rgb: 100, 148, 248;
-  --accent-3-rgb: 137, 221, 255;
-  --accent-context-text: #d0e4ff;
-
-  /* Borders */
-  --border: rgba(130, 170, 255, 0.18);
-  --border-rgb: 130, 170, 255;
-  --border-soft: rgba(130, 170, 255, 0.1);
-  --border-interactive: rgba(130, 170, 255, 0.3);
-
-  /* Shadows */
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-
-  /* Purple / violet (secondary = Palenight purple) */
-  --purple-rgb: 199, 146, 234;
-  --purple-light-rgb: 220, 180, 245;
-  --highlight-expression-rgb: 190, 130, 240;
-  --color-purple-label: #c792ea;
-  --color-purple-text: #dbb8f5;
-  --color-purple-text-hover: #ecdbfc;
-  --color-purple-text-strong: #f4eeff;
-
-  /* Language accent colors */
-  --lang-no-rgb: 137, 221, 255;
-  --lang-en-rgb: 195, 232, 141;
-  --lang-ja-rgb: 199, 146, 234;
-
-  /* Status / semantic */
-  --success-rgb: 195, 232, 141;
-  --success-2-rgb: 180, 215, 120;
-  --learned-rgb: 165, 210, 110;
-  --lime-rgb: 195, 232, 141;
-  --warning-rgb: 255, 203, 107;
-  --warning-2-rgb: 245, 190, 90;
-  --danger-rgb: 240, 113, 120;
-  --color-error: #f07178;
-  --color-error-text: #e8636c;
-  --color-learned: #c3e88d;
-  --color-learned-subtle: #a8ddb0;
-  --color-pinned: #ffcb6b;
-  --color-shaky: #f5be50;
-
-  /* Primary button */
-  --btn-primary-start: #82aaff;
-  --btn-primary-end: #5f8cf7;
-  --btn-primary-shadow-rgb: 80, 130, 240;
-
-  /* Typing area (light surface) */
-  --typing-area-bg: #edf0ff;
-  --typing-area-bg-focused: #e8ecff;
-  --typing-area-text: #292d3e;
-  --typing-area-ruby: #7a82c0;
-  --typing-caret: #3a3f58;
-  --typing-placeholder: #8890c0;
-  --typing-border-rgb: 110, 125, 185;
-  --typing-correct-rgb: 145, 195, 95;
-  --typing-incorrect-rgb: 220, 85, 90;
-  --typing-incorrect-2-rgb: 200, 68, 72;
-  --typing-current-rgb: 90, 140, 220;
-  --highlight-grammar-rgb: 180, 83, 9;
-
-  /* Overlays / modals */
-  --overlay-rgb: 22, 25, 38;
-  --overlay-panel-rgb: 34, 37, 56;
-  --auth-backdrop-rgb: 18, 20, 32;
-  --type-overlay-rgb: 28, 36, 65;
-  --type-area-rgb: 22, 28, 52;
-
-  /* Review mode card gradients */
-  --review-btn-bg-start-rgb: 46, 51, 72;
-  --review-btn-bg-end-rgb: 40, 44, 64;
-  --review-btn-hover-start-rgb: 53, 58, 82;
-  --review-btn-hover-end-rgb: 48, 53, 75;
-  --review-btn-active-start-rgb: 62, 68, 96;
-  --review-btn-active-end-rgb: 52, 58, 84;
-  --review-btn-shadow-rgb: 15, 18, 32;
-
-  /* Component-specific */
-  --flashcard-choice-text: #d0d8ff;
-  --flashcard-choice-correct-text: #d8f5c8;
-  --flashcard-choice-wrong-text: #ffd5d8;
-  --text-mode-active: #c8e8ff;
-}
-
 /* ── Pastel ──────────────────────────────────────────────────────────────
-   Anchors: bg #f4f0e6 (warm straw/washi paper) · accent #28a87e (vivid mint)
-            terracotta #c8643a · amber #c39a20 · coral #c34038
+   Warm washi paper palette — forest teal accent, cream bg, coral secondary
    ─────────────────────────────────────────────────────────────────────── */
 [data-theme="pastel"] {
   color-scheme: light;
 
   /* Backgrounds */
-  --bg: #f4f0e6;
-  --bg-rgb: 244, 240, 230;
-  --navbar-bg: rgba(244, 240, 230, 0.95);
-  --dropdown-bg: #fdfaf3;
-  --input-bg: #fdfaf3;
-  --menu-bg: #fdfaf3;
-  --filter-bg: #fdfaf3;
+  --bg: #fdf6e0;
+  --bg-rgb: 253, 246, 224;
+  --navbar-bg: rgba(253, 246, 224, 0.95);
+  --dropdown-bg: #ffffff;
+  --input-bg: #ffffff;
+  --menu-bg: #ffffff;
+  --filter-bg: #ffffff;
 
   /* Surfaces */
-  --surface: #fdfbf6;
-  --surface-strong: #f8f5ee;
-  --surface-strong-rgb: 248, 245, 238;
-  --surface-muted: #f5f2ea;
-  --surface-alt-rgb: 250, 247, 238;
+  --surface: #fefcf7;
+  --surface-strong: #f8f4ec;
+  --surface-strong-rgb: 248, 244, 236;
+  --surface-muted: #fbf8f1;
+  --surface-alt-rgb: 251, 248, 241;
 
   /* Text */
-  --text: #2a2620;
-  --text-muted: #3a3028;
-  --text-bright: #1a1610;
-  --text-bright-rgb: 26, 22, 16;
-  --text-soft: #4a4238;
-  --text-faint: #5a5048;
-  --text-dim: #3a3228;
-  --text-subtle: #4a4238;
-  --text-hover: #3a3028;
-  --text-active: #2a2218;
-  --text-active-strong: #1a1410;
-  --text-on-light: #2a2620;
+  --text: #3c2a1e;
+  --text-muted: #8a7060;
+  --text-bright: #1e1410;
+  --text-bright-rgb: 30, 20, 16;
+  --text-soft: #9a8070;
+  --text-faint: #b8a090;
+  --text-dim: #aa9080;
+  --text-subtle: #c0b0a0;
+  --text-hover: #2a1e14;
+  --text-active: #1e1410;
+  --text-active-strong: #0e0a08;
+  --text-on-light: #3c2a1e;
   --color-on-primary: #ffffff;
   --color-on-accent: #ffffff;
 
-  /* Accent (warm gold) */
-  --accent: #c8902a;
-  --accent-rgb: 200, 144, 42;
-  --accent-strong: #aa7820;
-  --accent-2-rgb: 215, 162, 60;
-  --accent-3-rgb: 180, 122, 30;
-  --accent-context-text: #8a5e10;
+  /* Accent (forest teal green) */
+  --accent: #5a9a7a;
+  --accent-rgb: 90, 154, 122;
+  --accent-strong: #467d62;
+  --accent-2-rgb: 70, 140, 105;
+  --accent-3-rgb: 100, 170, 140;
+  --accent-context-text: #366050;
 
   /* Borders */
-  --border: rgba(170, 150, 125, 0.45);
-  --border-rgb: 170, 150, 125;
-  --border-soft: rgba(170, 150, 125, 0.25);
-  --border-interactive: rgba(200, 144, 42, 0.35);
+  --border: rgba(185, 168, 148, 0.38);
+  --border-rgb: 185, 168, 148;
+  --border-soft: rgba(185, 168, 148, 0.20);
+  --border-interactive: rgba(90, 154, 122, 0.38);
 
   /* Shadows */
-  --shadow: 0 2px 12px rgba(80, 65, 45, 0.10), 0 1px 3px rgba(80, 65, 45, 0.08);
+  --shadow: 0 2px 12px rgba(60, 42, 30, 0.09), 0 1px 3px rgba(60, 42, 30, 0.06);
 
-  /* Secondary (slate blue — 藍) */
-  --purple-rgb: 100, 125, 155;
-  --purple-light-rgb: 130, 155, 185;
-  --highlight-expression-rgb: 80, 105, 140;
-  --color-purple-label: #647d9b;
-  --color-purple-text: #506a88;
-  --color-purple-text-hover: #3d5570;
-  --color-purple-text-strong: #2d4560;
+  /* Secondary (warm coral/pink) */
+  --purple-rgb: 210, 120, 120;
+  --purple-light-rgb: 230, 150, 150;
+  --highlight-expression-rgb: 190, 90, 90;
+  --color-purple-label: #d27878;
+  --color-purple-text: #b85858;
+  --color-purple-text-hover: #9a3a3a;
+  --color-purple-text-strong: #802828;
 
   /* Language accent colors */
-  --lang-no-rgb: 200, 144, 42;
-  --lang-en-rgb: 80, 185, 130;
-  --lang-ja-rgb: 220, 105, 140;
+  --lang-no-rgb: 90, 154, 122;
+  --lang-en-rgb: 200, 136, 58;
+  --lang-ja-rgb: 210, 120, 120;
 
   /* Status / semantic */
-  --success-rgb: 46, 158, 100;
-  --success-2-rgb: 35, 145, 90;
-  --learned-rgb: 46, 158, 100;
-  --lime-rgb: 80, 185, 110;
-  --warning-rgb: 195, 140, 30;
-  --warning-2-rgb: 210, 160, 50;
-  --danger-rgb: 195, 65, 55;
-  --color-error: #c34038;
-  --color-error-text: #9a2a20;
-  --color-learned: #2e9e64;
-  --color-learned-subtle: rgba(46, 158, 100, 0.15);
-  --color-pinned: #c8902a;
-  --color-shaky: #c8a030;
+  --success-rgb: 70, 155, 100;
+  --success-2-rgb: 60, 140, 85;
+  --learned-rgb: 70, 155, 100;
+  --lime-rgb: 90, 180, 120;
+  --warning-rgb: 200, 136, 58;
+  --warning-2-rgb: 220, 160, 70;
+  --danger-rgb: 200, 70, 70;
+  --color-error: #c84646;
+  --color-error-text: #9a2020;
+  --color-learned: #2e8a54;
+  --color-learned-subtle: rgba(70, 155, 100, 0.18);
+  --color-pinned: #c88838;
+  --color-shaky: #c88838;
 
   /* Primary button */
-  --btn-primary-start: #c8902a;
-  --btn-primary-end: #aa7820;
-  --btn-primary-shadow-rgb: 200, 144, 42;
+  --btn-primary-start: #5a9a7a;
+  --btn-primary-end: #467d62;
+  --btn-primary-shadow-rgb: 90, 154, 122;
 
   /* Typing area — DARK island on light page */
-  --typing-area-bg: #262420;
-  --typing-area-bg-focused: #2d2b24;
-  --typing-area-text: #f0ede4;
-  --typing-area-ruby: #a8b898;
-  --typing-caret: #c8902a;
-  --typing-placeholder: #5a6a50;
-  --typing-border-rgb: 80, 100, 70;
-  --typing-correct-rgb: 60, 160, 100;
-  --typing-incorrect-rgb: 210, 80, 65;
-  --typing-incorrect-2-rgb: 230, 100, 85;
-  --typing-current-rgb: 200, 144, 42;
-  --highlight-grammar-rgb: 200, 144, 42;
+  --typing-area-bg: #1e2a22;
+  --typing-area-bg-focused: #243028;
+  --typing-area-text: #fdf6e0;
+  --typing-area-ruby: #8a9a88;
+  --typing-caret: #5a9a7a;
+  --typing-placeholder: #607060;
+  --typing-border-rgb: 80, 110, 90;
+  --typing-correct-rgb: 70, 185, 120;
+  --typing-incorrect-rgb: 200, 70, 70;
+  --typing-incorrect-2-rgb: 220, 90, 90;
+  --typing-current-rgb: 200, 136, 58;
+  --highlight-grammar-rgb: 90, 154, 122;
 
   /* Overlays / modals */
-  --overlay-rgb: 50, 45, 35;
-  --overlay-panel-rgb: 248, 244, 236;
-  --auth-backdrop-rgb: 50, 45, 35;
-  --type-overlay-rgb: 20, 22, 16;
-  --type-area-rgb: 30, 32, 24;
+  --overlay-rgb: 60, 42, 30;
+  --overlay-panel-rgb: 253, 246, 240;
+  --auth-backdrop-rgb: 60, 42, 30;
+  --type-overlay-rgb: 20, 30, 24;
+  --type-area-rgb: 26, 36, 28;
 
   /* Review mode card gradients */
-  --review-btn-bg-start-rgb: 210, 195, 175;
-  --review-btn-bg-end-rgb: 200, 183, 162;
-  --review-btn-hover-start-rgb: 220, 205, 185;
-  --review-btn-hover-end-rgb: 210, 195, 175;
-  --review-btn-active-start-rgb: 196, 114, 72;
-  --review-btn-active-end-rgb: 168, 94, 56;
-  --review-btn-shadow-rgb: 180, 140, 100;
+  --review-btn-bg-start-rgb: 240, 230, 215;
+  --review-btn-bg-end-rgb: 230, 220, 200;
+  --review-btn-hover-start-rgb: 248, 238, 223;
+  --review-btn-hover-end-rgb: 240, 230, 215;
+  --review-btn-active-start-rgb: 90, 154, 122;
+  --review-btn-active-end-rgb: 70, 125, 98;
+  --review-btn-shadow-rgb: 185, 168, 148;
 
-  /* Body background glows */
-  --glow-blue-rgb: 200, 144, 42;
-  --glow-cyan-rgb: 215, 168, 70;
+  /* Glows */
+  --glow-blue-rgb: 90, 154, 122;
+  --glow-cyan-rgb: 200, 136, 58;
 
   /* Component-specific */
-  --flashcard-choice-text: #2a2620;
-  --flashcard-choice-correct-text: #2d6a4a;
-  --flashcard-choice-wrong-text: #9a2a20;
-  --text-mode-active: #8a4828;
+  --flashcard-choice-text: #3c2a1e;
+  --flashcard-choice-correct-text: #2e8a54;
+  --flashcard-choice-wrong-text: #c84646;
+  --text-mode-active: #5a9a7a;
 
   /* Heatmap activity levels — warm 4-color progression */
   --progress-calendar__day-intensity-1-bg: #edd5b0;
@@ -5791,33 +5681,31 @@ h3 {
   background: #8a3c20;
 }
 
-/* Pastel theme: card hover backgrounds — unified soft gold tint */
+/* Pastel theme: card hover — lift with shadow, no tint */
 [data-theme="pastel"] .text-list-card:hover {
-  background: rgba(var(--accent-rgb), 0.07);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="pastel"] .expression-card:hover,
 [data-theme="pastel"] .expression-card:focus-within {
-  background: rgba(var(--accent-rgb), 0.07);
-}
-
-[data-theme="pastel"] .expression-card.expression-card-focus {
-  background: rgba(var(--accent-rgb), 0.08);
-}
-
-/* Pastel theme: review button active colors (warm gold) */
-[data-theme="pastel"] {
-  --review-btn-active-start-rgb: 200, 144, 42;
-  --review-btn-active-end-rgb: 180, 122, 30;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Pastel theme: badge text colors */
 [data-theme="pastel"] .progress-assessment-badge {
-  color: #2a2620;
+  color: #3c2a1e;
 }
 
 [data-theme="pastel"] .progress-assessment-badge--perfect {
-  color: #1a7a5a;
+  color: #366050;
+}
+
+/* Pastel theme: learned badge — force visible */
+[data-theme="pastel"] [class*="learned"],
+[data-theme="pastel"] [class*="status-learned"] {
+  background: rgba(46, 138, 84, 0.18) !important;
+  color: #1e6e40 !important;
+  border-color: rgba(46, 138, 84, 0.38) !important;
 }
 
 /* ── Mirage ──────────────────────────────────────────────────────────────
@@ -5956,4 +5844,157 @@ h3 {
 [data-theme="mirage"] .status-button[data-status="learned"]:hover {
   border-color: rgba(var(--learned-rgb), 0.68);
   background: rgba(var(--learned-rgb), 0.25);
+}
+
+/* ── Prism ────────────────────────────────────────────────────────────────
+   Clean light theme (Cyber Pastel style)
+   ─────────────────────────────────────────────────────────────────────── */
+[data-theme="prism"] {
+  color-scheme: light;
+
+  /* Backgrounds */
+  --bg: #f9f7f3;
+  --bg-rgb: 249, 247, 243;
+  --navbar-bg: rgba(249, 247, 243, 0.95);
+  --dropdown-bg: #ffffff;
+  --input-bg: #ffffff;
+  --menu-bg: #ffffff;
+  --filter-bg: #ffffff;
+
+  /* Surfaces */
+  --surface: #fefcf7;
+  --surface-strong: #f8f4ec;
+  --surface-strong-rgb: 248, 244, 236;
+  --surface-muted: #fbf8f1;
+  --surface-alt-rgb: 251, 248, 241;
+
+  /* Text */
+  --text: #170f11;
+  --text-muted: #6b6068;
+  --text-bright: #000000;
+  --text-bright-rgb: 0, 0, 0;
+  --text-soft: #8a8085;
+  --text-faint: #a89ea3;
+  --text-dim: #998a8f;
+  --text-subtle: #b8aeb3;
+  --text-hover: #0d0a0b;
+  --text-active: #170f11;
+  --text-active-strong: #000000;
+  --text-on-light: #170f11;
+  --color-on-primary: #ffffff;
+  --color-on-accent: #ffffff;
+
+  /* Accent (teal) */
+  --accent: #0fa3b1;
+  --accent-rgb: 15, 163, 177;
+  --accent-strong: #0d8a96;
+  --accent-2-rgb: 1, 151, 246;
+  --accent-3-rgb: 15, 163, 177;
+  --accent-context-text: #0a7a85;
+
+  /* Borders */
+  --border: rgba(180, 168, 175, 0.35);
+  --border-rgb: 180, 168, 175;
+  --border-soft: rgba(180, 168, 175, 0.18);
+  --border-interactive: rgba(15, 163, 177, 0.35);
+
+  /* Shadows */
+  --shadow: 0 2px 12px rgba(23, 15, 17, 0.08), 0 1px 3px rgba(23, 15, 17, 0.06);
+
+  /* Purple / secondary → warm orange */
+  --purple-rgb: 247, 160, 114;
+  --color-purple-label: #f7a072;
+  --color-purple-text: #d4763a;
+  --color-purple-text-hover: #b85a20;
+  --color-purple-text-strong: #9a4510;
+
+  /* Language accent colors */
+  --lang-no-rgb: 15, 163, 177;
+  --lang-en-rgb: 247, 160, 114;
+  --lang-ja-rgb: 202, 123, 247;
+
+  /* Status / semantic */
+  --success-rgb: 30, 185, 140;
+  --learned-rgb: 30, 185, 140;
+  --color-learned: #1eb98c;
+  --color-learned-subtle: rgba(30, 185, 140, 0.15);
+  --warning-rgb: 240, 190, 30;
+  --warning-2-rgb: 255, 210, 50;
+  --danger-rgb: 220, 60, 60;
+  --color-error: #dc3c3c;
+  --color-error-text: #aa2020;
+  --color-pinned: #f0c030;
+  --color-shaky: #f0be1e;
+  --lime-rgb: 60, 210, 150;
+
+  /* Primary button */
+  --btn-primary-start: #0fa3b1;
+  --btn-primary-end: #0d8a96;
+  --btn-primary-shadow-rgb: 15, 163, 177;
+
+  /* Typing area (dark island on light page) */
+  --typing-area-bg: #170f11;
+  --typing-area-bg-focused: #1e1518;
+  --typing-area-text: #f9f7f3;
+  --typing-area-ruby: #8a8085;
+  --typing-caret: #0fa3b1;
+  --typing-placeholder: #6b6068;
+  --typing-border-rgb: 100, 90, 95;
+  --typing-correct-rgb: 30, 160, 100;
+  --typing-incorrect-rgb: 220, 60, 60;
+  --typing-incorrect-2-rgb: 235, 80, 80;
+  --typing-current-rgb: 15, 163, 177;
+  --highlight-grammar-rgb: 202, 123, 247;
+
+  /* Overlays */
+  --overlay-rgb: 23, 15, 17;
+  --overlay-panel-rgb: 255, 255, 255;
+  --auth-backdrop-rgb: 23, 15, 17;
+  --type-overlay-rgb: 10, 8, 9;
+  --type-area-rgb: 30, 20, 25;
+
+  /* Glows */
+  --glow-blue-rgb: 15, 163, 177;
+  --glow-cyan-rgb: 240, 190, 30;
+
+  /* Component-specific */
+  --flashcard-choice-text: #170f11;
+  --flashcard-choice-correct-text: #1ea064;
+  --flashcard-choice-wrong-text: #dc3c3c;
+  --text-mode-active: #0fa3b1;
+}
+
+/* Prism theme: card hover — lift with shadow, no dark tint */
+[data-theme="prism"] .text-list-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="prism"] .expression-card:hover,
+[data-theme="prism"] .expression-card:focus-within {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="prism"] .expression-card[data-status="review"]:hover {
+  background: var(--surface);
+}
+
+[data-theme="prism"] .expression-card[data-status="learned"]:hover {
+  background: var(--surface);
+}
+
+[data-theme="prism"] .review-expression-card[data-status="review"]:hover {
+  background: var(--surface);
+}
+
+/* Prism theme: status badge colors */
+[data-theme="prism"] .status-button[data-status="learned"] {
+  background: rgba(26, 144, 96, 0.20) !important;
+  color: #156640 !important;
+  border: 1px solid rgba(26, 144, 96, 0.40) !important;
+}
+
+[data-theme="prism"] .status-button[data-status="review"] {
+  color: #b06820 !important;
+  background: rgba(247, 160, 114, 0.18) !important;
+  border: 1px solid rgba(247, 160, 114, 0.38) !important;
 }
