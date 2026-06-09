@@ -247,6 +247,10 @@ export type UILabels = {
   authCheckEmail: string;
   authClose: string;
   themeLabel: string;
+  themeOcean: string;
+  themeMidnightHaze: string;
+  themePastelNight: string;
+  themeRetro: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -412,6 +416,10 @@ export const uiText: Record<UILang, UILabels> = {
     authCheckEmail: 'Sjekk e-posten din for å bekrefte kontoen.',
     authClose: 'Lukk',
     themeLabel: 'Tema',
+    themeOcean: 'Ocean',
+    themeMidnightHaze: 'Midnight Haze',
+    themePastelNight: 'Pastel Night',
+    themeRetro: 'Retro',
   },
   en: {
     home: 'Home',
@@ -575,6 +583,10 @@ export const uiText: Record<UILang, UILabels> = {
     authCheckEmail: 'Check your email to confirm your account.',
     authClose: 'Close',
     themeLabel: 'Theme',
+    themeOcean: 'Ocean',
+    themeMidnightHaze: 'Midnight Haze',
+    themePastelNight: 'Pastel Night',
+    themeRetro: 'Retro',
   },
   ja: {
     home: 'ホーム',
@@ -738,5 +750,9 @@ export const uiText: Record<UILang, UILabels> = {
     authCheckEmail: '確認メールを送信しました。メールをご確認ください。',
     authClose: '閉じる',
     themeLabel: 'テーマ',
+    themeOcean: 'オーシャン',
+    themeMidnightHaze: 'ミッドナイトヘイズ',
+    themePastelNight: 'パステルナイト',
+    themeRetro: 'レトロ',
   },
 };

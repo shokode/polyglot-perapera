@@ -1,5 +1,5 @@
 ---
-import { uiLanguages, uiLanguageNames } from "../i18n/ui";
+import { uiLanguages, uiLanguageNames, uiText } from "../i18n/ui";
 
 type ActivePage = "home" | "review" | "progress" | "text" | "none";
 
@@ -58,10 +58,10 @@ const links = [
         <label for="ui-theme-select" data-i18n="themeLabel">Theme</label>
         <span class="theme-dot" data-theme-dot aria-hidden="true"></span>
         <select id="ui-theme-select" data-theme-select>
-          <option value="">Ocean</option>
-          <option value="dracula">Dracula</option>
-          <option value="palenight">Palenight</option>
-          <option value="pastel">Pastel</option>
+          <option value="" data-i18n="themeOcean">{uiText.en.themeOcean}</option>
+          <option value="dracula" data-i18n="themePastelNight">{uiText.en.themePastelNight}</option>
+          <option value="palenight" data-i18n="themeMidnightHaze">{uiText.en.themeMidnightHaze}</option>
+          <option value="pastel" data-i18n="themeRetro">{uiText.en.themeRetro}</option>
         </select>
       </div>
       <div class="site-auth" data-auth-root hidden>
