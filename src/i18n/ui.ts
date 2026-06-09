@@ -251,6 +251,7 @@ export type UILabels = {
   themeMidnightHaze: string;
   themePastelNight: string;
   themeRetro: string;
+  themeMirage: string;
 };
 
 export const uiText: Record<UILang, UILabels> = {
@@ -420,6 +421,7 @@ export const uiText: Record<UILang, UILabels> = {
     themeMidnightHaze: 'Midnight Haze',
     themePastelNight: 'Pastel Night',
     themeRetro: 'Retro',
+    themeMirage: 'Mirage',
   },
   en: {
     home: 'Home',
@@ -587,6 +589,7 @@ export const uiText: Record<UILang, UILabels> = {
     themeMidnightHaze: 'Midnight Haze',
     themePastelNight: 'Pastel Night',
     themeRetro: 'Retro',
+    themeMirage: 'Mirage',
   },
   ja: {
     home: 'ホーム',
@@ -754,5 +757,6 @@ export const uiText: Record<UILang, UILabels> = {
     themeMidnightHaze: 'ミッドナイトヘイズ',
     themePastelNight: 'パステルナイト',
     themeRetro: 'レトロ',
+    themeMirage: 'ミラージュ',
   },
 };
