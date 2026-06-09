@@ -498,6 +498,28 @@ const clientScript = `
           button.title = description.cardList;
         }
       });
+
+      // Update mobile expand toggle labels
+      const expandLabels = {
+        no: 'Vis alt ∨',
+        en: 'Show all ∨',
+        ja: 'すべて見る ∨',
+      };
+      const collapseLabels = {
+        no: 'Lukk ∧',
+        en: 'Close ∧',
+        ja: '閉じる ∧',
+      };
+      reviewGrid.querySelectorAll('[data-review-card-expand]').forEach((button) => {
+        const isExpanded = button.closest('[data-review-card]')?.classList.contains('review-card--expanded');
+        button.dataset.expandLabel = expandLabels[lang] || expandLabels.en;
+        button.dataset.collapseLabel = collapseLabels[lang] || collapseLabels.en;
+        if (!isExpanded) {
+          button.textContent = expandLabels[lang] || expandLabels.en;
+        } else {
+          button.textContent = collapseLabels[lang] || collapseLabels.en;
+        }
+      });
       if (flashcardClose) {
         flashcardClose.setAttribute('aria-label', labels.flashcardClose);
         flashcardClose.title = labels.flashcardClose;
@@ -681,6 +703,18 @@ const clientScript = `
         const expressionKey = getExpressionStorageKey(expression);
         const meanings = getLocalizedExpressionMeanings(expression, uiLanguageSelect.value);
         const examples = renderReviewExampleSection(expression, labels, uiLanguageSelect.value);
+        const hasMultipleMeanings = meanings.length > 1 || examples;
+        const expandLabels = {
+          no: 'Vis alt ∨',
+          en: 'Show all ∨',
+          ja: 'すべて見る ∨',
+        };
+        const collapseLabels = {
+          no: 'Lukk ∧',
+          en: 'Close ∧',
+          ja: '閉じる ∧',
+        };
+        const uiLang = uiLanguageSelect.value || 'en';
         return ''
           + '<article class="expression-card review-expression-card review-card" data-review-card data-expression-key="' + escapeHtml(expressionKey) + '" data-text-id="' + escapeHtml(expression.textId) + '" data-target-language="' + escapeHtml(expression.language) + '" data-status="' + status + '" data-practice-level="' + getPracticeLevel(practiceCount) + '" data-high-repetition="' + (isHighRepetition ? 'true' : 'false') + '">'
           + '<div class="review-card__body">'
@@ -694,10 +728,11 @@ const clientScript = `
           + '<div class="review-card-meta">'
           + (expression.formInText && expression.formInText !== expression.phrase ? '<span class="expression-text-form"><span>' + escapeHtml(labels.expressionTextForm) + '</span>: ' + escapeHtml(expression.formInText) + '</span>' : '')
           + '</div>'
-          + '<div class="review-card-meaning">'
+          + '<div class="review-card-meaning" data-review-card-meaning>'
           + meanings.map((entry) => '<p>' + getLanguageBadgeHtml(entry.language, uiLanguageSelect.value) + ' ' + escapeHtml(entry.value) + '</p>').join('')
           + '</div>'
           + examples
+          + (hasMultipleMeanings ? '<div class="review-card-mobile-toggle" data-review-card-expandable><button type="button" class="review-card-expand-toggle" data-review-card-expand aria-expanded="false" data-expand-label="' + escapeHtml(expandLabels[uiLang] || expandLabels.en) + '" data-collapse-label="' + escapeHtml(collapseLabels[uiLang] || collapseLabels.en) + '">' + escapeHtml(expandLabels[uiLang] || expandLabels.en) + '</button></div>' : '')
           + '</div>'
           + '<div class="review-card-actions review-card__actions">'
           + '<button class="secondary-button" type="button" data-review-open-text data-text-id="' + escapeHtml(expression.textId) + '">' + escapeHtml(labels.practiceThisText) + '</button>'
@@ -779,6 +814,19 @@ const clientScript = `
         button.addEventListener('click', (event) => {
           event.stopPropagation();
           window.location.href = getAppHref('text/' + encodeURIComponent(button.dataset.textId));
+        });
+      });
+
+      // Mobile expand/collapse toggle
+      reviewGrid.querySelectorAll('[data-review-card-expand]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const card = button.closest('[data-review-card]');
+          if (!card) return;
+          const isExpanded = card.classList.contains('review-card--expanded');
+          card.classList.toggle('review-card--expanded', !isExpanded);
+          button.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
+          button.textContent = !isExpanded ? button.dataset.collapseLabel : button.dataset.expandLabel;
         });
       });
 

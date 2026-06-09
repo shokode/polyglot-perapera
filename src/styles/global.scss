@@ -3278,6 +3278,11 @@ a:active {
   font-weight: 400;
 }
 
+/* Hide mobile expand toggle on desktop */
+[data-review-card-expandable] {
+  display: none;
+}
+
 .flashcard-overlay[hidden] {
   display: none;
 }
@@ -4771,6 +4776,58 @@ h3 {
   .review-card-meaning p:not(:first-child),
   .review-card-examples {
     display: none;
+  }
+
+  /* Mobile expand toggle */
+  [data-review-card-expandable] {
+    display: block;
+  }
+
+  [data-review-card-meaning] {
+    position: relative;
+    max-height: fit-content;
+    overflow: hidden;
+    transition: max-height 300ms ease;
+  }
+
+  [data-review-card-meaning] p:not(:first-child) {
+    opacity: 0;
+    transition: opacity 300ms ease 100ms;
+  }
+
+  [data-review-card-expand] {
+    display: inline-block;
+    min-height: 44px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: color 200ms ease, background-color 200ms ease;
+  }
+
+  [data-review-card-expand]:active {
+    background: rgba(var(--accent-rgb), 0.08);
+    color: var(--text-soft);
+  }
+
+  /* Expanded state */
+  .review-card.review-card--expanded [data-review-card-meaning] p:not(:first-child) {
+    opacity: 1;
+    transition: opacity 300ms ease 100ms;
+  }
+
+  .review-card.review-card--expanded [data-review-card-meaning] p {
+    display: block;
+  }
+
+  .review-card.review-card--expanded .review-card-examples {
+    display: block;
   }
 
   .review-card__actions {
