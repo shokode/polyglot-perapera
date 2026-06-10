@@ -1395,6 +1395,12 @@ const clientScript = `
       safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
       renderUiText(lang);
     });
+
+    const pendingMode = safeReadStorage('typingSiteStartMode');
+    if (pendingMode === 'flashcards') {
+      safeWriteStorage('typingSiteStartMode', '');
+      openFlashcards();
+    }
   });
 `;
 ---
@@ -1412,7 +1418,6 @@ const clientScript = `
     <main class="page-shell page-layout text-page">
       <section class="hero-card page-top page-hero page-hero--review">
         <div>
-          <span class="section-kicker">Review</span>
           <h1 class="text-title page-hero__title" id="review-title" data-i18n="reviewPageTitle">{uiText[defaultUiLang].reviewPageTitle}</h1>
           <p class="page-hero__subtitle" data-i18n="usefulExpressions">{uiText[defaultUiLang].usefulExpressions}</p>
         </div>
