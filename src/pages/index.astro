@@ -1058,11 +1058,16 @@ const clientScript = `
             <h1 class="page-hero__title" id="home-hero-title" data-i18n="title">{uiText[defaultUiLang].title}</h1>
             <p class="page-hero__subtitle" data-i18n="subtitle">{uiText[defaultUiLang].subtitle}</p>
             <div class="home-hero-stats">
-                <div class="home-hero-stat">
-                    <strong class="home-hero-stat__fraction">
-                        <span id="hero-learned-count" class="home-hero-stat__learned">0</span><span class="home-hero-stat__sep"> / </span><span id="hero-total-count">0</span>
-                    </strong>
-                    <span data-i18n="heroLearnedTotal">{uiText[defaultUiLang].heroLearnedTotal}</span>
+                <div class="home-hero-stat home-hero-stat--fraction">
+                    <div class="home-hero-stat__col">
+                        <span id="hero-learned-count" class="home-hero-stat__num home-hero-stat__num--learned">0</span>
+                        <span class="home-hero-stat__col-label" data-i18n="learnedExpressions">{uiText[defaultUiLang].learnedExpressions}</span>
+                    </div>
+                    <span class="home-hero-stat__sep">/</span>
+                    <div class="home-hero-stat__col">
+                        <span id="hero-total-count" class="home-hero-stat__num home-hero-stat__num--total">0</span>
+                        <span class="home-hero-stat__col-label" data-i18n="reviewSummaryTotal">{uiText[defaultUiLang].reviewSummaryTotal}</span>
+                    </div>
                 </div>
                 <div class="home-hero-stat home-hero-stat--review">
                     <strong id="hero-review-count">0</strong>
@@ -1569,19 +1574,44 @@ const clientScript = `
   }
 
   /* Hero stat: learned / total */
-  .home-hero-stat__fraction {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+  .home-hero-stat--fraction {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .home-hero-stat__col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .home-hero-stat__num {
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 800;
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
-  .home-hero-stat__learned {
+  .home-hero-stat__num--learned {
     color: var(--color-learned);
+  }
+  .home-hero-stat__num--total {
+    color: var(--text-muted);
   }
   .home-hero-stat__sep {
     color: var(--text-muted);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 400;
-    font-size: 0.8em;
+    line-height: 1;
+    padding-top: 0;
+  }
+  .home-hero-stat__col-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-faint);
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1.2;
   }
 
   /* In-review stat — larger */

@@ -5774,6 +5774,12 @@ h3 {
   border-color: rgba(46, 138, 84, 0.38) !important;
 }
 
+/* Hero learned count is text-only — no background highlight */
+[data-theme="pastel"] .home-hero-stat__num--learned {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
 /* ── Mirage ──────────────────────────────────────────────────────────────
    Ayu Mirage color palette
    Anchors: bg #171c28 · accent #ffcc66 (gold) · green #bae67e · pink #fdb6d0
