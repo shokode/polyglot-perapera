@@ -105,6 +105,10 @@ export type UILabels = {
   recommendationReasonUnpracticed: string;
   recommendationReasonLearned: string;
   randomPractice: string;
+  startReview: string;
+  startTyping: string;
+  daysPracticed: string;
+  heroLearnedTotal: string;
   view: string;
   viewDetails: string;
   allCategories: string;
@@ -275,6 +279,10 @@ export const uiText: Record<UILang, UILabels> = {
     recommendationReasonUnpracticed: 'Ikke øvd ennå',
     recommendationReasonLearned: 'Lært',
     randomPractice: 'Tilfeldig øvelse',
+    startReview: 'Start repetisjon',
+    startTyping: 'Skriv nå',
+    daysPracticed: 'Dager øvd (30 dager)',
+    heroLearnedTotal: 'lært / totalt',
     view: 'Åpne',
     viewDetails: 'Se detaljer',
     allCategories: 'Alle kategorier',
@@ -443,6 +451,10 @@ export const uiText: Record<UILang, UILabels> = {
     recommendationReasonUnpracticed: 'Unpracticed',
     recommendationReasonLearned: 'Learned',
     randomPractice: 'Random practice',
+    startReview: 'Start review',
+    startTyping: 'Start typing',
+    daysPracticed: 'Days practiced (30 days)',
+    heroLearnedTotal: 'learned / total',
     view: 'Open',
     viewDetails: 'View details',
     allCategories: 'All categories',
@@ -611,6 +623,10 @@ export const uiText: Record<UILang, UILabels> = {
     recommendationReasonUnpracticed: '未練習',
     recommendationReasonLearned: '学習済み',
     randomPractice: 'ランダムに練習',
+    startReview: '復習を始める',
+    startTyping: '今すぐタイピング',
+    daysPracticed: '練習した日 (30日間)',
+    heroLearnedTotal: '習得済み / 全表現',
     view: '開く',
     viewDetails: '詳しく見る',
     allCategories: 'すべてのカテゴリー',
