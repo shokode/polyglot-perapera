@@ -155,6 +155,7 @@ export type UILabels = {
   assessmentAgain: string;
   assessmentSaved: string;
   expressionAutoReviewNotice: string;
+  pasteDetectedNotice: string;
   nextRecommended: string;
   practiceAgain: string;
   backHome: string;
@@ -329,6 +330,7 @@ export const uiText: Record<UILang, UILabels> = {
     assessmentAgain: 'Øv igjen',
     assessmentSaved: 'Lagret',
     expressionAutoReviewNotice: 'Nye relaterte uttrykk ble lagt til repetisjon.',
+    pasteDetectedNotice: 'Resultatet ble ikke lagret — innliming oppdaget.',
     nextRecommended: 'Neste anbefalte',
     practiceAgain: 'Øv igjen',
     backHome: 'Tilbake hjem',
@@ -501,6 +503,7 @@ export const uiText: Record<UILang, UILabels> = {
     assessmentAgain: 'Practice again',
     assessmentSaved: 'Saved',
     expressionAutoReviewNotice: 'New related expressions were added to Review.',
+    pasteDetectedNotice: 'Result not saved — paste detected.',
     nextRecommended: 'Next recommended',
     practiceAgain: 'Practice again',
     backHome: 'Back home',
@@ -673,6 +676,7 @@ export const uiText: Record<UILang, UILabels> = {
     assessmentAgain: 'もう一度',
     assessmentSaved: '保存しました',
     expressionAutoReviewNotice: '関連する新規表現を復習に追加しました。',
+    pasteDetectedNotice: 'コピペが検出されたため、この結果は保存されませんでした。',
     nextRecommended: '次のおすすめへ',
     practiceAgain: 'もう一度練習',
     backHome: 'ホームへ戻る',

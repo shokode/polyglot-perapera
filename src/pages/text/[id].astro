@@ -925,6 +925,7 @@ const clientScript = `
     const completionTitle = document.getElementById('completion-title');
     const completionStatusNote = document.getElementById('completion-status-note');
     const expressionAutoReviewNote = document.getElementById('expression-auto-review-note');
+    const completionPasteNote = document.getElementById('completion-paste-note');
     const completionAccuracyTitle = document.getElementById('completion-accuracy-title');
     const completionAccuracyValue = document.getElementById('completion-accuracy-value');
     const completionSpeedTitle = document.getElementById('completion-speed-title');
@@ -1226,7 +1227,8 @@ const clientScript = `
       textProgress[text.id] = {
         completedCount: (existingTextProgress.completedCount || 0) + 1,
         bestAccuracy: Math.max(existingTextProgress.bestAccuracy || 0, accuracy),
-        bestWpm: Math.max(existingTextProgress.bestWpm || 0, wpm),
+        bestWpm: wpm,
+        lastWpm: wpm,
         lastPracticedAt: now,
       };
       saveProgress(TEXT_PROGRESS_KEY, textProgress);
@@ -1435,6 +1437,9 @@ const clientScript = `
       if (expressionAutoReviewNote && !expressionAutoReviewNote.hidden) {
         expressionAutoReviewNote.textContent = labels.expressionAutoReviewNotice;
       }
+      if (completionPasteNote && !completionPasteNote.hidden) {
+        completionPasteNote.textContent = labels.pasteDetectedNotice;
+      }
       if (assessmentPrompt) {
         assessmentPrompt.textContent = labels.selfAssessmentPrompt;
       }
@@ -1601,6 +1606,10 @@ const clientScript = `
       if (completionMistakesValue) {
         completionMistakesValue.textContent = '' + mistakes;
       }
+      if (completionPasteNote) {
+        completionPasteNote.textContent = hasPasted ? getUiText(uiLanguageSelect.value).pasteDetectedNotice : '';
+        completionPasteNote.hidden = !hasPasted;
+      }
       showExpressionAutoReviewNotice(0);
       if (completionTranslations) {
         completionTranslations.hidden = activeIsTranslationPractice;
@@ -1668,6 +1677,7 @@ const clientScript = `
       startTime = null;
       hasRecordedCompletion = false;
       hasShownCompletion = false;
+      hasPasted = false;
       currentCompletionState = null;
       completionPanel.hidden = true;
       if (!activeIsTranslationPractice) {
@@ -1789,8 +1799,7 @@ const clientScript = `
           speed = Math.round(correct / elapsedMinutes);
         } else {
           const words = typed.trim().split(/\\s+/).filter(Boolean).length;
-          const rawWpm = Math.round(words / elapsedMinutes);
-          speed = Math.min(rawWpm, 200);
+          speed = Math.round(words / elapsedMinutes);
         }
       }
       const mistakes = currentTypingMode === 'flow' ? flowMistakes : typed.length - correct;
@@ -1821,7 +1830,7 @@ const clientScript = `
           expressionsPanel.hidden = false;
           grammarPanel.hidden = false;
         }
-        if (!activeIsTranslationPractice && !hasRecordedCompletion) {
+        if (!activeIsTranslationPractice && !hasRecordedCompletion && !hasPasted) {
           hasRecordedCompletion = true;
           const movedCount = recordCompletion(accuracy, speed);
           showExpressionAutoReviewNotice(movedCount);
@@ -1832,6 +1841,7 @@ const clientScript = `
     let startTime = null;
     let hasRecordedCompletion = false;
     let hasShownCompletion = false;
+    let hasPasted = false;
     let isComposing = false;
 
     function flashCurrentMistake(index) {
@@ -1910,6 +1920,10 @@ const clientScript = `
       }
       updateMetrics();
       updateTypingInputOverlay('');
+    });
+
+    input.addEventListener('paste', () => {
+      hasPasted = true;
     });
 
     typingModeButtons.forEach((button) => {
@@ -2368,6 +2382,12 @@ if (!text) {
             <p
               class="completion-note completion-note--subtle"
               id="expression-auto-review-note"
+              hidden
+            >
+            </p>
+            <p
+              class="completion-note completion-note--subtle"
+              id="completion-paste-note"
               hidden
             >
             </p>

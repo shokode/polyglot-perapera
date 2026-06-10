@@ -519,7 +519,7 @@ const clientScript = `
       if (!textItem) {
         return;
       }
-      const speed = getValidSpeedForLanguage(entry, textItem.language);
+      const speed = getValidSpeedForLanguage({ bestWpm: entry.lastWpm ?? entry.bestWpm }, textItem.language);
       if (speed === null) {
         return;
       }

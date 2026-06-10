@@ -441,11 +441,11 @@ const clientScript = `
       .filter(({ entry }) => entry && Number.isFinite(entry.completedCount) && entry.completedCount > 0);
     const totalPractices = practicedTexts.reduce((sum, { entry }) => sum + entry.completedCount, 0);
     const validWpm = practicedTexts
-      .filter(({ text, entry }) => text.language !== 'ja' && isValidSpeed(entry.bestWpm, text.language))
-      .map(({ entry }) => Number(entry.bestWpm));
+      .filter(({ text, entry }) => text.language !== 'ja' && isValidSpeed(entry.lastWpm ?? entry.bestWpm, text.language))
+      .map(({ entry }) => Number(entry.lastWpm ?? entry.bestWpm));
     const validCpm = practicedTexts
-      .filter(({ text, entry }) => text.language === 'ja' && isValidSpeed(entry.bestWpm, text.language))
-      .map(({ entry }) => Number(entry.bestWpm));
+      .filter(({ text, entry }) => text.language === 'ja' && isValidSpeed(entry.lastWpm ?? entry.bestWpm, text.language))
+      .map(({ entry }) => Number(entry.lastWpm ?? entry.bestWpm));
 
     return {
       textProgress,
