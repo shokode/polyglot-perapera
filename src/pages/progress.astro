@@ -967,6 +967,13 @@ const clientScript = `
   <body>
     <SiteHeader active="progress" basePath={import.meta.env.BASE_URL} />
     <main class="page-shell page-layout progress-page">
+      <section class="hero-card page-top page-hero" aria-labelledby="progress-page-title">
+        <div>
+          <h1 class="page-hero__title" id="progress-page-title" data-progress-label="title">{progressLabels[defaultUiLang].title}</h1>
+          <p class="page-hero__subtitle" data-progress-label="subtitle">{progressLabels[defaultUiLang].subtitle}</p>
+        </div>
+      </section>
+
       <section class="progress-section progress-section--overview" aria-labelledby="progress-overview-title">
         <div class="progress-section__header">
           <div>
