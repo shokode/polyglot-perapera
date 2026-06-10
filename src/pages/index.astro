@@ -487,6 +487,28 @@ const clientScript = `
     return speed <= 250 ? speed : null;
   }
 
+  function getDaysPracticedCount() {
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const activeDays = new Set();
+    function addDay(isoDate) {
+      const d = new Date(isoDate || '');
+      if (!Number.isNaN(d.getTime()) && d.getTime() >= cutoff) {
+        activeDays.add(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+      }
+    }
+    Object.values(loadSelfAssessments()).forEach((entry) => {
+      if (entry && typeof entry === 'object') {
+        addDay(entry.assessedAt);
+      }
+    });
+    Object.values(loadTextProgress()).forEach((entry) => {
+      if (entry && typeof entry === 'object') {
+        addDay(entry.lastPracticedAt);
+      }
+    });
+    return activeDays.size;
+  }
+
   function getAverageSpeedValues() {
     const values = { wpm: [], cpm: [] };
     Object.entries(loadTextProgress()).forEach(([textId, entry]) => {
@@ -695,6 +717,14 @@ const clientScript = `
     document.getElementById('average-wpm-value').textContent = averageSpeeds.wpm === null ? '—' : averageSpeeds.wpm;
     document.getElementById('average-cpm-label').textContent = labels.averageCpm;
     document.getElementById('average-cpm-value').textContent = averageSpeeds.cpm === null ? '—' : averageSpeeds.cpm;
+
+    const heroLearnedCount = document.getElementById('hero-learned-count');
+    const heroTotalCount = document.getElementById('hero-total-count');
+    const heroReviewCount = document.getElementById('hero-review-count');
+    const totalExpressions = expressionStats.new + expressionStats.review + expressionStats.learned;
+    if (heroLearnedCount) heroLearnedCount.textContent = expressionStats.learned;
+    if (heroTotalCount) heroTotalCount.textContent = totalExpressions;
+    if (heroReviewCount) heroReviewCount.textContent = expressionStats.review;
   }
 
   function getFilteredTexts(targetLanguageSelect, categorySelect, levelSelect, sortSelect) {
@@ -860,33 +890,38 @@ const clientScript = `
     return getOriginalPracticeTarget(randomItem(filtered).id);
   }
 
-  function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard) {
+  function updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, randomButton, recommendationCard) {
     renderDashboard(uiLanguageSelect);
     const filtered = renderList(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, () => {
-      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, randomButton, recommendationCard);
     });
     const recommendedEntry = getRecommendedEntry(filtered);
     renderTodayRecommendation(recommendedEntry, uiLanguageSelect, recommendationCard);
+    const todayTypingButton = document.getElementById('today-typing-button');
     if (filtered.length > 0) {
-      startButton.disabled = false;
       randomButton.disabled = false;
-      startButton.onclick = () => {
-        const recommended = getRecommendedEntry(filtered);
-        if (recommended) {
-          window.location.href = getRecommendedHref(recommended.target);
-        }
-      };
       randomButton.onclick = () => {
         const randomTarget = getRandomPracticeTarget(filtered);
         if (randomTarget) {
           window.location.href = getRecommendedHref(randomTarget);
         }
       };
+      if (todayTypingButton) {
+        todayTypingButton.disabled = false;
+        todayTypingButton.onclick = () => {
+          const recommended = getRecommendedEntry(filtered);
+          if (recommended) {
+            window.location.href = getRecommendedHref(recommended.target);
+          }
+        };
+      }
     } else {
-      startButton.disabled = true;
       randomButton.disabled = true;
-      startButton.onclick = null;
       randomButton.onclick = null;
+      if (todayTypingButton) {
+        todayTypingButton.disabled = true;
+        todayTypingButton.onclick = null;
+      }
       renderTodayRecommendation(null, uiLanguageSelect, recommendationCard);
     }
   }
@@ -899,7 +934,6 @@ const clientScript = `
     const sortSelect = document.getElementById('text-sort');
     const results = document.getElementById('results');
     const emptyState = document.getElementById('empty-state');
-    const startButton = document.getElementById('start-button');
     const randomButton = document.getElementById('random-button');
     const recommendationCard = document.getElementById('today-recommendation-card');
     const targetLanguageButton = document.getElementById('text-language-button');
@@ -919,7 +953,7 @@ const clientScript = `
     const sortOptions = Array.from(document.querySelectorAll('[data-home-sort-option]'));
     const sortButtonLabel = document.getElementById('text-sort-button-label');
 
-    const updateFilters = () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
+    const updateFilters = () => updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, randomButton, recommendationCard);
     const dropdowns = [];
 
     dropdowns.push(setupSelectDropdown({
@@ -964,7 +998,7 @@ const clientScript = `
       translateUiLabels(lang);
       uiLanguageSelect.value = lang;
       dropdowns.forEach((dropdown) => dropdown.update());
-      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, randomButton, recommendationCard);
     }
 
     function applyTargetLanguage(lang) {
@@ -972,7 +1006,7 @@ const clientScript = `
       safeWriteStorage(TARGET_LANGUAGE_STORAGE_KEY, nextTargetLanguage);
       targetLanguageSelect.value = nextTargetLanguage;
       dropdowns.forEach((dropdown) => dropdown.update());
-      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, startButton, randomButton, recommendationCard);
+      updateHome(targetLanguageSelect, categorySelect, levelSelect, sortSelect, uiLanguageSelect, results, emptyState, randomButton, recommendationCard);
     }
 
     const savedUiLanguage = getSavedUiLanguage();
@@ -998,6 +1032,14 @@ const clientScript = `
       dropdowns.forEach((dropdown) => dropdown.update());
       updateFilters();
     });
+
+    const flashcardButton = document.getElementById('flashcard-button');
+    if (flashcardButton) {
+      flashcardButton.addEventListener('click', () => {
+        safeWriteStorage('typingSiteStartMode', 'flashcards');
+        window.location.href = getAppHref('review');
+      });
+    }
   });
 `;
 ---
@@ -1011,87 +1053,33 @@ const clientScript = `
 <body>
     <SiteHeader active="home" basePath={import.meta.env.BASE_URL} />
     <main class="page-shell page-layout">
-        <section
-            class="dashboard-card progress-section"
-            id="progress"
-            aria-labelledby="dashboard-title"
-        >
-            <div class="dashboard-heading dashboard-heading--with-actions">
-                <div>
-                    <h2 id="dashboard-title">
-                        {uiText[defaultUiLang].todayPractice}
-                    </h2>
-                    <p>
-                        Track practice volume, review load, and typing speed at
-                        a glance.
-                    </p>
+        <!-- 1. HERO -->
+        <section class="hero-card page-top page-hero page-hero--home" aria-labelledby="home-hero-title">
+            <h1 class="page-hero__title" id="home-hero-title" data-i18n="title">{uiText[defaultUiLang].title}</h1>
+            <p class="page-hero__subtitle" data-i18n="subtitle">{uiText[defaultUiLang].subtitle}</p>
+            <div class="home-hero-stats">
+                <div class="home-hero-stat">
+                    <strong class="home-hero-stat__fraction">
+                        <span id="hero-learned-count" class="home-hero-stat__learned">0</span><span class="home-hero-stat__sep"> / </span><span id="hero-total-count">0</span>
+                    </strong>
+                    <span data-i18n="heroLearnedTotal">{uiText[defaultUiLang].heroLearnedTotal}</span>
                 </div>
-                <div class="dashboard-actions">
-                    <a
-                        class="secondary-button progress-details-link"
-                        href={appHref("progress")}
-                        data-i18n="viewDetails"
-                    >
-                        {uiText[defaultUiLang].viewDetails}
-                    </a>
+                <div class="home-hero-stat home-hero-stat--review">
+                    <strong id="hero-review-count">0</strong>
+                    <span data-i18n="reviewingExpressions">{uiText[defaultUiLang].reviewingExpressions}</span>
                 </div>
             </div>
-            <div class="dashboard-grid">
-                <article class="dashboard-stat">
-                    <span id="total-sessions-label"
-                        >{uiText[defaultUiLang].totalSessions}</span
-                    >
-                    <strong id="total-sessions-value">0</strong>
-                </article>
-                <article class="dashboard-stat" data-stat-kind="learned">
-                    <span id="learned-expressions-label"
-                        >{uiText[defaultUiLang].learnedExpressions}</span
-                    >
-                    <strong id="learned-expressions-value">0</strong>
-                </article>
-                <article class="dashboard-stat">
-                    <span id="reviewing-expressions-label"
-                        >{uiText[defaultUiLang].reviewingExpressions}</span
-                    >
-                    <strong id="reviewing-expressions-value">0</strong>
-                </article>
-                <article class="dashboard-stat">
-                    <span id="new-expressions-label"
-                        >{uiText[defaultUiLang].newExpressions}</span
-                    >
-                    <strong id="new-expressions-value">0</strong>
-                </article>
-                <article class="dashboard-stat">
-                    <span id="average-wpm-label"
-                        >{uiText[defaultUiLang].averageWpm}</span
-                    >
-                    <strong id="average-wpm-value">—</strong>
-                </article>
-                <article class="dashboard-stat">
-                    <span id="average-cpm-label"
-                        >{uiText[defaultUiLang].averageCpm}</span
-                    >
-                    <strong id="average-cpm-value">—</strong>
-                </article>
+            <div class="home-hero-actions">
+                <a class="primary-button home-hero-primary" href={appHref("review")} data-i18n="startReview">{uiText[defaultUiLang].startReview}</a>
+                <div class="home-hero-row">
+                    <button id="today-typing-button" class="secondary-button" type="button" data-i18n="startTyping">{uiText[defaultUiLang].startTyping}</button>
+                    <button id="random-button" class="secondary-button" type="button" data-i18n="randomPractice">{uiText[defaultUiLang].randomPractice}</button>
+                    <button id="flashcard-button" class="secondary-button" type="button" data-i18n="reviewModeFlashcards">{uiText[defaultUiLang].reviewModeFlashcards}</button>
+                </div>
             </div>
         </section>
 
-        <section class="actions-row home-start-actions">
-            <button
-                id="start-button"
-                class="primary-button"
-                data-i18n="startRecommended"
-                >{uiText[defaultUiLang].startRecommended}</button
-            >
-            <button
-                id="random-button"
-                class="secondary-button"
-                type="button"
-                data-i18n="randomPractice"
-                >{uiText[defaultUiLang].randomPractice}</button
-            >
-        </section>
-
+        <!-- 2. FILTERS + TEXT LIST -->
         <section class="filters-card">
             <div class="filter-group">
                 <label for="text-language" data-i18n="practiceLanguage"
@@ -1485,20 +1473,125 @@ const clientScript = `
             </div>
         </section>
 
-        <section
-            id="today-recommendation-card"
-            class="recommendation-card"
-            role="button"
-            tabindex="0"
-            hidden
-        >
-        </section>
-
         <section id="results" class="results-grid"></section>
         <p id="empty-state" class="empty-state" hidden data-i18n="noResults">
             {uiText[defaultUiLang].noResults}
         </p>
+
+        <!-- 4. PROGRESS WIDGET -->
+        <section
+            class="dashboard-card progress-section"
+            id="progress"
+            aria-labelledby="dashboard-title"
+        >
+            <div class="dashboard-heading dashboard-heading--with-actions">
+                <div>
+                    <h2 id="dashboard-title">
+                        {uiText[defaultUiLang].todayPractice}
+                    </h2>
+                </div>
+                <div class="dashboard-actions">
+                    <a
+                        class="secondary-button progress-details-link"
+                        href={appHref("progress")}
+                        data-i18n="viewDetails"
+                    >
+                        {uiText[defaultUiLang].viewDetails}
+                    </a>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <article class="dashboard-stat">
+                    <span id="total-sessions-label"
+                        >{uiText[defaultUiLang].totalSessions}</span
+                    >
+                    <strong id="total-sessions-value">0</strong>
+                </article>
+                <article class="dashboard-stat" data-stat-kind="learned">
+                    <span id="learned-expressions-label"
+                        >{uiText[defaultUiLang].learnedExpressions}</span
+                    >
+                    <strong id="learned-expressions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="reviewing-expressions-label"
+                        >{uiText[defaultUiLang].reviewingExpressions}</span
+                    >
+                    <strong id="reviewing-expressions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="new-expressions-label"
+                        >{uiText[defaultUiLang].newExpressions}</span
+                    >
+                    <strong id="new-expressions-value">0</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="average-wpm-label"
+                        >{uiText[defaultUiLang].averageWpm}</span
+                    >
+                    <strong id="average-wpm-value">—</strong>
+                </article>
+                <article class="dashboard-stat">
+                    <span id="average-cpm-label"
+                        >{uiText[defaultUiLang].averageCpm}</span
+                    >
+                    <strong id="average-cpm-value">—</strong>
+                </article>
+            </div>
+        </section>
     </main>
 
     <script type="module" set:html={clientScript} />
 </body>
+
+<style>
+  /* Hero actions layout — left-aligned, auto-width */
+  .home-hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .home-hero-primary {
+    width: fit-content;
+  }
+  .home-hero-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .home-hero-row > * {
+    flex: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .home-hero-row > *:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Hero stat: learned / total */
+  .home-hero-stat__fraction {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .home-hero-stat__learned {
+    color: var(--color-learned);
+  }
+  .home-hero-stat__sep {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.8em;
+  }
+
+  /* In-review stat — larger */
+  .home-hero-stat--review strong {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+  }
+
+  @media (max-width: 480px) {
+    .home-hero-primary {
+      width: 100%;
+    }
+  }
+</style>
