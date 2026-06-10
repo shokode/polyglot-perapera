@@ -886,7 +886,7 @@ a:active {
 .page-shell {
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: var(--navbar-height) 0 80px;
+  padding: 20px 0 80px;
 }
 
 .page-layout {
@@ -957,6 +957,56 @@ a:active {
 
 .page-hero--review {
   background: var(--surface);
+}
+
+.page-hero--home {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 28px;
+  gap: 16px;
+}
+
+.home-hero-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.home-hero-stat {
+  display: grid;
+  gap: 3px;
+  padding: 10px 14px;
+  border: 1px solid rgba(var(--border-rgb), 0.12);
+  border-radius: 14px;
+  background: var(--surface-strong);
+}
+
+.home-hero-stat strong {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.home-hero-stat span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.home-hero-stat--review strong {
+  color: var(--accent);
+}
+
+.home-hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .page-hero-meta {
@@ -5117,6 +5167,15 @@ h3 {
 
   .page-hero--review {
     padding: 10px 12px;
+  }
+
+  .page-hero--home {
+    padding: 15px;
+    gap: 14px;
+  }
+
+  .home-hero-stat strong {
+    font-size: clamp(1.35rem, 7vw, 1.65rem);
   }
 
   .page-hero--review .page-hero__subtitle {
