@@ -1075,9 +1075,9 @@ const clientScript = `
                 </div>
             </div>
             <div class="home-hero-actions">
-                <a class="primary-button home-hero-primary" href={appHref("review")} data-i18n="startReview">{uiText[defaultUiLang].startReview}</a>
+                <button id="today-typing-button" class="primary-button home-hero-primary" type="button" data-i18n="startTyping">{uiText[defaultUiLang].startTyping}</button>
                 <div class="home-hero-row">
-                    <button id="today-typing-button" class="secondary-button" type="button" data-i18n="startTyping">{uiText[defaultUiLang].startTyping}</button>
+                    <a class="secondary-button" href={appHref("review")} data-i18n="startReview">{uiText[defaultUiLang].startReview}</a>
                     <button id="random-button" class="secondary-button" type="button" data-i18n="randomPractice">{uiText[defaultUiLang].randomPractice}</button>
                     <button id="flashcard-button" class="secondary-button" type="button" data-i18n="reviewModeFlashcards">{uiText[defaultUiLang].reviewModeFlashcards}</button>
                 </div>
