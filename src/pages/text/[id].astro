@@ -1227,7 +1227,7 @@ const clientScript = `
       textProgress[text.id] = {
         completedCount: (existingTextProgress.completedCount || 0) + 1,
         bestAccuracy: Math.max(existingTextProgress.bestAccuracy || 0, accuracy),
-        bestWpm: wpm,
+        bestWpm: Math.max(existingTextProgress.bestWpm || 0, wpm),
         lastWpm: wpm,
         lastPracticedAt: now,
       };
