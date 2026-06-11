@@ -163,6 +163,8 @@ const links = [
   const menu = document.querySelector<HTMLElement>('[data-menu]');
 
   if (toggle && menu) {
+    const header = document.querySelector<HTMLElement>('.site-header');
+
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!expanded));
@@ -175,6 +177,13 @@ const links = [
         toggle.setAttribute('aria-expanded', 'false');
         menu.classList.remove('is-open');
       });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (menu.classList.contains('is-open') && !header?.contains(e.target as Node)) {
+        toggle.setAttribute('aria-expanded', 'false');
+        menu.classList.remove('is-open');
+      }
     });
   }
 </script>

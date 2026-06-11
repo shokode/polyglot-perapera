@@ -5803,6 +5803,11 @@ h3 {
   border-color: transparent !important;
 }
 
+/* Pastel Night theme: darken default card bg so --text-muted passes WCAG AA on mobile (no hover) */
+[data-theme="dracula"] .expression-card {
+  background: var(--filter-bg);
+}
+
 /* Pastel Night theme: expression card hover — match filter box tone */
 [data-theme="dracula"] .expression-card:hover,
 [data-theme="dracula"] .expression-card:focus-within {
