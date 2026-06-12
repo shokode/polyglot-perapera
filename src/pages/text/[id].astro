@@ -335,6 +335,7 @@ const clientScript = `
   const EXPRESSION_PROGRESS_KEY = 'expressionProgress';
   const SELF_ASSESSMENT_KEY = 'typingSelfAssessment';
   const TYPING_MODE_KEY = 'typingMode';
+  const TIMER_DURATION_KEY = 'typingTimerDuration';
   const PINNED_TEXTS_KEY = 'typingPinnedTexts';
   const PINNED_PRACTICE_TARGETS_KEY = 'typingPinnedPracticeTargets';
   const EXPRESSION_STATUSES = ['new', 'review', 'learned'];
@@ -981,6 +982,13 @@ const clientScript = `
     const miniCardMeaning = document.getElementById('mini-card-meaning');
     const miniCardFallback = document.getElementById('mini-card-fallback');
     const miniCardDetails = document.getElementById('mini-card-details');
+    const timerCountdownBadge = document.getElementById('timer-countdown-badge');
+    const timerDurationRow = document.getElementById('timer-duration-row');
+    const timerDurationButtons = document.querySelectorAll('[data-timer-duration]');
+    const timerCompletionActions = document.getElementById('timer-completion-actions');
+    const timerTryAgainButton = document.getElementById('timer-try-again');
+    const timerChooseTimeButton = document.getElementById('timer-choose-time');
+    const timerBackButton = document.getElementById('timer-back');
     let activeMiniCardPhrase = null;
     let miniCardPinned = false;
     let closeCompletionTimer = null;
@@ -1000,7 +1008,7 @@ const clientScript = `
     function loadTypingMode() {
       try {
         const saved = localStorage.getItem(TYPING_MODE_KEY);
-        return saved === 'flow' ? 'flow' : 'strict';
+        return saved === 'flow' ? 'flow' : saved === 'timer' ? 'timer' : 'strict';
       } catch {
         return 'strict';
       }
@@ -1018,17 +1026,25 @@ const clientScript = `
     }
 
     function saveTypingMode(mode) {
-      currentTypingMode = mode === 'flow' ? 'flow' : 'strict';
+      currentTypingMode = mode === 'flow' ? 'flow' : mode === 'timer' ? 'timer' : 'strict';
       try {
         localStorage.setItem(TYPING_MODE_KEY, currentTypingMode);
       } catch {
         // Keep the in-memory mode even if storage is unavailable.
       }
-      if (currentTypingMode === 'flow') {
+      if (currentTypingMode === 'flow' || currentTypingMode === 'timer') {
         flowAcceptedValue = getCorrectPrefix(input.value);
         input.value = flowAcceptedValue;
         flowMistakes = 0;
       }
+      if (currentTypingMode === 'timer') {
+        stopTimerCountdown();
+        timerSecondsLeft = timerSeconds;
+      } else {
+        stopTimerCountdown();
+        if (timerCountdownBadge) timerCountdownBadge.hidden = true;
+      }
+      updateTimerModeUI();
       updateTypingModeControls();
       updateMetrics();
     }
@@ -1408,7 +1424,9 @@ const clientScript = `
       }
       typingModeButtons.forEach((button) => {
         const mode = button.dataset.typingMode;
-        button.textContent = mode === 'flow' ? labels.typingModeFlow : labels.typingModeStrict;
+        if (mode !== 'timer') {
+          button.textContent = mode === 'flow' ? labels.typingModeFlow : labels.typingModeStrict;
+        }
       });
       if (typingModeDescription) {
         typingModeDescription.textContent = labels.typingModeFlowDescription;
@@ -1665,6 +1683,87 @@ const clientScript = `
       return (completionTranslations && !completionTranslations.hidden ? completionTranslations : null) || postCompletionActions;
     }
 
+    function loadTimerDuration() {
+      try {
+        const saved = parseInt(safeReadStorage(TIMER_DURATION_KEY), 10);
+        return [30, 60, 120].includes(saved) ? saved : 60;
+      } catch {
+        return 60;
+      }
+    }
+
+    function updateTimerDisplay() {
+      if (!timerCountdownBadge) return;
+      timerCountdownBadge.textContent = String(timerSecondsLeft);
+      timerCountdownBadge.classList.toggle('is-low', timerSecondsLeft < 10);
+    }
+
+    function stopTimerCountdown() {
+      if (timerIntervalId !== null) {
+        window.clearInterval(timerIntervalId);
+        timerIntervalId = null;
+      }
+    }
+
+    function startTimerCountdown() {
+      if (timerIntervalId !== null || hasShownCompletion) return;
+      timerSecondsLeft = timerSeconds;
+      updateTimerDisplay();
+      if (timerCountdownBadge) timerCountdownBadge.hidden = false;
+      timerIntervalId = window.setInterval(() => {
+        timerSecondsLeft -= 1;
+        updateTimerDisplay();
+        if (timerSecondsLeft <= 0) {
+          stopTimerCountdown();
+          handleTimerExpiry();
+        }
+      }, 1000);
+    }
+
+    function handleTimerExpiry() {
+      if (hasShownCompletion) return;
+      const typed = input.value;
+      const { accuracy, speed, mistakes } = getTypingStats(typed);
+      hasShownCompletion = true;
+      currentCompletionState = 'timerExpired';
+      completionPanel.hidden = false;
+      if (completionTitle) completionTitle.textContent = "Time's up!";
+      if (completionStatusNote) completionStatusNote.hidden = true;
+      if (expressionAutoReviewNote) {
+        expressionAutoReviewNote.textContent = '';
+        expressionAutoReviewNote.hidden = true;
+      }
+      if (completionAccuracyValue) completionAccuracyValue.textContent = accuracy + '%';
+      const labels = getUiText(uiLanguageSelect.value);
+      if (completionSpeedTitle) completionSpeedTitle.textContent = getSpeedMetricLabel(labels);
+      if (completionSpeedValue) completionSpeedValue.textContent = '' + speed;
+      if (completionMistakesValue) completionMistakesValue.textContent = '' + mistakes;
+      if (completionPasteNote) {
+        completionPasteNote.textContent = hasPasted ? labels.pasteDetectedNotice : '';
+        completionPasteNote.hidden = !hasPasted;
+      }
+      if (assessmentPanel) assessmentPanel.hidden = true;
+      if (completionTranslations) completionTranslations.hidden = true;
+      if (timerCompletionActions) timerCompletionActions.hidden = false;
+      if (timerCountdownBadge) timerCountdownBadge.hidden = true;
+    }
+
+    function updateTimerModeUI() {
+      if (timerDurationRow) {
+        timerDurationRow.hidden = currentTypingMode !== 'timer';
+      }
+      if (currentTypingMode !== 'timer' && timerCountdownBadge) {
+        timerCountdownBadge.hidden = true;
+      }
+    }
+
+    function updateTimerDurationButtons() {
+      timerDurationButtons.forEach((button) => {
+        const duration = parseInt(button.dataset.timerDuration, 10);
+        button.classList.toggle('active', duration === timerSeconds);
+      });
+    }
+
     function resetPractice() {
       if (closeCompletionTimer) {
         window.clearTimeout(closeCompletionTimer);
@@ -1711,6 +1810,10 @@ const clientScript = `
       });
       updateTargetTextProgress('');
       updateTypingInputOverlay('');
+      stopTimerCountdown();
+      timerSecondsLeft = timerSeconds;
+      if (timerCountdownBadge) timerCountdownBadge.hidden = true;
+      if (timerCompletionActions) timerCompletionActions.hidden = true;
       input.focus();
     }
 
@@ -1790,7 +1893,7 @@ const clientScript = `
         }
       }
       const progress = Math.min(100, Math.round((correct / target.length) * 100));
-      const attempts = currentTypingMode === 'flow' ? typed.length + flowMistakes : typed.length;
+      const attempts = (currentTypingMode === 'flow' || currentTypingMode === 'timer') ? typed.length + flowMistakes : typed.length;
       const accuracy = attempts ? Math.round((correct / attempts) * 100) : 100;
       const elapsedMinutes = startTime ? Math.max((performance.now() - startTime) / 60000, 0.001) : 0;
       let speed = 0;
@@ -1802,7 +1905,7 @@ const clientScript = `
           speed = Math.round(words / elapsedMinutes);
         }
       }
-      const mistakes = currentTypingMode === 'flow' ? flowMistakes : typed.length - correct;
+      const mistakes = (currentTypingMode === 'flow' || currentTypingMode === 'timer') ? flowMistakes : typed.length - correct;
       return { accuracy, correct, mistakes, progress, speed };
     }
 
@@ -1825,6 +1928,10 @@ const clientScript = `
       const completionState = getTypingCompletionState(typed, accuracy, mistakes);
       if (completionState && !hasShownCompletion) {
         hasShownCompletion = true;
+        if (currentTypingMode === 'timer') {
+          stopTimerCountdown();
+          if (timerCountdownBadge) timerCountdownBadge.hidden = true;
+        }
         showCompletionPanel(accuracy, speed, mistakes, completionState);
         if (!activeIsTranslationPractice) {
           expressionsPanel.hidden = false;
@@ -1843,6 +1950,9 @@ const clientScript = `
     let hasShownCompletion = false;
     let hasPasted = false;
     let isComposing = false;
+    let timerSeconds = 60;
+    let timerSecondsLeft = 60;
+    let timerIntervalId = null;
 
     function flashCurrentMistake(index) {
       const currentChar = Array.from(targetCharacters).find((char) => Number(char.dataset.charIndex) === index);
@@ -1891,8 +2001,11 @@ const clientScript = `
       if (!startTime) {
         startTime = performance.now();
       }
-      if (currentTypingMode === 'flow') {
+      if (currentTypingMode === 'flow' || currentTypingMode === 'timer') {
         processFlowInput();
+      }
+      if (currentTypingMode === 'timer' && timerIntervalId === null && !hasShownCompletion) {
+        startTimerCountdown();
       }
       updateMetrics();
       updateTypingInputOverlay('');
@@ -1915,8 +2028,11 @@ const clientScript = `
       if (!startTime) {
         startTime = performance.now();
       }
-      if (currentTypingMode === 'flow') {
+      if (currentTypingMode === 'flow' || currentTypingMode === 'timer') {
         processFlowInput();
+      }
+      if (currentTypingMode === 'timer' && timerIntervalId === null && !hasShownCompletion) {
+        startTimerCountdown();
       }
       updateMetrics();
       updateTypingInputOverlay('');
@@ -2057,6 +2173,34 @@ const clientScript = `
       safeWriteStorage(UI_LANGUAGE_STORAGE_KEY, lang);
       renderUiText(lang);
     });
+
+    timerDurationButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const duration = parseInt(button.dataset.timerDuration, 10);
+        if ([30, 60, 120].includes(duration)) {
+          timerSeconds = duration;
+          safeWriteStorage(TIMER_DURATION_KEY, String(duration));
+          updateTimerDurationButtons();
+        }
+        input.focus();
+      });
+    });
+
+    if (timerTryAgainButton) {
+      timerTryAgainButton.addEventListener('click', resetPractice);
+    }
+    if (timerChooseTimeButton) {
+      timerChooseTimeButton.addEventListener('click', resetPractice);
+    }
+    if (timerBackButton) {
+      timerBackButton.addEventListener('click', () => {
+        window.location.href = getAppHref('');
+      });
+    }
+
+    timerSeconds = loadTimerDuration();
+    updateTimerDurationButtons();
+    updateTimerModeUI();
   });
 `;
 
@@ -2175,6 +2319,7 @@ if (!text) {
         aria-label={uiText[defaultUiLang].typingPractice}
       >
         <div id="target-text" set:html={highlightedTextHtml} />
+        <div class="timer-countdown-badge" id="timer-countdown-badge" hidden>60</div>
         <div
           class="typing-input-overlay"
           id="typing-input-overlay"
@@ -2264,6 +2409,18 @@ if (!text) {
               aria-pressed="false"
               >{uiText[defaultUiLang].typingModeFlow}</button
             >
+            <button
+              class="typing-mode-button"
+              type="button"
+              data-typing-mode="timer"
+              aria-pressed="false"
+              >Timer mode</button
+            >
+          </div>
+          <div class="timer-duration-row" id="timer-duration-row" hidden>
+            <button class="timer-duration-button" type="button" data-timer-duration="30">30s</button>
+            <button class="timer-duration-button active" type="button" data-timer-duration="60">60s</button>
+            <button class="timer-duration-button" type="button" data-timer-duration="120">120s</button>
           </div>
           <p
             class="typing-mode-description"
@@ -2432,6 +2589,11 @@ if (!text) {
                 hidden
               >
               </p>
+            </div>
+            <div class="timer-completion-actions" id="timer-completion-actions" hidden>
+              <button class="secondary-button" type="button" id="timer-try-again">Try again</button>
+              <button class="secondary-button" type="button" id="timer-choose-time">Choose new time</button>
+              <button class="secondary-button" type="button" id="timer-back">Back</button>
             </div>
           </div>
         </div>
