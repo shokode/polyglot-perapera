@@ -2193,9 +2193,7 @@ const clientScript = `
       timerChooseTimeButton.addEventListener('click', resetPractice);
     }
     if (timerBackButton) {
-      timerBackButton.addEventListener('click', () => {
-        window.location.href = getAppHref('');
-      });
+      timerBackButton.addEventListener('click', resetPractice);
     }
 
     timerSeconds = loadTimerDuration();
@@ -2310,28 +2308,30 @@ if (!text) {
         </section>
       </div>
 
-      <section
-        class="text-content"
-        data-target-language={practiceTranslationLang ?? text.language}
-        data-practice-mode={isTranslationPractice ? "translation" : "text"}
-        data-typing-display
-        tabindex="0"
-        aria-label={uiText[defaultUiLang].typingPractice}
-      >
-        <div id="target-text" set:html={highlightedTextHtml} />
-        <div class="timer-countdown-badge" id="timer-countdown-badge" hidden>60</div>
-        <div
-          class="typing-input-overlay"
-          id="typing-input-overlay"
-          hidden
+      <div class="text-content-wrap">
+        <section
+          class="text-content"
+          data-target-language={practiceTranslationLang ?? text.language}
+          data-practice-mode={isTranslationPractice ? "translation" : "text"}
+          data-typing-display
+          tabindex="0"
+          aria-label={uiText[defaultUiLang].typingPractice}
         >
-          <span
-            class="typing-input-overlay__text"
-            id="typing-input-overlay-text"
+          <div id="target-text" set:html={highlightedTextHtml} />
+          <div
+            class="typing-input-overlay"
+            id="typing-input-overlay"
+            hidden
           >
-          </span>
-        </div>
-      </section>
+            <span
+              class="typing-input-overlay__text"
+              id="typing-input-overlay-text"
+            >
+            </span>
+          </div>
+        </section>
+        <div class="timer-countdown-badge" id="timer-countdown-badge" hidden>60</div>
+      </div>
       <aside
         class="expression-mini-card"
         id="expression-mini-card"
@@ -2409,18 +2409,20 @@ if (!text) {
               aria-pressed="false"
               >{uiText[defaultUiLang].typingModeFlow}</button
             >
-            <button
-              class="typing-mode-button"
-              type="button"
-              data-typing-mode="timer"
-              aria-pressed="false"
-              >Timer mode</button
-            >
-          </div>
-          <div class="timer-duration-row" id="timer-duration-row" hidden>
-            <button class="timer-duration-button" type="button" data-timer-duration="30">30s</button>
-            <button class="timer-duration-button active" type="button" data-timer-duration="60">60s</button>
-            <button class="timer-duration-button" type="button" data-timer-duration="120">120s</button>
+            <div class="timer-mode-group">
+              <button
+                class="typing-mode-button"
+                type="button"
+                data-typing-mode="timer"
+                aria-pressed="false"
+                >Timer mode</button
+              >
+              <div class="timer-duration-row" id="timer-duration-row" hidden>
+                <button class="timer-duration-button" type="button" data-timer-duration="30">30s</button>
+                <button class="timer-duration-button active" type="button" data-timer-duration="60">60s</button>
+                <button class="timer-duration-button" type="button" data-timer-duration="120">120s</button>
+              </div>
+            </div>
           </div>
           <p
             class="typing-mode-description"

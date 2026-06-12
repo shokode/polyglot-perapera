@@ -6072,6 +6072,13 @@ h3 {
 }
 
 // ── Timer mode ──
+.timer-mode-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
 .timer-duration-row {
   display: flex;
   flex-wrap: wrap;
@@ -6098,10 +6105,14 @@ h3 {
   color: var(--text-mode-active);
 }
 
+.text-content-wrap {
+  position: relative;
+}
+
 .timer-countdown-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: -20px;
+  right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6109,13 +6120,13 @@ h3 {
   height: 44px;
   border-radius: 50%;
   border: 2px solid rgba(var(--accent-rgb), 0.4);
-  background: rgba(var(--surface-strong-rgb), 0.92);
+  background: rgb(var(--surface-strong-rgb));
   color: var(--text-muted);
   font-size: 1rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   pointer-events: none;
-  z-index: 2;
+  z-index: 20;
   transition: border-color 280ms ease, color 280ms ease;
 }
 
