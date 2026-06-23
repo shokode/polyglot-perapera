@@ -3873,5 +3873,412 @@
         "descriptionEn": "\"Slik at arbeidet kan fortsette\" shows purpose: so that the work can continue."
       }
     ]
+  },
+  {
+    "id": "no_029",
+    "language": "no",
+    "category": "neuroscience",
+    "level": "c1",
+    "title": "Dopamin handler ikke om belønning",
+    "text": "De fleste har lært at dopamin er hjernens belønningskjemikalie, stoffet som gjør deg glad når noe bra skjer. Men det viser seg at det ikke er helt riktig. Dopamin handler faktisk mer om forventning enn om selve belønningen. Hjernen frigjør stoffet akkurat i øyeblikket du er i ferd med å finne ut om noe spennende skjer, ikke etter at du vet svaret. Etter hvert som du skroller gjennom feeden din, belønner hjernen selve forventningen, ikke innholdet. Ironisk nok er innlegget du til slutt stopper på, gjerne ganske kjedelig.",
+    "translationJa": "ドーパミンは「報酬の化学物質」——良いことが起きたときに気持ちよくさせてくれるもの——として知られています。でも実は、それは完全に正しくはないことがわかってきました。ドーパミンが関わるのは、報酬そのものよりも、むしろ「期待」なのです。脳がドーパミンを放出するのは、何か面白いことが起きようとしているその瞬間——答えがわかった後ではなく。フィードをスクロールし続けるうちに、脳が報酬として捉えているのはその「期待感」であって、内容ではありません。皮肉なことに、最終的に止まった投稿は、たいていかなり退屈なものです。",
+    "translationEn": "Most people have learned that dopamine is the brain's reward chemical — the thing that makes you feel good when something nice happens. But it turns out that is not quite right. Dopamine is actually more about anticipation than about the reward itself. The brain releases the chemical at exactly the moment you are about to find out whether something exciting is happening — not after you know the answer. As you scroll through your feed, the brain is rewarding the anticipation, not the content. Ironically, the post you finally stop on is often pretty boring.",
+    "expressions": [
+      {
+        "phrase": "det viser seg at",
+        "formInText": "det viser seg at",
+        "ja": "〜ということがわかる / 〜であることが判明する",
+        "en": "it turns out that",
+        "example": "Det viser seg at koffein ikke alltid hjelper mot trøtthet.",
+        "exampleJa": "カフェインが疲れに必ず効くとは限らないことがわかっています。",
+        "exampleEn": "It turns out that caffeine does not always help with tiredness."
+      },
+      {
+        "phrase": "å handle om",
+        "storageKey": "handle om",
+        "formInText": "handler faktisk mer om",
+        "ja": "〜に関することだ / 〜の話だ",
+        "en": "to be about"
+      },
+      {
+        "phrase": "å være i ferd med å",
+        "storageKey": "i ferd med å",
+        "formInText": "er i ferd med å finne ut",
+        "ja": "まさに〜しようとしている / 〜しているところ",
+        "en": "to be about to / to be in the process of",
+        "example": "Jeg er i ferd med å fullføre rapporten.",
+        "exampleJa": "レポートをちょうど仕上げているところです。",
+        "exampleEn": "I am in the process of finishing the report."
+      },
+      {
+        "phrase": "etter hvert som",
+        "formInText": "Etter hvert som du skroller",
+        "ja": "〜するにつれて / 〜するうちに",
+        "en": "as / as time goes on"
+      },
+      {
+        "phrase": "ironisk nok",
+        "formInText": "Ironisk nok",
+        "ja": "皮肉なことに",
+        "en": "ironically"
+      },
+      {
+        "phrase": "til slutt",
+        "formInText": "til slutt stopper på",
+        "ja": "最終的に / ついに",
+        "en": "in the end / finally"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "det viser seg at + leddsetning",
+        "descriptionJa": "「det viser seg at」は「〜ということがわかる／判明する」を意味し、通説や予想が違うことを伝えるときによく使われます。",
+        "descriptionEn": "\"Det viser seg at\" means \"it turns out that\" and is often used to introduce a surprising correction to a commonly held belief."
+      },
+      {
+        "title": "å være i ferd med å + infinitiv",
+        "descriptionJa": "「i ferd med å」は「まさに〜しようとしている」という意味で、ある行動がまさに起きようとしている瞬間を表します。",
+        "descriptionEn": "\"Å være i ferd med å\" means you are right in the process of doing something — emphasising that the action is just about to happen or is currently underway."
+      },
+      {
+        "title": "etter hvert som + leddsetning",
+        "descriptionJa": "「etter hvert som」は「〜するにつれて」を意味し、時間の経過とともに何かが変化していく様子を表します。",
+        "descriptionEn": "\"Etter hvert som\" means \"as\" or \"over time as\" and shows that something changes gradually alongside another ongoing process."
+      }
+    ]
+  },
+  {
+    "id": "no_030",
+    "language": "no",
+    "category": "nature",
+    "level": "b2",
+    "title": "Kråker husker ansiktene dine",
+    "text": "Kråker er langt smartere enn mange tror. Forskere har vist at de er i stand til å kjenne igjen enkeltpersoner bare ut fra ansiktet, og at de husker det i årevis. I et kjent eksperiment brukte forskere masker og opptrådde truende mot kråker på en universitetscampus. I løpet av noen uker begynte kråkene å skrike og dykke mot alle som brukte akkurat den masken, mens folk med andre ansikter ble ignorert. Det som overrasket forskerne enda mer, var at kråkene tilsynelatende delte denne informasjonen med hverandre. Neste gang du plager en kråke, er det kanskje lurt å huske at den sannsynligvis husker deg bedre enn du tror.",
+    "translationJa": "カラスは多くの人が思うよりずっと賢い生き物です。研究者たちは、カラスが顔だけで個人を認識でき、その記憶を何年も保持できることを証明しました。あるよく知られた実験では、研究者たちがマスクをつけて大学のキャンパスでカラスに向かって威嚇的な行動をとりました。数週間のうちに、カラスたちはそのマスクをつけた人間すべてに向かって鳴いたり急降下したりするようになりました——他の顔の人たちは無視しながら。さらに研究者たちを驚かせたのは、カラスたちがこの情報をお互いに共有していたらしいということでした。カラスをからかう前には、相手があなたのことをおそらくあなたが思う以上に覚えていることを忘れずに。",
+    "translationEn": "Crows are far smarter than most people think. Researchers have shown that they can recognise individuals just from their face — and remember them for years. In a well-known experiment, researchers wore masks and acted threateningly toward crows on a university campus. Within a few weeks, the crows began to caw and dive-bomb anyone wearing exactly that mask, while ignoring people with other faces. What surprised the researchers even more was that the crows apparently shared this information with each other. Next time you bother a crow, it might be wise to remember that it probably remembers you better than you think.",
+    "expressions": [
+      {
+        "phrase": "langt + adjektiv + enn mange tror",
+        "formInText": "langt smartere enn mange tror",
+        "ja": "多くの人が思うよりずっと〜",
+        "en": "far more ... than many people think"
+      },
+      {
+        "phrase": "å være i stand til å",
+        "storageKey": "i stand til å",
+        "formInText": "er i stand til å kjenne igjen",
+        "ja": "〜できる / 〜する能力がある",
+        "en": "to be capable of / to be able to",
+        "example": "Ikke alle er i stand til å jobbe godt under press.",
+        "exampleJa": "プレッシャーの下でうまく働ける人ばかりではありません。",
+        "exampleEn": "Not everyone is able to work well under pressure."
+      },
+      {
+        "phrase": "bare ut fra",
+        "formInText": "bare ut fra ansiktet",
+        "ja": "〜だけを根拠に / 〜からだけで",
+        "en": "just based on / from nothing but"
+      },
+      {
+        "phrase": "i løpet av",
+        "formInText": "I løpet av noen uker",
+        "ja": "〜のうちに / 〜の間に",
+        "en": "within / in the course of",
+        "example": "I løpet av en uke hadde hun lært grunnleggende japansk.",
+        "exampleJa": "一週間のうちに、彼女は日本語の基礎を身につけました。",
+        "exampleEn": "Within a week, she had learned basic Japanese."
+      },
+      {
+        "phrase": "å opptrede truende",
+        "storageKey": "opptrede truende",
+        "formInText": "opptrådde truende mot",
+        "ja": "威嚇的な行動をとる / 脅すような振る舞いをする",
+        "en": "to act threateningly / to behave in a threatening way"
+      },
+      {
+        "phrase": "tilsynelatende",
+        "formInText": "tilsynelatende delte",
+        "ja": "見たところでは / どうやら〜らしい",
+        "en": "apparently / seemingly"
+      },
+      {
+        "phrase": "det er lurt å",
+        "formInText": "er det kanskje lurt å",
+        "ja": "〜するのが賢明だ / 〜した方がいい",
+        "en": "it is wise to / you would be smart to"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "å være i stand til å + infinitiv",
+        "descriptionJa": "「i stand til å」は「〜できる」「〜する能力がある」を意味する表現です。「å kunne」よりやや改まった言い回しです。",
+        "descriptionEn": "\"Å være i stand til å\" means to be capable of doing something. It is slightly more formal than using \"å kunne\" alone."
+      },
+      {
+        "title": "mens + leddsetning (kontrast)",
+        "descriptionJa": "ここでの「mens」は「〜する一方で」という対比を表します。二つの異なる状況を同時に描写するときに使います。",
+        "descriptionEn": "\"Mens\" here expresses contrast: \"while\" — it describes two contrasting situations happening at the same time."
+      },
+      {
+        "title": "det som overrasket ... enda mer, var at",
+        "descriptionJa": "「det som + 動詞 + enda mer, var at」は「さらに驚いたのは〜ということだった」という強調表現で、情報を段階的に積み重ねる際に使います。",
+        "descriptionEn": "The construction \"det som overrasket ... enda mer, var at\" means \"what surprised ... even more was that\" — it layers a second, more striking piece of information on top of the first."
+      }
+    ]
+  },
+  {
+    "id": "no_031",
+    "language": "no",
+    "category": "tech",
+    "level": "b2",
+    "title": "Å tenke som en programmør",
+    "text": "En programmør som møter en feil, spør sjelden 'hva er galt?', de spør heller 'hva har endret seg siden det fungerte?' Det handler om å isolere variabler: eliminere alt som ikke kan være årsaken, til du sitter igjen med det som må være det. Etter hvert som man bruker år på å debugge kode, blir denne tenkemåten gradvis en del av måten man ser verden på. Du begynner automatisk å dele problemer opp i mindre deler og sjekke én ting om gangen. Venner synes noen ganger at det kan virke litt omstendelig å alltid spørre etter roten til problemet, men i møte med komplekse situasjoner er det faktisk en ganske kraftig tilnærming.",
+    "translationJa": "バグに直面したプログラマーは「何がおかしいの？」とはあまり聞きません——むしろ「最後に動いていた時から何が変わったか？」と尋ねます。これは変数を絞り込む作業です。原因になりえないものをすべて排除して、これしかないというものだけを残す。コードのデバッグに何年も費やすうちに、この思考法は少しずつ世界の見方そのものになっていきます。問題を小さな部分に分けて、一度に一つ確認するのが自然な癖になるのです。友達からすると、問題の根本をいつも掘り下げようとするのは少し面倒くさく見えることもありますが——複雑な状況に直面したとき、これはかなり強力なアプローチです。",
+    "translationEn": "A programmer facing a bug rarely asks 'what is wrong?' — they ask instead 'what has changed since it last worked?' It is about isolating variables: eliminating everything that cannot be the cause, until you are left with what must be it. Over time, after years of debugging code, this way of thinking gradually becomes part of how you see the world. You start automatically breaking problems into smaller parts and checking one thing at a time. Friends sometimes find it a bit tedious to always be asked about the root of a problem — but when faced with complex situations, it is actually quite a powerful approach.",
+    "expressions": [
+      {
+        "phrase": "heller ... enn",
+        "formInText": "spør heller 'hva har endret seg'",
+        "ja": "〜よりむしろ〜 / どちらかといえば〜",
+        "en": "rather ... than / instead"
+      },
+      {
+        "phrase": "å sitte igjen med",
+        "storageKey": "sitte igjen med",
+        "formInText": "sitter igjen med det som",
+        "ja": "〜だけが残る / 残ったものは〜",
+        "en": "to be left with",
+        "example": "Etter møtet satt vi igjen med flere spørsmål enn svar.",
+        "exampleJa": "会議が終わると、答えより多くの疑問が残りました。",
+        "exampleEn": "After the meeting, we were left with more questions than answers."
+      },
+      {
+        "phrase": "etter hvert som",
+        "formInText": "Etter hvert som man bruker år på",
+        "ja": "〜するにつれて / 〜するうちに",
+        "en": "as / over time as"
+      },
+      {
+        "phrase": "gradvis",
+        "formInText": "gradvis en del av",
+        "ja": "徐々に / 少しずつ",
+        "en": "gradually"
+      },
+      {
+        "phrase": "å dele opp i",
+        "storageKey": "dele opp i",
+        "formInText": "dele problemer opp i mindre deler",
+        "ja": "〜を細かく分ける / 〜をいくつかに分割する",
+        "en": "to break into / to divide into"
+      },
+      {
+        "phrase": "å virke omstendelig",
+        "storageKey": "virke omstendelig",
+        "formInText": "virke litt omstendelig",
+        "ja": "面倒くさく見える / 回りくどく感じられる",
+        "en": "to seem tedious / to come across as overly thorough"
+      },
+      {
+        "phrase": "i møte med",
+        "formInText": "i møte med komplekse situasjoner",
+        "ja": "〜に直面したとき / 〜に向き合うとき",
+        "en": "when faced with / when confronting"
+      },
+      {
+        "phrase": "en tilnærming",
+        "formInText": "en kraftig tilnærming",
+        "ja": "アプローチ / 取り組み方",
+        "en": "an approach / a method"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "å sitte igjen med noe",
+        "descriptionJa": "「sitte igjen med」は「〜だけが残る」「〜が手元に残る」という意味のイディオムです。何かを取り除いた後に残るものを表すときに使います。",
+        "descriptionEn": "\"Å sitte igjen med\" is an idiom meaning to be left with something — what remains after everything else has been removed or considered."
+      },
+      {
+        "title": "etter hvert som + leddsetning",
+        "descriptionJa": "「etter hvert som」は「〜するにつれて」を意味し、時間の経過とともに何かが変化していく様子を表します。",
+        "descriptionEn": "\"Etter hvert som\" means \"as\" or \"over time as\" — it shows gradual change happening alongside another ongoing process."
+      },
+      {
+        "title": "heller + verb (enn)",
+        "descriptionJa": "「heller」は「むしろ〜する」という意味で、二つの行動や選択肢を対比するときに使います。「enn」と組み合わせて「〜よりむしろ〜」と言うこともできます。",
+        "descriptionEn": "\"Heller\" means \"rather\" or \"instead\" and contrasts two options. It can be paired with \"enn\" to say \"rather X than Y.\""
+      }
+    ]
+  },
+  {
+    "id": "no_032",
+    "language": "no",
+    "category": "food",
+    "level": "b2",
+    "title": "Hvorfor japansk mat smaker annerledes utenfor Japan",
+    "text": "Mange som har bodd i Japan og deretter kommet tilbake til hjemlandet, opplever det samme: maten de var glad i der borte smaker rett og slett ikke likt hjemme. Det er ikke fantasien som lurer dem, det er riktig oppfattet. Soyasaus laget utenfor Japan inneholder ofte andre tilsetningsstoffer enn den japanske originalen, og vannkvaliteten påvirker smaken på alt fra ris til suppe. Det samme gjelder japansk majones: den har en rikere, mer avrundet smak fordi den er laget med bare eggeplomme, ikke hele egget. Noen bestiller ingrediensene i håp om å gjenskape smaken hjemme, og det hjelper til en viss grad, men mye av matopplevelsen handler også om konteksten du spiste den i.",
+    "translationJa": "日本に住んでいて、その後帰国した人の多くが同じことを感じます——向こうで好きだったあの食べ物が、家では全然同じ味がしない、と。気のせいではなく、実際にそう感じているのが正しいのです。日本国外で作られた醤油には、日本のオリジナルとは異なる添加物が含まれていることが多く、水質もお米からスープの味まですべてに影響します。日本のマヨネーズも同様——全卵ではなく卵黄だけを使って作られているため、より濃厚でまろやかな味になっています。食材を海外から取り寄せて再現しようとする人もいて、ある程度は効果があります——でも食体験の多くは、そのときの状況や雰囲気にも左右されているものです。",
+    "translationEn": "Many people who have lived in Japan and then returned home experience the same thing: the food they loved over there simply does not taste the same at home. It is not their imagination playing tricks — they are perceiving it correctly. Soy sauce made outside Japan often contains different additives from the Japanese original, and water quality affects the flavour of everything from rice to soup. The same applies to Japanese mayonnaise: it has a richer, more rounded taste because it is made with egg yolk only, not the whole egg. Some people order ingredients in the hope of recreating the taste at home, and it helps to a certain extent — but much of the food experience is also about the context you were in when you ate it.",
+    "expressions": [
+      {
+        "phrase": "rett og slett",
+        "formInText": "smaker rett og slett ikke likt",
+        "ja": "単純に / まったくもって / ただ〜だ",
+        "en": "simply / just / plainly",
+        "example": "Det er rett og slett ikke nok tid.",
+        "exampleJa": "単純に時間が足りないのです。",
+        "exampleEn": "There is simply not enough time."
+      },
+      {
+        "phrase": "å lure noen",
+        "storageKey": "lure",
+        "formInText": "lurer dem",
+        "ja": "〜をだます / 〜に錯覚を起こさせる",
+        "en": "to fool / to deceive / to trick"
+      },
+      {
+        "phrase": "å oppfatte",
+        "storageKey": "oppfatte",
+        "formInText": "riktig oppfattet",
+        "ja": "感じ取る / 知覚する / 正しく認識する",
+        "en": "to perceive / to sense correctly",
+        "example": "Jeg oppfattet det som en kritikk, selv om det ikke var ment slik.",
+        "exampleJa": "そう意図されていなかったとしても、私はそれを批判として受け取りました。",
+        "exampleEn": "I perceived it as a criticism, even though it was not meant that way."
+      },
+      {
+        "phrase": "det samme gjelder",
+        "formInText": "Det samme gjelder japansk majones",
+        "ja": "同じことが〜にも当てはまる",
+        "en": "the same applies to / the same goes for"
+      },
+      {
+        "phrase": "i håp om å",
+        "formInText": "i håp om å gjenskape",
+        "ja": "〜することを期待して / 〜できることを願って",
+        "en": "in the hope of / hoping to"
+      },
+      {
+        "phrase": "å gjenskape",
+        "storageKey": "gjenskape",
+        "formInText": "gjenskape smaken",
+        "ja": "再現する / 作り直す",
+        "en": "to recreate / to reproduce"
+      },
+      {
+        "phrase": "til en viss grad",
+        "formInText": "til en viss grad",
+        "ja": "ある程度は / ある意味では",
+        "en": "to a certain extent / to some degree"
+      }
+    ],
+    "grammar": [
+      {
+        "title": "det er ikke X som Y — det er Z",
+        "descriptionJa": "「det er ikke ... som ... — det er ...」は強調のための対比構文で、「〜のせいではなく、実は〜だ」と誤解を訂正するときに使います。",
+        "descriptionEn": "The structure \"det er ikke X som Y — det er Z\" is a contrastive cleft used for emphasis, correcting a misconception and pointing to the real cause."
+      },
+      {
+        "title": "det samme gjelder + substantiv",
+        "descriptionJa": "「det samme gjelder」は「〜にも同じことが当てはまる」という意味で、前の内容を別の対象にも適用するときに使います。",
+        "descriptionEn": "\"Det samme gjelder\" means \"the same applies to\" — it extends a point already made about one thing to a new subject."
+      },
+      {
+        "title": "i håp om å + infinitiv",
+        "descriptionJa": "「i håp om å」は「〜することを期待して」という意味で、行動の背後にある願いや期待を表す表現です。",
+        "descriptionEn": "\"I håp om å\" means \"in the hope of\" and introduces the hoped-for outcome of an action."
+      }
+    ]
+  },
+  {
+    "id": "no_033",
+    "language": "no",
+    "category": "psychology",
+    "level": "c1",
+    "title": "Sosiale medier og evnen til å fokusere",
+    "text": "Mange tror at problemet med sosiale medier handler om disiplin, at folk bare trenger å skjerpe seg og legge fra seg telefonen. Men det er å lukke øynene for hva som faktisk foregår. Plattformene er bygget av svært dyktige folk som har ofret enorme ressurser på å forstå nøyaktig hva som holder oss scrollende. De utnytter hjernens behov for å hele tiden oppfatte mønstre og muligheter, og belønner oss med et lite dopaminrush for hvert nye innlegg vi ser. Over tid svekkes evnen til å holde på én tanke lenge nok til å virkelig fordype seg i den. Det er ikke et tegn på svak vilje; det er fysiologi.",
+    "translationJa": "ソーシャルメディアの問題は自制心の話だと思っている人が多い——ただ気を引き締めて、スマホを置けばいいだけだ、と。でもそれは、実際に何が起きているかから目を背けることになります。これらのプラットフォームは、私たちをスクロールさせ続けているものが何なのかを徹底的に研究するために膨大なリソースを注ぎ込んできた、非常に優秀な人たちによって作られています。脳がパターンや可能性を常に探り続けるという性質を利用して、新しい投稿を見るたびに小さなドーパミン報酬を与えているのです。時間が経つにつれて、一つのことに深く集中し続ける能力が少しずつ弱まっていきます。これは意志の弱さのサインではありません——生理学的な現象なのです。",
+    "translationEn": "Many people think the problem with social media is about discipline — that people just need to pull themselves together and put down their phones. But that is turning a blind eye to what is actually going on. These platforms are built by highly skilled people who have devoted enormous resources to understanding exactly what keeps us scrolling. They exploit the brain's constant need to perceive patterns and possibilities — rewarding us with a small dopamine hit for every new post we see. Over time, the ability to hold a single thought long enough to truly immerse yourself in it gradually weakens. That is not a sign of weak willpower; it is physiology.",
+    "expressions": [
+      {
+        "phrase": "å skjerpe seg",
+        "storageKey": "skjerpe seg",
+        "formInText": "skjerpe seg",
+        "ja": "気を引き締める / しっかりする / もっと頑張る",
+        "en": "to pull oneself together / to get serious / to step up",
+        "example": "Du må skjerpe deg hvis du vil bestå eksamen.",
+        "exampleJa": "試験に合格したいなら、しっかりしなければなりません。",
+        "exampleEn": "You need to pull yourself together if you want to pass the exam."
+      },
+      {
+        "phrase": "å legge fra seg",
+        "storageKey": "legge fra seg",
+        "formInText": "legge fra seg telefonen",
+        "ja": "〜を置く / 〜を手放す",
+        "en": "to put down / to set aside"
+      },
+      {
+        "phrase": "å lukke øynene for noe",
+        "storageKey": "lukke øynene for",
+        "formInText": "lukke øynene for hva som faktisk foregår",
+        "ja": "〜から目を背ける / 〜を見て見ぬふりをする",
+        "en": "to turn a blind eye to / to ignore what is really happening",
+        "example": "Vi kan ikke lukke øynene for problemet lenger.",
+        "exampleJa": "もうこれ以上この問題から目を背けることはできません。",
+        "exampleEn": "We can no longer turn a blind eye to the problem."
+      },
+      {
+        "phrase": "dyktig",
+        "formInText": "svært dyktige folk",
+        "ja": "優秀な / 有能な / 熟練した",
+        "en": "skilled / competent / talented"
+      },
+      {
+        "phrase": "å ofre ressurser på",
+        "storageKey": "ofre ressurser på",
+        "formInText": "ofret enorme ressurser på",
+        "ja": "〜に多大なリソースを費やす / 〜に資源を注ぎ込む",
+        "en": "to devote resources to / to pour resources into"
+      },
+      {
+        "phrase": "å oppfatte mønstre",
+        "storageKey": "oppfatte mønstre",
+        "formInText": "oppfatte mønstre og muligheter",
+        "ja": "パターンや可能性を感じ取る / 認識する",
+        "en": "to perceive patterns / to pick up on cues"
+      },
+      {
+        "phrase": "over tid",
+        "formInText": "Over tid svekkes",
+        "ja": "時間が経つにつれて / 徐々に",
+        "en": "over time / as time passes"
+      },
+      {
+        "phrase": "å fordype seg i",
+        "storageKey": "fordype seg i",
+        "formInText": "fordype seg i den",
+        "ja": "〜に深く集中する / 〜に没入する",
+        "en": "to immerse oneself in / to delve into",
+        "example": "Jeg liker å fordype meg i ett tema av gangen.",
+        "exampleJa": "私は一度に一つのテーマに深く集中するのが好きです。",
+        "exampleEn": "I like to immerse myself in one topic at a time."
+      }
+    ],
+    "grammar": [
+      {
+        "title": "å lukke øynene for noe",
+        "descriptionJa": "「å lukke øynene for noe」は「〜から目を背ける」「見て見ぬふりをする」という慣用表現です。不快な真実を無視するときに使います。",
+        "descriptionEn": "\"Å lukke øynene for noe\" is an idiom meaning to turn a blind eye to something — to deliberately ignore an uncomfortable truth."
+      },
+      {
+        "title": "Over tid + omvendt ordstilling",
+        "descriptionJa": "「Over tid」を文頭に置くと、主語と動詞の順序が入れ替わります（例：「Over tid svekkes evnen」）。これを倒置と呼び、副詞句を強調するときに使います。",
+        "descriptionEn": "When \"over tid\" starts the sentence, the subject and verb invert: \"Over tid svekkes evnen\" (not \"evnen svekkes\"). This is standard inversion after a fronted adverbial."
+      },
+      {
+        "title": "det er ikke X; det er Y",
+        "descriptionJa": "「det er ikke ...; det er ...」は「〜ではなく、〜だ」という対比の構文で、誤解を訂正して本当の理由を示すときに使います。",
+        "descriptionEn": "The structure \"det er ikke X; det er Y\" is a contrastive pair that corrects a misconception and delivers the real explanation."
+      }
+    ]
   }
 ]

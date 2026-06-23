@@ -4214,10 +4214,13 @@ a:active {
 }
 
 @media (min-width: 769px) {
-  .text-page .text-content {
+  .text-page .text-content-wrap {
     position: sticky;
     top: calc(var(--navbar-height) + 12px);
     z-index: 18;
+  }
+
+  .text-page .text-content {
     max-height: min(38vh, 430px);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -5365,10 +5368,13 @@ h3 {
     border-radius: 18px;
   }
 
-  .text-content {
+  .text-page .text-content-wrap {
     position: sticky;
     top: calc(var(--navbar-height) + 8px);
     z-index: 20;
+  }
+
+  .text-content {
     max-height: 32vh;
     overflow-y: auto;
     overscroll-behavior: contain;

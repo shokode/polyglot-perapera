@@ -19,7 +19,12 @@ export type CategoryKey =
   | 'norway-life'
   | 'frontend-office'
   | 'health-medical'
-  | 'office-smalltalk';
+  | 'office-smalltalk'
+  | 'neuroscience'
+  | 'nature'
+  | 'tech'
+  | 'food'
+  | 'psychology';
 
 export const categories: CategoryKey[] = [
   'daily-life',
@@ -34,6 +39,11 @@ export const categories: CategoryKey[] = [
   'frontend-office',
   'health-medical',
   'office-smalltalk',
+  'neuroscience',
+  'nature',
+  'tech',
+  'food',
+  'psychology',
 ];
 
 export type LevelKey = 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'natural';
@@ -74,6 +84,11 @@ export const categoryLabels: Record<CategoryKey, Record<UILang, string>> = {
   'frontend-office': { no: 'Frontend og kontor', en: 'Frontend & Office', ja: 'フロントエンド・オフィス' },
   'health-medical': { no: 'Helse og medisin', en: 'Health & Medical', ja: '医療・ヘルスケア' },
   'office-smalltalk': { no: 'Småprat på jobb', en: 'Office Small Talk', ja: '職場の雑談' },
+  neuroscience: { no: 'Nevrovitenskap', en: 'Neuroscience', ja: '神経科学' },
+  nature: { no: 'Natur', en: 'Nature', ja: '自然' },
+  tech: { no: 'Teknologi', en: 'Technology', ja: 'テクノロジー' },
+  food: { no: 'Mat', en: 'Food', ja: '食べ物' },
+  psychology: { no: 'Psykologi', en: 'Psychology', ja: '心理学' },
 };
 
 export const levelLabels: Record<LevelKey, Record<UILang, string>> = {
